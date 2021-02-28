@@ -1,0 +1,1304 @@
+on skript load:
+	login to "xxx" with the name "beans"
+
+function eval(t: text, u: text, c: channel):
+	if {_u} is "548774680514002964" or "496477678103298052" or "235475763464372224" or "535986058991501323":
+		replace all "\`\`\" with "" in {_t}
+		evaluate logging errors in {_errors::*}: {_t}
+		if {_errors::*} is set:
+			send "Ran into a error! `%{_errors::*}%`" to {_c} with "beans"
+			delete {_errors::*}
+
+on guild message received:
+
+	if id of event-channel is "548774680514002964":
+	
+		send "&3[Discord] &7%event-member%&8: &f%event-message%" to all players
+
+	else if id of event-channel is "551546585285394443":
+
+		sc("*%event-member%", "%event-message%")
+
+on chat:
+	wait 5 ticks
+	if event isn't canceled:
+
+		set {_p} to "%player%"
+		replace all "_" with "\_" in {_p}
+
+		send "**%{_p}%:** %message%" to channel with id "548774680514002964" with "beans"
+
+options:
+	prefix: ?, "%mention tag of event-bot% "
+
+discord command list:
+	prefixes: {@prefix}
+	trigger:
+		loop all players:
+			set {_n} to name of loop-player
+			add {_n} to {_players::*}
+		send "Online players (%number of all players%/%{maxplayers}%):%nl%```%nl%%{_players::*}%%nl%```" to event-channel with event-bot
+
+discord command staff:
+	prefixes: {@prefix}
+	trigger:
+		loop all players:
+			if loop-player has permission "rank.mod":
+				set {_n} to name of loop-player
+				add {_n} to {_players::*}
+		send "Online Staff (%size of {_players::*}%/%number of all players%):%nl%```%nl%%{_players::*} ? ""None""%%nl%```" to event-channel with event-bot
+
+discord command eval <text>:
+	prefixes: {@prefix}
+	trigger:
+		eval(arg 1, id of event-user, event-channel)
+
+discord command stats [<offlineplayer>]:
+	prefixes: {@prefix}
+	trigger:
+		if arg 1 is not set:
+			reply with "Incorrect usage... `?stats <ign>`"
+		else:
+			set {_uuid} to arg 1's uuid
+			if {balance::%{_uuid}%} is not set:
+				reply with "That player has not joined..."
+			else:
+				reply with "%nl%**\*** Stats **(%arg 1%)**%nl%%nl% **Rank:** %{rank::%{_uuid}%}%%nl% **Kills:** %{kills::%{_uuid}%}%%nl% **Deaths:** %{deaths::%{_uuid}%}%%nl% **K/D:** %(rounded down ({kills::%{_uuid}%}*100)/{deaths::%{_uuid}%})/100%%nl% **Money:** $%{balance::%{_uuid}%}%"
+
+# end bot
+
+on quit:
+	set quit message to "&7%player% has disconnected."
+
+on join:
+	if {joined::%uuid of player%} is set:
+		set join message to "&7%player% has connected."
+		loop 700 times:
+			send "&7"
+		send "&7&m*---------------------------------*"
+		send "&7"
+		send "&f&l* &7Welcome back &6%player%&7!"
+		send "&7"
+		send "&7&m*---------------------------------*"
+	else:
+		set join message to "&7%player% has connected. &6[NEW]"
+		set {joined::%uuid of player%} to true
+		add 1 to {unique}
+		clear player's inventory
+		give player 1 elytra
+		give player 1 iron pickaxe
+		set {balance::%uuid of player%} to 0
+		wait 5 ticks
+		send "&7"
+		send "&7&m*---------------------------------*"
+		send "&7"
+		send "&f&l* &eWelcome to beans! &6(Season 8)"
+		send "&f&l* &eDo &6/shop &eto purchase items!"
+		send "&f&l* &eSell items in your inventory using &6/sell&e!"
+		send "&7"
+		send "&f* &7&oBrought to you by the Facto network! &f*"
+		send "&7"
+		send "&7&m*---------------------------------*"
+		set {kills::%uuid of player%} to 0
+		set {deaths::%uuid of player%} to 0
+		set {ks::%uuid of player%} to 0
+		set {kshigh::%uuid of player%} to 0
+		set {rank::%uuid of player%} to "Default"
+	wait 3 ticks
+	teleport player to {spawn}
+
+on respawn:
+	teleport player to {spawn}
+
+on death of player:
+	if {bounty.%uuid of victim%} is set:
+		if attacker is set:
+			victim is not attacker
+			add {bounty.%uuid of victim%} to {balance::%uuid of attacker%}
+			broadcast "&7"
+			broadcast "&6[Bounty] &fThe &6&l$%{bounty.%uuid of victim%}% &fbounty on &e%victim% &fhas been claimed by &e%attacker%&f!"
+			broadcast "&7"
+			send "&6[Eco] &a$%{bounty.%uuid of victim%}% &7has been added to your account! &o(Claimed bounty)" to attacker
+			delete {bounty.%uuid of victim%}
+	if attacker is a player:
+
+		set death message to ""
+
+		set {_name} to name of attacker's tool
+		set {_lore} to lore of attacker's tool
+		replace all "||" with nl in {_lore}
+
+		set {_enchants} to enchantments of attacker's tool
+
+		if ("%length of {_lore}%" parsed as integer) is less than 3:
+			set {_lore} to "&7No CE's"
+
+		if {_name} is not set:
+			if attacker's tool is a sword:
+				set {_name} to "&ca sword"
+			else if attacker's tool is a axe:
+				set {_name} to "&can axe"
+			else if attacker's tool is a bow:
+				set {_name} to "&carchery"
+			else:
+				set {_name} to "&ca tool"
+			
+		set {_weapon} to "<tooltip:&7%{_enchants} ? ""No Enchantments""%%nl%%{_lore}%>%{_name}%"
+
+		set {_ran} to random integer between 1 and 5
+		if {_ran} = 1:
+			send "&c%victim% &7was roasted by &c%attacker%&7 using &c%{_weapon}%&7!" to all players
+		if {_ran} = 2:
+			send "&c%victim% &7was slain by &c%attacker%&7 using &c%{_weapon}%&7!" to all players
+		if {_ran} = 3:
+			send "&c%victim% &7took an L from &c%attacker%&7 using &c%{_weapon}%&7!" to all players
+		if {_ran} = 4:
+			send "&c%victim% &7was killed by &c%attacker%&7 using &c%{_weapon}%&7!" to all players
+		if {_ran} = 5:
+			send "&c%victim% &7was smashed to bits by &c%attacker%&7 using &c%{_weapon}%&7!" to all players
+		add 1 to {kills::%uuid of attacker%}
+		add 1 to {ks::%uuid of attacker%}
+		if {ks::%uuid of attacker%} is greater than {kshigh::%uuid of attacker%}:
+			set {kshigh::%uuid of attacker%} to {ks::%uuid of attacker%}
+		add 1 to {deaths::%uuid of victim%}
+		if {ks::%uuid of victim%} is set:
+			set {ks::%uuid of victim%} to 0
+			send "&6[Killstreaks] &7You've lost your killstreak of &c%{ks::%uuid of victim%}%&7." to victim
+		set {_victim} to {balance::%victim's uuid%} / 100
+		add {_victim} to {balance::%attacker's uuid%}
+		remove {_victim} from {balance::%victim's uuid%}
+		send "&6[Death] &7You lost &c$%{_victim}%&7." to victim
+		send "&6[Kill] &7You gained &a$%{_victim}%&7." to attacker
+	else:
+		set death message to "&c%victim% &7died"
+		set {ks::%uuid of victim%} to 0
+		add 1 to {deaths::%uuid of victim%}
+		send "&6[Killstreaks] &7You've lost your killstreak of &c%{ks::%uuid of victim%}%&7." to victim
+
+on damage:
+	if damage cause is fall or suffocation:
+		cancel event
+
+on server ping:
+	set {maxPlayers} to max player count
+
+on store:
+	if name of player's inventory contains "Shop >":
+		cancel event
+
+on sign change:
+	if line 1 of event-block is "[Disposal]":
+		if player has permission "rank.admin":
+			set line 1 of event-block to "&7"
+			set line 2 of event-block to "&6[Disposal]"
+			set line 3 of event-block to "&eRight click"
+			set line 4 of event-block to "&7"
+
+on right-click:
+	if line 2 of event-block is "&6[Disposal]":
+		make player execute command "/trash"
+
+on stepping on a pressure plate:
+	"%region at location of player%" is "spawn in world %world%"
+	wait 8 ticks
+	push player forwards at speed 3
+	push player upwards at speed 2
+
+every 1 second:
+	loop all players:
+		if {rank::%loop-player's uuid%} is not set:
+			set {rank::%loop-player's uuid%} to "default"
+		set tab header to "%nl%&f&l* &6Beans &f&l*%nl%        &7Elytra, pvp and mining      %nl% &7&l&m*&7 FaactoNetwork &7&l&m*%nl%" and footer to "%nl%&7(&nSeason 8&7)%nl%%nl%&f&l* &6Online: &f%number of all players%&e/&f%{maxPlayers}% &f&l*%nl%&7" for loop-player
+		if {bounty.%uuid of loop-player%} is set:
+			set tablist name of loop-player to " %{ranks::%{rank::%loop-player's uuid%}%}%%loop-player% &6&l$%{bounty.%uuid of loop-player%}%"
+		else:
+			set tablist name of loop-player to " %{ranks::%{rank::%loop-player's uuid%}%}%%loop-player%"
+	add 1 to {scoreboard_timer}
+	if {scoreboard_timer} is greater than or equal to 5:
+		set {scoreboard_timer} to 0
+		loop all players:
+			set {_time} to now
+			wipe loop-player's sidebar
+			set name of sidebar of loop-player to "&6Beans &7(&nSeason 8&7)"
+			set score "&1" in sidebar of loop-player to 10
+			set score "&6[Personal]" in sidebar of loop-player to 9
+			set score "  &eRank: &f%{rank::%uuid of loop-player%}%" in sidebar of loop-player to 8
+			set score "  &eBalance: &a$%{balance::%uuid of loop-player%}%" in sidebar of loop-player to 7
+			set score "&2" in sidebar of loop-player to 6
+			set score "&6[Stats]" in sidebar of loop-player to 5
+			set score "  &eKD: &a%{kills::%uuid of loop-player%}%&f/&c%{deaths::%uuid of loop-player%}%" in sidebar of loop-player to 4
+			set score "  &eKS: &f%{ks::%uuid of loop-player%}% &7(&6%{kshigh::%uuid of loop-player%}%&7)" in sidebar of loop-player to 3
+			set score "&3" in sidebar of loop-player to 2
+			set score "&7&m*&7&o (FactoNetwork) &7&m*" in sidebar of loop-player to 1
+
+every 3 minutes:
+	set {_i} to a random integer between 1 and 2
+	if {_i} is 1:
+		all players command "/discord"
+	else if {_i} is 2:
+		send "" to all players
+		send "&ebuy stuff from our store with &6/buy &e:O" to all players
+		send "" to all players
+
+command /tutorial:
+	trigger:
+		if {tutorial::%uuid of player%} does not exist:
+			hide the player from all players
+			loop 100 times:
+				send "&r"
+			send "&6[Tutorial] &7Welcome to &ebeans season 8&7."
+			play "ENTITY_PLAYER_LEVELUP" to player at volume 10
+			wait 5 seconds
+
+			loop 100 times:
+				send "&r"
+			teleport player to {tutorial}
+			send "&6[Tutorial] &7Beans is an &eelytra, pvp and mining &7server, developed by the &eFactoNetwork &7team." to player
+			play "ENTITY_PLAYER_LEVELUP" to player at volume 10
+			wait 5 seconds
+
+			loop 100 times:
+				send "&r"
+			teleport player to {spawn}
+			send "&6[Tutorial] &7This is our spawn, you &erespawn &7here everytime you are &ckilled &7or execute /spawn. You can also &esell &7items and do other things in this area." to player
+			play "ENTITY_PLAYER_LEVELUP" to player at volume 10
+			wait 7.5 seconds
+
+
+			loop 100 times:
+				send "&r"
+			send "&6[Tutorial] &7Welcome to beans &eseason 8&7, if you have any more &fquestions &7feel free to ask around." to player
+			send "&r"
+			send "&6[Eco] &a$1000 &7has been added to your account! &o(Finished tutorial!)" to player
+			teleport player to {spawn}
+			add 1000 to {balance::%uuid of player%}
+			set {tutorial::%uuid of player%} to true
+			reveal the player from all players
+
+command /discord [<text>]:
+	trigger:
+		send "&f&l* &eJoin the discord! <tooltip:&eClick me!><link:https://discord.gg/8kqCk3G>&6Click me!"
+
+command /spawn [<text>]:
+	trigger:
+		teleport player to {spawn}
+		send "&6[Warps] &7You've been teleported to spawn."
+
+command /help [<number>] [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send ""
+			send "&f&l* &eHelp &7(1/2)"
+			send ""
+			send " &6/help: &elist of commands"
+			send " &6/tutorial: &eserver tutorial"
+			send " &6/discord: &elink to our discord"
+			send " &6/quests: &eview your quests"
+			send " &6/staff: &eview the current online staff"
+			send ""
+		else if arg 1 is set:
+			if arg 1 is 1:
+				player command "/help"
+			else if arg 1 is 2:
+				send ""
+				send "&f&l* &eHelp &7(2/2)"
+				send ""
+				send " &6/shop: &eserver shop"
+				send " &6/balance: &eview your money"
+				send " &6/pay: &epay a user money"
+				send " &6/bounty: &ebounty management"
+				send " &6/baltop: &eview the richest users"
+				send ""
+			else if arg 1 is not 1 or 2:
+				player command "/help"
+
+# end beans.sk
+
+function sc(p: text, t: text):
+	send "&a[STAFF] &7%{_p}%&8: &a%{_t}%" to all players where [input has permission "rank.mod" or "rank.helper"]
+	send "`[STAFF]` **%{_p}%:** %{_t}%" to channel with id "551546585285394443" with "beans"
+
+function ac(p: player, t: text):
+	send "&b[ADMIN] &7%{_p}%&8: &b%{_t}%" to all players where [input has permission "rank.admin"]
+
+command /sc [<text>]:
+	aliases: /staffchat
+	permission: rank.helper
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /staffchat <toggle | message ...>"
+		else:
+			if arg 1 is "toggle":
+				if {sc::%player's uuid%} is not set:
+					set {sc::%player's uuid%} to true
+					send "&7Enabled staff chat."
+				else:
+					delete {sc::%player's uuid%}
+					send "&7Disabled staff chat."
+			else:
+				sc(name of player, arg 1)
+
+command /ac [<text>]:
+	aliases: /adminchat
+	permission: rank.srmod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /adminchat <toggle | message ...>"
+		else:
+			if arg 1 is "toggle":
+				if {ac::%player's uuid%} is not set:
+					set {ac::%player's uuid%} to true
+					send "&7Enabled admin chat."
+				else:
+					delete {ac::%player's uuid%}
+					send "&7Disabled admin chat."
+			else:
+				ac(player, arg 1)
+
+on chat:
+	set chat format to "%{ranks::%{rank::%player's uuid%}%}%%player% &8» &f%message%"
+	if {ac::%player's uuid%} is set:
+		cancel event
+		ac(player, message)
+	else:
+		if {sc::%player's uuid%} is set:
+			cancel event
+			sc(name of player, message)
+		else:
+			player does not have permission "rank.mod"
+			if {chat} is set:
+				cancel event
+				send "&6[Beans] &7Chat is current muted by &e%{chat}%&7. &6[%{chat::reason}%]"
+			else:
+				if {message::%player's uuid%} is message:
+					cancel event
+					send "&6[Beans] &7Please don't repeat messages."
+				else:
+					set {message::%player's uuid%} to message
+					if {mute::%player's uuid%} is set:
+						cancel event
+						send "&7You are currently muted by &6%{mute::staff::%player's uuid%}%&7. &e[%{mute::%player's uuid%}%]"
+					else:
+						set {_m} to message
+						if first 5 characters of {_m} is "%{message}%":
+							add 1 to {attempts}
+							if {attempts} is greater than or equal to 5:
+								set {chat} to "Console"
+								set {chat::reason} to "Possible spam bots detected."
+								send "" to all players
+								send "&6[Beans] &7Chat has been muted. Possible spam bots detected." to all players
+								send "" to all players			
+								wait 30 seconds
+								if {chat} is "Console":
+									delete {chat}
+									delete {chat::reason}
+									send "" to all players
+									send "&6[Beans] &7Chat has been unmuted." to all players
+									send "" to all players	
+						else:
+							delete {attempts}	
+						set {message} to first 4 characters of {_m}
+					
+			
+command /chat [<text>] [<text>]:
+	permission: rank.mod
+	permission message: &cYou don't have access to that command
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /chat <mute | clear>"
+		else:
+			if arg 1 is not "mute" or "clear":
+				player command "/chat"
+			else if arg 1 is "mute":
+				if {chat} is set:
+					delete {chat}
+					delete {chat::reason}
+					send "" to all players
+					send "&6[Beans] &7Chat has been unmuted by &e%player%&7." to all players
+					send "" to all players
+				else:
+					if arg 2 is not set:
+						player command "/chat"
+					else:
+						set {chat} to player
+						set {chat::reason} to arg 2
+						send "" to all players
+						send "&6[Beans] &7Chat has been muted by &e%player%&7. &6[%arg 2%]" to all players
+						send "" to all players						
+			if arg 1 is "clear":
+				loop 300 times:
+					send "" to all players where [input does not have permission "rank.mod" or "rank.helper"]
+				send "" to all players
+				send "&6[Beans] &7Chat has been cleared by &e%player%&7." to all players
+				send "" to all players
+
+# end chat.sk
+
+on rightclick on sign:
+	if line 2 of event-block is "&6[Repair]":
+		if {balance::%player's uuid%} is greater than or equal to 5000:
+			if durability of player's tool is greater than 0:
+				remove 5000 from {balance::%player's uuid%}
+				repair player's tool by 10000
+				send "&6[Repair] &7Successfully repaired your tool."
+			else:
+				send "&6[Repair] &7I can't repair that tool..."
+		else:
+			play "ENTITY_VILLAGER_NO" to player at volume 10000
+			send "&6[Repair] &7You don't have enough money for that!"
+
+command /shop [<text>] [<text>]:
+	trigger:
+		if arg-1 is set:
+			play "ENTITY_ENDERDRAGON_FLAP" to player at volume 10000
+			if arg-1 is "Combat":
+				open virtual chest inventory with size 3 named "&8Shop > Combat" to player
+				wait 1 tick
+				format gui slot 0 of player with feather named "&c&lBACK" to run:
+					
+					make player execute command "/shop"
+				format gui slot 4 of player with emerald named "&a&lBALANCE&f: &6$%{balance::%uuid of player%}%" to do nothing
+				format gui slot 10 of player with diamond helmet named "&bDiamond helmet &7(&n$400&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 400:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 400 from {balance::%uuid of player%}
+						give player 1 diamond helmet
+						send "&6[Shop] &7You've purchased &f1x Diamond helmet &7for &e$400"
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+				format gui slot 11 of player with diamond chestplate named "&bDiamond chestplate &7(&n$500&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 500:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 500 from {balance::%uuid of player%}
+						give player 1 diamond chestplate
+						send "&6[Shop] &7You've purchased &f1x Diamond chestplate &7for &e$500"
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 12 of player with diamond leggings named "&bDiamond leggings &7(&n$400&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 400:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 400 from {balance::%uuid of player%}
+						give player 1 diamond leggings
+						send "&6[Shop] &7You've purchased &f1x Diamond leggings &7for &e$400"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 13 of player with diamond boots named "&bDiamond boots &7(&n$350&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 350:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 350 from {balance::%uuid of player%}
+						give player 1 diamond boots
+						send "&6[Shop] &7You've purchased &f1x Diamond helmet &7for &e$350"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 14 of player with diamond sword named "&bDiamond sword &7(&n$500&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 500:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 500 from {balance::%uuid of player%}
+						give player 1 diamond sword
+						send "&6[Shop] &7You've purchased &f1x Diamond sword &7for &e$500"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 15 of player with bow named "&bBow &7(&n$500&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 500:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 500 from {balance::%uuid of player%}
+						give player 1 bow
+						send "&6[Shop] &7You've purchased &f1x Bow &7for &e$500"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 16 of player with arrows named "&b&n16x&b Arrows &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 100 from {balance::%uuid of player%}
+						give player 16 arrows
+						send "&6[Shop] &7You've purchased &f16x Arrows &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+			if arg-1 is "Tools":
+				open virtual chest inventory with size 3 named "&8Shop > Tools" to player
+				wait 1 tick
+				format gui slot 0 of player with feather named "&c&lBACK" to run:
+					
+					make player execute command "/shop"
+				format gui slot 4 of player with emerald named "&a&lBALANCE&f: &6$%{balance::%uuid of player%}%" to do nothing
+				format gui slot 10 of player with diamond pickaxe named "&bDiamond pickaxe &7(&n$250&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 250:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 250 from {balance::%uuid of player%}
+						give player 1 diamond pickaxe
+						send "&6[Shop] &7You've purchased &f1x Diamond pickaxe &7for &e$250"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 11 of player with diamond axe named "&bDiamond axe &7(&n$150&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 150:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 150 from {balance::%uuid of player%}
+						give player 1 diamond axe
+						send "&6[Shop] &7You've purchased &f1x Diamond axe &7for &e$150"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 12 of player with diamond shovel named "&bDiamond shovel &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 100 from {balance::%uuid of player%}
+						give player 1 diamond shovel
+						send "&6[Shop] &7You've purchased &f1x Diamond shovel &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+			if arg-1 is "Blocks":
+				open virtual chest inventory with size 3 named "&8Shop > Blocks" to player
+				wait 1 tick
+				format gui slot 0 of player with feather named "&c&lBACK" to run:
+					
+					make player execute command "/shop"
+				format gui slot 4 of player with emerald named "&a&lBALANCE&f: &6$%{balance::%uuid of player%}%" to do nothing
+				format gui slot 10 of player with oak log named "&6&n64x&6 Wood &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 250 from {balance::%uuid of player%}
+						give player 64 oak log
+						send "&6[Shop] &7You've purchased &f64x Oak Log &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 11 of player with stone named "&6&n64x&6 Stone &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 250 from {balance::%uuid of player%}
+						give player 64 stone
+						send "&6[Shop] &7You've purchased &f64x Stone &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+			if arg-1 is "Misc":
+				open virtual chest inventory with size 3 named "&8Shop > Misc" to player
+				wait 1 tick
+				format gui slot 0 of player with feather named "&c&lBACK" to run:
+					
+					make player execute command "/shop"
+				format gui slot 4 of player with emerald named "&a&lBALANCE&f: &6$%{balance::%uuid of player%}%" to do nothing
+				format gui slot 10 of player with golden apple named "&6Golden apple &7(&n$50&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 50:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 50 from {balance::%uuid of player%}
+						give player 1 golden apple
+						send "&6[Shop] &7You've purchased &f1x Golden apple &7for &e$50"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 11 of player with bottles o' enchanting named "&6&n100 &6XP &7(&n$200&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					if {balance::%uuid of player%} is greater than or equal to 200:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 200 from {balance::%uuid of player%}
+						give 100 xp to player
+						send "&6[Shop] &7You've purchased &f100xp &7for &e$200"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+
+				format gui slot 20 of player with bottles o' enchanting named "&6&n500 &6XP &7(&n$1000&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					if {balance::%uuid of player%} is greater than or equal to 1000:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 1000 from {balance::%uuid of player%}
+						give 500 xp to player
+						send "&6[Shop] &7You've purchased &f500xp &7for &e$1000"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 12 of player with firework named "&6&n32x&6 Fireworks &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 100 from {balance::%uuid of player%}
+						give player 32 firework
+						send "&6[Shop] &7You've purchased &f32x Fireworks &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 13 of player with lapis named "&6&n64x&6 Lapis &7(&n$200&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 200:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 200 from {balance::%uuid of player%}
+						give player 64 lapis
+						send "&6[Shop] &7You've purchased &f64x Lapis &7for &e$200"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+				format gui slot 14 of player with elytra named "&6&n1x&6 Elytra &7(&n$100&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 100:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 100 from {balance::%uuid of player%}
+						give player 1 elytra
+						send "&6[Shop] &7You've purchased &f1x Elytra &7for &e$100"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+
+				format gui slot 15 of player with ender pearl named "&6&n4x&6 Ender Pearl &7(&n$1200&7)" with lore "&f%nl%&f&l* &7Right click to buy!%nl%&7" to run:
+					
+					if {balance::%uuid of player%} is greater than or equal to 1200:
+						play "BLOCK_NOTE_PLING" to player at volume 10000
+						remove 1200 from {balance::%uuid of player%}
+						give player 4 ender pearls
+						send "&6[Shop] &7You've purchased &f4x Ender Pearl &7for &e$1200"
+						
+					else:
+						play "ENTITY_VILLAGER_NO" to player at volume 10000
+						send "&6[Shop] &7You don't have enough money for that!"
+						
+	
+		else:
+			play "ENTITY_ENDERDRAGON_FLAP" to player at volume 10000
+			open virtual chest inventory with size 3 named "&8Shop > Main" to player
+			wait 1 tick
+			format gui slot 10 of player with iron sword named "&6&lCOMBAT &7(Right click)" to run:
+				
+				make player execute command "/shop Combat"
+			format gui slot 12 of player with iron pickaxe named "&6&lTOOLS &7(Right click)" to run:
+				
+				make player execute command "/shop Tools"
+			format gui slot 14 of player with oak log named "&6&lBLOCKS &7(Right click)" to run:
+				
+				make player execute command "/shop Blocks"
+			format gui slot 16 of player with firework rocket named "&6&lMISC &7(Right click)" to run:
+				
+				make player execute command "/shop Misc"
+			format gui slot 4 of player with emerald named "&a&lBALANCE&f: &6$%{balance::%uuid of player%}%" to do nothing
+
+
+command /eco [<offline player>] [<text>] [<integer>]:
+	permission: rank.admin
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /eco <player> <add|remove|set> <amount>"
+		else:
+			if arg 2 is not "add" or "remove" or "set":
+				player command "/eco"
+			else if arg 2 is "set":
+				send "&6[Economy] &7You set %arg 1%'s balance to &e$%arg 3%&7."
+				set {balance::%arg 1's uuid%} to arg 3
+			else if arg 2 is "add":
+				send "&6[Economy] &7You added &3$%arg 3% &7to %arg 1%'s balance."
+				add arg 3 to {balance::%arg 1's uuid%}
+			else if arg 2 is "remove":
+				send "&6[Economy] &7You removed &3$%arg 3% &7from %arg 1%'s balance."
+				remove arg 3 from {balance::%arg 1's uuid%}
+
+command /balance [<offline player>] [<text>]:
+	aliases: /bal
+	trigger:
+		if arg 1 is not set:
+			send "&6[Balance] &7You have a balance of &e$%{balance::%uuid of player%}%&7."
+		else:
+			if {balance::%arg 1's uuid%} is not set:
+				send "&cThat player has not joined before."
+			else:
+				send "&6[Balance] &7%arg 1% has a balance of &e$%{balance::%uuid of arg 1%}%&7."
+
+command /pay [<offline player>] [<integer>] [<text>]:
+	trigger:
+		if arg 2 is not set:
+			send "&cUsage: /pay <player> <amount greater than 100>"
+		else:
+			if {balance::%arg 1's uuid%} is not set:
+				send "&cThat player has not joined before."
+			else:
+				if arg 2 is less than 100:
+					player command "/pay"
+				else:
+					if arg 2 is greater than {balance::%player's uuid%}:
+						send "&cYou don't have that much money!"
+					else:
+						remove arg 2 from {balance::%player's uuid%}
+						add arg 2 to {balance::%arg 1's uuid%}
+						send "&6[Pay] &7You've given %arg-1% an amount of &e$%arg-2%&7."
+						send "&6[Pay] &7You've received &e$%arg-2% &7from %player%." to arg 1
+
+command /bounty [<offline player>] [<integer>]:
+	trigger:
+		if arg 2 is not set:
+			send "&cUsage: /bounty <player> <amount>"
+		else:
+			if arg 1 is not online:
+				send "&cThat player is offline."
+			else:
+				if arg 2 is less than 10000:
+					send "&cYou must set at least a $10000 bounty."
+				else:
+					if {balance::%player's uuid%} is less than arg 2:
+						send "&cYou don't have that much money."
+					else:
+						remove arg 2 from {balance::%player's uuid%}
+						add arg 2 to {bounty.%arg 1's uuid%}
+						send "&7$%arg 2% has been removed from your account."
+						send "" to all players
+						send "&6[Bounty] &e%player% &7set a bounty of &e$%arg 2% &7on &e%arg 1%&7." to all players
+						send "" to all players
+
+command /baltop [<text>]:
+	trigger:
+		loop {balance::*}:
+			add 1 to {_size}
+			if {_low.to.high.list::%loop-value%} is not set:
+				set {_low.to.high.list::%loop-value%} to loop-index
+			else:
+				set {_n} to 0
+				loop {_size} times:
+					set {_n} to {_n}+1
+					{_low.to.high.list::%loop-value-1%.%{_n}%} is not set
+					set {_low.to.high.list::%loop-value-1%.%{_n}%} to loop-index
+					stop loop
+		wait 1 tick
+		set {_n} to size of {_low.to.high.list::*}
+		loop {_low.to.high.list::*}:
+			set {_high.to.low.list::%{_n}%} to loop-value
+			set {_n} to {_n}-1
+		wait 1 tick
+		set {_i} to 0
+		send "&7"
+		send "&f&l* &eTop 5 Richest Players &f&l*"
+		send "&7"
+		loop {_high.to.low.list::*}:
+			add 1 to {_topnumber}
+			set {_player} to "%loop-value%" parsed as offlineplayer
+			send "&6##%{_topnumber}% &7%{_player}% &f($%{balance::%loop-value%}%)"
+			add 1 to {_i}
+			if {_topnumber} > 4:
+				stop loop
+		set {_time} to now
+		send "&7"
+		send "&7&o(Last updated %{_time}%)"
+		send "&7"
+
+# end economy.sk
+
+on food level change:
+	cancel event
+	set player's food level to 20
+
+command /fly [<text>]:
+	permission: rank.admin
+	permission message: &cYou cannot use this command
+	trigger:
+		if player's flight mode is false:
+			send "&6[Staff] &7You've enabled &6Fly"
+			set player's fly mode to true
+		else if player's flight mode is true:
+			send "&6[Staff] &7You've disabled &6Fly"
+			set player's fly mode to false
+
+command /invsee [<offlineplayer>]:
+	usage: &c/invsee <player>
+	permission: rank.helper
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /invsee <player>"
+		else:
+			if player has permission "rank.mod":
+				show arg 1's inventory to player
+			else:
+				open arg 1's inventory to player
+			send "&6[Staff] &7You've opened &6%arg 1%'s &7inventory"
+
+command /tp [<offlineplayer>] [<text>]:
+	permission: rank.helper
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&c/tp[here] (player)"
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				teleport player to arg 1
+				send "&6[Staff] &7Teleported to &6%arg 1%."
+
+command /tphere [<offlineplayer>] [<text>]:
+	permission: rank.srmod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&c/tp[here] (player)"
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				teleport arg 1 to player
+				send "&6[Staff] &7Teleported &6%arg 1% &7to &6you."
+
+command /gmc [<offlineplayer>] [<text>]:
+	permission: rank.admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			set the player's gamemode to creative
+			send "&6[Staff] &7You are now in &6Creative mode."
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				set the arg 1's gamemode to creative
+				send "&6[Staff] &7You updated &6%arg 1%'s &7mode to &6Creative."
+				send "&6[Staff] &7You are now in &6Creative mode." to arg 1
+
+command /gms [<offlineplayer>] [<text>]:
+	permission: rank.helper
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			set the player's gamemode to survival
+			send "&6[Staff] &7You are now in &6Survival mode."
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				set the arg 1's gamemode to survival
+				send "&6[Staff] &7You updated &6%arg 1%'s &7mode to &6Survival."
+				send "&6[Staff] &7You are now in &6Survival mode." to arg 1
+
+command /gma [<offlineplayer>] [<text>]:
+	permission: rank.admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			set the player's gamemode to adventure
+			send "&6[Staff] &7You are now in &6Adventure mode."
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				set the arg 1's gamemode to adventure
+				send "&6[Staff] &7You updated &6%arg 1%'s &7mode to &6Adventure."
+				send "&6[Staff] &7You are now in &6Adventure mode." to arg 1
+
+command /gmsp [<offlineplayer>] [<text>]:
+	permission: rank.helper
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			set the player's gamemode to spectator
+			send "&6[Staff] &7You are now in &6Spectator mode."
+		else if arg 1 is set:
+			if arg 1 is offline:
+				send "&c%arg 1% is offline."
+			else if arg 1 is online:
+				set the arg 1's gamemode to spectator
+				send "&6[Staff] &7You updated &6%arg 1%'s &7mode to &6Spectator."
+				send "&6[Staff] &7You are now in &6Spectator mode." to arg 1
+
+command /trash [<text>]:
+	trigger:
+		open virtual chest inventory with size 6 named "&8Disposal bin" to player
+
+command /helpop [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /helpop <message ...>"
+		else:
+			if arg 1 is "%{helpop::%player's uuid%}%":
+				send "&6[Helpop] &7Please don't repeat messages."
+			else:
+				send "`[Helpop]` **%player%:** %arg 1%" to channel with id "550828868953571348" with "beans"
+				set {helpop::%player's uuid%} to colored arg 1
+				send "&6[Helpop] &7%player%&8: &6%arg 1%" to all players where [input has permission "rank.helper"] 
+				if player does not have permission "rank.mod":
+					send "&6[Helpop] &7%player%&8: &6%arg 1%"
+
+command /rules [<text>]:
+	trigger:
+		send ""
+		send " &f&l* &6Rules"
+		send ""
+		send " &6&l* &eNo Spamming or Flooding the chat"
+		send " &6&l* &eNo unfair client modifications"
+		send " &6&l* &eNo discrimination or harassment"
+		send " &6&l* &eUse common sense ffs"
+		send ""
+
+command /enderchest [<offlineplayer>] [<text>]:
+	aliases: /ec
+	trigger:
+		if arg 1 is not set:
+			open player's enderchest to player 
+		else:
+			if player does not have permission "rank.admin":
+				open player's enderchest to player
+			else:
+				open arg 1's enderchest to player
+
+on rightclick on anvil:
+	wait 3 minutes
+	set clicked block to anvil
+
+command /workbench [<text>]:
+	aliases: /wb
+	trigger:
+		open crafting table for player
+
+command /stats [<offlineplayer>] [<text>]:
+	trigger:
+		if arg 1 is not set:
+			set {_p} to player
+			set {_uuid} to player's uuid
+		else:
+			set {_p} to arg 1
+			set {_uuid} to arg 1's uuid
+		if {balance::%{_uuid}%} is not set:
+			send "&cThat player has never joined."
+		else:
+			send ""
+			send " &f&l* &6Stats (&e%{_p}%&6)"
+			send ""
+			send " &6Rank: &e%{rank::%{_uuid}%}%"
+			send " &6Kills: &e%{kills::%{_uuid}%}%"
+			send " &6Deaths: &e%{deaths::%{_uuid}%}%"
+			send " &6K/D: &e%(rounded down ({kills::%{_uuid}%}*100)/{deaths::%{_uuid}%})/100%"
+			send " &6Money: &e$%{balance::%{_uuid}%}%"
+			send ""
+
+# end essentials.sk
+
+command /ban [<offlineplayer>] [<text>]:
+	permission: rank.helper
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /ban <player> <reason>"
+		else:
+			if arg 1 has permission "rank.mod":
+				send "&6[P] &7Wow, &e%player% &7tried punishing &e%arg 1%&7." to all players where [input has permission "rank.helper"]
+			else:
+				kick arg 1
+				ban arg 1 due to arg 2
+				send "&6[P] &6%arg 1% &7has been banned by &6%player% &7for &6%arg 2% &7[Forever]" to all players
+
+command /unban [<offlineplayer>]:
+	permission: rank.helper
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /unban <player>"
+		else:
+			unban arg 1 
+			send "&6[Staff] &7%arg 1% has been &6unbanned" to all players where [input has permission "rank.helper"]
+
+command /mute [<offline player>] [<text>]:
+	permission: rank.helper
+	trigger:
+		if arg 2 is not set:
+			send "&cUsage: /mute <player> <reason>"
+		else:
+			set {mute::%arg 1's uuid%} to arg 2
+			set {mute::staff::%arg 1's uuid%} to name of player
+			send "&6[P] &6%arg 1% &7has been muted by &6%player%&7. &e[%arg 2%]" to all players where [input has permission "rank.helper"]
+
+command /unmute [<offline player>]:
+	permission: rank.helper
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /unmute <player>"
+		else:
+			delete {mute::%arg 1's uuid%}
+			delete {mute::staff::%arg 1's uuid%}
+			send "&6[Staff] &7%arg 1% has been &6unmuted" to all players where [input has permission "rank.helper"]
+
+# end moti.sk
+
+command /sell [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /sell <hand/all>"
+		else if arg 1 is set:
+
+
+			# START VALUES
+
+			set {worth::cobble_stone} to 0.25
+			set {worth::stone} to 0.25
+
+			set {worth::iron_ingot} to 10
+			set {worth::iron_ore} to 10
+			set {worth::iron_block} to 90
+
+			set {worth::golden_ingot} to 20
+			set {worth::gold_ore} to 20
+			set {worth::gold_block} to 180
+
+			set {worth::diamond} to 25
+			set {worth::diamond_ore} to 25
+			set {worth::diamond_block} to 225
+
+			set {worth::emerald_item} to 35
+			set {worth::emerald_ore} to 35
+			set {worth::emerald_block} to 315
+
+			# END VALUES
+
+
+			if arg 1 is not "hand" or "all":
+				player command "/sell"
+
+			else if arg 1 is "all":
+
+				loop all items in player's inventory:
+					set {_item} to "%1 of loop-item%"
+
+					if {worth::%{_item}%} is set:
+						set {_count} to amount of loop-item in player's inventory
+						add {_count} to {_total}
+						add {worth::%{_item}%} * {_count} to {_profit}
+						remove 2304 of loop-item from player's inventory
+	
+				if {_total} is not set:
+					send "&6[Sell] &7You had no sellable items."
+				else if {_total} is set:
+					add {_profit} to {balance::%player's uuid%}
+					send "&6[Sell] &7You've sold &f%{_total}% items &7for &e$%{_profit}%"
+
+			else if arg 1 is "hand":
+
+				set {_item} to "%1 of tool%"
+
+				if {worth::%{_item}%} is not set:
+					send "&6[Sell] &7That item is not sellable."
+
+				else if {worth::%{_item}%} is set:
+					set {_count} to amount of tool in player's inventory
+					set {_profit} to {worth::%{_item}%} * {_count}
+					add {_profit} to {balance::%player's uuid%}
+					send "&6[Sell] &7You've sold &f%{_count}%x %1 of tool% &7for &e$%{_profit}%"
+					remove all tool from player's inventory
+
+command /warp [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send ""
+			send " &f&l* &6Warps"
+			send ""
+			send "<command:/warp enchant> &6Enchant &e(Click Here)" 
+			send ""
+		else:
+			if {warp::%arg 1%} is not set:
+				send "&6[Warps] &7That warp does not exist."
+			else:
+				teleport player to {warp::%arg 1%}
+				send "&6[Warps] &7You've been teleported to %arg 1%."
+
+command /setwarp [<text>]:
+	permission: rank.admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /setwarp <warp ...>"
+		else:
+			send "&6[Warps] &7You've set &6%arg 1% &7to &c%location of player%&7."
+			set {warp::%arg 1%} to location of player
+
+command /delwarp [<text>]:
+	permission: rank.admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /delwarp <warp ...>"
+		else:
+			if {warp::%arg 1%} is set:
+				send "&6[Warps] &7You've deleted &6%arg 1%."
+				delete {warp::%arg 1%}
+			else:
+				send "&6[Warps] &7That warp does not exist."
+
+# end scopes.sk
+
+command /rank [<text>] [<text>] [<text>]:
+	permission: rank.srmod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /rank <list|set|edit|create|delete>"
+		else:
+			if arg 1 is not "list" or "set" or "edit" or "create" or "delete":
+				player command "/rank"
+			else:
+				if arg 1 is "list":
+					send "Ranks:"
+					send "%{ranks::*}%"
+				else:
+					if arg 2 is not set:
+						player command "/rank"
+					else:
+
+						if arg 1 is "edit":
+							if {ranks::%arg 2%} is not set:
+								send "&cThat rank does not exist."
+							else:
+								if arg 3 is not set:
+									player command "/rank"
+								else:
+									set {ranks::%arg 2%} to colored arg 3
+									send "&c[Ranks] &7Set prefix of %arg 2% to %arg 3%&7."
+
+						else if arg 1 is "set":
+							if {ranks::%arg 3%} is not set:
+								send "&cThat rank does not exist."
+							else:
+								set {_p} to arg 2 parsed as offline player
+								set {_uuid} to {_p}'s uuid
+								command "/pex user %{_p}% group set %arg 3%"
+								set {rank::%{_uuid}%} to arg 3
+								send "&c[Ranks] &7Set %{_p}%'s rank to %arg 3%"		
+
+						else if arg 1 is "create":
+							if arg 3 is not set:
+								player command "/rank"
+							else:
+								if {ranks::%arg 2%} is set:
+									player command "/rank edit %arg 2% %arg 3%"
+								else:
+									set {ranks::%arg 2%} to colored arg 3
+									send "&c[Ranks] &7Created rank (%arg 2%) %arg 3%&7."
+
+						else if arg 1 is "delete"
+							if arg 3 is not set:
+								player command "/rank"
+							else:
+								if {ranks::%arg 2%} is not set:
+									send "&cThat rank does not exist."
+								else:
+									delete {ranks::%arg 2%}
+									send "&c[Ranks] &7Created deleted rank %arg 2%."
+							
+
+command /staff [<text>]:
+	trigger:
+		loop all players:
+			if {rank::%uuid of loop-player%} is "Helper", "Mod", "Sr.Mod", "Admin" or "Owner":
+				add loop-player to {staff::*}
+		if {staff::*} is not set:
+			set {staff::*} to "None"
+		set {_staff} to "%{staff::*}%"
+		delete {staff::*}
+		send "&7"
+		send "&f&l* &6Online staff: &e%{_staff}%"
+		send "&7"
+
+command /broadcast [<text>]:
+	aliases: /bc, /alert
+	permission: rank.admin
+	trigger:
+		if arg-1 is set:
+			broadcast "&7"
+			broadcast "&7(&6&n&oAlert&7) &f%arg-1%"
+			broadcast "&7"
+			play "BLOCK_NOTE_PLING" to all players at volume 1000
+		else:
+			send "&cUsage: /broadcast <message ...>"
+
+on chat:
+	if message is "abc":
+		cancel event
+	if {muted::%player's uuid%} is true:
+		if {muteDu::%player's uuid%} is "Forever":
+			cancel event
+			send "&6[Error] &fYou're currently muted for '&e%{muteRe::%player's uuid%}%&f'"
+			send "&6[Mute] &fExpires in &cNever&f."
+		else:	
+			set {_diff} to difference between now and {muteSt::%player's uuid%}
+			set {_remain} to difference between {muteDu::%player's uuid%} and {_diff}
+			if {_diff} is smaller than {muteDu::%player's uuid%}:
+				cancel event
+				send "&6[Error] &fYou're currently muted for '&e%{muteRe::%player's uuid%}%&f'"
+				send "&6[Mute] &fExpires in &c%{_remain}%&f."
+			else:
+				delete {muted::%player's uuid%}
+				delete {muteDu::%player's uuid%}
+				delete {muteSt::%player's uuid%}
+
+every 2 ticks:
+	loop all players:
+		if {muted::%loop-player's uuid%} is set:
+			set {_diff} to difference between now and {muteSt::%loop-player's uuid%}
+			set {_remain} to difference between {muteDu::%loop-player's uuid%} and {_diff}
+			if {_diff} is smaller than {muteDu::%loop-player's uuid%}:
+				set loop-player's action bar to "&6[Mute] &fExpires in &c%{_remain}%&f."
+			else:
+				delete {muted::%loop-player's uuid%}
+				delete {muteDu::%loop-player's uuid%}
+				delete {muteSt::%loop-player's uuid%}
+				send "&6[Mute] &fYou're no longer muted." to loop-player
+				set loop-player's action bar to "&6[Mute] &fMute has expired."
+
+
+command /warn [<offlineplayer>] [<text>]:
+	permission: rank.helper
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 2 is not set:
+			send "&cUsage: /warn <player> <reason ... | revert>"
+		else:
+			if arg 2 is "revert":
+				if {warnings::%player's uuid%} is not set:
+					send "&cThat player has no warnings."
+				else:
+					remove 1 from {warnings::%player's uuid%}
+					send "&6[P] &6%arg 1%&7's latest warning has been reverted by &6%player%&7." to all players
+			else:
+				add 1 to {warnings::%player's uuid%}
+				send "&6[P] &6%arg 1% &7has been warned by &6%player%&7. &e[%arg 2%]" to all players
+
+# end staff.sk

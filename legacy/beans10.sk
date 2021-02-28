@@ -1,0 +1,1653 @@
+every tick:
+	loop all players:
+		if {car::%loop-player%} is set:
+			push loop-player's vehicle forwards at speed {speed::%loop-player%}
+			{race} is set
+			if block 1 under loop-player is red stained hardened clay:
+				{winners::*} doesn't contain loop-player
+				exit(loop-player)
+				add loop-player to {winners::*}
+				send "&a%loop-player% &acame in place %size of {winners::*}%&a! (%difference between now and {raceStart}%&a)" to all players
+				teleport loop-player to {start}
+				if size of {winners::*} is {race}:
+					raceEnd()	
+		if loop-player's name is {bad}:
+			ignite loop-player for 1 day
+			loop 50 times:
+				strike lightning at loop-player if loop-player's health > 2
+			if block at location of loop-player is water:
+				set block at location of loop-player to air
+
+on drop:
+	cancel event if {inCar::%player%} is set
+
+on right click with emerald block:
+	{inCar::%player%} is set
+	set {car::%player%} to true
+	set tool to 1 redstone block named "&c&lSTOP &7(Right Click)"
+
+on right click with redstone block:
+	{inCar::%player%} is set
+	delete {car::%player%}
+	set tool to 1 emerald block named "&a&lGO &7(Right Click)"
+	
+on right click with carrot on a stick:
+	{inCar::%player%} is set
+	set {_s} to {speed::%player%} ? 1
+	if {_s} is 1 or 2:
+		add 1 to {speed::%player%}
+	else:
+		set {speed::%player%} to 1
+	set name of tool to "&b&lSpeed (%{speed::%player%}%)"
+	
+on vehicle enter:
+	delete {jcd::%player%}
+	{boat::%player%} is not true
+	set {boat::%player%} to true
+	set {speed::%player%} to 1
+	set {inCar::%player%} to true
+	give player 1 emerald block named "&a&lGO &7(Right Click)"
+	give player 1 carrot on a stick named "&b&lSpeed (1)"
+	wait 3 ticks
+	delete {boat::%player%}
+	
+on vehicle exit:
+	{boat::%player%} is not true
+	if {race} is set:
+		{winners::*} doesn't contain player
+		cancel event
+	else:
+		exit(player)
+
+on place:
+	player's gamemode is not creative
+	if {inCar::%player%} is set:
+		cancel event
+		tool is air
+		if {car::%player%} is not set:
+			set tool to emerald block named "&a&lGO &7(Right Click)"
+			set {car::%player%} to true
+		else:
+			set tool to redstone block named "&c&lSTOP &7(Right Click)"
+			delete {car::%player%}
+	cancel event if within(location of event-block, {track1}, {track2}) is true
+	cancel event if event-block is boat
+	
+on break:
+	player's gamemode is not creative
+	cancel event if {inCar::%player%} is set 
+	cancel event if within(location of event-block, {track1}, {track2}) is true
+	
+on damage:
+	cancel event if within(location of victim, {track1}, {track2}) is true
+	
+on vehicle damage:
+	within(location of player, {track1}, {track2}) is true
+	cancel event if player's gamemode is not creative
+	
+on inventory click:
+	cancel event if {inCar::%player%} is set
+	
+on craft:
+	if item is any boat:
+		cancel event
+		
+on quit:
+	delete {car::%player%}
+	delete {inCar::%player%}
+	
+command /race [<text>]:
+	permission: admin
+	trigger:
+		if arg is not set:
+			send "&c/race (start | end)"
+		else:
+			if arg is "end":
+				raceEnd()
+			else:
+				set {_n} to 6
+				loop 6 times:
+					wait 1 second
+					remove 1 from {_n}
+					if {_n} is between 1 and 5:
+						send "&bRace starting in %{_n}% &bseconds!" to all players
+					else:
+						send "&dGO!" to all players
+						set {race} to size of {incar::*}
+						set {raceStart} to now
+						delete {winners::*}
+						loop all blocks within block at {race1} and block at {race2}:
+							set loop-block to air
+					
+function raceEnd():
+	delete {racestart}
+	delete {winners::*}
+	send "&cThe race has ended!" to all players
+	kill all boats
+	loop {boats::*}:
+		spawn boat at loop-value
+	loop all blocks within block at {race1} and block at {race2}:
+		set loop-block to iron bars
+	delete {race}
+
+function exit(p: player):
+	delete {inCar::%{_p}%}
+	delete {speed::%{_p}%}
+	delete {car::%{_p}%}
+	remove all emerald blocks named "&a&lGO &7(Right Click)" from {_p}'s inventory
+	remove all redstone blocks named "&c&lSTOP &7(Right Click)" from {_p}'s inventory
+	remove all carrot on a stick named "&b&lSpeed (1)" from {_p}'s inventory
+	remove all carrot on a stick named "&b&lSpeed (2)" from {_p}'s inventory
+	remove all carrot on a stick named "&b&lSpeed (3)" from {_p}'s inventory
+	remove all slime block named "&d&lJump &7(Right Click)" from {_p}'s inventory
+
+on chat:
+	if {muted::%player%} is not set:
+		set chat format to "&7%player(player)%&8: &f%message%"
+	else:
+		cancel event
+		send "&cYou are muted, you may not speak."
+
+on chat:
+	if player has permission "mod":
+		set chat format to "&7%player(player)%&8: &f%message%"
+	else:
+		if {chatmute} is set:
+			cancel event
+			send "&cThe chat is currently muted."
+		else:
+			if {chatmute} is not set:
+				set chat format to "&7%player(player)%&8: &f%message%"
+
+			
+command /discord [<text>]:
+	trigger:
+		send "<link:https://discord.gg/gWePYJT>&7Join or receive blacklist. (Click here)"
+		
+every 2 minutes:
+	add "%nl%&7You can buy stuff with &b/shop&7.%nl%" to {_tips::*}
+	add "%nl%&7You can sell stuff with &b/sell&7.%nl%" to {_tips::*}
+	add "%nl%&7Upgrade your diamond pickaxe by &bShift + Right Clicking &7it.%nl%" to {_tips::*}
+	add "%nl%&7Join our discord with /discord.%nl%" to {_tips::*}
+	
+	send "%random element out of {_tips::*}%" to all players 
+	
+command /lb [<text>]:
+	trigger:
+		if {%arg%::*} is not set:
+			send "&c/lb (stat)"
+		else:
+			
+			set {_top::*} to sorted {%arg%::*} from highest to lowest with format "@index"
+			loop {_top::*}:
+				("%loop-value%" parsed as offline player) is not "<none>", "null" or null
+				add 1 to {_n}
+				set {_t::%{_n}%} to ("%loop-value%" parsed as offline player)
+			send ""
+			send " &bTop %arg%"
+			send ""
+			loop 5 times:
+				send " &b##%loop-number% &7%{_t::%loop-number%}% &b%short({%arg%::%{_t::%loop-number%}%})%" if {_t::%loop-number%} is set
+			send ""
+
+on load:
+	reset("normal")
+	delete {party}
+	
+	delete {ct::*}
+	
+function level(l: number, p: player, rp: boolean) :: text:
+
+	set {_c} to "&7" if {_l} is between 1 and 9
+	set {_c} to "&2" if {_l} is between 10 and 29
+	set {_c} to "&d" if {_l} is between 30 and 49
+	set {_c} to "&6" if {_l} is between 50 and 59
+	set {_c} to "&b" if {_l} is between 60 and 79
+	set {_c} to "&a" if {_l} is between 80 and 99
+	set {_c} to "&c&l" if {_l} >= 100
+	
+	set {_level} to "&8[%{_c}%%{_l}%&8]"
+	
+	set {_pr} to {prestige::%{_p}%}
+	set {_prestige} to ""
+	set {_prestige} to "&6&l%{_pr}%♦ " if {_pr} is greater than 0
+	set {_prestige} to "" if {_rp} is false
+	
+	return "%{_prestige}%%{_level}%"
+	
+function player(p: player) :: text:
+	return " %level({level::%{_p}%}, {_p}, true)% %{_p}'s prefix%%{_p}%%{tags::%{tag::%{_p}%}%} ? """"% &6%{bounty::%{_p}%} ? """"%"
+	
+function xpr(p: player) :: number:
+	set {_l} to {level::%{_p}%}
+	set {_r} to ({_l} * 200) * ({prestige::%{_p}%} + 1)
+	return {_r} if {_l} is not 100
+	return 0 if {_l} is 100
+	
+function xp(b: block) :: number:
+	return 1 if {_b} is stone
+	return 2 if {_b} is coal ore
+	return 3 if {_b} is iron ore
+	return 5 if {_b} is gold ore
+	return 7 if {_b} is diamond ore
+	return 10 if {_b} is emerald ore
+	return 10 if {_b} is diamond block
+	
+function short(n: num) :: string:
+    set {_units::*} to "K", "M", "B", "T", "q", "Q", "s", "S" and "O"
+    loop size of {_units::*} times:
+        {_n} >= 1000 ^ loop-num:
+            {_n} < 1000 ^ (loop-num + 1)
+            return "%{_n} / 1000 ^ loop-num%%{_units::%loop-num%}%"
+    return "%{_n}%"
+	
+function deathXP(a: player, v: player) :: number:
+	add {level::%{_v}%} / 2 to {xp::%{_a}%}
+	return {level::%{_v}%} / 2
+	
+function health(p: player) :: number:
+	if {_p}'s health <= 1:
+		return 1 
+	else:
+		return {_p}'s health
+		
+function sb(p: player):
+	wipe {_p} sidebar
+	set name of sidebar of {_p} to "       &6&lBEANS &7[%amount of players%&7/42]     "
+	set score "" in sidebar of {_p} to 8
+	set score " &6Kills: &7%{kills::%{_p}%}%" in sidebar of {_p} to 7
+	set score " &6Deaths: &7%{deaths::%{_p}%}%" in sidebar of {_p} to 6
+	set score "&r" in sidebar of {_p} to 5
+	set score " &6Money: &7$%short({balance::%{_p}%})%" in sidebar of {_p} to 4
+	set score " &6Tokens: &7%{tokens::%{_p}%}%" in sidebar of {_p} to 3
+	set score "&r&r" in sidebar of {_p} to 2
+	set score " &6Blocks: &7%short({blocks::%{_p}%})%" in sidebar of {_p} to 1
+	set score "&r&r&r" in sidebar of {_p} to 0
+
+every 5 minutes:
+	{party} is not set
+	set {_i} to a random integer between 1 and 100
+	reset("normal") if {_i} is between 1 and 90
+	if {_i} is between 91 and 100:
+		command "/mine party" if {party} is not set
+		wait 10 second
+		command "/mine party" if {party} is set
+	send "%nl% &7Clearing all drops in &610 seconds&7.%nl%" to all players
+	wait 5 seconds
+	set {_n} to 6
+	loop 5 times:
+		remove 1 from {_n}
+		send " &7Clearing all drops in &6%{_n}% &6seconds&7." to all players
+		wait 1 second
+	send "%nl% &7Successfully cleared &6%amount of dropped items in all worlds% &7drops!%nl%" to all players
+	kill all dropped items in all worlds
+		
+every second:
+	loop all players:
+	
+		set loop-player's tab list header to "%nl%   &6&lBEANS%nl%  &7epic mine pvp%nl% %nl%"
+		set loop-player's tab list footer to "%nl%   %player(loop-player)% %nl%   &6Ping: &7%loop-player's ping%&7ms%nl%  &6TPS: &7%tps from last minute%%nl% %nl%"
+		
+		set score "&4❤" below loop-player to health(loop-player) for all players
+		
+		if {xp::%loop-player%} >= xpr(loop-player):
+			if {level::%loop-player%} < 99:
+				add 1 to {level::%loop-player%}
+				send " &7You leveled up to %level({level::%loop-player%}, loop-player, true)%&7." to loop-player
+			if {level::%loop-player%} is 99:
+				send "%nl% %player(loop-player)% &7has achieved level %level(100, loop-player, true)%&7!%nl%" to all players
+				set {xp::%loop-player%} to 0
+				set {level::%loop-player%} to 100
+		set {level::%loop-player%} to 1 if {level::%loop-player%} isn't set
+		add 0 to {kills::%loop-player%}
+		add 0 to {deaths::%loop-player%}
+		add 0 to {balance::%loop-player%}
+		add 0 to {prestige::%loop-player%}
+		add 0 to {tokens::%loop-player%}
+		add 0 to {max::%loop-player%}
+		add 0 to {blocks::%loop-player%}
+		add 1 second to {playtime::%loop-player%}
+		set loop-player's tab list name to player(loop-player)
+		if {ct::%loop-player%} is set:
+			{v::%loop-player%} isn't set
+			send action bar "&cYou are tagged for %{ct::%loop-player%}% seconds." to loop-player
+			remove 1 from {ct::%loop-player%}
+			delete {ct::%loop-player%} if {ct::%loop-player%} is 0
+		else:
+			{v::%loop-player%} isn't set
+			send action bar "%level({level::%loop-player%}, loop-player, false)% &8-> &6%{xp::%loop-player%} ? 0%&8/&6%xpr(loop-player)% &8-> %level({level::%loop-player%} + 1, loop-player, false)%" to loop-player
+		if {v::%loop-player%} is set:
+			if loop-player has permission "mod":
+				hide loop-player from all players where [input doesn't have permission "mod"]
+				send action bar "&a&lYou are vanished!" to loop-player
+			else:
+				delete {v::%loop-player%}
+		else:
+			loop-player has permission "mod"
+			reveal loop-player to all players
+		
+every 10 seconds:
+	loop all players:
+		sb(loop-player)
+			
+on respawn:
+	wait 3 ticks
+	teleport player to {spawn}
+	
+on step on slime block:
+	push player upward at speed 3
+	push player forward at speed 10
+	
+on food level change:
+	cancel event
+	
+on break:
+	event is not canceled
+	within(location of event-block, {mine1}, {mine2}) is true
+	add 1 to {blocks::%player%}
+	add xp(block) to {xp::%player%}
+	chance of 0.05%:
+		send "&7You've recieved &a1x Mine Key&7."
+		give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+	
+on damage of player:
+	cancel event if damage type is fall or suffocation
+	within(location of victim, {spawn1}, {spawn2}) isn't true
+	attacker isn't victim
+	attacker is a player
+	set {ctP::%attacker%} to victim
+	set {ctP::%victim%} to attacker
+	set {ct::%attacker%} to 10
+	set {ct::%victim%} to 10
+	
+on join:
+	reset player's walking speed
+	set join message to "&7%player(player)%&7joined." if player has played before
+	if {ct::%player%} is set:
+		delete {ct::%player%}
+		send "&cYou left while combat tagged. A death has been added to your stats."
+		teleport player to {spawn}
+	if player has not played before:
+		teleport player to {spawn}
+		player command "/kit"
+		set join message to "&7%player% &7joined. &a(##%amount of offline players%)" 
+	if {v::%player%} is set:
+		send "%nl% &aYou are vanished!%nl%"
+	wait 1.1 seconds
+	sb(player)
+	if {q::%player%::*} is set:
+		loop {q::%player%::*}:
+			send loop-value to player
+			remove loop-value from {q::%player%::*}
+			command loop-value
+		
+on quit:
+	set quit message to "&7%player(player)%&7left the server."
+	player's gamemode is not creative
+	if {ct::%player%} is set:
+		add 1 to {deaths::%player%}
+		add 1 to {kills::%{ctP::%player%}%}
+		set quit message to "&c%player% &cleft while combat tagged by &c%{ctP::%player%}%."
+		delete {ctP::%player%}
+		
+on death:
+	delete {ct::%victim%}
+	delete {ctP::%victim%}
+	add 1 to {kills::%attacker%}
+	add 1 to {deaths::%victim%}
+	send "&7You killed &c%victim%&7. &b(+%deathXP(attacker, victim)%&b xp)" to attacker
+	send "&7You were killed by &c%attacker%&7." to victim
+	victim is not attacker
+	if {bounty::%victim%} is set:
+		send "%nl% &b%victim%&b's &7bounty of &b%{bounty::%victim%}% &7has been claimed by &b%attacker%&7!%nl%" to all players
+		add {bounty::%victim%} to {tokens::%attacker%}
+		delete {bounty::%victim%}
+	
+on command:
+	player's name is set
+	player's gamemode is not creative
+	{ct::%player%} is set
+	if command is "spawn":
+		cancel event
+		player command "/ct"
+	
+on inventory close:
+	if inventory name of event-inventory contains "blocks", "combat" or "misc":
+		wait 3 ticks
+		inventory name of player's inventory doesn't contain "blocks", "combat" or "misc"
+		shop(player, "main")
+	type of event-inventory is anvil inventory
+	if targeted block is not unbroken anvil or westward unbroken anvil:
+		set block 1 above targeted block to unbroken anvil if facing of block 1 above targeted block is north
+		set block 1 above targeted block to westward unbroken anvil if facing of block 1 above targeted block is west
+	set targeted block to unbroken anvil if facing of targeted block is north
+	set targeted block to westward unbroken anvil if facing of targeted block is west
+	
+on right click:
+	if name of tool contains "mine key":
+		type of tool is tripwire hook
+		cancel event
+		set {_c} to amount of tool in player's inventory
+		loop {_c} times:
+			set {_i} to random integer between 1 and 100
+			add random integer between 500 and 2500 to {_$} if {_i} is between 1 and 60
+			add random integer between 100 and 500 to {_xp} if {_i} is between 61 and 90
+			add 1 to {_k} if {_i} is between 91 and 100
+		if {_$} is set:
+			add {_$} to {balance::%player%}
+			send "&a+$%short({_$})%"
+		if {_xp} is set:
+			add {_xp} to {xp::%player%}
+			send "&b+%short({_xp})% &bxp"
+		if {_k} is set:
+			send "&7You've received &6%{_k}%&6x Rare key&7."
+			give player {_k} of prismarine shard named "&6&lRare key &7(Right Click)" with lore "&7Right click to open."	
+						
+		remove {_c} of tool from player's inventory
+		
+	if name of tool contains "rare key":
+		type of tool is prismarine shard
+		cancel event
+		set {_c} to amount of tool in player's inventory
+		loop {_c} times:
+			set {_i} to random integer between 1 and 100
+			add random integer between 5000 and 20000 to {_$} if {_i} is between 1 and 60
+			add random integer between 1000 and 5000 to {_xp} if {_i} is between 61 and 90
+			add 1 to {_k} if {_i} is between 91 and 100
+		if {_$} is set:
+			add {_$} to {balance::%player%}
+			send "&a+$%short({_$})%"
+		if {_xp} is set:
+			add {_xp} to {xp::%player%}
+			send "&b+%short({_xp})% &bxp"
+		if {_k} is set:
+			send "&7You've received &5%{_k}%&5x Epic key&7."
+			give player {_k} of ender eye named "&5&lEpic key &7(Right Click)" with lore "&7Right click to open."	
+						
+		remove {_c} of tool from player's inventory
+		
+	if name of tool contains "epic key":
+		type of tool is eye of ender
+		cancel event
+		set {_c} to amount of tool in player's inventory
+		loop {_c} times:
+			set {_i} to random integer between 1 and 100
+			add random integer between 25000 and 50000 to {_$} if {_i} is between 1 and 60
+			add random integer between 10000 and 10000 to {_xp} if {_i} is between 61 and 90
+			add 1 to {_k} if {_i} is between 91 and 100
+		if {_$} is set:
+			add {_$} to {balance::%player%}
+			send "&a+$%short({_$})%"
+		if {_xp} is set:
+			add {_xp} to {xp::%player%}
+			send "&b+%short({_xp})% &bxp"
+		if {_k} is set:
+			set {_t} to random integer between 1 and 4
+			send "&7You've received &c%{_t}% &ctokens&7."
+			add {_t} to {tokens::%player%}
+						
+		remove {_c} of tool from player's inventory
+	
+command /ct [<text>]:
+	trigger:
+		if {ct::%player%} isn't set:
+			send "&cYou aren't combat tagged."
+		else:
+			send "&cYou're tagged for %{ct::%player%}% &cmore seconds."
+					
+command /mine [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/mine (reset, party)"
+		else:
+			if arg is "reset":
+				reset("normal")
+				send "%nl%&7The mine has been reset by &7%player(player)%&7.%nl%"
+			else if arg is "party":
+				player has permission "admin"
+				if {party} is not set:
+					send "%nl%&7%player(player) ? ""Console""% &7has started a mine party!%nl%"
+					set {party} to true
+					reset("party")
+				else:
+					send "%nl%&7%player(player) ? ""Console""% &7has ended the mine party :(%nl%"
+					delete {party}
+					reset("normal")
+			else:
+				player command "/mine"
+			
+command /playtime [<offlineplayer=%player%>]:
+	trigger:
+		if {playtime::%arg%} isn't set:
+			send "&cThat player has no playtime."
+		else:
+			send "&6%arg% &7has &6%{playtime::%arg%}% &7playtime."
+			
+command /spawn [<text>]:
+	trigger:
+		if {perks::%player%::*} is set:
+			if {perks::%player%::*} contains "instant tp":
+				set {_t} to true
+		set {_t} to true if player's gamemode is creative
+		teleport player to {spawn} if {_t} is true
+		{_t} is not true
+		send "&7Teleporting to spawn in 3 seconds. Don't move."
+		set {_s} to 3
+		set {_l} to player's location
+		loop 3 times:
+			wait 1 second
+			remove 1 from {_s}
+			if "%player's location%" isn't "%{_l}%":
+				send "&cTeleport request canceled."
+				stop loop
+			else:
+				if {_s} is 0:
+					teleport player to {spawn}
+					send "&7Teleported."
+				else:
+					send "&7Teleporting to spawn in %{_s}% &7seconds."
+					
+command /tpa [<offlineplayer>]:
+	trigger:
+		if arg is not set:
+			send "&c/tpa (player)"
+		else:
+			if arg is offline:
+				send "&cThat player is offline."
+			else:
+				if {requests::%arg%} is set:
+					send "&cThat player has requests disabled."
+				else:
+					set {tpr::%arg%} to player
+					send "&7Sent a teleport request to &b%arg%&7."
+					send "&b%player% &7sent you a teleport request. &b<command:/tpyes>(Click to accept)" to arg
+	
+command /tpyes [<text>]:
+	trigger:
+		if {tpr::%player%} is not set:
+			send "&cYou have no incoming requests."
+		else:
+			set {_p} to {tpr::%player%}
+			send "&7Accepted &b%{_p}%&b's &7request."
+			if {perks::%{_p}%::*} is set:
+				if {perks::%{_p}%::*} contains "instant tp":
+					set {_t} to true
+			set {_t} to true if {_p}'s gamemode is creative
+			teleport {_p} to player if {_t} is true
+			{_t} is not true
+			send "&7Teleporting in 3 seconds. Don't move." to {_p}
+			set {_s} to 3
+			set {_l} to {_p}'s location
+			loop 3 times:
+				wait 1 second
+				remove 1 from {_s}
+				if "%{_p}'s location%" isn't "%{_l}%":
+					send "&cTeleport request canceled." to {_p}
+					send "&cTeleport request canceled."
+					stop loop
+				else:
+					if {_s} is 0:
+						teleport {_p} to player
+						send "&7Teleported."
+					else:
+						send "&7Teleporting in %{_s}% &7seconds." to {_p}
+						
+			delete {tpr::%player%}
+		
+
+command /tpno [<text>]:
+	trigger:
+		set {_p} to {tpr::%player%}
+		if {tpr::%player%} is not set:
+			send "&cYou have no incoming requests."
+		else:
+			send "&7Denied &b%{_p}%&b's &7request."
+			send "&b%player% &7denied your request." to {_p}
+			delete {tpr::%player%}
+
+command /tptoggle [<text>]:
+	trigger:
+		if {requests::%player%} is not set:
+			set {requests::%player%} to true
+			send "&7You will no longer receive tpa requests."
+		else:
+			delete {requests::%player%}
+			send "&7You will now receive tpa requests."
+					
+command /kit [<text>]:
+	cooldown: 10 minutes
+	cooldown message: &cYou must wait 10 minutes before you can receive the starter kit again.
+	trigger:
+		give player 1 iron pickaxe
+		give player 1 elytra
+	
+command /prestige [<text>]:
+	trigger:
+		if {level::%player%} is not 100:
+			send "&cYou require level 100 to prestige."
+		else:
+			send "%nl%%nl% %player(player)% &7has prestiged!%nl%%nl%" to all players
+			add 1 to {prestige::%player%}
+			add ({prestige::%player%} * 2) to {tokens::%player%}
+			send "&a+%({prestige::%player%} * 2)% tokens!"
+			set {level::%player%} to 1
+	
+command /sell [<text>]:
+	trigger:
+		if arg 1 is not set:
+			send "&c/sell (hand | all)"
+		else:
+		
+			set {_worth::cobblestone block} to 1
+			set {_worth::coal} to 2
+			set {_worth::iron ore} to 5
+			set {_worth::gold ore} to 10
+			set {_worth::diamond} to 20
+			set {_worth::emerald} to 30
+			set {_worth::diamond block} to 180
+			
+			if arg is "hand":
+				set {_t} to "%type of tool%"
+				if {_worth::%{_t}%} is not set:
+					send "&cThat item is not sellable."
+				else:
+					set {_c} to amount of tool in player's inventory
+					set {_$} to {_c} * {_worth::%{_t}%}
+					send "&7Sold &e%{_c}%&ex %type of tool% &7for &e$%{_$}%&7."
+					add {_$} to {balance::%player%}
+					remove {_c} of tool from player's inventory
+				
+			else if arg is "all":
+				loop all items in player's inventory:
+					set {_t} to "%type of loop-item%"
+					if {_worth::%{_t}%} is set:
+						set {_c} to amount of loop-item in player's inventory
+						add {_c} to {_total}
+						add {_worth::%{_t}%} * {_c} to {_$}
+						remove 2304 of loop-item from player's inventory
+				if {_$} is set:
+					send "&7Sold &e%{_total}%&ex &7items for &e$%{_$}%&7."
+					add {_$} to {balance::%player%}
+				else:
+					send "&cYou had no sellable items."
+			else:
+				player command "/sell"
+				
+
+function purchase(p: player, i: item, c: number, co: number):
+    set {_bal} to {balance::%{_p}%}
+    if {_bal} is less than {_co}:
+        set {_amount} to {_co} - {balance::%{_p}%}
+        send "&7You need &e$%{_amount}% &7more to purchase that." to {_p}
+    else:
+        if {_p} has not enough space for {_c} of {_i}:
+            send "&cYour inventory is full!" to {_p}
+        else:
+            if {_i} is diamond helmet:
+                give {_p} all diamond armor
+            else:
+                give {_p} {_c} of {_i}
+            remove {_co} from {balance::%{_p}%}
+            shop({_p}, {shop::%{_p}%})
+            send "&7You've purchased &f%{_c}%x %{_i}% &7for &e$%{_co}%&7." to {_p}
+ 
+function shop(p: player, t: text):
+    set {shop::%{_p}%} to {_t}
+    set {_bal} to short({balance::%{_p}%})
+    set {_lore} to "&7Click to purchase."
+
+    open virtual chest inventory with size 1 named "&8%{_t}% &3($%{_bal}%)" to {_p}
+ 
+    if {_t} is "main":
+        wait 3 ticks
+        format gui slot 3 of {_p} with oak wood log named "&a&lBlocks Shop" with lore "&7Click to view the blocks shop." to run function shop({_p}, "blocks")
+        format gui slot 4 of {_p} with diamond sword named "&3&lCombat Shop" with lore "&7Click to view the combat shop." to run function shop({_p}, "combat")
+        format gui slot 5 of {_p} with lapis named "&b&lMisc Shop" with lore "&7Click to view the misc shop." to run function shop({_p}, "misc")
+ 
+    else if {_t} is "blocks":
+        format gui slot 2 of {_p} with prismarine named "&f16x &bPrismarine &7(&n$100&7)" with lore {_lore} to run function purchase({_p}, prismarine, 16, 100)
+        format gui slot 3 of {_p} with sea lantern named "&f4x &bSea Lantern &7(&n$100&7)" with lore {_lore} to run function purchase({_p}, sea lantern, 4, 100)
+        format gui slot 4 of {_p} with oak wood log named "&f16x &bLogs &7(&n$60&7)" with lore {_lore} to run function purchase({_p}, oak wood log, 16, 60)
+        format gui slot 5 of {_p} with white wool block named "&f16x &bWool &7(&n$60&7)" with lore {_lore} to run function purchase({_p}, white wool block, 16, 60)
+        format gui slot 6 of {_p} with stone named "&f64x &bStone &7(&n$20&7)" with lore {_lore} to run function purchase({_p}, stone, 64, 20)
+ 
+    else if {_t} is "combat":
+        format gui slot 2 of {_p} with diamond helmet named "&f&l1x &bSet of Diamond armor &7(&n$100&7)" with lore {_lore} to run function purchase({_p}, diamond helmet, 1, 100)
+        format gui slot 3 of {_p} with diamond sword named "&f&l1x &bDiamond Sword &7(&n$50&7)" with lore {_lore} to run function purchase({_p}, diamond sword, 1, 50)
+        format gui slot 4 of {_p} with bow named "&f&l1x &bBow&7(&n$50&7)" with lore {_lore} to run function purchase({_p}, bow, 1, 50)
+        format gui slot 5 of {_p} with arrow named "&f&l4x &bArrows &7(&n$20&7)" with lore {_lore} to run function purchase({_p}, arrow, 4, 20)
+        format gui slot 6 of {_p} with totem of undying named "&f&l1x &bTotem of Undying &7(&n$500&7)" with lore {_lore} to run function purchase({_p}, totem of undying, 1, 500)
+ 
+    else if {_t} is "misc":
+        format gui slot 1 of {_p} with elytra named "&f&l1x &bElytra &7(&n$5&7)" with lore {_lore} to run function purchase({_p}, elytra, 1, 5)
+        format gui slot 2 of {_p} with lapis named "&f&l16x &bLapis &7(&n$20&7)" with lore {_lore} to run function purchase({_p}, lapis, 16, 20)
+        format gui slot 3 of {_p} with book named "&f&l4x &bBook &7(&n$50&7)" with lore {_lore} to run function purchase({_p}, book, 4, 50)
+        format gui slot 4 of {_p} with firework named "&f&l16x &bFirework &7(&n$50&7)" with lore {_lore} to run function purchase({_p}, firework, 16, 50)
+        format gui slot 5 of {_p} with xp bottle named "&f&l16x &bXP Bottles &7(&n$50&7)" with lore {_lore} to run function purchase({_p}, xp bottle, 16, 50)
+        format gui slot 6 of {_p} with diamond pickaxe named "&f&l1x &bDiamond Pickaxe &7(&n$100&7)" with lore {_lore} to run function purchase({_p}, diamond pickaxe, 1, 100)
+        format gui slot 7 of {_p} with golden apple named "&f&l4x &bGolden Apple &7(&n$250&7)" with lore {_lore} to run function purchase({_p}, golden apple, 4, 250)
+
+command /shop [<text>]:
+    trigger:
+        set {_s} to arg ? "main"
+        shop(player, {_s})
+		
+command /balance [<offlineplayer=%player%>]:
+	aliases: /bal
+	trigger:
+		if {balance::%arg%} is not set:
+			send "&cThat player has no money."
+		else:
+			send "&6%arg% &7has &6$%short({balance::%arg%})%&7."
+
+command /tokens [<offlineplayer=%player%>]:
+	aliases: /t
+	trigger:
+		if {tokens::%arg%} is not set:
+			send "&cThat player has no tokens."
+		else:
+			send "&6%arg% &7has &6%short({tokens::%arg%})%&7."
+
+			
+command /stats [<offlineplayer=%player%>]:
+	trigger:
+		if {kills::%arg%} is not set:
+			send "&cThat player has no stats."
+		else:
+		
+			add "Kills" to {_stats::*}
+			add "Deaths" to {_stats::*}
+			add "Blocks" to {_stats::*}
+			add "Balance" to {_stats::*}
+			add "Playtime" to {_stats::*}
+			
+			send ""
+			send "&7%player(arg)%&7's stats" if arg is online
+			send " &7%arg%&7's stats" if arg is offline
+			send ""
+			loop {_stats::*}:
+				send " &6%loop-value%&8: &7%{%loop-value%::%arg%} ? 0%"
+			send ""
+			
+command /fix [<text>]:
+	permission: admin
+	permission message: &cBuy this command with /buy.
+	trigger:
+		loop all items in player's inventory:
+			repair loop-item by 10000 if durability of loop-item is greater than 1
+		send "&7Repaired all items in your inventory."
+
+command /bounty [<offlineplayer>] [<integer>]:
+	trigger:
+		if arg 2 isn't set:
+			send "&c/bounty (player) (tokens)"
+		else:
+			if arg 1 is offline:
+				send "&cThat player is offline."
+			else:
+				if arg 2 is less than 1:
+					send "&cBounty must be greater than 1."
+				else:
+					if {tokens::%player%} < arg 2:
+						send "&cYou don't have enough tokens for that."
+					else:
+						remove arg 2 from {tokens::%player%}
+						add arg 2 to {bounty::%arg 1%}
+						send "%nl% &b%arg 1% &7now has a bounty of &b%{bounty::%arg 1%}%&7!%nl%" to all players
+						
+command /v [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if {v::%player%} isn't set:
+			set {v::%player%} to true
+			send "&7You are now vanished."
+		else:
+			delete {v::%player%}
+			send "&7You are no longer vanished."
+			
+command /pay [<offlineplayer>] [<integer>]:
+	trigger:
+		if arg 2 is not set:
+			send "&c/pay (player) (amount)"
+		else:
+			if arg 1 is offline:
+				send "&cThat player is offline."
+			else:
+				if arg 2 is less than 1000:
+					send "&cYou must pay atleast $1k."
+				else:
+					if {balance::%player%} < arg 2:
+						send "&cYou don't have enough money."
+					else:
+						send " &7Successfully paid &b%arg 1% &b%short(arg 2)%&7."
+						send " &b%player% &7send you &b%short(arg 2)%&7." to arg 1
+						remove arg 2 from {balance::%player%}
+						add arg 2 to {balance::%arg 1%}
+		
+command /warp [<text>]:
+	trigger:
+		if arg is not set:
+			loop {warps::*}:
+				add formatted "<command:/warp loop-index>&7%loop-index%" to {_warps::*}
+			send ""
+			send " &bWarps:"
+			send formatted " &7%{_warps::*}%"
+			send ""
+		else:
+			if {warps::%arg%} is not set:
+				player command "/warps"
+			else:
+				if {perks::%player%::*} is set:
+					if {perks::%player%::*} contains "instant tp":
+						set {_t} to true
+				set {_t} to true if player's gamemode is creative
+				teleport player to {warps::%arg%}
+				{_t} is not true
+				send "&7Teleporting in 3 seconds. Don't move."
+				set {_s} to 3
+				set {_l} to player's location
+				loop 3 times:
+					wait 1 second
+					remove 1 from {_s}
+					if "%{_p}'s location%" isn't "%{_l}%":
+						send "&cTeleport request canceled."
+						stop loop
+					else:
+						if {_s} is 0:
+							teleport player to {warps::%arg%}
+							send "&7Teleported."
+						else:
+							send "&7Teleporting in %{_s}% &7seconds."
+
+command /kickbots [<text>]:
+    permission: mod
+    permission message: &cYou don't have access to that command.
+    trigger:
+        kick all players where [{level::%input%} < 3] due to "possible bot"
+
+function pvSize(p: player) :: integer:
+	return 6 if {_p} has permission "maniac"
+	return 5 if {_p} has permission "godfather"
+	return 4 if {_p} has permission "kingpin"
+
+command /process [<offlineplayer>] [<text>] [<text>]:
+	permission: admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 2 is not set:
+			send "&c/process (player) (package | list) (additional info)"
+		else:
+			if arg 1 is offline:
+				add "/process %arg 1% %arg 2% %arg 3%" to {q::%arg 1%::*}
+			else:
+				if arg 2 is "list":
+					send ""
+					send " &bList of packages:"
+					send " &7- Kingpin"
+					send " &7- Godfather"
+					send " &7- Maniac"
+					send ""
+				else:
+					if arg 2 is not "kingpin", "godfather" or "maniac":
+						player command "/process list"
+					else:
+						broadcast ""
+						broadcast "&3[DONATION] &b%arg 1% &7has purchased &b%arg 2%! &7(/buy)"
+						broadcast ""
+						if arg 2 is "kingpin":
+							add 1 ender eye named "&5&lEpic key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 3 prismarine shard named "&6&lRare key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 5 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add .5 to {sellmulti::%arg 1%}
+							add .5 to {xpmulti::%arg 1%}
+							add 5 to {tokens::%arg 1%}
+							add "kingpin" to arg 1's groups
+						if arg 2 is "godfather":
+							add 3 ender eye named "&5&lEpic key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add  5 prismarine shard named "&6&lRare key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 10 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory 
+							add .75 to {sellmulti::%arg 1%}
+							add .75 to {xpmulti::%arg 1%}
+							add 10 to {tokens::%arg 1%}
+							add "godfather" to arg 1's groups					
+						if arg 2 is "maniac":
+							add 5 ender eye named "&5&lEpic key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 10 prismarine shard named "&6&lRare key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 20 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." to arg 1's inventory
+							add 1 to {sellmulti::%arg 1%}
+							add 1 to {xpmulti::%arg 1%}
+							add 20 to {tokens::%arg 1%}
+							add "maniac" to arg 1's groups		
+						
+command /trash [<text>]:
+	permission: kingpin
+	permission message: &cOnly users with Kingpin rank may use this.
+	aliases: /swayl
+	trigger:
+		open virtual chest inventory with size 6 named "&8Swayl (Trash Can)" for player
+		
+command /ec [<offlineplayer>]:
+	permission: godfather
+	permission message: &cOnly users with Godfather rank may use this.
+	trigger:
+		if arg 1 is not set:
+			open player's enderchest for player
+		else:
+			if player has permission "mod":
+				open arg 1's enderchest for player
+			else:
+				open player's enderchest for player
+
+on right click:
+	{ct::%player%} is not set
+	tool is diamond pickaxe, diamond sword, bow or diamond armor
+	player is sneaking
+	cancel event
+	enchGui(player)
+	
+function ench(p: player, t: text):
+	set {_e} to {_t} parsed as enchantment
+	if {_e} is not set:
+		set {_l} to ceLevel({_p}, {_t})
+		if {_l} >= 3:
+			send "&cThat enchantment is already maxed!" to {_p}
+		else:
+			if {tokens::%{_p}%} < getCost({_p}, {_t}):
+				send "&cYou don't have enough tokens." to {_p}
+			else:
+				remove getCost({_p}, {_t}) from {tokens::%{_p}%}
+				if lore of {_p}'s tool contains {_t}:
+					set {_lore::*} to split lore of {_p}'s tool at "||"
+					loop {_lore::*}:
+						add 1 to {_n}
+						if loop-value contains {_t}:
+							set {_level::*} to split loop-value at " "
+							set line {_n} of lore of {_p}'s tool to "&d%capitalize({_t})% %ceLevel({_p}, {_t}) + 1%"
+							enchGui({_p})
+				else:
+					set lore of {_p}'s tool to "%lore of {_p}'s tool% ||&d%capitalize({_t})% %ceLevel({_p}, {_t}) + 1%"
+					enchGui({_p})
+				
+	else:
+		set {_l} to level of {_e} on {_p}'s tool
+		if {_l} >= {max::%{_p}%} + 5:
+			send "&cThat enchantment is already maxed!" to {_p}
+		else:
+			set {_cost} to ({_l} ? 1) * 1000
+			if {balance::%{_p}%} is less than {_cost}:
+				set {_amount} to {_cost} - {balance::%{_p}%}
+				send "&7You need &e$%{_amount}% &7more to purchase that." to {_p}
+			else:
+				remove {_cost} from {balance::%{_p}%}
+				send "&7You've purchased &f%{_t}% &f%{_l} +1% &7for &e$%{_cost}%&7." to {_p}
+				enchant {_p}'s tool with ("%{_t}% %{_l} + 1%" parsed as enchantment type)
+				enchGui({_p})
+	
+function ceLevel(p: player, t: text) :: number:
+	if lore of {_p}'s tool contains {_t}:
+		set {_lore::*} to split lore of {_p}'s tool at "||"
+		loop {_lore::*}:
+			if loop-value contains {_t}:
+				set {_level::*} to split loop-value at " "
+				return ({_level::2} parsed as number)
+	else:
+		return 0
+			
+function getCost(p: player, t: text) :: number:
+	if ceLevel({_p}, {_t}) is 0:
+		return ({cost::%{_t}%} * ceLevel({_p}, {_t})) + {cost::%{_t}%} 
+	else:
+		return {cost::%{_t}%} * ceLevel({_p}, {_t})
+	
+function enchGui(p: player):
+	open virtual chest inventory named "&8Enchant your tool" with size 3 to {_p}
+	format gui slot 0, 1, 2, 9, 11, 18, 19 and 20 of {_p} with dark gray stained glass pane named "&0"
+	format gui slot 10 of {_p} with {_p}'s tool
+	
+	if {_p}'s tool is a diamond pickaxe:
+			
+		add "Efficiency" to {_enchs::*}
+		add "Fortune" to {_enchs::*}
+		add "Unbreaking" to {_enchs::*}
+		
+		set {cost::Explosive} to 3
+		set {_ce::Explosive} to tnt named " &c&lExplosive %ceLevel({_p}, ""explosive"") ? """"%" with lore " &7Has a large chance to breaks blocks in a small area", " &cLvl. 1&8: &720%%", " &cLvl. 2&8: &730%%", " &cLvl. 3&8: &740%%" and " &7Click to upgrade &c(%getCost({_p}, ""explosive"")%&c tokens)"
+		
+		set {cost::Jackhammer} to 3
+		set {_ce::Jackhammer} to iron axe named " &f&lJackhammer %ceLevel({_p}, ""jackhammer"") ? """"%" with lore " &7Has a decent chance to break blocks", " &7on the same y coordinate in a medium-sized area.", " &fLvl. 1&8: &75%%", " &fLvl. 2&8: &710%%", " &fLvl. 3&8: &715%%" and " &7Click to upgrade &f(%getCost({_p}, ""jackhammer"")%&f tokens)"
+		
+		set {cost::Laser} to 3
+		set {_ce::Laser} to arrow named " &3&lLaser %ceLevel({_p}, ""laser"") ? """"%" with lore " &7Has a decent chance to break blocks", " &7in 4 directions.", " &3Lvl. 1&8: &75%%", " &3Lvl. 2&8: &710%%", " &3Lvl. 3&8: &715%%" and " &7Click to upgrade &3(%getCost({_p}, ""laser"")%&3 tokens)"
+		
+		set {cost::Xp} to 2
+		set {_ce::Xp} to xp bottle named " &b&lXP %ceLevel({_p}, ""xp"") ? """"%" with lore " &7Has a decent chance to double your xp.", " &bLvl. 1&8: &75%%", " &bLvl. 2&8: &710%%", " &bLvl. 3&8: &715%%" and " &7Click to upgrade &b(%getCost({_p}, ""xp"")%&b tokens)"
+		
+		set {cost::Crate} to 2
+		set {_ce::Crate} to tripwire hook named " &d&lCrate %ceLevel({_p}, ""crate"") ? """"%" with lore " &7Has a small chance to give you a mine key.", " &dLvl. 1&8: &70.5%%", " &dLvl. 2&8: &71%%", " &dLvl. 3&8: &71.5%%" and " &7Click to upgrade &d(%getCost({_p}, ""crate"")%&d tokens)"
+		
+	if {_p}'s tool is a diamond sword:
+	
+		add "Sharpness" to {_enchs::*}
+		add "Fire Aspect" to {_enchs::*}
+		add "Unbreaking" to {_enchs::*}
+		
+		set {cost::Critical} to 3
+		set {_ce::Critical} to magma cream named " &c&lCritical %ceLevel({_p}, ""critical"") ? """"%" with lore " &7Has a decent chance to deal 50%% more damage.", " &cLvl. 1&8: &75%%", " &cLvl. 2&8: &710%%", " &cLvl. 3&8: &715%%" and " &7Click to upgrade &c(%getCost({_p}, ""critical"")%&c tokens)"
+		
+		set {cost::Lifesteal} to 3
+		set {_ce::Lifesteal} to golden apple named " &b&lLifesteal %ceLevel({_p}, ""lifesteal"") ? """"%" with lore " &7Has a small chance to give you hp.", " &bLvl. 1&8: &72%%", " &bLvl. 2&8: &75%%", " &bLvl. 3&8: &77%%" and " &7Click to upgrade &b(%getCost({_p}, ""lifesteal"")%&c tokens)"
+		
+	if {_p}'s tool is any diamond armor:
+		
+		add "Protection" to {_enchs::*}
+		add "Fire Protection" to {_enchs::*}
+		add "Unbreaking" to {_enchs::*}
+		
+	set {_n} to 2
+	loop {_enchs::*}:
+		if {max::%{_p}%} is set:
+			set {_max} to 5 + {max::%{_p}%}
+		else:
+			set {_max} to 5
+		level of (loop-value parsed as enchantment) on {_p}'s tool ? 0 < {_max}
+		add 1 to {_n}
+		format gui slot {_n} of {_p} with enchanted book named "&a%loop-value% %level of (loop-value parsed as enchantment) on {_p}'s tool ? """"%" with lore "&7Click to upgrade &a($%(level of (loop-value parsed as enchantment) on {_p}'s tool ? 1) * 1000%)" to run function ench({_p}, loop-value)
+
+	loop {_ce::*}:
+		ceLevel({_p}, loop-index) < 3
+		add 1 to {_n}
+		add 3 to {_n} if {_n} is 9
+		format gui slot {_n} of {_p} with loop-value to run function ench({_p}, loop-index)
+
+function item(i: block) :: item:
+	return cobblestone block if {_i} is stone
+	return coal if {_i} is coal ore
+	return iron ore if {_i} is iron ore
+	return gold ore if {_i} is gold ore
+	return diamond if {_i} is diamond ore 
+	return emerald if {_i} is emerald ore
+	return diamond block if {_i} is diamond block
+	
+on break:
+	wait 3 ticks
+	event is not canceled
+	if lore of tool contains "explosive":
+		set {_l} to ceLevel(player, "explosive")
+		set {_c} to 20 if {_l} is 1
+		set {_c} to 30 if {_l} is 2
+		set {_c} to 40 if {_l} is 3
+		chance of {_c}%:
+			loop all blocks in radius 2 around event-block:
+				within(location of loop-block, {mine1}, {mine2}) is true
+				add round(xp(loop-block) / 5) to {xp::%player%}
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.099 if {_l} is 1
+					set {_c} to 0.1 if {_l} is 2
+					set {_c} to 0.125 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+				
+	if lore of tool contains "laser":
+		set {_l} to ceLevel(player, "laser")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3
+		chance of {_c}%:
+			loop all blocks north of event-block:
+				within(location of loop-block, {mine1}, {mine2}) is true
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.025 if {_l} is 1
+					set {_c} to 0.05 if {_l} is 2
+					set {_c} to 0.075 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+			loop all blocks south of event-block:
+				within(location of loop-block, {mine1}, {mine2}) is true
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.025 if {_l} is 1
+					set {_c} to 0.05 if {_l} is 2
+					set {_c} to 0.075 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+			loop all blocks east of event-block:
+				within(location of loop-block, {mine1}, {mine2}) is true
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.025 if {_l} is 1
+					set {_c} to 0.05 if {_l} is 2
+					set {_c} to 0.075 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+			loop all blocks west of event-block:
+				within(location of loop-block, {mine1}, {mine2}) is true
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.025 if {_l} is 1
+					set {_c} to 0.05 if {_l} is 2
+					set {_c} to 0.075 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+				
+	if lore of tool contains "jackhammer":
+		set {_l} to ceLevel(player, "jackhammer")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3
+		chance of {_c}%:
+			loop all blocks in radius 8 around event-block:
+				y coord of loop-block is y coord of event-block
+				within(location of loop-block, {mine1}, {mine2}) is true
+				give player 1 of item(loop-block)
+				if lore of tool contains "crate":
+					set {_l} to ceLevel(player, "crate")
+					set {_c} to 0.025 if {_l} is 1
+					set {_c} to 0.05 if {_l} is 2
+					set {_c} to 0.075 if {_l} is 3
+					chance of {_c}%:
+						send "&7You've recieved &a1x Mine Key&7."
+						give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+				set loop-block to air
+			
+	if lore of tool contains "xp":
+		set {_l} to ceLevel(player, "xp")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3
+		chance of {_c}%:
+			add xp(block) to {xp::%player%}
+		
+	if lore of tool contains "crate":
+		set {_l} to ceLevel(player, "crate")
+		set {_c} to 0.5 if {_l} is 1
+		set {_c} to 1 if {_l} is 2
+		set {_c} to 1.5 if {_l} is 3
+		chance of {_c}%:
+			send "&7You've recieved &a1x Mine Key&7."
+			give player 1 tripwire hook named "&a&lMine Key &7(Right Click)" with lore "&7Right click to open." 
+			
+on damage of player:
+	event isn't canceled
+	within(location of victim, {spawn1}, {spawn2}) isn't true
+	
+	if lore of attacker's tool contains "critical":
+		set {_l} to ceLevel(attacker, "critical")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3
+		chance of {_c}%:
+			add 1.5 to {_m}
+			send "&cCritical Hit!" to attacker
+			
+	if lore of attacker's tool contains "lifesteal":
+		set {_l} to ceLevel(attacker, "lifesteal")
+		set {_c} to 2 if {_l} is 1
+		set {_c} to 5 if {_l} is 2
+		set {_c} to 7 if {_l} is 3
+		chance of {_c}%:
+			add damage to attacker's health
+			
+	if lore of attacker's tool contains "explosive":
+		set {_l} to ceLevel(attacker, "explosive")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3	
+		chance of {_c}%:
+			loop all players in radius 5 around victim:
+				damage loop-player by damage if loop-player is not attacker
+				push loop-player upwards at speed 0.5 if loop-player is not attacker
+				
+	if lore of attacker's tool contains "test":
+		set {_l} to ceLevel(attacker, "test")
+		set {_c} to 5 if {_l} is 1
+		set {_c} to 10 if {_l} is 2
+		set {_c} to 15 if {_l} is 3	
+		chance of {_c}%:
+			teleport attacker behind victim
+			teleport attacker to block 1 above attacker
+			send "&dNANI!?!?" to victim
+		
+	set damage to damage * ({_m} ? 1)
+	
+# 
+#
+#
+
+on script load:
+ 
+    set {_letters} to "Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz"
+    set {_letter-pairs::*} to {_letters} split at " "
+ 
+    loop {_letter-pairs::*}:
+ 
+        set {_pair::*} to loop-value split at ""
+ 
+        set {_uppercase} to {_pair::1}
+        set {_lowercase} to {_pair::2}
+ 
+        set {letters::uppercase::%{_lowercase}%} to {_uppercase}
+        set {letters::lowercase::%{_uppercase}%} to {_lowercase}
+ 
+on script unload:
+ 
+    delete {letters::*}
+	
+function capitalize(text: text) :: text:
+ 
+    set {_char} to the first character of {_text}
+    set {_char} to {letters::uppercase::%{_char}%}
+ 
+    set {_remaining} to ""
+    set {_remaining} to the last (length of {_text} - 1) characters of {_text}
+ 
+    return "%{_char}%%{_remaining}%"
+	
+command /mute [<offlineplayer>] [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 2 is not set:
+			send "&c/mute (noob) (reason)"
+		else:
+			set {muted::%arg 1%} to true
+			broadcast "&8&l» &b%arg 1% &7has been muted by &b%player% &7for &b%arg 2%&7. &8[FOREVER]"
+			if arg 1 is online:
+				send "&cYou have been muted permanently for ""&c&l%arg 2%&c""." to arg 1
+
+command /unmute [<offlineplayer>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/unmute (muted noob)"
+		else:
+			delete {muted::%arg 1%}
+			broadcast "&8&l» &b%arg% &7has been unmuted by &b%player%&7."
+			if arg 1 is online:
+				send "&aYou've been unmuted, please follow our rules!" to arg 1
+
+command /warn [<offlineplayer>] [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				send "&8&l» &7You have been warned by &b%player% &7for &b%arg 2%&7." to arg 1
+				send "&8&l» &7Successfully warned &b%arg 1% &7for &b%arg 2%&7."
+			else:
+				send "&c/warn (noob) (reason)"
+		else:
+			send "&c/warn (noob) (reason)"
+
+command /chat [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/chat <mute/unmute/clear>"
+		else:
+			if arg is "mute":
+				if {chatmute} is not set:
+					set {chatmute} to true
+					broadcast "&8&l» &7Chat has been &cmuted &7by &b%player%&7."
+				else:
+					send "&cThe chat is already muted."
+			if arg is "unmute":
+				if {chatmute} is set:
+					delete {chatmute}
+					broadcast "&8&l» &7Chat has been &aunmuted &7by &b%player%&7."
+				else:
+					send "&cThe chat is already unmuted."
+			if arg is "clear":
+				loop 200 times:
+					broadcast ""
+				broadcast "&8&l» &7Chat has been cleared by &b%player%&7."
+				broadcast ""
+			else:
+				send "&c/chat <mute/unmute>"
+
+on right click on sign:
+	if line 2 of event-block contains "Fix":
+		if durability of tool is more than 1:
+			if {balance::%player%} >= 1000:
+				repair player's tool by 15000
+				remove 1000 from {balance::%player%}
+				send "&aYou've repaired an item."
+			else:
+				send "&cYou need $1000 to repair this item."
+		else:
+			send "&cThis item doesn't need repairing." 
+
+command /gmc:
+	permission: op
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if player's gamemode is not creative:
+			set player's gamemode to creative
+			send "&aYour gamemode has been updated to creative."
+		else if player's gamemode is creative:
+			send "&cYour gamemode is already set to creative."
+
+command /gms:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if player's gamemode is not survival:
+			set player's gamemode to survival
+			send "&aYour gamemode has been updated to survival."
+		else if player's gamemode is survival:
+			send "&cYour gamemode is already set to survival."
+
+command /gmsp:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if player's gamemode is not spectator:
+			set player's gamemode to spectator
+			send "&aYour gamemode has been updated to spectator."
+		else if player's gamemode is spectator:
+			send "&cYour gamemode is already set to spectator."
+
+command /bc [<text>]:
+	permission: op
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/bc <message>"
+		else:
+			broadcast ""
+			broadcast "&c&lAlert &8&l» &7%arg%"
+			broadcast ""
+
+command /report [<offlineplayer>] [<text>]:
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if {report::%player%} is not set:
+					send "" to all players where [input has permission "mod"]
+					send "&c&lReport &8&l» &c%player% &7has reported &c%arg 1% &7for &c%arg 2%&7." to all players where [input has permission "mod"]
+					send "" to all players where [input has permission "mod"]
+					send "&aYour report has been sent to all online staff, please be patient."
+					set {report::%player%} to 300
+				else:
+					send "&cYou must wait 5 minutes before making another report."
+			else:
+				send "&c/report (player) (reason)"
+		else:
+			send "&c/report (player) (reason)"
+
+every second in "world":
+	loop all players:
+		if {report::%loop-player%} is set:
+			subtract 1 from {report::%loop-player%}
+			if {report::%loop-player%} is 0:
+				delete {report::%loop-player%}
+				send "&aYour report cooldown has ended." to loop-player
+
+command /tphere [<offlineplayer>]:
+	permission: mod+
+	permission message: &cYou don't have access to that command.
+	trigger:
+		teleport arg 1 to player
+
+command /fly:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if player's flight mode is false:
+			set player's flight mode to true
+			send "&aYou've enabled fly."
+		else if player's flight mode is true:
+			set player's flight mode to false
+			send "&cYou've disabled fly."
+
+command /invsee [<offlineplayer>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is set:
+			open arg 1's inventory for player
+		else:
+			send "&c/invsee (player)"
+
+on leaves decay:
+	cancel event
+
+on load:
+			
+	delete {perk::*}
+	
+	# Unbreakable Items
+	set {perk::Unbreakable Items} to anvil named "&bUnbreakable Items (3 tokens)" with lore "&7All of your items are now invulnerable."
+	set {perk::unbreakable items::cost} to 3
+	
+	# Instant TP
+	set {perk::Instant Tp} to ender pearl named "&bInstant TP (3 tokens)" with lore "&7You now teleport instantly."
+	set {perk::instant tp::cost} to 3
+	
+	# Rename
+	set {perk::Rename} to nametag named "&bCommand: /rename (3 tokens)" with lore "&7You can use /rename to rename items."
+	set {perk::rename::cost} to 3
+	
+	# +1 Max Level
+	set {perk::+1 Max Level} to book named "&b+1 Max Enchantment Level (4 tokens)" with lore "&7You can enchant tools 1 more level with shift + right click."
+	
+	# No Fire
+	set {perk::No Fire} to fire charge named "&bNo Fire (3 tokens)" with lore "&7You no longer catch on fire."
+	set {perk::no fire::cost} to 3
+	
+function perkGui(p: player):
+	open virtual chest inventory named "&8Perk Menu" with size 3 to {_p}
+	set {_n} to -1
+	loop {perk::*}:
+		add 1 to {_n}
+		if {perks::%{_p}%::*} contains loop-index:
+			format gui slot {_n} of {_p} with glowing {perk::%loop-index%}
+		else:
+			format gui slot {_n} of {_p} with {perk::%loop-index%} to run function purchasePerk({_p}, loop-index)
+			
+function purchasePerk(p: player, t: text):
+	if {tokens::%{_p}%} < {perk::%{_t}%::cost}:
+		send "&cYou don't have enough tokens!" to {_p}
+	else:
+		if {_t} is "+1 Max Level":
+			{max::%{_p}%} < 3
+			if {tokens::%{_p}%} < {perk::%{_t}%::cost}:
+				send "&cYou don't have enough tokens!" to {_p}
+			else:
+				add 1 to {max::%{_p}%}
+				if {max::%{_p}%} is 3:
+					add "+1 Max Level" to {perks::%{_p}%::*}
+		else:
+			add {_t} to {perks::%{_p}%::*}
+		remove {perk::%{_t}%::cost} from {tokens::%{_p}%}
+		send "&7Successfully bought the &b%{_t}% &7perk!" to {_p}
+		perkGui({_p})
+		
+command /perks [<text>]:
+	trigger:
+		perkGui(player)
+		
+command /rename [<text>]:
+	trigger:
+		if {perks::%player%::*} doesn't contain "rename":
+			send "&cUnlock this with /perks."
+		else:
+			if arg is not set:
+				send "&c/rename (text)"
+			else:
+				set name of tool to colored arg
+	
+on item damage:
+	{perks::%player%::*} contains "unbreakable items"
+	cancel event
+	durability of tool >= 1
+	repair tool by 15000
+	
+on damage:
+	wait 3 ticks
+	if {perks::%victim%::*} contains "no fire":
+		extinguish victim if victim's name isn't "Swayl"
+
+function reset(t: text) :: timespan:
+	set {_s} to now
+	loop all blocks within block at {mine1} and block at {mine2}:
+		set {_i} to 101 if {_t} is "party"
+		set {_i} to random integer between 1 and 100 if {_t} is "normal"
+		set loop-block to stone if {_i} is between 1 and 30
+		set loop-block to coal ore if {_i} is between 31 and 60
+		set loop-block to iron ore if {_i} is between 61 and 75
+		set loop-block to gold ore if {_i} is between 76 and 86
+		set loop-block to diamond ore if {_i} is between 87 and 94
+		set loop-block to emerald ore if {_i} is between 95 and 100
+		set loop-block to diamond block if {_i} is 101
+	loop all blocks within block at {mine3} and block at {mine4}:
+		set loop-block to air
+	return difference between {_s} and now
+
+command /sc [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/sc (message)"
+		else:
+			send "&b[Staff]%player(player)%&8: &b%arg%" to all players where [input has permission "mod"]
+				
+command /tp [<offlineplayer>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		teleport player to arg
+
+command /ban [<offlineplayer>] [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 2 is not set:
+			send "&c/ban (noob) (reason)"
+		else:
+			ban arg 1 due to arg 2
+			kick arg 1 due to arg 2
+			send "&8&l» &b%arg 1% &7has been banned by &b%player% &7for &b%arg 2%&7." to all players
+			
+command /unban [<offlineplayer>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg is not set:
+			send "&c/unban (banned noob)"
+		else:
+			unban arg 
+			send "&8&l» &b%arg% &7has been unbanned by &b%player%&7." to all players
+			
+command /kick [<offlineplayer>] [<text>]:
+	permission: mod
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 2 is not set:
+			send "&c/kick (noob) (reason)"
+		else:
+			kick arg 1 due to arg 2
+			send "&8&l» &b%arg 1% &7has been kicked by &b%player% &7for &b%arg 2%&7." to all players
+
+command /tag [<text>] [<item>] [<text>] [<text>] [<text>]:
+	permission: admin
+	permission message: &cYou don't have access to that command.
+	trigger:
+		if arg 1 is not set:
+			send "&c/tag (list | create | delete)"
+		else:
+			if arg 1 is "list":
+				send ""
+				loop {tags::*}:
+					send formatted "<tooltip: &f%{item::%loop-index%}%%nl%%lore of {item::%loop-index%}%><suggest command:/tag delete %loop-index%> &f%loop-index%&8: &f%loop-value%"
+				send ""
+			else if arg 1 is "create":
+				if arg 5 is not set:
+					send "&c/tag create (tag item) (tag name) (tag display) (tag description)"
+				else:
+					set {tags::%arg 3%} to " &8[&7%colored arg 4%&8]"
+					set {item::%arg 3%} to arg 2 with name " &8[&7%colored arg 4%&8]" with lore " &7%colored arg 5%&7." 
+					send "%nl% &7Created tag%{tags::%arg 3%}%&7.%nl%"
+			else if arg 1 is "delete":
+				send "%nl% &7Deleted tag%{tags::%arg 3%}%&7.%nl%"
+				delete {tags::%arg 3%}
+				delete {item::%arg 3%}
+			else:
+				player command "/tag"
+				
+command /tags [<text>]:
+	trigger:
+		loop {tags::*}:
+			add 1 to {_tags} if player has permission "tag.%loop-index%"
+		if {_tags} is not set:
+			send "&cYou have no tags. Buy them with /buy."
+		else:
+			open virtual chest inventory with size 3 named "&8Available Tags." to player
+			if {tag::%player%} is set:
+				set {_n} to 0
+				format gui slot {_n} of player with glowing {item::%{tag::%player%}%} to run:
+					delete {tag::%player%}
+					send "&7desplay name updated to %player(player)%&7."
+					player command "/tags"
+			loop {tags::*}:
+				player has permission "tag.%loop-index%"
+				{tag::%player%} isn't loop-index
+				add 1 to {_n} if {_n} isn't 0
+				set {_%{_n}%} to loop-index 
+				format gui slot {_n} - 1 of player with {item::%loop-index%} to run:
+					set {tag::%player%} to {_%{_n}%}
+					send "&7desplay name updated to %player(player)%&7."
+					player command "/tags"
+
+function between(a: number, b: number, c: number) :: boolean:
+    if {_a} is between {_b} and {_c}:
+        return true
+    else if {_a} is between {_c} and {_b}:
+        return true
+
+function within(b: location, l1: location, l2: location) :: boolean:
+    if between(x coord of {_b}, x coord of {_l1}, x coord of {_l2}) = true:
+        if between(y coord of {_b}, y coord of {_l1}, y coord of {_l2}) = true:
+            if between(z coord of {_b}, z coord of {_l1}, z coord of {_l2}) = true:
+                return true
+				
+on break:
+	player's gamemode is not creative
+	cancel event if y coordinate of event-block is less than 4
+	cancel event if within(location of event-block, {spawn1}, {spawn2}) is true
+	
+on place:
+	player's gamemode is not creative
+	cancel event if within(location of event-block, {spawn1}, {spawn2}) is true
+	
+on damage of player:
+	if within(location of attacker, {spawn1}, {spawn2}) is true:
+		cancel event if within(location of attacker, {pvp1}, {pvp2}) is not true
+	if within(location of victim, {spawn1}, {spawn2}) is true:
+		cancel event if within(location of victim, {pvp1}, {pvp2}) is not true
+
+on explode:
+	loop exploded blocks:
+		cancel event if y coordinate of loop-block <= 4
