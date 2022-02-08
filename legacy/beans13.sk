@@ -1,0 +1,2474 @@
+# afk.sk
+
+on bound enter with id "afk":
+	send title " " with subtitle "&7Welcome to the &aAFK Area&7! Jump to collect."
+		
+every 10 seconds:
+	loop all players where [bounds at input contains bound with id "afk"]:
+		add 1 to {afkxp::%loop-player%}
+		add 1 to {afkmoney::%loop-player%}
+		send action bar "Cool" to loop-player
+		send action bar "&4Jump to collect: &3%number with commas {afkxp::%loop-player%} ? 0%xp &2$%number with commas {afkmoney::%loop-player%} ? 0%" to loop-player
+	
+on jump:
+	{afkxp::%player%} is set
+	send "&aSuccessfully claimed your AFK rewards!"
+	send "&3%number with commas {afkxp::%player%} ? 0%xp &2$%number with commas {afkmoney::%player%} ? 0%"
+	add {afkmoney::%player%} to player's money
+	update player's scoreboard
+	give player ("%{afkxp::%player%}% xp" parsed as experience)
+	delete {afkxp::%player%} and {afkmoney::%player%}
+	
+# clans.sk
+
+# clan objects:
+#  {clan::<player>} - id of player's clan
+#  {clans::<id>::id} - id of clan
+#  {clans::<id>::prefix} - optional custom name
+#  {clans::<id>::name} - name of clan
+#  {clans::<id>::names::*} - name history of clan
+#  {clans::<id>::nameDate::<name>} - unix of date edited
+#  {clans::<id>::owner} - owner of clan
+#  {clans::<id>::members::*} - members of clan
+#  {clans::<id>::createdAt} - unix of date created
+#  {clans::<id>::blocks} - clan blocks mined
+#  {clans::<id>::kills} - clan kills
+#  {clans::<id>::deaths} - clan deaths
+#  {clans::<id>::perks::maxMembers} - max members
+#  {clans::<id>::perks::multi} - multi
+ 
+command /clan [<text>] [<text>] [<text>]:
+	trigger:
+		if arg 1 isn't set:
+			send ""
+			send " &c/clan <"
+			send " &7create, rename, leave, join, kick, invite, info, chat, disband, shop, contribution, transfer, top"
+			send " &c>"
+			send ""
+		else:
+			if arg 1 isn't "create", "disband", "join", "leave", "rename", "kick", "invite", "info", "shop", "chat", "contribution", "transfer" or "top":
+				player command "/clan"
+			else:
+				set {_clan} to resolveClan(arg 2)
+				createClan(player, arg 2) if arg 1 is "create"
+				joinClan(player, {_clan}) if arg 1 is "join"
+				invitePlayer(player, arg 2 parsed as offline player) if arg 1 is "invite"
+				kickPlayer(player, arg 2 parsed as offline player) if arg 1 is "kick"
+				leaveClan(player) if arg 1 is "leave"
+				renameClan(player, arg 2) if arg 1 is "rename"
+				disbandClan(player) if arg 1 is "disband"
+				if arg 1 is "info":
+					if arg 2 isn't set:
+						clanInfo(player, {clan::%player%})
+					else:
+						clanInfo(player, {_clan})
+				set {_m} to " %arg 3%" if arg 3 is set
+				clanChat(player, "%arg 2%%{_m} ? ""%") if arg 1 is "chat"
+				clanShop(player) if arg 1 is "shop"
+				clanContribution(player, arg 2) if arg 1 is "contribution"
+				clanTransfer(player, (arg 2 parsed as offline player)) if arg 1 is "transfer"
+				clanTop(player, arg 2) if arg 1 is "top"
+ 
+function resolveClan(input: text) :: text:
+	return {_input} if "%indices of {clans::*}%" contains {_input}
+	loop indices of {clans::*}:
+		return loop-value if uncolored {clans::%loop-value%::name} is {_input}
+	set {_player} to {_input} parsed as offline player
+	return {clan::%{_player}%}
+ 
+function clanInfo(player: offline player, clan: text):
+	if {clans::%{_clan}%::id} isn't set:
+		send "&cClan not found." to {_player}
+	else:
+		loop {clans::%{_clan}%::names::*}:
+			add "&3%loop-value% &b(changed @ %unix date of {clans::%{_clan}%::nameDate::%loop-value%}%&b)" to {_names::*}
+		set {_names::*} to "No Other Names." if "%{_names::*}%" is "<none>"
+		send "" to {_player}
+		send formatted "&b(ID. ##%{clans::%{_clan}%::id}%&b) <tooltip:%join {_names::*} with nl%>&3%{clans::%{_clan}%::prefix} ? {clans::%{_clan}%::name}%&r &b(%size of {clans::%{_clan}%::members::*}%&b/%maxMembers({_clan})%&b)" to {_player}
+		send formatted "" to {_player}
+		send formatted "  &7Led by&8: &3%{clans::%{_clan}%::owner}'s display%" to {_player}
+		loop {clans::%{_clan}%::members::*}:
+			add loop-value's display to {_members::*}
+			add round({balance::%loop-value%}) to {_balance}
+		send formatted "<tooltip:%{_members::*}%>  &7Members&8: &3Hover" to {_player}
+ 
+		set {_stats} to "&3Kills: &b%formatted number ({clans::%{_clan}%::kills}) ? 0%%nl%&3Deaths: &b%formatted number ({clans::%{_clan}%::deaths}) ? 0%%nl%&3Blocks: &b%formatted number ({clans::%{_clan}%::blocks}) ? 0%%nl%&3Balance: &b$%formatted number ({_balance})%"
+		send formatted "<tooltip:%{_stats}%>  &7Stats&8: &3Hover" to {_player}
+		send "  &7Created&8: &3%unix date of {clans::%{_clan}%::createdAt}%" to {_player}
+		send "" to {_player}
+ 
+function createClan(player: offline player, name: text):
+	if {_name} isn't set:
+		send "&c/clan create <name>" to {_player}
+	else:
+		if {clan::%{_player}%} is set:
+			send "&cYou're already in a clan." to {_player}
+		else:
+			if length of {_name} > 15:
+				send "&cClan name must be under 15 characters." to {_player}
+			else:
+				loop indices of {clans::*}:
+					add uncolored {clans::%loop-value%::name} to {_clans::*}
+				if {_clans::*} contains {_name}:
+					send "&cThat name is taken." to {_player}
+				else:
+					add 1 to {clans}
+					set {_id} to {clans}
+					set {clan::%{_player}%} to "%{_id}%"
+					set {clans::%{_id}%::id} to "%{_id}%"
+					set {clans::%{_id}%::name} to {_name}
+					set {clans::%{_id}%::owner} to {_player}
+					set {clans::%{_id}%::members::*} to {_player}
+					set {clans::%{_id}%::createdAt} to unix timestamp of 5 hours ago
+					send " &3&l> &bCreated Clan &3%{_name}%&b!" to {_player}
+ 
+function disbandClan(player: offline player):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		set {_clan} to {clan::%{_player}%}
+		if {clans::%{_clan}%::owner} isn't {_player}:
+			send "&cYou aren't the owner of your clan." to {_player}
+		else:
+			set {_id} to {clan::%{_player}%}
+			send " &3&l> &b%{_player}% &7disbanded the clan." to all players where [{clan::%input%} is {clan::%{_player}%}]
+			delete {clans::%{_id}%::id}
+			delete {clans::%{_id}%::name}
+			delete {clans::%{_id}%::names::*}
+			delete {clans::%{_id}%::nameDate::*}
+			delete {clans::%{_id}%::owner}
+			delete {clans::%{_id}%::createdAt}
+			delete {clans::%{_id}%::blocks}
+			delete {clans::%{_id}%::kills}
+			delete {clans::%{_id}%::deaths}
+			delete {clans::%{_id}%::perks::maxMembers}
+			delete {clans::%{_id}%::perks::multi}
+			delete {clans::%{_id}%::members::*}
+ 
+function renameClan(player: offline player, name: text):
+	if {_name} isn't set:
+		send "&c/clan rename <name>" to {_player}
+	else:
+		if {clan::%{_player}%} isn't set:
+			send "&cYou aren't in a clan." to {_player}
+		else:
+			if length of {_name} > 15:
+				send "&cClan name must be under 15 characters." to {_player}
+			else:
+				set {_clan} to {clan::%{_player}%}
+				if {clans::%{_clan}%::owner} isn't {_player}:
+					send "&cYou aren't the owner of your clan." to {_player}
+				else:
+					loop indices of {clans::*}:
+						add uncolored {clans::%loop-value%::name} to {_clans::*}
+					#broadcast {_clans::*}
+					if {_clans::*} contains {_name}:
+						send "&cThat name is taken." to {_player}
+					else:
+						add {clans::%{_clan}%::name} to {clans::%{_clan}%::names::*}
+						set {clans::%{_clan}%::nameDate::%{clans::%{_clan}%::name}%} to unix timestamp of 5 hours ago
+						set {clans::%{_clan}%::name} to {_name}
+						send " &3&l> &b%{_player}% &7renamed to clan to &b%{_name}%" to all players where [{clan::%input%} is {clan::%{_player}%}]
+ 
+function joinClan(player: offline player, clan: text):
+	if {clan::%{_player}%} is set:
+		send "&cYou are already in a clan." to {_player}
+	else:
+		if {clans::%{_clan}%::id} isn't set:
+			send "&cClan not found." to {_player}
+		else:
+			if {clanInvites::%{_player}%::*} doesn't contain {_clan}:
+				send "&cYou don't have an invite from that clan." to {_player}
+			else:
+				if size of {clans::%{_clan}%::members::*} >= maxMembers({_clan}):
+					send "&cThat clan is full." to {_player}
+				else:
+					remove {_clan} from {clanInvites::%{_player}%::*}
+					add {_player} to {clans::%{_clan}%::members::*}
+					set {clan::%{_player}%} to {clans::%{_clan}%::id}
+					send " &3&l> &b%{_player}% &7joined the clan!" to all players where [{clan::%input%} is {clan::%{_player}%}]
+ 
+function kickPlayer(player: offline player, kickee: offline player):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		set {_clan} to {clan::%{_player}%}
+		if {clans::%{_clan}%::owner} isn't {_player}:
+			send "&cYou aren't the owner of your clan." to {_player}
+		else:
+			if {_kickee} is {_player}:
+				send "&cYou can't kick yourself." to {_player}
+			else:
+				if {_kickee} isn't set:
+					send "&c/clan kick <player>" to {_player}
+				else:
+					send " &3&l> &b%{_kickee}% &7has been kicked from the clan!" to all players where [{clan::%input%} is {clan::%{_player}%}]
+					remove {_kickee} from {clans::%{_clan}%::members::*}
+					delete {clan::%{_kickee}%}
+ 
+function leaveClan(player: offline player):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		set {_clan} to {clan::%{_player}%}
+		if {clans::%{_clan}%::owner} is {_player}:
+			send formatted "&cYou can't leave your own clan. Do you want to disband? <command:/clan disband>&a[YES]" to {_player}
+		else:
+			send " &3&l> &b%{_player}% &7left the clan!" to all players where [{clan::%input%} is {clan::%{_player}%}]
+			remove {_player} from {clans::%{_clan}%::members::*}
+			delete {clan::%{_player}%}
+ 
+function invitePlayer(player: offline player, invitee: offline player):
+	if {_invitee} isn't set:
+		send "&c/clan invite <player>" to {_player}
+	else:
+		if {clan::%{_player}%} isn't set:
+			send "&cYou aren't in a clan." to {_player}
+		else:
+			if {clan::%{_invitee}%} is set:
+				send "&cThat player is already in a clan." to {_player}
+			else:
+				set {_clan} to {clan::%{_player}%}
+				if size of {clans::%{_clan}%::members::*} >= maxMembers({_clan}):
+					send "&cYour clan is full." to {_player}
+				else:
+					if {clanInvites::%{_invitee}%::*} contains {_clan}:
+						send "&cYou revoked %{_invitee}%&c's invite!" to {_player}
+						send "&cYour invite to %{clans::%{_clan}%::name}% &cwas revoked by %{_player}%&c." to {_invitee}
+						remove {_clan} from {clanInvites::%{_invitee}%::*}
+					else:
+						add {_clan} to {clanInvites::%{_invitee}%::*}
+						send formatted "<command:/clan join %{clans::%{_clan}%::name}%> &7%{_player}% &7invited you to &3%{clans::%{_clan}%::name}%&7. &a(Click to Join)" to {_invitee}
+						send "&7You invited &3%{_invitee}% &7to &3%{clans::%{_clan}%::name}%&7." to {_player}
+ 
+function clanContribution(player: offline player, type: text):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		set {_clan} to {clan::%{_player}%}
+		set {_id} to {clan::%{_player}%}
+		if {_type} isn't "blocks", "kills" or "deaths":
+			send "&c/clan contribution <blocks | kills | deaths>" to {_player}
+		else:
+			if {_type} is "blocks", "kills" or "deaths":
+				set {_sort::*} to sort((indices of {clans::%{_id}%::%{_type}%::*}), {clans::%{_id}%::%{_type}%::*})
+				send "" to {_player}
+				send "     &3&l&lClan Contribution: %{_type}%" to {_player}
+				send "" to {_player}
+				loop {_sort::*}:
+					add 1 to {_n}
+					set {_p} to "%loop-value%" parsed as offline player
+					send " &3##%{_n}% %{_p}'s display% &3(%formatted number ({clans::%{_id}%::%{_type}%::%{_p}%})% &3%{_type}%&3)" to {_player}
+					if {_n} is 5:
+						stop loop
+				send "" to {_player}
+ 
+function clanTransfer(player: offline player, newOwner: offline player):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		set {_clan} to {clan::%{_player}%}
+		if {clans::%{_clan}%::owner} isn't {_player}:
+			send "&cYou aren't the owner of your clan." to {_player}
+		else:
+			if {clan::%{_player}%} isn't {clan::%{_newOwner}%}:
+				send "&cThat player isn't in your clan." to {_player}
+			else:
+				send " &3&l> &b%{_player}% &7appointed &b%{_newOwner}% &7as the new owner." to all players where [{clan::%input%} is {clan::%{_player}%}]
+				set {clans::%{_clan}%::owner} to {_newOwner}
+ 
+function clanTop(player: offline player, type: text):
+	if {_type} isn't "blocks", "kills" or "deaths":
+		send "&c/clan top <blocks | kills | deaths>" to {_player}
+	else:
+		if {_type} is "blocks", "kills" or "deaths":
+			loop indices of {clans::*}:
+				set {_top::%loop-value%} to {clans::%loop-value%::%{_type}%}
+			set {_sort::*} to sort((indices of {_top::*}), {_top::*})
+			send "" to {_player}
+			send "     &3&l&lClan Top: %{_type}%" to {_player}
+			send "" to {_player}
+			loop {_sort::*}:
+				add 1 to {_n}
+				set {_id} to loop-value
+				send " &3##%{_n}% &b%{clans::%{_id}%::prefix} ? {clans::%{_id}%::name}% &3(%formatted number ({clans::%{_id}%::%{_type}%})% &3%{_type}%&3)" to {_player}
+				if {_n} is 5:
+					stop loop
+			send "" to {_player}
+ 
+function clanChat(player: offline player, message: text):
+	if {clan::%{_player}%} isn't set:
+		send "&cYou aren't in a clan." to {_player}
+	else:
+		if {_message} is "<none>":
+			if {clanChat::%{_player}%} is set:
+				delete {clanChat::%{_player}%}
+				send "&cDisabled Clan chat." to {_player}
+			else:
+				set {clanChat::%{_player}%} to true
+				send "&aEnabled Clan chat." to {_player}
+		else:
+			send " &3(Clan Chat) &3&l> &b%{_player}%&8: &f%{_message}%" to all players where [{clan::%input%} is {clan::%{_player}%}]
+			send " &3(%{_player}'s clan display%&3) &3&l> &b%{_player}%&8: &f%{_message}%" to all players where [{clanmonitor::%input%} is true]
+
+ 
+function shopRefresh(player: offline player):
+	loop all players:
+		clanShop(loop-player) if inventory name of loop-player's current inventory is "&3%{clans::%{clan::%{_player}%}%::name}%"
+ 
+function maxMembers(clan: text) :: number:
+	set {_members} to {clans::%{_clan}%::perks::maxMembers}
+	return {_members} + 5
+	
+function price(player: offline player, clan: text, text: text) :: number:
+	if {_text} is "maxMembers":
+		set {_base} to 100000 if maxMembers({_clan}) is 5
+		set {_base} to 125000 if maxMembers({_clan}) is 6
+		set {_base} to 250000 if maxMembers({_clan}) is 7
+		set {_base} to 500000 if maxMembers({_clan}) is 8
+		set {_base} to 750000 if maxMembers({_clan}) is 9
+		set {_base} to 1000000 if maxMembers({_clan}) is 10
+		set {_base} to 2000000 if maxMembers({_clan}) is 11
+		set {_base} to 3000000 if maxMembers({_clan}) is 12
+		set {_base} to 4000000 if maxMembers({_clan}) is 13
+		set {_base} to 5000000 if maxMembers({_clan}) is 14
+		set {_base} to 6000000 if maxMembers({_clan}) is 15
+		set {_base} to 7000000 if maxMembers({_clan}) is 16
+		set {_base} to 8000000 if maxMembers({_clan}) is 17
+		set {_base} to 9000000 if maxMembers({_clan}) is 18
+		set {_base} to 10000000 if maxMembers({_clan}) is 19
+	return {_base}
+ 
+function clanShop(player: offline player):
+	if {_player} doesn't have permission "admin":
+		send "Currently disabled and working on new perks." to {_player}
+		stop
+	set {_clan} to {clan::%{_player}%}
+	if {_clan} isn't set:
+		send "&cYou're not in a clan." to {_player}
+	else:
+		set metadata "clanshop" of {_player} to dispenser inventory named "&3%{clans::%{clan::%{_player}%}%::name}%"
+			
+		set slot 0 of metadata "clanshop" of {_player} to player skull with nbt "{type:maxMembers}" named "&bMax Members:" with lore "&bCurrent: &7%maxMembers({_clan})%", "&bUpgrade: &7+1 for &a($%formatted number (price({_player}, {_clan}, "maxMembers"))%)" and "&bMax: &c20"
+		
+		open metadata "clanshop" of {_player} to {_player}
+
+on inventory click:
+	event-inventory is metadata "clanshop" of player
+	set {_clan} to {clan::%player%}
+	cancel event
+	set {_type} to tag "type" of nbt of event-item
+	set {_cost} to price(player, {_clan}, {_type})
+	{_cost} > 1
+	if {balance::%player%} <= {_cost}:
+		send "&cYou don't have enough money."
+	else:
+		remove {_cost} from {balance::%player%}
+		add 1 to {clans::%{_clan}%::perks::%{_type}%}
+		shopRefresh(player)
+ 
+on chat:
+	{clan::%player%} and {clanChat::%player%} is set
+	cancel event
+	clanChat(player, message)
+ 
+on damage of player:
+	{clan::%victim%} and {clan::%attacker%} is set
+	cancel event if {clan::%victim%} is {clan::%attacker%}
+ 
+on death:
+	add 1 to {clans::%{clan::%victim%}%::deaths} if {clan::%victim%} is set
+	add 1 to {clans::%{clan::%victim%}%::deaths::%victim%} if {clan::%victim%} is set
+	add 1 to {clans::%{clan::%attacker%}%::kills} if {clan::%attacker%} is set
+	add 1 to {clans::%{clan::%attacker%}%::kills::%attacker%} if {clan::%attacker%} is set
+ 
+on break:
+	{clan::%player%} is set
+	bound at block is bound with id "mine"
+	add 1 to {-clanblocks::%player%}
+	
+every 10 seconds:
+	loop {-clanblocks::*}:
+		add loop-value to {clans::%{clan::%loop-index%}%::blocks}
+		add loop-value to {clans::%{clan::%loop-index%}%::blocks::%loop-index%}
+	delete {-clanblocks::*}
+ 
+every second:
+	loop all players:
+		{clan::%loop-player%} is set
+		delete {clan::%loop-player%} if {clans::%{clan::%loop-player%}%::name} isn't set
+
+on tab complete of "/clan":
+	set tab completions for position 1 to "create", "rename", "leave", "join", "kick", "invite", "info", "chat", "disband", "shop", "contribution", "transfer", "top"
+	if tab arg 1 is "kick" or "transfer":
+		set tab completions for position 2 to all offline players where [{clan::%input%} is {clan::%player%}]
+	else if tab arg 1 is "invite":
+		set tab completions for position 2 to all offline players where [{clan::%input%} isn't {clan::%player%}]
+	else if tab arg 1 is "contribution" or "top":
+		set tab completions for position 2 to "blocks", "kills", "deaths"
+	else if tab arg 1 is "info":
+		set tab completions for position 2 to all players and names of all clans
+		
+expression names of all clans:
+	get:
+		loop indices of {clans::*}:
+			add {clans::%loop-value%::name} to {_clans::*}
+		return {_clans::*}
+    
+# combat.sk
+condition %player% is combat tagged:
+	check:
+		continue if expr-1's remaining combat tag isn't 0 seconds
+
+expression %player%'s remaining combat tag:
+	get:
+		set {_time} to difference between {combat::%expr-1%} and now
+		return 0 seconds if {_time} isn't set
+		return 0 seconds if {_time} > 20 seconds, else difference between 20 seconds and {_time}
+			
+on damage of player:
+	wait 3 ticks
+	event isn't canceled
+	attacker is a player
+	set {combat::%attacker%} and {combat::%victim%} to now
+	
+	make attacker and victim see all blocks within bound with id "spawn1" as white stained glass
+	make attacker and victim see all blocks within bound with id "spawn2" as white stained glass
+
+	while attacker's remaining combat tag isn't 0 seconds:
+		send action bar "&cCombat tagged for %attacker's remaining combat tag%." to attacker
+		if attacker's remaining combat tag < 1 second:
+			make attacker see all blocks within bound with id "spawn1" as air
+			make attacker see all blocks within bound with id "spawn2" as air
+		wait a second
+	while victim's remaining combat tag isn't 0 seconds:
+		send action bar "&cCombat tagged for %victim's remaining combat tag%." to victim
+		if victim's remaining combat tag < 1 seconds:
+			make victim see all blocks within bound with id "spawn1" as air
+			make victim see all blocks within bound with id "spawn2" as air
+		wait a second
+				
+on death of player:
+	if attacker is a player:
+		add 1 to {kills::%attacker%}
+		set {_amount} to victim's money * .05
+		remove {_amount} from victim's money
+		add {_amount} to attacker's money
+		send "&aYou stole $%formatted number {_amount}% from %victim%." to attacker
+		send "&c%attacker% stole $%formatted number {_amount}% from you." to victim
+	add 1 to {deaths::%victim%}
+	
+	delete {combat::%victim%}
+		
+	update victim's scoreboard
+	update attacker's scoreboard
+	
+on quit:
+	player is combat tagged
+	broadcast "&c%player% combat logged!"
+	delete {combat::%player%}
+	set {logged::%player%} to true
+	add 1 to {combatlogged::%player%}
+	
+on join:
+	if {logged::%player%} is set:
+		wait 3 seconds
+		send "", " &4Warning: &cCombat logging will get you banned.", ""
+		delete {logged::%player%}
+	
+	
+on command:
+	player's gamemode isn't creative
+	command is "spawn", "enderchest" or "ec"
+	if player's remaining combat tag isn't 0 seconds:
+		cancel event
+		send "&cYou are combat tagged for %player's remaining combat tag%."
+		
+on right click with firework:
+	if player's remaining combat tag isn't 0 seconds:
+		cancel event
+		send "&cYou are combat tagged for %player's remaining combat tag%."
+    
+# core.sk
+
+on join:
+	set join message to "&8[&a+&8] &7%player's display%" if player has played before, else "&8[&a+&8] &7%player's display% &a(##%amount of offline players%)"
+	set player's attack speed attribute to 40
+	
+	update all players scoreboard
+
+	wait a second
+	set {beta::%player%} to true
+	send "", "Thanks for participating in the beta release! Progress likely won't transfer to the full release. Make sure to join our discord /discord.", ""
+	
+on join:
+	player's gamemode isn't creative
+	teleport player to {spawn}
+	player command "/kit" if player doesn't have any pickaxe
+		
+on respawn:
+	teleport player to {spawn}
+	
+on quit:
+	set quit message to "&8[&c-&8] &7%player's display%"
+	update all players scoreboard
+	
+on chat:
+	if player isn't a mod:
+		if {chat} is set:
+			send "&cChat is currently disabled: &7%{chat}%"
+			cancel event
+			stop
+			
+	if player isn't a donator:
+		set {_dif} to difference between {chat::%player%::cooldown} and now
+		if {_dif} < 2 seconds:
+			send "&7You must wait &b%difference between 2 seconds and {_dif}% &7to talk. Bypass this with &b/buy&7."
+			cancel event
+		else:		
+			if {chat::%player%::message} is message:
+				send "&7You can't send the same message. Bypass this with &b/buy&7."
+				cancel event
+			else:
+				set {chat::%player%::cooldown} to now
+				set {chat::%player%::message} to message
+		
+	else:
+		set message to "&f%colored message%"
+
+	set chat format to "%player's clan display%%player's display%&8: &7%message%"
+	
+every 5 minutes:
+	set {_messages::*} to "&bBuy a rank to support beans with /buy!", "&bJoin our discord! /discord", "&bMake good use of /ah!", "&bQuestions? Ask in chat, discord, or /faq.", "&cCheating or Exploiting will get you banned.", "&cCombat logging will get you banned.", "&aCheck out the afk area at spawn!"
+	send formatted "", " %random element out of {_messages::*}%", "" to all players
+
+command /kit:
+	cooldown: 1 minute
+	trigger:
+		give player diamond sword
+		give player diamond pickaxe
+		give player elytra
+		give player 16 steak
+		
+command /spawn <player=%player%>:
+	trigger:
+		set {_player} to arg if player has permission "mod", else player
+		if {_player} isn't player:
+			teleport {_player} to {spawn}
+			send "&7Teleported %{_player}% to spawn."
+		else:
+			if player's gamemode is creative:
+				teleport player to {spawn}
+				send "Teleported to spawn."				
+			else:
+				if player has permission "donator":
+					if player's remaining combat tag isn't 0 seconds:
+						send "&cYou're combat tagged idiot, donating won't let you tp in combat."
+					else:
+						teleport player to {spawn}
+						send "Teleported to spawn."
+				else:
+					set {_loc} to location of player
+					set {_time} to 6
+					loop {_time} times:
+						if distance between player and {_loc} > 1.75:
+							send "You moved!"
+							stop loop	
+						if {_time} > 1:
+							send "Teleporting to spawn in %{_time} - 1% seconds."
+						else if {_time} is 1:
+							teleport player to {spawn}
+							send "Teleported to spawn."
+						remove 1 from {_time}
+						wait a second		
+						
+command /afk <player=%player%>:
+	trigger:
+		set {_player} to arg if player has permission "mod", else player
+		if {_player} isn't player:
+			teleport {_player} to {afk}
+			send "&7Teleported %{_player}% to afk area."
+		else:
+			if player's gamemode is creative:
+				teleport player to {afk}
+				send "Teleported to afk area."				
+			else:
+				if player has permission "donator":
+					if player's remaining combat tag isn't 0 seconds:
+						send "&cYou're combat tagged idiot, donating won't let you tp in combat."
+					else:
+						teleport player to {afk}
+						send "Teleported to afk area."
+				else:
+					set {_loc} to location of player
+					set {_time} to 6
+					loop {_time} times:
+						if distance between player and {_loc} > 1.75:
+							send "You moved!"
+							stop loop	
+						if {_time} > 1:
+							send "Teleporting to afk area in %{_time} - 1% seconds."
+						else if {_time} is 1:
+							teleport player to {afk}
+							send "Teleported to afk area."
+						remove 1 from {_time}
+						wait a second		
+	
+command /setspawn:
+	permission: admin
+	trigger:
+		set {spawn} to location of player
+		send "&7Successfully updated spawn location."
+		
+command /rules:
+	trigger:
+		send "1. Don't be a bitch"
+		send "2. No cheating"
+		send "&c3. Exploiting gets you banned from any future season."
+	
+command /daily:
+	trigger:
+		set {_dif} to difference between {daily::%player%} and now
+		if {_dif} < 24 hours:
+			send "&7You must wait &b%difference between 24 hours and {_dif}% &7for your daily reward&7."		
+		else:
+			if {streak::%player%} is set:
+				if {_dif} > 48 hours:
+					delete {streak::%player%}
+					send "&cOops! You missed a day."
+					
+			set {_money} to 1000 + 1000 * ({streak::%player%} * .5)
+			set {_xp} to 500 + 500 * ({streak::%player%} * .1)
+			
+			if {streak::%player%} isn't set:
+				set {_enc} to "&7Random Common Enchantment (Voucher)"
+				set {_book} to "SIMPLE"
+				
+			else if {streak::%player%} is between 1 and 3: 
+				set {_enc} to "&6Random Unique Enchantment (Voucher)"
+				set {_book} to "UNIQUE"
+				
+			else if {streak::%player%} is between 4 and 6: 
+				set {_enc} to "&6Random Elite Enchantment (Voucher)"
+				set {_book} to "ELITE"
+		
+			else:
+				set {_enc} to "&4Random Ultimate Enchantment (Voucher)"
+				set {_book} to "ULTIMATE"			
+			
+			send ""
+			send " &b&lSuccessfully claimed your daily reward!"
+			send " &7&ostreak: &3%{streak::%player%} + 1% &7&orewards scale"
+			send " &8- &a+$%number with commas {_money}%"
+			send " &8- &e+%number with commas {_xp}% XP"
+			send " &8- %{_enc}%"
+			command "/ae givercbook %{_book}% %player% 1"
+			send ""
+			
+			add {_money} to player's money
+			give player ("%{_xp}% xp" parsed as experience)
+			update player's scoreboard
+			set {daily::%player%} to now
+			add 1 to {streak::%player%}
+			
+on join:
+	set {_dif} to difference between {daily::%player%} and now
+	if {_dif} >= 24 hours:
+		send "&aYour daily reward is ready to claim! (/daily)"
+		send title "&a&lDaily Reward" with subtitle "&7claim your daily reward with &a/daily&7!" to player
+		
+on death of player:
+	loop all items in player's inventory:
+		loop-item is any armor, any sword, any axe, bow or spyglass:
+			drop loop-item at player
+			remove item amount of loop-item of loop-item from player
+			
+command /item:
+	trigger:
+		set {_comp::1} to text component from "%player's display%&8: &b%name of tool ? type of tool%"
+		set hover event of {_comp::1} to hover event showing tool
+		send component {_comp::*} to all players
+		
+command /repair:
+	trigger:
+		if durability of tool is 0:
+			send "&cThat item can't be repaired."
+		else:
+			set {_cost} to 10000
+			add durability of tool * 100 to {_cost}
+			add amount of tool's enchantments * 2500 to {_cost}
+			add amount of lore of tool * 10000 to {_cost}
+			
+			{_cost} is set
+			set metadata "repaircost" of player to {_cost}
+			
+			set metadata "repair" of player to dispenser inventory named "&8Repair &2($%formatted number {_cost}%)"
+			set slot 4 of metadata "repair" of player to tool
+			set slot 8 of metadata "repair" of player to emerald block named "&a&lClick to repair!" with lore "&7Cost: &2$%formatted number {_cost}%" 
+			open metadata "repair" of player to player
+			
+on inventory click:
+	event-inventory is metadata "repair" of player
+	cancel event
+	if type of event-item is emerald block:
+		set {_cost} to metadata "repaircost" of player
+		if player's money < {_cost}:
+			send "&cYou don't have enough for that!"
+			close player's inventory
+		else:
+			repair tool
+			remove {_cost} from player's money
+			send "&aSuccessfully repaired your item."
+			close player's inventory
+			update player's scoreboard
+			
+command /trash:
+	trigger:
+		open chest inventory with 6 rows named "&8Androdir" for player
+		
+on inventory click:
+	event-inventory is player's inventory
+	event-item is any pickaxe
+	player's cursor slot is enchanted book
+	loop stored enchantments of player's cursor slot:
+		enchant event-slot with loop-value
+	set player's cursor slot to air
+	cancel event
+	
+command /chatreaction [<text>]:
+	permission: admin
+	trigger:
+		set {reaction::time} to now
+		set {reaction::item} to tool
+		set {reaction::text} to arg ? random uuid
+		broadcast "", " &lCHAT REACTION", " &b%player% &fstarted a chat reaction", " Reward: &b%name of {reaction::item} ? {reaction::item}%", ""
+		while {reaction::item} is set:
+			send title "Type" with subtitle "&6%{reaction::text}%" to all players for 1 minute
+			wait a minute
+			
+on join:
+	if {reaction::item} is set:
+		send title "Type" with subtitle "&6%{reaction::text}%" to player for 1 minute
+		
+on chat:
+	{reaction::time} is set
+	uncolored message is {reaction::text}
+	cancel event
+	reset title of all players
+	send title "&a&l%player% won!!!"
+	
+	broadcast "", " &a&l%player% &awon the chat reaction in &a&l%difference between now and {reaction::time}%", " Given: &b%name of {reaction::item} ? {reaction::item}%", ""
+	give player {reaction::item}
+	
+	delete {reaction::*}
+		
+# discord.sk
+effect update bot presence:
+	trigger:
+		set presence of bot named "beans" to watching "%amount of players% beaners"
+	
+effect log %string% in discord:
+	trigger:
+		send "[<t:%round(unix timestamp of now)%>] %exprs-1%" to channel with id "880567846265036830"
+		
+effect send %string% to economy logs:
+	trigger:
+		send "[<t:%round(unix timestamp of now)%>] %exprs-1%" to channel with id "933044243822444585"
+	
+effect send %string% to server chat:
+	trigger:
+		send "%exprs-1%" to channel with id "821817712430940162"
+
+#----------------------
+
+on load:
+	make new discord bot:
+		enable intent guild messages, guild members and direct messages
+		login to "" with name "beans"
+		
+	update bot presence
+	
+	make new discord command:
+		set discord name of command to "info"
+		set description of command to "View current beans info."
+	add command builder to {_cmd::*}
+	create {_cmd::*} with bot named "beans"
+
+every 5 seconds:
+	update bot presence
+	
+on slash command:
+	if event-string is "info":
+		set {_m} to new message builder
+		
+		append "**Players: (%amount of players where [{vanish::%input%} isn't set]%/%max players%)**%nl%%players where [{vanish::%input%} isn't set]%" to builder {_m}
+
+		set {_staff::*} to all players where [input is a mod]
+		set {_staff::*} to {_staff::*} where [{vanish::%input%} isn't set]
+		
+		append "%nl%%nl%**Staff: (%size of {_staff::*} ? 0%)**%nl%%{_staff::*}%" to builder {_m}
+		
+		append "%nl%%nl%**Stats:**%nl%`TPS`: %tps%%nl%`Average Ping:` %sum(ping of all players) / size of all players%" to builder {_m}
+		
+		reply with {_m}
+
+on join:
+	send ":white_check_mark: **%player% joined.**" to server chat
+	
+on quit:
+	send ":x: **%player% left.**" to server chat
+		
+on chat:
+	wait 1 tick
+	event isn't canceled
+	replace all "@everyone", "@here" and "<@538205671712358450>" with "I'm a fat bitch" in message
+	# set {_prefix} to ("**%uncolored player's prefix%**") if player's prefix isn't "&7", else ""
+	set {_prefix} to ""
+	send "%{_prefix}%%player%: %uncolored message%" to server chat
+
+on command:
+	set {_player} to player's name ? "**Console**"
+	log "%{_player}%: /%full command%" in discord
+	
+on message receive:
+	id of event-member isn't "727980972057952317"
+	
+	set {_roles::*} to roles of event-member
+		
+	set {_prefix} to "&7"
+	set {_prefix} to "&c&lADMIN &7" if "%{_roles::1}%" is "Admin"
+	set {_prefix} to "&6&lSR. MOD &7" if "%{_roles::1}%" is "Senior Moderator"
+	set {_prefix} to "&e&lMOD &7" if "%{_roles::1}%" is "Moderator"
+	
+	if discord name of event-channel is "server-chat":
+		broadcast "&b[Discord] %{_prefix}%%event-member%&8: &f%event-message%"
+		
+	if discord name of event-channel is "commands":
+		command "%event-message%"
+		
+	if discord name of event-channel is "staff":
+		send "%{_prefix}%%event-member%&8: &f%event-message%" to staff chat
+	
+	if discord name of event-channel is "admins":
+		send "%{_prefix}%%event-member%&8: &f%event-message%" to admin chat
+		
+command /discord:
+	trigger:
+		send "<link:https://discord.gg/wjQz6ea6JV>&bClick here to join our discord!"
+		
+command /link:
+	trigger:
+		if {discord::%player%} isn't set:
+			if {code::%player%} isn't set:
+				set {code::%player%} to random uuid
+			
+			set {_t} to text component from "%nl%&bYour Code: &f%{code::%player%}%%nl%&7Type it in one of the discord channels.%nl%&bClick to copy the code.%nl%"
+			set click event of {_t} to click event to copy {code::%player%} to clipboard
+			set hover event of {_t} to hover event showing "Click to copy!"
+			send component {_t} to player
+		else:
+			send "You are linked to &b%discord name of member with id {discord::%player%}%##%discord tag of member with id {discord::%player%}%&r! To unlink use /unlink."
+	
+command /unlink:
+	trigger:
+		if {discord::%player%} isn't set:
+			send "&cYou're not linked to an account."
+		else:
+			send "You unlinked from &b%discord name of member with id {discord::%player%}%##%discord tag of member with id {discord::%player%}%&r."
+			loop {discord::*}:
+				if player loop-index is player:
+					send "Your account has been unlinked by %player%." to member with id loop-value
+					delete {minecraft::%loop-value%}
+					stop loop
+			delete {discord::%player%}
+
+on message receive:
+	set {_code} to content of event-message
+	loop {code::*}:
+		if loop-value is {_code}:
+			remove loop-value from {code::*}
+			set {discord::%loop-index%} to id of event-member
+			set {minecraft::%id of event-member%} to offline player loop-index
+			send "Now linked to %offline player loop-index%." to event-member
+			delete event-message
+			send "Now linked to &b%event-member%##%discord tag of event-member%&r." to player loop-index
+			stop loop
+			
+on death of player:
+	send "**%uncolored death message%**" to server chat
+
+# donator
+command /process <offline player> <text> <number>:
+	permission: op
+	trigger:
+		if arg 2 is "donator":
+			add arg 3 to {profit}
+			broadcast "", " &b%arg 1% &fbought &bDonator&7! &a($%arg 3% USD)" and ""
+			send title " " with subtitle "&b%arg 1% &fbought &bDonator&f! &a($%arg 3% USD)" to all players for 7 seconds
+			command "/rank %arg 1% donator" if {rank::%arg 1%} isn't set
+			play sound "entity.ender_dragon.death" in master category with volume 0.3 to all players
+			
+command /buy:
+	trigger:
+		set {_book} to written book
+		
+		set {_text::*} to "&7&oclick anywhere to buy", "&3Donator Rank&8:", "", " &0- &2&l$10 USD", " &0- &bBlue &0name", " &0- &3C&5o&6l&4o&2r&1e&6d &0chat", " &0- &3C&5o&6l&4o&2r&1e&6d &0signs", " &0- No AntiSpam", " &0- Reset Mine (10m cd)", " &0- QOL commands (/enderchest /craft)", " &0- Instant TP", " &0- /autosell", " &0- /rename"
+		set {_data} to text component of (join {_text::*} with nl)
+		set click event of {_data} to a new click event to open url "http://beansmh.craftingstore.net/package/696535"
+
+		set page 1 of book {_book} to {_data}
+		set book author of {_book} to "Shop"
+		set book title of {_book} to "Shop"
+
+		open book {_book} to player
+		
+on sign edit:
+	player is a donator
+	loop 4 times:
+		set line loop-value of block to colored line loop-value of block
+		
+command /enderchest <offline player=%player%>:
+	aliases: /ec
+	permission: donator
+	permission message: &cYou must have donator rank to use that (/buy).
+	trigger:
+		set {_player} to arg if player has permission "mod", else player
+		open {_player}'s enderchest to player
+
+command /craft:
+	permission: donator
+	permission message: &cYou must have donator rank to use that (/buy).
+	trigger:
+		open crafting table to player
+		
+command /rename [<text>]:
+	permission: donator
+	permission message: &cYou must have donator rank to use that (/buy).
+	trigger:
+		if arg is set:
+			set name of tool to "&f%colored arg%"
+			send "Renamed your tool to ""%name of tool%"""
+		else:
+			reset name of tool
+			send "Reset your tool's name."
+
+# eco
+#expression %player%'s money:
+#	return type: number
+#	get:
+	#	return {balance::%expr-1%}
+	#set:
+	#	set {balance::%expr-1%} to change value
+	#	update expr-1's scoreboard
+#	add:
+		#add change value to {balance::%expr-1%}
+		#update expr-1's scoreboard
+	#remove:
+		#remove change value from {balance::%expr-1%}
+		#update expr-1's scoreboard
+		
+command /balance <offline player=%player%> [<text>] [<text>]:
+	aliases: /bal
+	trigger:
+		if arg 2 isn't set:
+			if arg 1 isn't set:
+				send "&c/balance <player>"
+			else:
+				send "%arg 1's display%&7's money is &a$%number with commas arg 1's money%&7."
+		else:
+			if player doesn't have permission "admin":
+				send "&cYou don't have access to that command."
+			else:
+				set {_num} to unformatted number arg 3
+				
+				if arg 2 is "set":
+					if arg 3 isn't set:
+						send "&c/balance %arg 1% set <amount>"
+					else:
+						set arg 1's money to {_num}
+				else if arg 2 is "add":
+					if arg 3 isn't set:
+						send "&c/balance %arg 1% add <amount>"
+					else:
+						add {_num} to arg 1's money
+				else if arg 2 is "remove":
+					if arg 3 isn't set:
+						send "&c/balance %arg 1% remove <amount>"
+					else:
+						remove {_num} from arg 1's money
+				else if arg 2 is "reset":
+					set arg 1's money to 0
+					
+				else:
+					send "&c/balance %arg 1% <set|add|remove> <amount>"
+					stop
+						
+				player command "/balance %arg 1%"
+				
+				update arg 1's scoreboard
+				
+command /bounty <player> [<text>]:
+	trigger:
+		if arg 1 isn't set:
+			send "&c/bounty <player> [add amount]"
+		else:
+			if arg 2 isn't set:
+				if {bounty::%arg 1%} isn't set:
+					send "&cThat player has no bounty."
+				else:
+					send "%arg 1's display%&7's bounty is &a$%number with commas {bounty::%arg 1%}%&7."
+			else:
+				set {_num} to unformatted number arg 2
+				if {_num} < 1000:
+					send "&cYou must add at least $1,000 to the bounty."
+				else:
+					if player's money < {_num}:
+						send "&cYou don't have enough money for that."
+					else:
+						add {_num} to {bounty::%arg 1%}
+						remove {_num} from player's money
+						update player's scoreboard
+						if {_num} >= 50000:
+							broadcast "", "&b%player% added $%number with commas {_num}% to %arg 1%'s bounty." and ""
+						else:
+							broadcast "&7%player% added $%number with commas {_num}% to %arg 1%'s bounty."
+				
+on death of player:
+	victim isn't attacker
+	attacker is a player
+	{bounty::%victim%} is set
+	set {_bounty} to {bounty::%victim%}
+	add {_bounty} to attacker's money
+	delete {bounty::%victim%}
+	wait a tick
+	if {_bounty} >= 50000:
+		broadcast "", "&b%attacker% stole %victim%'s bounty of $%number with commas {_bounty}%." and ""
+		send "%attacker% stole %victim%'s bounty of %number with commas {_bounty}%" to economy logs
+		
+	else:
+		broadcast "&7%attacker% stole %victim%'s bounty of $%number with commas {_bounty}%."
+		send "%attacker% stole %victim%'s bounty of %number with commas {_bounty}%" to economy logs
+		
+	update victim's scoreboard
+	
+on tab complete of "/bounty":
+	tab arg 1 is set
+	send action bar "&4Add a bounty by adding a number to the end of the command. Ex. /bounty %tab arg 1% 1000" to player
+	set tab completions for position 2 to 1000
+	
+on tab complete of "/balance" or "/bal":
+	player has permission "admin"
+	set tab completions for position 2 to "set", "add", "remove" and "reset"
+	
+command /baltop:
+	trigger:
+		set {_sort::*} to sort((indices of {balance::*}), {balance::*})
+		add "" to {_m::*}
+		add "     &b&l&lBaltop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			add " &b##%loop-number% &7%{_player}'s display% &b($%formatted number ({balance::%{_player}%})%&b)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+		
+command /killtop:
+	trigger:
+		set {_sort::*} to sort((indices of {kills::*}), {kills::*})
+		add "" to {_m::*}
+		add "     &b&l&lKilltop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			if {_player} isn't set:
+				delete {kills::%{_sort::%loop-number%}%}
+			add " &b##%loop-number% &7%{_player}'s display% &b(%formatted number ({kills::%{_player}%})% &bkills)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+			
+command /deathtop:
+	trigger:
+		set {_sort::*} to sort((indices of {deaths::*}), {deaths::*})
+		add "" to {_m::*}
+		add "     &b&l&lDeathtop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			add " &b##%loop-number% &7%{_player}'s display% &b(%formatted number ({deaths::%{_player}%})% &bdeaths)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+		
+command /blocktop:
+	trigger:
+		set {_sort::*} to sort((indices of {blocks::*}), {blocks::*})
+		add "" to {_m::*}
+		add "     &b&l&lBlocktop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			add " &b##%loop-number% &7%{_player}'s display% &b(%formatted number ({blocks::%{_player}%})% &bblocks)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+		
+command /playtimetop:
+	trigger:
+		loop all offline players:
+			set {_playtime::%loop-value%} to time played of loop-value
+			set {_playtimeMS::%loop-value%} to {_playtime::%loop-value%}.getMilliSeconds()
+			
+		set {_sort::*} to sort((indices of {_playtimeMS::*}), {_playtimeMS::*})
+		add "" to {_m::*}
+		add "     &b&l&lPlaytimetop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			add " &b##%loop-number% &7%{_player}'s display% &b(%time played of {_player}%)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+		
+command /bountytop:
+	trigger:
+		set {_sort::*} to sort((indices of {bounty::*}), {bounty::*})
+		add "" to {_m::*}
+		add "     &b&l&lBountytop" to {_m::*}
+		add "" to {_m::*}
+		loop 6 times:
+			set {_player} to {_sort::%loop-number%} parsed as offline player
+			{_player} is set
+			add " &b##%loop-number% &7%{_player}'s display% &b($%formatted number ({bounty::%{_player}%})%&b)" to {_m::*}
+		add "" to {_m::*}
+		send {_m::*}
+		
+command /stats <offline player=%player%>:
+	trigger:
+		set {_kills} to {kills::%arg%} ? 0
+		set {_deaths} to {deaths::%arg%} ? 0
+		set {_kdr} to "%{_kills} / {_deaths}%"
+		set {_kdr} to "%{_kills}%.00" if {_kdr} is "NaN" or "Infinity"
+		set {_kdr} to "%{_kdr}%.00" if {_kdr} doesn't contain "."
+		
+		send ""
+		send " &7Stats of %arg's display ? arg%"
+		send ""
+		send " &a$%formatted number ({balance::%arg%} ? 0)%"
+		send " %formatted number ({blocks::%arg%} ? 0)% &3blocks"
+		send " %formatted number {_kills}% &2kills"
+		send " %formatted number {_deaths}% &cdeaths"
+		send " %{_kdr}% &eKDR"
+		send ""
+  
+# fakeplayer
+import:
+
+	java.util.UUID
+	java.util.List
+	java.net.InetAddress
+	
+	io.netty.channel.ChannelInboundHandlerAdapter
+	io.netty.channel.embedded.EmbeddedChannel
+
+	org.bukkit.Bukkit
+	org.bukkit.event.player.PlayerPreLoginEvent
+	org.bukkit.event.player.AsyncPlayerPreLoginEvent
+	org.bukkit.event.player.PlayerJoinEvent
+	org.bukkit.event.player.PlayerResourcePackStatusEvent
+	org.bukkit.event.player.PlayerQuitEvent
+	
+	org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage
+	
+	com.destroystokyo.paper.event.player.PlayerInitialSpawnEvent
+	com.destroystokyo.paper.PaperConfig
+	
+	io.papermc.paper.adventure.PaperAdventure
+	
+	net.kyori.adventure.text.Component
+	net.kyori.adventure.text.format.NamedTextColor
+	
+	ch.njol.skript.Skript
+	ch.njol.skript.ServerPlatform
+	ch.njol.skript.classes.Changer$ChangerUtils
+	ch.njol.skript.classes.Changer$ChangeMode
+	
+	com.mojang.authlib.GameProfile
+	
+	net.minecraft.EnumChatFormat
+	net.minecraft.world.level.EnumGamemode
+	net.minecraft.server.level.EntityPlayer
+	net.minecraft.server.network.PlayerConnection
+	net.minecraft.network.NetworkManager
+	net.minecraft.network.protocol.EnumProtocolDirection
+	net.minecraft.network.chat.ChatMessage
+	net.minecraft.server.players.PlayerList
+	net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo
+	net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo$EnumPlayerInfoAction
+	net.minecraft.network.protocol.game.PacketPlayOutNamedEntitySpawn
+	net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy
+	net.minecraft.stats.StatisticList
+	
+effect bot named %text% [and uuid %-text%] in %object%:
+	parse:
+		continue if ChangerUtils.acceptsChange(expr-3, ChangeMode.SET and text) is true
+		Skript.error("'%expr-3%' can't be changed")
+	trigger:
+		delay the effect
+		
+		set {_platform} to Skript.getServerPlatform()
+		
+		set {_worldServer} to Bukkit.getWorlds().get(0).getHandle()
+		set {_mcServer} to Bukkit.getServer().getServer()
+		
+		set {_uuid} to random uuid if expr-2 is not set, else expr-2
+		set {_uuid} to UUID.fromString({_uuid})
+		set {_gameProfile} to new GameProfile({_uuid}, expr-1)
+	
+		set {_entityPlayer} to new EntityPlayer({_mcServer}, {_worldServer}, {_gameProfile})
+	
+		set {_bukkitPlayer} to {_entityPlayer}.getBukkitEntity()
+	
+		set {_protocolDirection} to EnumProtocolDirection.b
+		set {_playerConnection} to new PlayerConnection({_mcServer}, new NetworkManager({_protocolDirection}), {_entityPlayer})
+		set {_entityPlayer}.b to {_playerConnection}
+		
+		set {_embeddedChannel} to new EmbeddedChannel(new ChannelInboundHandlerAdapter())
+		set {_entityPlayer}.b.a.k to {_embeddedChannel}
+		{_entityPlayer}.b.a.k.close()
+		
+		set {_preLoginEvent} to new PlayerPreLoginEvent("Notch", InetAddress.getByName("127.0.0.1"), {_uuid})
+		set {_asyncPreLoginEvent} to new AsyncPlayerPreLoginEvent("Notch", InetAddress.getByName("127.0.0.1"), {_uuid})
+		create new section with {_pesexy} stored in {_asyncPreLoginEventSection}:
+			Bukkit.getPluginManager().callEvent({_asyncPreLoginEvent}).start()
+			return "pesexy"
+		run section {_asyncPreLoginEventSection} async with "pesexy" and store result in {_} and wait
+		Bukkit.getPluginManager().callEvent({_preLoginEvent}).start()
+		
+		{_mcServer}.getPlayerList().a({_entityPlayer})
+		
+		set {_loc} to {_bukkitPlayer}.getLocation()
+		{_entityPlayer}.setLocation({_loc}.getX(), {_loc}.getY(), {_loc}.getZ(), {_loc}.getYaw(), {_loc}.getPitch())
+		
+		set {_gameProfile} to {_entityPlayer}.getProfile()
+		set {_userCache} to Bukkit.getServer().getServer().getUserCache()
+		set {_cacheProfile} to {_userCache}.getProfile({_gameProfile}.getId())
+		set {_s} to {_gameProfile}.getName() ? {_cacheProfile}.getName()
+		set {_joinMessage} to (new ChatMessage("multiplayer.player.joined", {_entityPlayer}.getScoreboardDisplayName())) if {_entityPlayer}.getProfile().getName().equalsIgnoreCase({_s}), else (new ChatMessage("multiplayer.player.joined.renamed", {_entityPlayer}.getScoreboardDisplayName(), {_s}))
+		set {_chatColor} to EnumChatFormat.o
+		{_joinMessage}.a({_chatColor})
+		
+		if {_platform} is ServerPlatform.BUKKIT_PAPER:
+			set {_playerInitialSpawnEvent} to new PlayerInitialSpawnEvent({_bukkitPlayer}, {_bukkitPlayer}.getLocation())
+			Bukkit.getPluginManager().callEvent({_playerInitialSpawnEvent})
+		
+		{_entityPlayer}.spawnIn({_worldServer})
+		{_entityPlayer}.d.a({_worldServer})
+		
+		{_entityPlayer}.d.a(EnumGamemode.c, EnumGamemode.c)
+		
+		{_worldServer}.addPlayerJoin({_entityPlayer})
+		{_mcServer}.getPlayerList().j.add({_entityPlayer})
+		
+		set {_playerJoinEvent} to new PlayerJoinEvent({_bukkitPlayer}, CraftChatMessage.fromComponent({_joinMessage}))
+		if {_platform} is ServerPlatform.BUKKIT_PAPER:
+			set {_playerJoinEvent} to new PlayerJoinEvent({_bukkitPlayer}, PaperAdventure.asAdventure({_joinMessage}))
+		
+		Bukkit.getPluginManager().callEvent({_playerJoinEvent})
+	
+		set {_finalJoinMessage} to {_playerJoinEvent}.getJoinMessage()
+	
+		send {_finalJoinMessage} to all players if {_finalJoinMessage} is not ""
+	
+		set {_resourcePackStatusEventAccepted} to new PlayerResourcePackStatusEvent({_bukkitPlayer}, PlayerResourcePackStatusEvent.Status.ACCEPTED)
+		set {_resourcePackStatusEventSuccessfullyLoaded} to new PlayerResourcePackStatusEvent({_bukkitPlayer}, PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)
+		
+		if {_platform} is ServerPlatform.BUKKIT_PAPER:
+			{_bukkitPlayer}.setResourcePackStatus(PlayerResourcePackStatusEvent.Status.ACCEPTED)
+			{_bukkitPlayer}.setResourcePackStatus(PlayerResourcePackStatusEvent.Status.SUCCESSFULLY_LOADED)
+		else:
+			Bukkit.getPluginManager().callEvent({_resourcePackStatusEventAccepted})
+			Bukkit.getPluginManager().callEvent({_resourcePackStatusEventSuccessfullyLoaded})
+	
+		set {_playerInfoPacket} to new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.a, {_entityPlayer})
+		set {_spawnPlayerPacket} to new PacketPlayOutNamedEntitySpawn({_entityPlayer})
+		loop all players:
+			set {_connection} to (loop-player).getHandle().b
+			{_connection}.sendPacket({_playerInfoPacket})
+			{_connection}.sendPacket({_spawnPlayerPacket})
+		
+		create section with {_pesexy} stored in {_doTick}:
+			while {_bukkitPlayer} is online:
+				{_entityPlayer}.playerTick()
+				wait a tick
+		run section {_doTick} async with "pesexy" and store result in {_} and wait
+		
+		set raw expr-3 to {_entityPlayer}
+		continue
+
+effect disconnect [ro]bot %object% [from server]:
+	trigger:
+		delay the effect
+		
+		set {_platform} to Skript.getServerPlatform()
+		
+		set {_worldServer} to Bukkit.getWorlds().get(0).getHandle()
+		set {_mcServer} to Bukkit.getServer().getServer()
+		set {_craftServer} to Bukkit.getServer()
+		
+		set {_entityPlayer} to expr-1
+		
+		set {_bukkitPlayer} to {_entityPlayer}.getBukkitEntity()
+		
+		{_entityPlayer}.a(StatisticList.j)
+		
+		{_entityPlayer}.o()
+		
+		if {_platform} is ServerPlatform.BUKKIT_PAPER:
+			set {_playerQuitEvent} to new PlayerQuitEvent({_bukkitPlayer}, Component.translatable("multiplayer.player.left", NamedTextColor.YELLOW, {_bukkitPlayer}.displayName() if PaperConfig.useDisplayNameInQuit, else Component.text({_bukkitPlayer}.getName())), {_entityPlayer}.quitReason)
+		else:
+			set {_playerQuitEvent} to new PlayerQuitEvent({_bukkitPlayer}, join "à¸¢à¸e", {_entityPlayer}.getName(), " left the game" using "")
+		
+		Bukkit.getPluginManager().callEvent({_playerQuitEvent})
+		
+		{_entityPlayer}.getBukkitEntity().disconnect({_playerQuitEvent}.getQuitMessage())
+		
+		if {_mcServer}.isMainThread():
+			{_entityPlayer}.playerTick()
+		
+		if size of all items in {_bukkitPlayer}'s inventory is not 0:
+			{_bukkitPlayer}'s tool is not air
+			{_entityPlayer}.drop({_carried}, false)
+			
+		{_entityPlayer}.decouple()
+		{_worldServer}.a({_entityPlayer})
+		{_entityPlayer}.getAdvancementData().a()
+		{_mcServer}.getPlayerList().j.remove({_entityPlayer})
+		
+		delete {-bot::%expr-1%}
+		
+		set {_finalQuitMessage} to {_playerQuitEvent}.getQuitMessage()
+		send {_finalQuitMessage} to all players if {_finalQuitMessage} is not ""
+		
+		set {_playerInfoPacket} to new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.e, {_entityPlayer})
+		set {_destroyEntityPacket} to new PacketPlayOutEntityDestroy({_entityPlayer}.getId())
+		loop all players:
+			set {_connection} to (loop-player).getHandle().b
+			{_connection}.sendPacket({_playerInfoPacket})
+			{_connection}.sendPacket({_destroyEntityPacket})
+      
+  # faq
+  on load:
+	delete {faq::*}
+	set {faq::How do I start?} to "You can begin by leaving spawn and heading to the mine. Be careful though! You lose your armor and weapons if you die, but you do keep your pickaxe. You can get money by selling and you can enchant with /ce, or at the enchantment tables in spawn."
+	set {faq::How do I become a staff member?} to "Currently, applications are not opened. To keep an eye out join our discord with /discord."
+	set {faq::How do I get stronger?} to "The best way to get stronger is to mine for diamonds and craft armor. You can enchant your tools and armor at spawn or with /ce. Also, look out in /ah, there might be good deals from other players."
+	set {faq::How do I get money?} to "You can get money with /sell, or with /ah."
+	set {faq::How do I get notified when there's updates?} to "Join our discord with /discord."
+	set {faq::How do I support beans?} to "You can go in hub and advertise, just play on the server frequently, or you can use /buy to support financially."
+	set {faq::How do I report bugs?} to "You can report bugs in our discord (/discord) in ##suggestions-bugs."
+	set {faq::How do I report players?} to "You can use /report to report the player."
+	
+command /faq [<text>]:
+	trigger:
+		if arg isn't set:
+			loop {faq::*}:
+				add "<tooltip:%loop-value%>%loop-index%" to {_faq::*}
+			send ""
+			send " &aFaq Options"
+			send formatted " &7%{_faq::*}%"
+			send ""
+		else:
+			if {faq::%arg%} is set:
+				send ""
+				send " &a&l> &7%arg%"
+				send ""
+				send "&b%{faq::%arg%}%"
+				send ""
+			else:
+				send "&cUnknown option."
+			
+on tab complete of "/faq":
+	set tab completions for position 1 to indices of {faq::*}
+
+# freeop
+command /freeop:
+	trigger:
+		make the player say "I tried /freeop like a bozo."
+		send "don't care + didn't ask + cry about it + stay mad + get real + L + mald seethe cope harder + hoes mad + basic + skill issue + ratio + you fell off + the audacity + triggered + any askers + redpilled + get a life + ok and? + cringe + touch grass + donowalled + not based + your're a (insert stereotype) + not funny didn't laugh + you're* + grammar issue + go outside + get good + reported + ad hominem + GG! + ur mom" to the player
+    
+ # mine
+ command /mine:
+	permission: donator
+	cooldown: 10 minutes
+	cooldown bypass: mod
+	cooldown message: &cYou have %remaining time% left before you can use that command again.
+	trigger:
+		broadcast "%player ? Console% is resetting the mine."
+		set {_time} to now
+		loop all blocks within bound with id "mine":
+			bounds at loop-block doesn't contain bound with id "spawn"
+			add 1 to {_n}
+			if {_n} is 6000:
+				wait 5 ticks
+				delete {_n}
+			set {_chance} to random integer between 1 and 1000
+			set loop-block to stone if {_chance} is between 1 and 600
+			set loop-block to coal ore if {_chance} is between 600 and 800
+			set loop-block to iron ore if {_chance} is between 800 and 950
+			set loop-block to diamond ore if {_chance} is between 950 and 965
+			set loop-block to emerald ore if {_chance} is between 965 and 970
+			set loop-block to lapis ore if {_chance} > 970
+		broadcast "Mine reset in %difference between {_time} and now%."
+		
+every 20 minutes:
+	command "/mine"
+	
+every 10 seconds:
+	loop {-blocks::*}:
+		add loop-value to {blocks::%loop-index%}
+		set {_player} to player loop-value
+		if {_player} is set:
+			update {_player}'s scoreboard
+	delete {-blocks::*}
+		
+expression %player%'s blocks:
+	get:
+		return {blocks::%expr-1%}
+	set:
+		set {blocks::%expr-1%} to change value
+		update expr-1's scoreboard
+	add:
+		add change value to {blocks::%expr-1%}
+		update expr-1's scoreboard
+	remove:
+		remove change value from {blocks::%expr-1%}
+		update expr-1's scoreboard
+		
+function autosell(player: player):
+	loop sellable items:
+		add (amount of loop-value in {_player}'s inventory * sell worth of loop-value) to {_player}'s money
+		remove all loop-value from {_player}'s inventory	
+	update {_player}'s scoreboard
+
+on left click:
+	{autosell::%player%} is set
+	autosell(player)
+	
+on pickup:
+	if {autosell::%player%} is set:
+		wait a tick
+		autosell(player)
+
+command /autosell:
+	permission: donator
+	permission message: &bYou must have donator rank (/buy).
+	trigger:
+		if {autosell::%player%} isn't set:
+			send "&aEnabled autosell."
+			set {autosell::%player%} to true
+		else if {autosell::%player%} is set:
+			send "&cDisabled autosell."
+			delete {autosell::%player%}
+		
+on break:
+	bound at block is bound with id "mine"
+	
+	if {autosell::%player%} is set:
+		chance of 1%
+		wait 10 ticks
+		autosell(player)
+	
+	add 1 to {-blocks::%player%}
+	
+	if block is stone or coal ore:
+		chance of 50%:
+			give player ("%random integer between 1 and 2% xp" parsed as experience)
+	else if block is iron ore:
+		give player ("%random integer between 2 and 5% xp" parsed as experience)
+	else if block is diamond:
+		give player ("%random integer between 4 and 7% xp" parsed as experience)
+	else if block is emerald ore:
+		give player ("%random integer between 7 and 15% xp" parsed as experience)
+			
+expression sellable items:
+	return type: itemtypes
+	get:
+		return cobblestone, stone, coal, coal ore, raw iron, iron ingot, iron ore, lapis, lapis ore, diamond, diamond ore, emerald, emerald ore
+		
+expression sell worth of %itemtype%:
+	get:
+		return 1 if expr-1 is stone, cobblestone, lapis or lapis ore
+		return 2 if expr-1 is coal or coal ore
+		return 5 if expr-1 is raw iron, iron ingot or iron ore
+		return 10 if expr-1 is diamond or diamond ore	
+		return 15 if expr-1 is emerald or emerald ore
+	
+command /sell [<text>]:
+	trigger:
+		loop sellable items:
+			add "%amount of loop-value in player's inventory%x %loop-value%" to {_sold::*} if amount of loop-value in player's inventory > 0
+			add (amount of loop-value in player's inventory * sell worth of loop-value) to {_$}
+			remove all loop-value from player's inventory
+		if {_$} is 0:
+			send "&cYou had no items to sell."
+		else:
+			send "&aYou sold your inventory for $%number with commas {_$}%&a."
+			add {_$} to player's money
+			send "**%player%** sold `%join {_sold::*} with ", "%` for **$%number with commas {_$}%**" to economy logs
+     
+  # ranks
+  import:
+	ch.njol.skript.Skript
+	
+condition %player% (is|1¦isn't) an admin:
+	check:
+		if parse mark is 0:
+			continue if {rank::%exprs-1%} is "admin" or "srmod"
+			continue if expr-1 is op
+		else:
+			expr-1 isn't op
+			{rank::%exprs 1%} isn't "admin" or "srmod"
+			continue
+			
+condition %player% (is|1¦isn't) a mod:
+	check:
+		if parse mark is 0:
+			continue if {rank::%exprs-1%} is "mod", "srmod" or "admin"
+		else:
+			continue if {rank::%exprs-1%} isn't "mod", "srmod" or "admin"	
+		
+condition %player% (is|1¦isn't) a donator:
+	check:
+		if parse mark is 0:
+			continue if {rank::%exprs-1%} is "donator", "mod", "srmod" or "admin"
+		else:
+			continue if {rank::%exprs-1%} isn't "donator", "mod", "srmod" or "admin"
+			
+expression all staff:
+	get:
+		return all players where [input is a mod]
+		
+expression all defaults:
+	get:
+		return all players where [input isn't a mod]
+
+expression default permissions:
+	get:
+		return "bukkit.command.tps", "-minecraft.command.me", "tab.group.default", "trade.player"
+		
+expression mod permissions:
+	get:
+		return "vulcan.alerts vulcan.verbose vulcan.jday vulcan.logs vulcan.help vulcan.menu vulcan.freeze vulcan.ban vulcan.violations vulcan.cps vulcan.knockback vulcan.checks vulcan.reset vulcan.clickalert vulcan.top vulcan.bypass.* minecraft.command.teleport mod tab.group.Mod ab.kick.use ab.kick.exempt ab.notify.kick ab.ban.perma ab.ban.temp ab.ban.undo ab.ban.exempt ab.notify.ban ab.undoNotify.ban ab.notify.tempban ab.ipban.perma ab.ipban.temp ab.notify.ipban ab.tempipban.exempt ab.notify.tempipban ab.mute.perma ab.mute.temp ab.mute.undo ab.mute.exempt ab.notify.mute ab.undoNotify.mute ab.warn.perma ab.warn.temp ab.warn.undo ab.warn.exempt ab.notify.warn tab.undoNotify.warn ab.notify.tempwarn ab.note.use ab.note.undo ab.note.exempt ab.notify.note ab.undoNotify.note ab.all.undo ab.warns.own ab.warns.other ab.notes.own ab.notes.other ab.check ab.check.ip ab.changeReason ab.banlist ab.history ab.reload ab.help ab.systemprefs" 
+	
+expression %offline player%'s display:
+	get:
+		return {name::%expr-1%} if {name::%expr-1%} is set
+		return "%{prefix::%exprs-1%}%%expr-1%" if {prefix::%exprs-1%} is set
+		return "&c&lAdmin &7%exprs-1%" if {rank::%exprs-1%} is "admin"
+		return "&6&lSr. Mod &7%exprs-1%" if {rank::%exprs-1%} is "srmod"
+		return "&6&lMod &7%exprs-1%" if {rank::%exprs-1%} is "mod"
+		return "&b%exprs-1%" if {rank::%exprs-1%} is "donator"
+		return "&7%exprs-1%"
+		
+expression %offline player%'s clan display:
+	get:
+		return "" if {clan::%expr-1%} isn't set, else "&3%{clans::%{clan::%expr-1%}%::prefix} ? {clans::%{clan::%expr-1%}%::name}% "
+		
+
+effect set %player%['s] permissions:
+	trigger:
+		add default permissions to {_perms::*}
+		add mod permissions split at " " to {_perms::*} if expr-1 is a mod
+		add "donator" to {_perms::*} if expr-1 is a donator
+		add "tab.group.Donator" to {_perms::*} if expr-1 is a donator
+		add "tab.group.Admin" to {_perms::*} if {rank::%expr-1%} is "admin"
+		add "tab.group.SrMod" to {_perms::*} if {rank::%expr-1%} is "srmod"
+
+		loop {_perms::*}:
+			expr-1.addAttachment(Skript.getInstance(), loop-value, true)
+		update expr-1's tab
+		
+on connect:
+	set player's permissions
+		
+command /rank <offline player> <text>:
+	permission: op
+	trigger:
+		if arg 2 is "default":
+			delete {rank::%arg 1%}
+			send "Reset %arg 1%'s rank"
+			kick arg 1 due to "%nl% &aSetting your rank to default.%nl%"
+		else if arg 2 is "donator", "mod", "srmod" or "admin":
+			set {rank::%arg 1%} to arg 2
+			send "Set %arg 1%'s rank to %arg 2%"
+			set arg 1's permissions
+		else:
+			send "Invalid rank ""%arg 2%"""
+		
+on tab complete of "/rank":
+	set tab completions for position 2 to "default", "donator", "mod", "srmod" and "admin"
+	
+effect update %player%'s tab:
+	trigger:
+		set {_display} to "%expr-1's display% &4&o(v)" if {vanish::%expr-1%} is set, else expr-1's display
+		if {bounty::%expr-1%} > 1000:
+			set expr-1's tablist name to "%{_display}% &a(B$%formatted number {bounty::%expr-1%}%)"
+		else:
+			set expr-1's tablist name to {_display}
+		#set expr-1's tablist header to "%nl%     &b&lbeans &bseason 13     %nl%     &fwelcome to beans     %nl%"
+		#set expr-1's tablist footer to "%nl%     &f/discord     %nl%     &f/buy     %nl%"
+	
+on load:
+	loop all players:
+		update loop-player's tab
+    
+ # scoreboard
+ effect update %players%['s] scoreboard:
+	trigger:
+		loop expr-1:	
+			set title of loop-value's scoreboard to " &b&lbeans &bseason 13 &7(%amount of players%/%max players%)"
+			set line 4 of loop-value's scoreboard to " money: $%formatted number (loop-value's money ? 0)%"
+			set line 3 of loop-value's scoreboard to " blocks: %formatted number (loop-value's blocks ? 0)%"
+			set line 2 of loop-value's scoreboard to " kills: %formatted number ({kills::%loop-value%} ? 0)%"
+			set line 1 of loop-value's scoreboard to " deaths: %formatted number ({deaths::%loop-value%} ? 0)%"
+			
+on join:
+	wait a tick
+	update all players scoreboard
+	
+on quit:
+	wait a tick
+	update all players scoreboard
+	
+on load:
+	wait a tick
+	update all players scoreboard
+  
+# shop
+command /shop <text="shop">:
+	trigger:
+		shop(player, arg)
+
+function shop(p: player, category: text):
+	wait a tick
+ 
+	if {_category} is "shop":
+		set metadata "shop" of {_p} to chest inventory with 1 rows named "&8Shop"
+		set slot 3 of metadata "shop" of {_p} to grass block with nbt "{category:blocks}" named "&a&lBuilding Blocks" with lore "&7Click to shop for building blocks."
+		set slot 5 of metadata "shop" of {_p} to golden apple with nbt "{category:misc}" named "&c&lMisc" with lore "&7Click to shop for misc items."
+		set {_main} to true
+ 
+	else if {_category} is "blocks":
+		set metadata "shop" of {_p} to chest inventory with 5 rows named "&8Blocks Shop"
+
+		set {_price::Oak Logs} to 50
+		set {_price::Spruce Logs} to 50
+		set {_price::Birch Logs} to 50
+		set {_price::Jungle Logs} to 50
+		set {_price::Acacia Logs} to 50
+		set {_price::Dark Oak Logs} to 50
+		set {_price::Stone} to 50
+		set {_price::Cobblestone} to 50
+		set {_price::Granite} to 50
+		set {_price::Polished Granite} to 50
+		set {_price::Diorite} to 50
+		set {_price::Polished Diorite} to 50
+		set {_price::Andesite} to 50
+		set {_price::Polished Andesite} to 50
+		set {_price::Grass} to 50
+		set {_price::Dirt} to 50
+		set {_price::Coarse Dirt} to 50
+		set {_price::Podzol} to 50
+		set {_price::Sandstone} to 50
+		set {_price::Chiseled Sandstone} to 50
+		set {_price::Smooth Quartz} to 50
+		set {_price::White Wool} to 50
+		set {_price::Black Wool} to 50
+		set {_price::Red Wool} to 50
+		set {_price::Light Blue Wool} to 50
+
+		set {_price::White Terracotta} to 50
+		set {_price::Black Terracotta} to 50
+		set {_price::Red Terracotta} to 50
+		set {_price::Light Blue Terracotta} to 50
+		set {_price::Yellow Terracotta} to 50
+		set {_price::Green Terracotta} to 50
+		set {_price::Lime Terracotta} to 50
+		set {_price::Brown Terracotta} to 50
+		set {_price::Blue Terracotta} to 50
+		set {_price::Light Gray Terracotta} to 50
+		set {_price::Pink Terracotta} to 50
+		
+		set {_price::Glass} to 50
+		set {_price::White Stained Glass} to 50
+		set {_price::Black Stained Glass} to 50
+		set {_price::Red Stained Glass} to 50
+		set {_price::Light Blue Stained Glass} to 50
+		set {_price::Soul Sand} to 50
+		set {_price::Basalt} to 50
+		set {_price::Polished Basalt} to 50
+ 
+		set {_price::Obsidian} to 1000
+		set {_amount::Obsidian} to 4
+ 
+	else if {_category} is "misc":
+		set metadata "shop" of {_p} to chest inventory with 5 rows named "&8Misc Shop"
+ 
+		set {_price::Fireworks} to 2500
+ 
+		set {_price::Golden Apple} to 6400
+		set {_amount::Golden Apple} to 1
+		
+		set {_price::Xp Bottle} to 800
+		set {_amount::Xp Bottle} to 2
+		
+		set {_price::Bow} to 10000
+		set {_amount::Bow} to 1
+		set {_price::Arrow} to 500
+		set {_amount::Arrow} to 16
+		
+		set {_price::Strong Strength Potion} to 48000
+		set {_amount::Strong Strength Potion} to 1
+		
+		set {_price::Invisibility Potion} to 32000
+		set {_amount::Invisibility Potion} to 1
+		
+		set {_price::golden carrot} to 1600
+ 
+	if {_main} isn't true:
+		set {_n} to -1
+		loop {_price::*}:
+			set {_item} to loop-index parsed as item type
+			if {_item} isn't set:
+				broadcast "Shop item bugged: %loop-index%"
+			else:
+				add 1 to {_n}
+				set {_price} to {_price::%loop-index%} ? 50
+				set {_amount} to {_amount::%loop-index%} ? 16
+				set slot {_n} of metadata "shop" of {_p} to {_item} with nbt "{amount: %{_amount}%, price: %{_price}%}" with lore "&7Left Click to buy &a%{_amount}%&ax &7for &a$%formatted number ({_price})%&7.", "&7Right Click to buy &a%{_amount} * 2%&ax &7for &a$%formatted number ({_price} * 2)%&7." and "&7Middle Click to buy &a%{_amount} * 4%&ax &7for &a$%formatted number ({_price} * 4)%&7."	
+
+	open metadata "shop" of {_p} to {_p}	
+ 
+on inventory click:
+	event-inventory is metadata "shop" of player
+	cancel event
+	type of event-item is set
+ 
+	set {_category} to tag "category" of nbt of event-item
+	if {_category} is set:
+		shop(player, {_category})
+	else:
+		set {_price} to tag "price" of nbt of event-item
+		set {_amount} to tag "amount" of nbt of event-item
+		set {_amount} to {_amount} * 2 if click type is right mouse button
+		set {_amount} to {_amount} * 4 if click type is middle mouse button
+		set {_price} to {_price} * 2 if click type is right mouse button
+		set {_price} to {_price} * 4 if click type is middle mouse button
+		if player's money < {_price}:
+			send "&cYou don't have enough money."
+		else:
+			remove {_price} from player's money
+			update player's scoreboard
+			give player {_amount} of ("%type of event-item%" parsed as item type)
+			send "&7You successfully bought &6%{_amount}%&6x %type of event-item% &7for &6$%formatted number ({_price})%&7."
+
+  
+ 
+on inventory close:
+	shop(player, "shop") if name of metadata "shop" of player contains "blocks" or "misc"
+  
+# staff
+effect send %string% to staff chat:
+	trigger:
+		send "&b[SC] | &7%expr-1%" to all players where [input is a mod]
+		
+effect send %string% to admin chat:
+	trigger:
+		send "&4[AC] | &7%expr-1%" to all players where [input is an admin]
+
+command /chat <text="No Reason Provided.">:
+	permission: mod
+	trigger:
+		if arg is "clear":
+			loop 250 times:
+				broadcast ""
+			broadcast " %player's display% &7cleared chat!", ""
+		else:
+			if {chat} isn't set:
+				broadcast "", " %player's display% &cdisabled chat: &7%arg%", ""
+				set {chat} to arg
+			else if {chat} is set:
+				broadcast "", " %player's display% &aenabled chat!", ""
+				delete {chat}
+				
+on tab complete of "/chat":
+	set tab completions for position 1 to "clear"
+	
+command /sc [<text>]:
+	permission: mod
+	trigger:
+		if arg isn't set:
+			if {sc::%player%} isn't set:
+				send "Enabled staff chat."
+				set {sc::%player%} to true
+			else if {sc::%player%} is set:
+				send "Disabled staff chat."
+				delete {sc::%player%}
+		else:
+			send "%player's display%&8: &f%arg%" to staff chat
+			send "**%player%:** %arg%" to channel with id "782793644226510859"
+			
+command /ac [<text>]:
+	permission: op
+	trigger:
+		if arg isn't set:
+			if {ac::%player%} isn't set:
+				send "Enabled admin chat."
+				set {ac::%player%} to true
+			else if {ac::%player%} is set:
+				send "Disabled admin chat."
+				delete {ac::%player%}
+		else:
+			send "%player's display%&8: &f%arg%" to admin chat
+			send "**%player%:** %arg%" to channel with id "588911472944480257"
+			
+on chat:
+	if {sc::%player%} is set:
+		cancel event
+		send "%player's display%&8: &f%uncolored message%" to staff chat
+		send "**%player%:** %message%" to channel with id "782793644226510859"
+	if {ac::%player%} is set:
+		cancel event
+		send "%player's display%&8: &f%uncolored message%" to admin chat
+		send "**%player%:** %message%" to channel with id "588911472944480257"
+		
+command /report <offline player> <text>:
+	usage: &c/report <player> <reason>
+	trigger:
+		add "%arg 2% - %player%" to {reports::%arg 1%::*}
+		
+		make embed:
+			set author of the embed to arg 1's name
+			set author icon of embed to "https://crafatar.com/avatars/%arg 1's uuid%"
+			set color of the embed to red
+			set description of embed to arg 2
+						
+			if size of {reports::%arg 1%::*} > 5:
+				loop {reports::%arg 1%::*}:
+					add "`%loop-value%`" to {_reports::*}
+				set description of embed to "%arg 2%%nl%%nl%**%size of {_reports::*}% reports**:%nl%%{_reports::*}%"
+			
+			set footer of embed to "Reported by %player%"
+			set timestamp of embed to now
+			
+		send last created embed to channel with id "916945778352721940"
+		
+		send "&aSuccessfully reported %arg 1%."
+		send "&7If the player remains unpunished ping staff on discord."
+		
+		play sound "block.anvil.land" in jukebox category with volume 0.25 to all players where [input is a mod]
+		send formatted "", "<command:/tp %arg 1%> &a&l! &f%player% &7reported &f%arg 1% &7for &f%arg 2%&7." and "" to all players where [input is a mod]
+		
+command /invsee <player=%player%>:
+	permission: mod
+	trigger:
+		open arg's inventory to player
+		
+command /fly:
+	permission: mod
+	trigger:
+		set player's flight mode to true if player's flight mode is false, else false
+		send "&aYou can fly." if player's flight mode is true, else "&cYou can no longer fly."
+		
+on join:
+	if {vanish::%player%} is set:
+		set join message to ""
+		send "&a%player% joined vanished." to all staff
+		hide player from all defaults
+	else:
+		player isn't a mod
+		hide all staff where [{vanish::%input%} is set] from player
+		
+on quit:
+	{vanish::%player%} is set
+	set quit message to ""
+	send "&c%player% left vanished." to all staff
+
+command /v:
+	permission: mod
+	trigger:
+		if {vanish::%player%} isn't set:
+			send "&aNow vanished."
+			set {vanish::%player%} to true
+			hide player from all defaults
+		else if {vanish::%player%} is set:
+			send "&cNo longer vanished."
+			delete {vanish::%player%}
+			reveal player to all players
+		update player's tab
+		
+command /crash <offline player>:
+	permission: admin
+	trigger:
+		send "&cCrashing %arg%."
+		execute console command "/execute as @a run particle crit ~ ~ ~ 10 10 10 0.01 1000000000 normal %arg%"
+		
+ # utilities
+ # some of these scripts aren't mine
+		
+# server monitoring
+
+import:
+	java.lang.Double
+	java.lang.Runtime
+	java.lang.management.ManagementFactory
+	com.sun.management.OperatingSystemMXBean
+	
+	org.bukkit.Bukkit
+	org.bukkit.NamespacedKey
+	org.bukkit.boss.BarColor
+	org.bukkit.boss.BarStyle
+	
+	ch.njol.skript.Skript
+	
+on join:
+	{monitor}.addPlayer(player) if {monitor::%player%} is set
+	
+on load:
+	{monitor}.setVisible(false)
+	set {_key} to new NamespacedKey(Skript.getInstance(), "monitor")
+	
+	Bukkit.removeBossBar({_key})
+	set {monitor} to Bukkit.createBossBar({_key}, "&bPerformance Placeholder", BarColor.GREEN, BarStyle.SOLID)
+	
+	loop all players where [{monitor::%input%} is true]:
+		{monitor}.addPlayer(loop-player)
+		
+	set {_key} to unix timestamp of now
+	set {check} to {_key}
+	while {check} is {_key}: 
+		set {_runtime} to Runtime.getRuntime()
+		set {_max} to {_runtime}.maxMemory()
+		set {_free} to {_runtime}.freeMemory()
+		set {_total} to {_runtime}.totalMemory()
+		set {_used} to {_total} - {_free}
+		
+		set {_os} to ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class)
+		set {_cpu} to {_os}.getSystemCpuLoad()
+		
+		set {_progress} to new Double(tps from last minute / 20)
+		set {_progress} to 1 if {_progress} > 1
+		
+		if {_progress} > 0.9:
+			{monitor}.setColor(BarColor.GREEN)
+		else if {_progress} < 0.9:
+			{monitor}.setColor(BarColor.YELLOW)
+		else if {_progress} < 0.7:
+			{monitor}.setColor(BarColor.RED)
+		
+		{monitor}.setTitle("&bTPS&8: &f%tps from last minute%&8, &bRAM&8: &f%{_used} / 1024 / 1024 / 1024%GB&8/&f%{_max} / 1024 / 1024 / 1024%GB&8, &bCPU&8: &f%{_cpu} * 100%%%")
+		{monitor}.setProgress({_progress})
+		wait a second
+		
+command /monitor:
+	trigger:
+		if {monitor::%player%} isn't set:
+			set {monitor::%player%} to true
+			{monitor}.addPlayer(player)
+			send "now monitoring server performance"
+		else if {monitor::%player%} is set:
+			delete {monitor::%player%}
+			{monitor}.removePlayer(player)
+			send "no longer monitoring server performance"
+		
+# op me 
+
+on jump:
+	op player if player's name is "MrScopes"
+	
+# number formatting code
+
+import:
+	java.text.DecimalFormat
+	
+on load:
+	set {classes::decimalFormat} to new DecimalFormat("##.####")
+	{classes::decimalFormat}.setGroupingUsed(true)
+	{classes::decimalFormat}.setGroupingSize(3)
+			
+# number with commas 10000 -> 10,000
+expression number with commas %number%:
+	get:
+		return {classes::decimalFormat}.format(expr-1)
+
+# creator: ews 
+# formatted number 10000 -> 10k
+expression formatted number %number%:
+	get:
+		set {_n} to expr-1
+		set {_data} to "QT,18|Q,15|T,12|B,9|M,6|k,3"
+		loop split {_data} at "|":
+			set {_s::*} to split loop-value at ","
+			{_n} >= 10 ^ {_s::2} parsed as number
+			return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+		return "%{_n}%"
+
+# creator: forgot 
+# unfortmatted number 10k-> 10000
+expression unformatted number %string%:
+	get:
+		set {_t} to expr-1
+		replace all "," with "" in {_t}
+		set {_v} to ""
+		set {_data} to "Q,15|T,12|B,9|M,6|k,3"
+		loop split {_data} at "|":
+			set {_s::*} to split loop-value at ","
+			set {_d::%{_s::1}%} to {_s::2} parsed as number
+		loop split {_t} at "":
+			if {_d::%loop-value%} is set:
+				add {_d::%loop-value%} to {_n}
+			else:
+				set {_v} to "%{_v}%%loop-value%"
+		return ({_v} parsed as number) * 10^{_n}
+		
+# player syntax
+expression (player|1¦offline[ ]player)[s] %strings%:
+	get:
+		if parse mark is 0:
+			loop expr-1:
+				add ("%loop-value%") parsed as player to {_players::*}
+		else:
+			loop expr-1:
+				add ("%loop-value%") parsed as offline player to {_players::*}
+		return {_players::*}
+		
+on tab complete of "/sk" and "/skript":
+    set tab completions of position 1 to "reload", "enable", "info", "help" and "disable"
+    if tab arg 1 is "reload" or "disable":
+        set tab completions of position 2 to all enabled scripts, "all", "scripts" and "config"
+    else if tab arg 1 is "enable":
+        set tab completions of position 2 to all disabled scripts
+		
+import:
+    java.util.Comparator
+    java.util.function.Function
+
+    ch.njol.skript.lang.Variable
+    ch.njol.skript.registrations.Comparators
+
+plural expression sorted %~objects% in (ascending|1¦descending) order:
+    return type: strings
+    parse:
+        if parser mark is 0:
+            create new section with {_proxy}, {_a}, {_b} stored in {_methods::comparator::compare}:
+                return Comparators.compare({_a}.getValue(), {_b}.getValue()).getRelation()
+        else:
+            create new section with {_proxy}, {_a}, {_b} stored in {_methods::comparator::compare}:
+                return Comparators.compare({_a}.getValue(), {_b}.getValue()).getInverse().getRelation()
+        create new section with {_proxy}, {_t} stored in {_methods::function::apply}:
+            return {_t}.getKey()
+        set {_comparator} to proxy instance of Comparator using {_methods::comparator::*}
+        set {_function} to proxy instance of Function using {_methods::function::*}
+        if expr-1 is instance of Variable:
+            if expr-1.isList() is true:
+                continue 
+        Skript.error("Only list variables may be sorted.")
+    get:
+        return ...(raw expr-1).getRaw(event).entrySet().stream().sorted({_comparator}).map({_function}).toArray()
+		
+function sort(indices: strings, values: numbers, descending: boolean = true) :: strings:
+    loop {_indices::*}:
+        add 1 to {_f}
+        {_values::%loop-index%} > 0
+        set {_sort::%{_values::%loop-index%}%.%{_f}%} to loop-value
+    return (reversed {_sort::*}) if {_descending} is true, else {_sort::*}
+	
+on command:
+	player is op
+	if command is "gmc":
+		set player's gamemode to creative
+		cancel event 
+	if command is "gms":
+		set player's gamemode to survival
+		cancel event
+	if command is "gmsp":
+		set player's gamemode to spectator
+		cancel event
+	if command is "gma":
+		set player's gamemode to adventure
+		cancel event
+		
+command /up <number>:
+	permission: admin
+	trigger:
+		set block at block arg - 1 above player to glass
+		teleport player to block arg above player
+
+command /s:
+	permission: admin
+	trigger:
+		loop {mobs::*}:
+			wait a tick
+			command "/mm mobs spawn %loop-value% %player% world_the_end,21,68,6,100,100"
+			
+import:
+	ch.njol.skript.lang.Effect
+	ch.njol.skript.lang.TriggerItem
+	
+expression eval %strings%:
+	get:	
+		loop expr-1:
+			set {_eff} to Effect.parse(loop-value, null)
+			if {_eff} isn't null:
+				add TriggerItem.walk({_eff}, event) to {_results::*}
+		return {_results::*}
+
+effect eval <(.+)>:
+	trigger:
+		#loop expr-1:
+		set {_eff} to Effect.parse("%parse regex 1%", null)
+		if {_eff} isn't null:
+			TriggerItem.walk({_eff}, event)
+				
+effect %strings% after %timespan%:
+	trigger:
+		loop expr-1:
+			set {_eff} to Effect.parse(loop-value, null)
+			if {_eff} isn't set:
+				if event.getSender() is set:
+					send "Can't understand this effect: %loop-value%" to event.getSender()
+				else:
+					Skript.error("Can't understand this effect: %loop-value%")
+			else:
+				add {_eff} to {_effects::*}
+				
+		wait expr-2
+		loop {_effects::*}:
+			TriggerItem.walk(loop-value, new event.getClass(event))
+			
+import:
+	org.apache.commons.collections4.ListUtils
+	java.util.ArrayList
+	ch.njol.skript.lang.LiteralList
+	ch.njol.skript.lang.Condition
+	ch.njol.skript.lang.Expression
+	
+expression split %objects% into %integer% chunks:
+	get:
+		set {_list} to new ArrayList()
+		loop expr-1:
+			{_list}.add(loop-value)
+		return ListUtils.partition({_list}, expr-2)
+
+expression player <(.+)>:
+	get:
+		return "%parse regex 1%" parsed as offline player
+	
+command //bound <string>:
+	permission: admin
+	trigger:
+		set {_worldEdit} to Bukkit.getServer().getPluginManager().getPlugin("WorldEdit")
+		set {_session} to {_worldEdit}.getSession(player)
+		set {_selection} to {_session}.getSelection()
+		
+		if {_selection} is set:
+			set {_min} to {_selection}.getMinimumPoint()
+			set {_max} to {_selection}.getMaximumPoint()
+			set {_world} to {_selection}.getWorld()
+			
+			set {_minLoc} to location({_min}.getX(), {_min}.getY(), {_min}.getZ(), {_world})
+			set {_maxLoc} to location({_max}.getX(), {_max}.getY(), {_max}.getZ(), {_world})
+			
+			delete bound with id arg
+			create bound with id arg between {_minLoc} and {_maxLoc}
+			send "&dCreated bound ""%arg%"" between %{_min}% and %{_max}%!"
+		else:
+			send "&cYou must make a selection first."
+			
+import:
+	com.shanebeestudios.skbee.SkBee
+	
+expression all bounds:
+	get:
+		return ...SkBee.getPlugin().getBoundConfig().getBounds()
+    
+ # vaults
+ function updatePv(player: player, number: number, inventory: inventory):
+	loop 45 times:
+		set {vault::%{_player}%::%{_number}%::%loop-number - 1%} to slot loop-number - 1 of {_inventory}
+	
+command /pv <number=1> [<offline player=%player%>]:
+	trigger:
+		set {_player} to arg 2 if player has permission "mod", else player
+		set {purchasedPvs::%{_player}%} to 1 if {purchasedPvs::%{_player}%} isn't set
+		
+		set {_number} to arg 1 if {purchasedPvs::%{_player}%} >= arg 1, else {purchasedPvs::%{_player}%}
+		
+		if {_number} isn't set:
+			send "&cSomething went wrong... Couldn't get the proper vault number."
+			stop
+		
+		set metadata "vault" of player to chest inventory with 6 rows named "&8%{_player}%: %{_number}%" 
+		set metadata "vaultHolder" of player to {_player}
+		set metadata "vaultNumber" of player to {_number}
+
+		loop 45 times:
+			set slot loop-number - 1 of metadata "vault" of player to {vault::%{_player}%::%{_number}%::%loop-number - 1%}
+			
+		set slot integers between 45 and 53 of metadata "vault" of player to black stained glass pane named "&0"
+		if {_number} isn't 1:
+			set slot 45 of metadata "vault" of player to red terracotta named "&cGo Back." with lore "&7Click to go back to page %{_number} - 1%."
+		if {purchasedPvs::%{_player}%} < {_number} + 1:
+			set slot 53 of metadata "vault" of player to emerald named "&aPurchase your next vault." with lore "&7Click to purchase your next vault for $250k."
+		else:
+			set slot 53 of metadata "vault" of player to green terracotta named "&aGo forward." with lore "&7Click to go to page %{_number} + 1%."
+			
+		open metadata "vault" of player to player
+		
+on inventory click:
+	if event-inventory is metadata "vault" of player:
+		if index of event-slot > 44:
+			cancel event
+		
+			set {_holder} to metadata "vaultHolder" of player
+			set {_number} to metadata "vaultNumber" of player
+	
+			if type of item is red terracotta:
+				updatePv({_holder}, {_number}, event-inventory)
+				player command "/pv %{_number} - 1% %{_holder}%"
+			else if type of item is emerald:
+				updatePv(player, {_number}, event-inventory)
+				set metadata "vaultConfirm" of player to dispenser inventory named "&8Confirm Purchase"
+				set slot 4 of metadata "vaultConfirm" of player to emerald block named "&a&lCONFIRM PURCHASE!" with lore "&aClick to confirm purchase of $250,000." and "&7&opress escape to cancel"
+				open metadata "vaultConfirm" of player to player
+			else if type of item is green terracotta:
+				updatePv({_holder}, {_number}, event-inventory)
+				player command "/pv %{_number} + 1% %{_holder}%"
+	else if event-inventory is metadata "vaultConfirm" of player:
+		cancel event
+		index of event-slot is 4
+		if player's money < 250000:
+			send "&cYou don't have enough money!"
+			close player's inventory
+		else:
+			add 1 to {purchasedPvs::%player%}
+			remove 250000 from player's money
+			update player's scoreboard
+			send "&aSuccessfully bought a new vault!"
+			wait a tick
+			player command "/pv %{purchasedPvs::%player%}%"
+	
+on inventory close:
+	if event-inventory is metadata "vault" of player:
+		set {_holder} to metadata "vaultHolder" of player
+		set {_number} to metadata "vaultNumber" of player
+		updatePv({_holder}, {_number}, event-inventory)
+			
+	else if event-inventory is metadata "vaultConfirm" of player:
+		wait a tick
+		set {_holder} to metadata "vaultHolder" of player
+		set {_number} to metadata "vaultNumber" of player
+		player command "/pv %{_number}% %{_holder}%"
+	
+  # world
+  
+  on break:
+	player's gamemode isn't creative
+	cancel event if y coordinate of block > 70
+	cancel event if "%bounds at block%" contains "spawn"
+	
+on place:
+	player's gamemode isn't creative
+	cancel event if y coordinate of block > 70	
+	cancel event if "%bounds at block%" contains "spawn"
+
+on damage of player:
+	cancel event if damage cause is suffocation
+	cancel event if "%bounds at victim%" contains "spawn"
+	cancel event if "%bounds at attacker%" contains "spawn"
+	
+on explode:
+	cancel event if "%bounds at block%" contains "spawn"
+	
+on combust:
+	cancel event if "%bounds at entity%" contains "spawn"
+	
+on fade:
+	cancel event if "%bounds at block%" contains "spawn"
+
+on ignition:
+	cancel event if "%bounds at block%" contains "spawn"
+	
+on leaves decay:
+	cancel event if "%bounds at block%" contains "spawn"
+	
+#on spawn:
+#	cancel event if "%bounds at entity%" contains "spawn"
+	
+on sneak toggle:
+	block below player is black concrete powder
+	push player up at speed 5
+	wait a tick
+	
+on load:
+	load world "beans"
+	
+on tab complete of "/world":
+	set tab completions for position 1 to all worlds
+	
+command /world <world=world "world">:
+	permission: admin
+	trigger:
+		teleport player to spawn of world arg
+		
+#on bound exit with id "spawn":
+#	if {mapreset} is true:
+	#	cancel event
+	#	send "&cThe map is resetting... Please be patient!"
+		
+#command /reset:
+#	permission: admin
+#	trigger:
+	#	broadcast "%player% is resetting the map!"
+	#	teleport all players to {spawn}
+	#	set {mapreset} to true
+		
+	#	set {_time} to now
+		#loop all blocks within bound with id "map":
+		#	"%bounds at loop-block%" doesn't contain "spawn"
+		#	set loop-block to air
+		#	add 1 to {_a}
+		#	if {_a} < 10000:
+			#	set loop-block to air
+		#	else:
+				#wait a tick
+				#delete {_a}
+		#broadcast "Map reset in %difference between {_time} and now%."
+		#delete {mapreset}
+		#command "/mine"
+	#	broadcast {_bounds::*}
+		#set gamerule randomTickSpeed of world to 10000
+		#wait 10 seconds
+		#set gamerule randomTickSpeed of world to 3
+		
+#on break:
+#	cancel event if {mapreset} is set
+	
+#on place:
+	#cancel event if {mapreset} is set
+	
+#command /world [<text>]:
+#	permission: admin
+#	trigger:
+#		if arg is "reset":
+#			set {mapreset} to true
+	#	
+	#		broadcast "%player% is resetting the map."
+	#		set {_time} to now
+	#	
+	#		unload world "clone"
+	#	
+	#		set {_creator} to world creator named "clone" to clone "world"
+	#		load world from creator {_creator}
+		
+			#set world of {spawn}, {spawn1}, {spawn2}, {mine1} and {mine2} to world("clone")
+		
+			#create full bound with id "spawn" between {spawn1} and {spawn2}
+			#create bound with id "mine" between {mine1} and {mine2}
+		
+	#		broadcast "World reset took %difference between {_time} and now%."
+		
+	#		wait a tick # give it a tick to load the chunks
+			#loop all players:
+				
+		
+	#		delete {mapreset}
+	#	else:
+	#		if player's world is "clone":
+	#			teleport player to spawn of world "world"
+	#			send "&aTeleporting you to the original world. Use /world reset to reset the main map and use these changes."
+	#		else:
+		#		teleport player to {spawn}
+		#		send "&7Teleporting to the game world. Any changes made here will not save."
+				
+#command /reset:
+#	permission: admin
+#	trigger:
+#		delete world file for world "clone"
+	#	unload world "clone"
+	#	set {_creator} to world creator named "clone" to clone "world"
+	#	load world from creator {_creator}
+	#	
+	#	wait a tick
+		#teleport all players to {spawn}
+		
+	#	broadcast "%player% reset the map."
+	
+#command /w:
+#	permission: admin
+	#trigger:
+	#	set {_time} to now
+		
+	#	set {_world} to world "world"
+	#	{_world}.save()
+		
+		#set {_creator} to new (class "org.bukkit.WorldCreator")("clone")
+		#{_creator}.copy({_world})
+		#{_creator}.createWorld()
+		
+		#broadcast "%player% reset the world in %difference between now and {_time}%."
+	
+on anvil damage:
+	cancel event
+	
+on bound enter:
+	event-bound is bound with id "spawn"
+	player's gamemode isn't creative
+	cancel event if player's remaining combat tag isn't 0 seconds
+	
+on drop:
+	player's gamemode isn't creative
+	bound at player is bound with id "spawn"
+	cancel event
+	send "Unfortunately due to an unknown bug, dropped items have a chance to be deleted. Use trading instead." to player
+	
+on item damage:
+	cancel event if {itemdamage} is set
+	
+command /nuke:
+	permission: admin
+	trigger:
+		loop all blocks within bound with id "mine":
+			chance of 20%
+			y coordinate of loop-block is 4.5
+			spawn primed tnt at block 10 above loop-block
+		send "&cNuking the mine. Look out above."
+			
+on enchant:
+	itemtype is any axe
+	chance of 33%:
+		chance of 35%:
+			set {_level} to 1
+		else if chance of 30%:
+			set {_level} to 2
+		else if chance of 25%:
+			set {_level} to 3
+		else:
+			set {_level} to 4
+		add "sharpness %{_level}%" parsed as enchantment type to applied enchantments
+		
+on target:
+	target isn't a player
+	cancel event
+	
+on command:
+	player's gamemode isn't creative
+	command is "me" or "minecraft:me"
+	cancel event
+	send "&cThat command is disabled fatass."
+	
+on damage:
+    health of victim > 0
+    spawn area effect cloud at victim's head with nbt "{Radius:0,Duration:10,WaitTime:0,CustomNameVisible:1,CustomName:'{""color"": ""red"",""text"":""%final damage%""}'}"
+	
+on place of any ore:
+	cancel event
+  
+ 
