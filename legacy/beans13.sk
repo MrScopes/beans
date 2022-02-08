@@ -1980,8 +1980,8 @@ command /monitor:
 		
 # op me 
 
-on jump:
-	op player if player's name is "MrScopes"
+#on jump:
+	#op player if player's name is "MrScopes"
 	
 # number formatting code
 
