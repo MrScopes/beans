@@ -5,8 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 
 public class Commands {
-    public Commands (Beans beans) {
-        
+    public Commands () {
+
     }
 
     public static void registerCommand(Command command) {

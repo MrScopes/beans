@@ -1,5 +1,7 @@
 package me.mrscopes.beans;
 
+import me.mrscopes.beans.commands.Commands;
+import me.mrscopes.beans.events.Events;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Beans extends JavaPlugin {
@@ -26,6 +28,8 @@ public final class Beans extends JavaPlugin {
             this.getLogger().severe(String.format("Couldn't connect to discord: %s", e));
         }
 
+        new Commands();
+        new Events();
     }
 
     @Override

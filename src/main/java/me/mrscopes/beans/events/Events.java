@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 
 public class Events {
     public Events () {
-
+        registerEvents(new SimpleEvents());
     }
 
     public static void registerEvents(Listener listener) {
