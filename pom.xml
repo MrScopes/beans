@@ -56,7 +56,7 @@
     <repositories>
         <repository>
             <id>papermc-repo</id>
-            <url>https://re po.papermc.io/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
 
         <repository>
