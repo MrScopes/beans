@@ -11,7 +11,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -49,20 +48,17 @@ public class Discord extends ListenerAdapter implements Listener {
         staffChat = client.getTextChannelById(Objects.requireNonNull(beans.getConfig().getString("staff chat id")));
         adminChat = client.getTextChannelById(Objects.requireNonNull(beans.getConfig().getString("admin chat id")));
 
-        assert serverChat != null;
-        assert staffChat != null;
-        assert adminChat != null;
-
-        beans.getLogger().info(String.format("server chat: #%s", serverChat.getName()));
-        beans.getLogger().info(String.format("staff chat: #%s", staffChat.getName()));
-        beans.getLogger().info(String.format("admin chat: #%s", adminChat.getName()));
-
         Bukkit.getPluginManager().registerEvents(this, beans);
     }
 
     @EventHandler
     public void onChat(AsyncChatEvent event) {
-        serverChat.sendMessage(String.format("%s: %s", event.getPlayer().getName(), PlainTextComponentSerializer.plainText().serialize(event.originalMessage()))).queue();
+        // delay so any changes to the message from the server is sent to discord
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Beans.getInstance(), () -> {
+                Component message = event.message().replaceText(builder -> builder.match("@everyone").replacement("at everyone"));
+                String paperSucksDamnWhyDoYouHaveToDoThisToGetMessageContentAsString = PlainTextComponentSerializer.plainText().serialize(message);
+                serverChat.sendMessage(String.format("%s: %s", event.getPlayer().getName(), paperSucksDamnWhyDoYouHaveToDoThisToGetMessageContentAsString)).queue();
+        }, 20);
     }
 
     @EventHandler

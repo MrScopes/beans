@@ -27,8 +27,8 @@ public class SimpleEvents implements Listener {
                 Component name = item.displayName().hoverEvent(item.asHoverEvent());
 
                 TextComponent component = Component.text()
+                        .append(Component.text(item.getAmount() > 1 ? item.getAmount() + "x " : "", item.displayName().color()))
                         .append(name)
-                        .append(Component.text(" x" + item.getAmount(), item.displayName().color()))
                         .build();
 
                 message = message.replaceText(msg -> msg.once().match("\\[item\\]").replacement(component));
@@ -38,5 +38,8 @@ public class SimpleEvents implements Listener {
         Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<gray><player><white>: <message>",
                 Placeholder.component("player", Component.text(event.getPlayer().getName())),
                 Placeholder.component("message", message)));
+
+        // for discord
+        event.message(message);
     }
 }
