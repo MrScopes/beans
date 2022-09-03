@@ -6,7 +6,8 @@ import org.bukkit.command.Command;
 
 public class Commands {
     public Commands () {
-
+        registerCommand(new AdminChat());
+        registerCommand(new StaffChat());
     }
 
     public static void registerCommand(Command command) {
