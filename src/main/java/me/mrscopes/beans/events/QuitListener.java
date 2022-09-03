@@ -12,6 +12,6 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         event.quitMessage(MiniMessage.miniMessage().deserialize("<player> left the server.", Placeholder.component("player", Component.text(event.getPlayer().getName()))));
-        Beans.getDiscord().getServerChat().sendMessage(String.format("✅ **%s** joined the server.", event.getPlayer().getName())).queue();
+        Beans.getDiscord().getServerChat().sendMessage(String.format("❌ **%s** left the server.", event.getPlayer().getName())).queue();
     }
 }
