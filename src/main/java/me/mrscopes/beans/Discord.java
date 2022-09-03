@@ -1,6 +1,5 @@
 package me.mrscopes.beans;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -9,18 +8,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.ServerOperator;
 
 import javax.security.auth.login.LoginException;
 import java.util.Objects;
 
-public class Discord extends ListenerAdapter implements Listener {
+public class Discord extends ListenerAdapter {
     private final JDA client;
     public JDA getClient() { return client; }
 
@@ -47,28 +41,6 @@ public class Discord extends ListenerAdapter implements Listener {
         serverChat = client.getTextChannelById(Objects.requireNonNull(beans.getConfig().getString("server chat id")));
         staffChat = client.getTextChannelById(Objects.requireNonNull(beans.getConfig().getString("staff chat id")));
         adminChat = client.getTextChannelById(Objects.requireNonNull(beans.getConfig().getString("admin chat id")));
-
-        Bukkit.getPluginManager().registerEvents(this, beans);
-    }
-
-    @EventHandler
-    public void onChat(AsyncChatEvent event) {
-        // delay so any changes to the message from the server is sent to discord
-        Bukkit.getScheduler().runTaskLaterAsynchronously(Beans.getInstance(), () -> {
-                Component message = event.message().replaceText(builder -> builder.match("@everyone").replacement("at everyone"));
-                String paperSucksDamnWhyDoYouHaveToDoThisToGetMessageContentAsString = PlainTextComponentSerializer.plainText().serialize(message);
-                serverChat.sendMessage(String.format("%s: %s", event.getPlayer().getName(), paperSucksDamnWhyDoYouHaveToDoThisToGetMessageContentAsString)).queue();
-        }, 20);
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        serverChat.sendMessage(String.format("✅ **%s** joined the server.", event.getPlayer().getName())).queue();
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        serverChat.sendMessage(String.format("❌ **%s** left the server.", event.getPlayer().getName())).queue();
     }
 
     @Override
