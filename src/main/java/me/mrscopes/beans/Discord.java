@@ -60,9 +60,9 @@ public class Discord extends ListenerAdapter {
         if (channel.equals(serverChat)) {
             Bukkit.broadcast(miniMessage.deserialize("<aqua>[Discord] <gray><name><white>: <message>", Placeholder.component("name", displayName), Placeholder.component("message", Component.text(finalContent))));
         } else if (channel.equals(staffChat)) {
-            Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("staff")).forEach(player -> player.sendMessage(miniMessage.deserialize("<green>[Staff] <white><name><white>: <message>", Placeholder.component("name", displayName), Placeholder.component("message", Component.text(finalContent)))));
+            Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("beans.staffchat")).forEach(player -> player.sendMessage(miniMessage.deserialize("\n<rainbow>**<reset> <gold>[Staff Chat] <yellow><name><dark_gray>:<reset> <message>\n", Placeholder.component("name", displayName), Placeholder.component("message", Component.text(finalContent)))));
         } else if (channel.equals(adminChat)) {
-            Bukkit.getOnlinePlayers().stream().filter(ServerOperator::isOp).forEach(player -> player.sendMessage(miniMessage.deserialize("<red>[Admin] <white><name><white>: <message>", Placeholder.component("name", displayName), Placeholder.component("message", Component.text(finalContent)))));
+            Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("beans.adminchat")).forEach(player -> player.sendMessage(miniMessage.deserialize("\n<rainbow>**<reset> <dark_red>[Admin Chat] <red><name><dark_gray>:<reset> <message>\n", Placeholder.component("name", displayName), Placeholder.component("message", Component.text(finalContent)))));
         }
     }
 

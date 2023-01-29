@@ -2,3 +2,14 @@ name: beans
 version: '${project.version}'
 main: me.mrscopes.beans.Beans
 api-version: 1.19
+commands:
+  staffchat:
+    aliases: sc
+    description: beans staff chat between discord and mc
+    permission: beans.staffchat
+    usage: /sc <message>
+  adminchat:
+    aliases: ac
+    description: beans admin chat between discord and mc
+    permission: beans.adminchat
+    usage: /ac <message>

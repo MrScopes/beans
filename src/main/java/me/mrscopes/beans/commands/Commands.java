@@ -1,16 +1,15 @@
 package me.mrscopes.beans.commands;
 
-import me.mrscopes.beans.Beans;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 
 public class Commands {
     public Commands () {
-        registerCommand(new AdminChat());
-        registerCommand(new StaffChat());
+        registerCommand("adminchat", new AdminChat());
+        registerCommand("staffchat", new StaffChat());
     }
 
-    public static void registerCommand(Command command) {
-        Bukkit.getCommandMap().register("beans", command);
+    public static void registerCommand(String name, CommandExecutor command) {
+        Bukkit.getPluginCommand(name).setExecutor(command);
     }
 }
