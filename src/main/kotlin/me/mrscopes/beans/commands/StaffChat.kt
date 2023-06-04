@@ -1,8 +1,8 @@
 package me.mrscopes.beans.commands
 
 import me.mrscopes.beans.Beans
-import me.mrscopes.beans.broadcastToAdmins
-import me.mrscopes.beans.broadcastToStaff
+import me.mrscopes.beans.Utilities.broadcastToAdmins
+import me.mrscopes.beans.Utilities.broadcastToStaff
 import me.mrscopes.beans.color
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor

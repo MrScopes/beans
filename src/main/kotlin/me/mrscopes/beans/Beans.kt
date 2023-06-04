@@ -2,13 +2,7 @@ package me.mrscopes.beans
 
 import me.mrscopes.beans.commands.Commands
 import me.mrscopes.beans.events.Events
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.util.StringUtil
 
 class Beans : JavaPlugin() {
     override fun onEnable() {
@@ -38,18 +32,3 @@ class Beans : JavaPlugin() {
             private set
     }
 }
-
-fun broadcastToStaff(message: TextComponent) {
-    Bukkit.getOnlinePlayers().forEach {
-        if (it.hasPermission("beans.staffchat") || it.isOp) it.sendMessage(message)
-    }
-}
-
-fun broadcastToAdmins(message: TextComponent) {
-    Bukkit.getOnlinePlayers().forEach {
-        if (it.hasPermission("beans.adminchat") || it.isOp) it.sendMessage(message)
-    }
-}
-
-fun String.color() = Component.text(ChatColor.translateAlternateColorCodes('&', this))
-fun Component.plainText() = PlainTextComponentSerializer.plainText().serialize(this)
