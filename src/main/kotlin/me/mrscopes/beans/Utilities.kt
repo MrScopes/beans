@@ -19,5 +19,6 @@ object Utilities {
         }
     }
 }
+
 fun String.color() = Component.text(ChatColor.translateAlternateColorCodes('&', this))
 fun Component.plainText() = PlainTextComponentSerializer.plainText().serialize(this)

@@ -5,10 +5,15 @@ import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
 class Events {
+    val chatListener = ChatListener()
+    val joinListener = JoinListener()
+    val quitListener = QuitListener()
+
+
     init {
-        registerEvents(ChatListener())
-        registerEvents(JoinListener())
-        registerEvents(QuitListener())
+        registerEvents(chatListener)
+        registerEvents(joinListener)
+        registerEvents(quitListener)
     }
 
     companion object {

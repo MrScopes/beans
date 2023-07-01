@@ -13,5 +13,6 @@ class QuitListener : Listener {
     fun onQuit(event: PlayerQuitEvent) {
         event.quitMessage(MiniMessage.miniMessage().deserialize("<dark_gray>[<red>-<dark_gray>]<reset> <gray>${event.player.name}", Placeholder.component("player", Component.text(event.player.name))))
         Beans.discord.serverChat.sendMessage("❌ **${event.player.name}** left the server.").queue()
+        Beans.events.chatListener.antispam.remove(event.player.uniqueId)
     }
 }

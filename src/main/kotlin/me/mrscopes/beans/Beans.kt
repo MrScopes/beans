@@ -16,7 +16,7 @@ class Beans : JavaPlugin() {
             logger.severe(String.format("Couldn't connect to discord: %s", e))
         }
         Commands()
-        Events()
+        events = Events()
     }
 
     override fun onDisable() {
@@ -29,6 +29,8 @@ class Beans : JavaPlugin() {
         lateinit var instance: Beans
             private set
         lateinit var discord: Discord
+            private set
+        lateinit var events: Events
             private set
     }
 }
