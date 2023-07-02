@@ -7,6 +7,7 @@ class Commands {
     init {
         registerCommand("adminchat", StaffChat())
         registerCommand("staffchat", StaffChat())
+        registerCommand("balance", BalanceCommand())
     }
 
     companion object {

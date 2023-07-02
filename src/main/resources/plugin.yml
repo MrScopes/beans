@@ -2,6 +2,8 @@ name: beans
 version: '${project.version}'
 main: me.mrscopes.beans.Beans
 api-version: 1.19
+depend:
+  - Vault
 commands:
   staffchat:
     aliases: sc
@@ -13,3 +15,6 @@ commands:
     description: beans admin chat between discord and mc
     permission: beans.adminchat
     usage: /ac <message>
+  balance:
+    aliases: bal
+    description: Check a player's money

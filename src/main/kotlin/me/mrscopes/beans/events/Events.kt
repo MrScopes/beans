@@ -8,17 +8,20 @@ class Events {
     val chatListener = ChatListener()
     val joinListener = JoinListener()
     val quitListener = QuitListener()
-
+    val connectListener = ConnectListener()
 
     init {
-        registerEvents(chatListener)
-        registerEvents(joinListener)
-        registerEvents(quitListener)
+        registerEvents(listOf(
+            chatListener,
+            joinListener,
+            quitListener,
+            connectListener
+        ))
     }
 
     companion object {
-        fun registerEvents(listener: Listener?) {
-            Bukkit.getPluginManager().registerEvents(listener!!, Beans.instance)
+        fun registerEvents(listeners: List<Listener>) {
+            listeners.forEach { listener -> Bukkit.getPluginManager().registerEvents(listener, Beans.instance) }
         }
     }
 }

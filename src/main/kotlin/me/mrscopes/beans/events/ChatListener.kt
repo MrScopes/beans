@@ -6,8 +6,6 @@ import me.mrscopes.beans.color
 import me.mrscopes.beans.plainText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextReplacementConfig
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -44,11 +42,12 @@ class ChatListener : Listener {
         }
 
         var message = event.message()
-        if (event.player.hasPermission("beans.chat.color"))
-            message = message.plainText().color()
+        var plainText = message.plainText()
+        if (player.hasPermission("beans.chat.color"))
+            message = plainText.color()
 
-        if (message.toString().contains("[item]")) {
-            val item = event.player.inventory.itemInMainHand
+        if (plainText.contains("[item]")) {
+            val item = player.inventory.itemInMainHand
             if (item.type != Material.AIR) {
                 val name = item.displayName().hoverEvent(item.asHoverEvent())
                 val component = Component.text()
@@ -59,8 +58,7 @@ class ChatListener : Listener {
             }
         }
 
-        Bukkit.broadcast(MiniMessage.miniMessage().deserialize("<gray>${event.player.name}<white>: <message>",
-                Placeholder.component("message", message)))
+        Bukkit.broadcast("&7${event.player.name}&f: $message".color())
 
         val discordMessage = message.replaceText { builder: TextReplacementConfig.Builder -> builder.match("@everyone").match("<@538205671712358450>").replacement("at everyone") }
         Beans.discord.serverChat.sendMessage("${event.player.name}: ${discordMessage.plainText()}").queue()

@@ -4,7 +4,7 @@
     <facet type="minecraft" name="Minecraft">
       <configuration>
         <autoDetectTypes>
-          <platformType>BUKKIT</platformType>
+          <platformType>PAPER</platformType>
           <platformType>ADVENTURE</platformType>
         </autoDetectTypes>
       </configuration>
