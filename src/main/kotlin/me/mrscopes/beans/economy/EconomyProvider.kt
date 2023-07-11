@@ -1,5 +1,6 @@
-package me.mrscopes.beans
+package me.mrscopes.beans.economy
 
+import me.mrscopes.beans.Beans
 import net.milkbowl.vault.economy.Economy
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
@@ -39,7 +40,7 @@ class EconomyProvider : Economy {
 
 
     override fun hasAccount(player: OfflinePlayer?): Boolean {
-        return player!!.mongoPlayer() != null
+        TODO("Not yet implemented")
     }
 
     override fun hasAccount(player: String?, worldName: String?): Boolean {

@@ -1,5 +1,7 @@
 package me.mrscopes.beans.commands
 
+import me.mrscopes.beans.economy.commands.BalanceCommand
+import me.mrscopes.beans.commands.staff.StaffChat
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 

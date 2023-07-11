@@ -1,60 +1,45 @@
 package me.mrscopes.beans
 
 import me.mrscopes.beans.commands.Commands
+import me.mrscopes.beans.discord.Discord
+import me.mrscopes.beans.economy.EconomyProvider
 import me.mrscopes.beans.events.Events
 import me.mrscopes.beans.mongo.Mongo
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import kotlin.math.log
 
 class Beans : JavaPlugin() {
     override fun onEnable() {
         instance = this
         saveDefaultConfig()
 
-        try {
-            discord = Discord(this)
-            logger.info("Connected to discord as ${discord.client.selfUser.asTag}")
-        } catch (e: Exception) {
-            logger.severe("Couldn't connect to discord: $e")
-            server.shutdown()
-        }
-        try {
-            mongo = Mongo(config.getString("mongo url")!!)
-            logger.info("Connected to mongo successfully.")
-        } catch (e: Exception) {
-            logger.severe("Couldn't connect to mongo:\n$e\nShutting down server.")
-            server.shutdown()
-        }
+        data class StartupTask(val description: String, val action: () -> Unit)
+        val tasks = listOf(
+            StartupTask("Connect to discord") { discord = Discord(this) },
+            StartupTask("Connect to mongo") { mongo = Mongo(config.getString("mongo url")!!) },
+            StartupTask("Create commands") { commands = Commands() },
+            StartupTask("Create events") { events = Events() },
+            StartupTask("Register vault economy") { server.servicesManager.register(Economy::class.java, EconomyProvider(), this, ServicePriority.Highest) }
+        )
 
-        try {
-            commands = Commands()
-            logger.info("Registered commands successfully.")
-        } catch (e: Exception) {
-            logger.severe("Couldn't create commands:\n$e\nShutting down server.")
-            server.shutdown()
-        }
-        try {
-            events = Events()
-            logger.info("Registered events successfully.")
-        } catch (e: Exception) {
-            logger.severe("Couldn't create events:\n$e\nShutting down server.")
-            server.shutdown()
-        }
-
-        try {
-            server.servicesManager.register(Economy::class.java, EconomyProvider(), this, ServicePriority.Highest)
-            logger.info("Registered vault economy successfully.")
-        } catch (e: Exception) {
-            logger.severe("Couldn't register vault economy:\n$e\nShutting down server.")
-            server.shutdown()
+        tasks.forEach { task ->
+            try {
+                task.action()
+                logger.info("${task.description} successfully.")
+            } catch (e: Exception) {
+                logger.severe("Couldn't ${task.description.toLowerCase()}:\n$e\nShutting down server.")
+                server.shutdown()
+            }
         }
     }
 
     override fun onDisable() {
         discord.client.shutdown()
         logger.info("Shutdown Discord client.")
+
+        mongo.client.close()
+        logger.info("Shutdown Mongo client.")
     }
 
     companion object {

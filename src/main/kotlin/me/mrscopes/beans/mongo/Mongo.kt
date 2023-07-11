@@ -8,18 +8,20 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters.eq
 import me.mrscopes.beans.Beans
+import me.mrscopes.beans.events.Events
+import me.mrscopes.beans.mongo.listeners.ConnectListener
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
 import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.bukkit.Bukkit
 import java.util.*
 
-
 class Mongo(url: String) {
     var mongoPlayers: HashMap<UUID, MongoPlayer>
     var playerCollection: MongoCollection<MongoPlayer>
     var database: MongoDatabase
     var client: MongoClient
+    var connectListener: ConnectListener
 
     init {
         val pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build())
@@ -33,6 +35,9 @@ class Mongo(url: String) {
         database = client.getDatabase("beans")
         playerCollection = database.withCodecRegistry(pojoCodecRegistry).getCollection("players", MongoPlayer::class.java)
         mongoPlayers = HashMap()
+
+        connectListener = ConnectListener()
+        Events.registerEvent(connectListener)
     }
 
     fun playerFromDatabase(uuid: UUID): MongoPlayer {

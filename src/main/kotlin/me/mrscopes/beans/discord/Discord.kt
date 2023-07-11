@@ -1,7 +1,12 @@
-package me.mrscopes.beans
+package me.mrscopes.beans.discord
 
-import me.mrscopes.beans.Utilities.broadcastToAdmins
-import me.mrscopes.beans.Utilities.broadcastToStaff
+import me.mrscopes.beans.Beans
+import me.mrscopes.beans.discord.listeners.ChatListener
+import me.mrscopes.beans.events.Events
+import me.mrscopes.beans.utilities.Utilities.broadcastToAdmins
+import me.mrscopes.beans.utilities.Utilities.broadcastToStaff
+import me.mrscopes.beans.utilities.color
+import me.mrscopes.beans.utilities.plainText
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.ChannelType
@@ -25,9 +30,12 @@ class Discord(plugin: Beans) : ListenerAdapter() {
         tempClient.awaitReady()
         client = tempClient
         beans = plugin
+
         serverChat = channelFromConfig("server chat id")!!
         staffChat = channelFromConfig("staff chat id")!!
         adminChat = channelFromConfig("admin chat id")!!
+
+        Events.registerEvent(ChatListener())
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {

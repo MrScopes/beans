@@ -1,8 +1,8 @@
-package me.mrscopes.beans.commands
+package me.mrscopes.beans.economy.commands
 
-import me.mrscopes.beans.Utilities
-import me.mrscopes.beans.color
-import me.mrscopes.beans.mongoPlayer
+import me.mrscopes.beans.utilities.Utilities
+import me.mrscopes.beans.utilities.color
+import me.mrscopes.beans.utilities.mongoPlayer
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 
 class BalanceCommand: CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        val player = Utilities.playerFromArg(sender as Player, args.joinToString())
+        val player = Utilities.playerFromArg(sender as Player, args[0])
         val mongoPlayer = player?.mongoPlayer()
 
         if (mongoPlayer == null) {
