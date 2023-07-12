@@ -13,7 +13,8 @@ class ChatListener : Listener {
         val player = event.player
 
         var message = event.message()
-        var plainText = message.plainText().replace(Regex("(@everyone|<@538205671712358450>)"), "at everyone").replace("§", "")
+        var plainText =
+            message.plainText().replace(Regex("(@everyone|<@538205671712358450>)"), "at everyone").replace("§", "")
 
         Beans.discord.serverChat.sendMessage("${player.name}: $plainText").queue()
     }

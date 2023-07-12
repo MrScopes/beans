@@ -26,7 +26,8 @@ class Discord(plugin: Beans) : ListenerAdapter() {
     val adminChat: TextChannel
 
     init {
-        val tempClient = JDABuilder.createDefault(plugin.config.getString("discord token")).addEventListeners(this).build()
+        val tempClient =
+            JDABuilder.createDefault(plugin.config.getString("discord token")).addEventListeners(this).build()
         tempClient.awaitReady()
         client = tempClient
         beans = plugin
@@ -58,8 +59,12 @@ class Discord(plugin: Beans) : ListenerAdapter() {
 
     private fun displayNameFromMember(member: Member): Component {
         val highestRole = member.roles[0]
-        return if (highestRole != null) MiniMessage.miniMessage().deserialize("<#${Integer.toHexString(highestRole.color!!.rgb).substring(2)}>${highestRole.name} <white>${member.user.asTag}")
-               else Component.text(member.user.asTag)
+        return if (highestRole != null) MiniMessage.miniMessage().deserialize(
+            "<#${
+                Integer.toHexString(highestRole.color!!.rgb).substring(2)
+            }>${highestRole.name} <white>${member.user.asTag}"
+        )
+        else Component.text(member.user.asTag)
     }
 
     private fun channelFromConfig(value: String): TextChannel? {

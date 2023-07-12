@@ -1,48 +1,42 @@
 package me.mrscopes.beans.economy.commands
 
-import me.mrscopes.beans.utilities.Utilities
-import me.mrscopes.beans.utilities.color
+import co.aikar.commands.BaseCommand
+import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
+import co.aikar.commands.annotation.Default
+import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.Single
 import me.mrscopes.beans.utilities.mongoPlayer
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import me.mrscopes.beans.utilities.sendColored
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class PayCommand: CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-        if (args.size <= 1)
-            return true
-
+@CommandAlias("pay")
+@Description("Pay someone money")
+class PayCommand : BaseCommand() {
+    @Default
+    @CommandCompletion("@players")
+    fun run(sender: CommandSender, targetPlayer: OfflinePlayer, @Single amount: Double) {
         val player = sender as Player
+
         val mongoPlayer = player.mongoPlayer()!!
+        val mongoTarget = targetPlayer.mongoPlayer()!!
 
-        val target = Utilities.playerFromArg(player, args[0])
-        val mongoTarget = target?.mongoPlayer()
-
-        if (mongoTarget == null) {
-            sender.sendMessage("&cThat player has never played before.".color())
-            return true;
+        if (amount <= 0) {
+            player.sendColored("&cYou must give a number larger than 0.")
+            return
         }
-
-        val amount =
-            try {
-                args[1].toDouble()
-            } catch (e: Exception) {
-                return false
-            }
-
-        if (amount <= 0)
-            return false
 
         if (amount > mongoPlayer.money) {
-            player.sendMessage("You don't have enough money.".color())
-            return true
+            player.sendColored("&cYou don't have that much.")
+            return
         }
 
-        player.sendMessage("You paid ${target.name} $amount.")
+        player.sendColored("&7You paid ${targetPlayer.name} $$amount.")
+        targetPlayer.player?.sendColored("&7You were paid $$amount by ${player.name}.")
+
         mongoPlayer.money -= amount
         mongoTarget.money =+ amount
-
-        return true
     }
 }

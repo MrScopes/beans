@@ -15,12 +15,20 @@ class Beans : JavaPlugin() {
         saveDefaultConfig()
 
         data class StartupTask(val description: String, val action: () -> Unit)
+
         val tasks = listOf(
             StartupTask("Connect to discord") { discord = Discord(this) },
-            StartupTask("Connect to mongo") { mongo = Mongo(config.getString("mongo url")!!) },
-            StartupTask("Create commands") { commands = Commands() },
+            StartupTask("Connect to mongo") { mongo = Mongo(this, config.getString("mongo url")!!) },
+            StartupTask("Create commands") { commands = Commands(this) },
             StartupTask("Create events") { events = Events() },
-            StartupTask("Register vault economy") { server.servicesManager.register(Economy::class.java, EconomyProvider(), this, ServicePriority.Highest) }
+            StartupTask("Register vault economy") {
+                server.servicesManager.register(
+                    Economy::class.java,
+                    EconomyProvider(),
+                    this,
+                    ServicePriority.Highest
+                )
+            }
         )
 
         tasks.forEach { task ->

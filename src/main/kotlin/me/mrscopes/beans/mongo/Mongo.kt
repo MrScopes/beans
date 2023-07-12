@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.FindOneAndReplaceOptions
 import me.mrscopes.beans.Beans
 import me.mrscopes.beans.events.Events
 import me.mrscopes.beans.mongo.listeners.ConnectListener
@@ -16,15 +17,19 @@ import org.bson.codecs.pojo.PojoCodecProvider
 import org.bukkit.Bukkit
 import java.util.*
 
-class Mongo(url: String) {
+
+class Mongo(plugin: Beans, url: String) {
     var mongoPlayers: HashMap<UUID, MongoPlayer>
     var playerCollection: MongoCollection<MongoPlayer>
     var database: MongoDatabase
     var client: MongoClient
-    var connectListener: ConnectListener
 
     init {
-        val pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build())
+        val pojoCodecRegistry = fromRegistries(
+            com.mongodb.MongoClient.getDefaultCodecRegistry(),
+            fromProviders(PojoCodecProvider.builder().automatic(true).build())
+        )
+
         val codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry)
         val clientSettings = MongoClientSettings.builder()
             .applyConnectionString(ConnectionString(url))
@@ -36,11 +41,16 @@ class Mongo(url: String) {
         playerCollection = database.withCodecRegistry(pojoCodecRegistry).getCollection("players", MongoPlayer::class.java)
         mongoPlayers = HashMap()
 
-        connectListener = ConnectListener()
-        Events.registerEvent(connectListener)
+        Events.registerEvent(ConnectListener())
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
+            plugin.logger.info("Backing up all players...")
+            mongoPlayers.values.forEach { putPlayerInDatabase(it) }
+            plugin.logger.info("Backed up all players.")
+        }, 0, 6000)
     }
 
-    fun playerFromDatabase(uuid: UUID): MongoPlayer {
+    fun playerFromDatabase(uuid: UUID): MongoPlayer? {
         var mongoPlayer = MongoPlayer()
         mongoPlayer.uuid = uuid.toString()
         try {
@@ -52,11 +62,13 @@ class Mongo(url: String) {
     }
 
     fun putPlayerInDatabase(mongoPlayer: MongoPlayer) {
-        Bukkit.getScheduler().runTaskAsynchronously(Beans.instance, Runnable { playerCollection.insertOne(mongoPlayer) })
+        Bukkit.getScheduler().runTaskAsynchronously(Beans.instance, Runnable {
+            playerCollection.findOneAndReplace(eq("uuid", mongoPlayer.uuid), mongoPlayer, FindOneAndReplaceOptions().upsert(true))
+        })
     }
 }
 
-data class MongoPlayer (
+data class MongoPlayer(
     var uuid: String = "",
     var money: Double = 100.0
 )

@@ -1,7 +1,6 @@
 package me.mrscopes.beans.events.listeners
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import me.mrscopes.beans.Beans
 import me.mrscopes.beans.utilities.color
 import me.mrscopes.beans.utilities.plainText
 import net.kyori.adventure.text.Component
@@ -10,8 +9,7 @@ import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import java.util.UUID
-import kotlin.collections.HashMap
+import java.util.*
 
 class ChatListener : Listener {
     val antispam: HashMap<UUID, Long> = HashMap()
@@ -51,15 +49,22 @@ class ChatListener : Listener {
             if (item.type != Material.AIR) {
                 val name = item.displayName().hoverEvent(item.asHoverEvent())
                 val component = Component.text()
-                        .append(Component.text(if (item.amount > 1) item.amount.toString() + "x " else "", item.displayName().color()))
-                        .append(name)
-                        .build()
-                message.replaceText { msg: TextReplacementConfig.Builder -> msg.once().match("\\[item]").replacement(component) }
+                    .append(
+                        Component.text(
+                            if (item.amount > 1) item.amount.toString() + "x " else "",
+                            item.displayName().color()
+                        )
+                    )
+                    .append(name)
+                    .build()
+                message.replaceText { msg: TextReplacementConfig.Builder ->
+                    msg.once().match("\\[item]").replacement(component)
+                }
             }
         }
 
         event.renderer { player, playerDisplayName, msg, audience ->
-                Component.text("${player.name}: $msg")
+            Component.text("${player.name}: $msg")
         }
     }
 }

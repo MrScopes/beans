@@ -1,3 +1,5 @@
+spawn: "/setspawn"
+
 discord token: ""
 server chat id: ""
 staff chat id: ""

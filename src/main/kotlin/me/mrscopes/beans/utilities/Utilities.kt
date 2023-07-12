@@ -8,17 +8,17 @@ import org.bukkit.entity.Player
 object Utilities {
     fun broadcastToStaff(message: TextComponent) {
         Bukkit.getOnlinePlayers().forEach {
-            if (it.hasPermission("beans.staffchat") || it.isOp) it.sendMessage(message)
+            if (it.hasPermission("beans.mod") || it.isOp) it.sendMessage(message)
         }
     }
 
     fun broadcastToAdmins(message: TextComponent) {
         Bukkit.getOnlinePlayers().forEach {
-            if (it.hasPermission("beans.adminchat") || it.isOp) it.sendMessage(message)
+            if (it.hasPermission("beans.admin") || it.isOp) it.sendMessage(message)
         }
     }
 
-    fun playerFromArg(player: Player, arg: String) : OfflinePlayer? {
+    fun playerFromArg(player: Player, arg: String): OfflinePlayer? {
         return if (arg.isNotEmpty()) Bukkit.getOfflinePlayerIfCached(arg) else player
     }
 }

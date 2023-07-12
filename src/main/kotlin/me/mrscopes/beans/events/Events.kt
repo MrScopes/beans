@@ -4,20 +4,22 @@ import me.mrscopes.beans.Beans
 import me.mrscopes.beans.events.listeners.ChatListener
 import me.mrscopes.beans.events.listeners.JoinListener
 import me.mrscopes.beans.events.listeners.QuitListener
+import me.mrscopes.beans.events.listeners.RespawnListener
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
 class Events {
     val chatListener = ChatListener()
-    val joinListener = JoinListener()
-    val quitListener = QuitListener()
 
     init {
-        registerEvents(listOf(
-            chatListener,
-            joinListener,
-            quitListener,
-        ))
+        registerEvents(
+            listOf(
+                chatListener,
+                JoinListener(),
+                QuitListener(),
+                RespawnListener()
+            )
+        )
     }
 
     companion object {
