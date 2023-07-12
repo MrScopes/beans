@@ -11,6 +11,7 @@ import com.mongodb.client.model.FindOneAndReplaceOptions
 import me.mrscopes.beans.Beans
 import me.mrscopes.beans.events.Events
 import me.mrscopes.beans.mongo.listeners.ConnectListener
+import me.mrscopes.beans.mongo.listeners.QuitListener
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
 import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
@@ -41,7 +42,7 @@ class Mongo(plugin: Beans, url: String) {
         playerCollection = database.withCodecRegistry(pojoCodecRegistry).getCollection("players", MongoPlayer::class.java)
         mongoPlayers = HashMap()
 
-        Events.registerEvent(ConnectListener())
+        Events.registerEvents(listOf(ConnectListener(), QuitListener()))
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
             plugin.logger.info("Backing up all players...")
