@@ -17,12 +17,13 @@ import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.bukkit.Bukkit
 import java.util.*
+import kotlin.collections.HashMap
 
-class Mongo(plugin: Beans, url: String) {
-    var mongoPlayers: HashMap<UUID, MongoPlayer>
-    var playerCollection: MongoCollection<MongoPlayer>
-    var database: MongoDatabase
-    var client: MongoClient
+class Mongo(val plugin: Beans, url: String) {
+    val mongoPlayers: HashMap<UUID, MongoPlayer>
+    val playerCollection: MongoCollection<MongoPlayer>
+    val database: MongoDatabase
+    val client: MongoClient
 
     init {
         val pojoCodecRegistry = fromRegistries(
@@ -50,19 +51,23 @@ class Mongo(plugin: Beans, url: String) {
         }, 0, 6000)
     }
 
-    fun playerFromDatabase(uuid: UUID): MongoPlayer? {
+    fun playerFromDatabase(uuid: UUID): MongoPlayer {
         var mongoPlayer = MongoPlayer()
         mongoPlayer.uuid = uuid.toString()
         try {
             mongoPlayer = playerCollection.find(eq("uuid", uuid.toString())).first()!!
         } catch (e: Exception) {
-            println(e)
+            plugin.logger.warning("Exception trying to find $uuid in mongo:\n$e")
         }
         return mongoPlayer
     }
 
     fun putPlayerInDatabase(mongoPlayer: MongoPlayer) {
-        Bukkit.getScheduler().runTaskAsynchronously(Beans.instance, Runnable {
+        playerCollection.findOneAndReplace(eq("uuid", mongoPlayer.uuid), mongoPlayer, FindOneAndReplaceOptions().upsert(true))
+    }
+
+    fun putPlayerInDatabaseAsync(mongoPlayer: MongoPlayer) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
             playerCollection.findOneAndReplace(eq("uuid", mongoPlayer.uuid), mongoPlayer, FindOneAndReplaceOptions().upsert(true))
         })
     }

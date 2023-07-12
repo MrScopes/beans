@@ -18,7 +18,7 @@ class ChatListener : Listener {
     fun onChat(event: AsyncChatEvent) {
         val player = event.player
 
-        if (player.hasPermission("beans.chat.spam")) {
+        if (player.hasPermission("beans.donator")) {
             val uuid = event.player.uniqueId
             val now = System.currentTimeMillis()
             if (antispam.containsKey(uuid)) {
@@ -38,11 +38,15 @@ class ChatListener : Listener {
             antispam[uuid] = now
         }
 
+
         var message = event.message()
+
         val plainText = message.plainText()
-        if (player.hasPermission("beans.chat.color")) {
+        if (player.hasPermission("beans.donator")) {
             message = plainText.color()
         }
+
+        /*
 
         if (plainText.contains("[item]")) {
             val item = player.inventory.itemInMainHand
@@ -63,8 +67,10 @@ class ChatListener : Listener {
             }
         }
 
-        event.renderer { player, playerDisplayName, msg, audience ->
-            Component.text("${player.name}: $msg")
+         */
+
+        event.renderer { source, sourceDisplayName, msg, audience ->
+            return@renderer Component.text("${source.name}: ${msg.plainText()}")
         }
     }
 }

@@ -8,7 +8,7 @@ import me.mrscopes.beans.events.listeners.RespawnListener
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
-class Events {
+class Events() {
     val chatListener = ChatListener()
 
     init {

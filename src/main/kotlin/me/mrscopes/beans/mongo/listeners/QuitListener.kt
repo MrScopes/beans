@@ -12,7 +12,7 @@ class QuitListener : Listener {
         val player = event.player
         val mongo = Beans.mongo
 
-        mongo.putPlayerInDatabase(player.mongoPlayer()!!)
+        mongo.putPlayerInDatabaseAsync(player.mongoPlayer()!!)
         mongo.mongoPlayers.remove(player.uniqueId)
     }
 }
