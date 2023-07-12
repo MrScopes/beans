@@ -2,8 +2,8 @@ package me.mrscopes.beans.utilities
 
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.Bukkit
-import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Player
+import java.text.NumberFormat
+
 
 object Utilities {
     fun broadcastToStaff(message: TextComponent) {
@@ -18,7 +18,17 @@ object Utilities {
         }
     }
 
-    fun playerFromArg(player: Player, arg: String): OfflinePlayer? {
-        return if (arg.isNotEmpty()) Bukkit.getOfflinePlayerIfCached(arg) else player
+    fun moneyFormat(double: Double): String {
+        val formatter = NumberFormat.getCurrencyInstance()
+        var moneyString = formatter.format(double)
+
+        if (moneyString.endsWith(".00")) {
+            val centsIndex = moneyString.lastIndexOf(".00")
+            if (centsIndex != -1) {
+                moneyString = moneyString.substring(1, centsIndex)
+            }
+        }
+
+        return moneyString
     }
 }

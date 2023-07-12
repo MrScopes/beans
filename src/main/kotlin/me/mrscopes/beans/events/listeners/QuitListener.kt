@@ -15,6 +15,5 @@ class QuitListener : Listener {
         Beans.discord.serverChat.sendMessage("❌ **${player.name}** left the server.").queue()
 
         Beans.events.chatListener.antispam.remove(player.uniqueId)
-        Beans.mongo.putPlayerInDatabase(player.mongoPlayer()!!)
     }
 }

@@ -18,7 +18,6 @@ import org.bson.codecs.pojo.PojoCodecProvider
 import org.bukkit.Bukkit
 import java.util.*
 
-
 class Mongo(plugin: Beans, url: String) {
     var mongoPlayers: HashMap<UUID, MongoPlayer>
     var playerCollection: MongoCollection<MongoPlayer>
@@ -71,5 +70,7 @@ class Mongo(plugin: Beans, url: String) {
 
 data class MongoPlayer(
     var uuid: String = "",
-    var money: Double = 100.0
+    var money: Double = 100.0,
+    var kills: Double = 0.0,
+    var deaths: Double = 0.0
 )

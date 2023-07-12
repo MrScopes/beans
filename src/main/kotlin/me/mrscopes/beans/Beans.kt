@@ -21,14 +21,7 @@ class Beans : JavaPlugin() {
             StartupTask("Connect to mongo") { mongo = Mongo(this, config.getString("mongo url")!!) },
             StartupTask("Create commands") { commands = Commands(this) },
             StartupTask("Create events") { events = Events() },
-            StartupTask("Register vault economy") {
-                server.servicesManager.register(
-                    Economy::class.java,
-                    EconomyProvider(),
-                    this,
-                    ServicePriority.Highest
-                )
-            }
+            StartupTask("Register vault economy") { server.servicesManager.register(Economy::class.java, EconomyProvider(), this, ServicePriority.Highest) }
         )
 
         tasks.forEach { task ->
