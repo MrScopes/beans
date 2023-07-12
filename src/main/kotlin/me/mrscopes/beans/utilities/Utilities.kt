@@ -1,7 +1,9 @@
 package me.mrscopes.beans.utilities
 
+import me.mrscopes.beans.Beans
 import net.kyori.adventure.text.TextComponent
 import org.bukkit.Bukkit
+import org.bukkit.scheduler.BukkitRunnable
 import java.text.NumberFormat
 
 
@@ -29,6 +31,20 @@ object Utilities {
             }
         }
 
-        return moneyString
+        return "$$moneyString"
+    }
+
+    fun whileLoop(condition: () -> Boolean, fn: () -> Unit, interval: Long): BukkitRunnable {
+        val loopTask : BukkitRunnable = object : BukkitRunnable() {
+            override fun run() {
+                if (!condition()) {
+                    cancel()
+                    return
+                }
+                fn()
+            }
+        }
+        loopTask.runTaskTimer(Beans.instance, 0, interval)
+        return loopTask
     }
 }

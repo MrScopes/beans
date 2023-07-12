@@ -3,6 +3,7 @@ package me.mrscopes.beans.commands
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
 import me.mrscopes.beans.Beans
+import me.mrscopes.beans.commands.general.DiscordCommand
 import me.mrscopes.beans.commands.general.KitCommand
 import me.mrscopes.beans.commands.general.SetSpawnCommand
 import me.mrscopes.beans.commands.general.SpawnCommand
@@ -26,7 +27,8 @@ class Commands(plugin: Beans) {
                 AdminChatCommand(),
                 BalanceCommand(),
                 PayCommand(),
-                BroadcastCommand()
+                BroadcastCommand(),
+                DiscordCommand()
             )
         )
     }
