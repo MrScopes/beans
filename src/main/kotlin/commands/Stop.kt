@@ -7,11 +7,11 @@ import net.minestom.server.command.builder.CommandContext
 import net.minestom.server.command.builder.CommandExecutor
 import utilities.miniMessage
 
-class StopCommand : Command("stop") {
+class Stop : Command("stop") {
     init {
         defaultExecutor = CommandExecutor { _: CommandSender, _: CommandContext? ->
-            Server.hub.players.forEach { it.kick("<red>The server has been stopped.".miniMessage())}
-            Server.hub.saveChunksToStorage()
+            Server.instance.players.forEach { it.kick("<red>The server has been stopped.".miniMessage())}
+            Server.instance.saveChunksToStorage()
             MinecraftServer.stopCleanly()
         }
     }

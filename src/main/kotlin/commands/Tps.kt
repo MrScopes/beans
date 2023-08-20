@@ -7,7 +7,7 @@ import net.minestom.server.command.builder.CommandContext
 import net.minestom.server.command.builder.CommandExecutor
 import utilities.miniMessage
 
-class TpsCommand : Command("tps") {
+class Tps : Command("tps") {
     init {
         defaultExecutor = CommandExecutor { sender: CommandSender, _: CommandContext? ->
             val tps = MinecraftServer.TICK_PER_SECOND

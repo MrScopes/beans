@@ -36,7 +36,7 @@ class Mine : Command("mine") {
             else if (chance >= 800) block = Block.IRON_ORE
             else if (chance >= 500) block = Block.COAL_ORE
 
-            Server.hub.setBlock(it, block)
+            Server.instance.setBlock(it, block)
         }
     }
 

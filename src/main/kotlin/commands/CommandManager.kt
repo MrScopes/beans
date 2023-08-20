@@ -13,8 +13,9 @@ class CommandManager {
 
         commandManager.register(Gamemode())
         commandManager.register(Mine())
-        commandManager.register(TpsCommand())
-        commandManager.register(StopCommand())
-        commandManager.register(SaveCommand())
+        commandManager.register(Tps())
+        commandManager.register(Stop())
+        commandManager.register(Save())
+        commandManager.register(Spawn())
     }
 }

@@ -8,7 +8,7 @@ class ServerListPing(event: ServerListPingEvent) {
     init {
         val responseData = event.responseData
 
-        responseData.description = Component.text("Server", TextColor.color(0x66b3ff))
+        responseData.description = Component.text("beans", TextColor.color(0x66b3ff))
 
         event.responseData = responseData
     }
