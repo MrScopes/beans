@@ -1,3 +1,4 @@
+import blocks.BlockManager
 import commands.CommandManager
 import events.EventManager
 import net.minestom.server.MinecraftServer
@@ -13,6 +14,8 @@ class Server {
         val minecraftServer = MinecraftServer.init()
         MinecraftServer.setChunkViewDistance(16)
         MinecraftServer.setBrandName("beans")
+
+        BlockManager()
 
         instance = MinecraftServer.getInstanceManager().createInstanceContainer(DimensionType.OVERWORLD, AnvilLoader(saveLocation + "beans"))
         val border = instance.worldBorder
