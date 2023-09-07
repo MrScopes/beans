@@ -1,4 +1,4 @@
-package me.mrscopes.beans.commands.staff
+package me.mrscopes.beans.oldcommands.staff
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias

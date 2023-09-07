@@ -13,17 +13,11 @@
 # Website: https://papermc.io/
 
 _version: 28
-chunk-loading:
-  autoconfig-send-distance: true
-  enable-frustum-priority: false
-  global-max-chunk-load-rate: -1.0
-  global-max-chunk-send-rate: -1.0
-  global-max-concurrent-loads: 500.0
-  max-concurrent-sends: 2
-  min-load-radius: 2
-  player-max-chunk-load-rate: -1.0
-  player-max-concurrent-loads: 20.0
-  target-player-chunk-send-rate: 100.0
+block-updates:
+  disable-chorus-plant-updates: false
+  disable-mushroom-block-updates: false
+  disable-noteblock-updates: false
+  disable-tripwire-updates: false
 chunk-loading-advanced:
   auto-config-send-distance: true
   player-max-concurrent-chunk-generates: 0
@@ -75,9 +69,8 @@ misc:
     chat-executor-core-size: -1
     chat-executor-max-size: -1
   fix-entity-position-desync: true
-  lag-compensate-block-breaking: true
   load-permissions-yml-before-plugins: true
-  max-joins-per-tick: 3
+  max-joins-per-tick: 5
   region-file-cache-size: 256
   strict-advancement-dimension-check: false
   use-alternative-luck-formula: false
@@ -129,6 +122,7 @@ unsupported-settings:
   allow-headless-pistons: false
   allow-permanent-block-break-exploits: false
   allow-piston-duplication: false
+  compression-format: ZLIB
   perform-username-validation: true
 watchdog:
   early-warning-delay: 10000
