@@ -1,4 +1,4 @@
-package me.mrscopes.beans.oldcommands.general
+package me.mrscopes.beans.commands.general
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -25,7 +25,7 @@ class SpawnCommand : BaseCommand() {
             player.sendMessage("Spawn has not been set in the config.")
         } else {
             player.sendMessage("Teleporting to spawn.")
-            teleport.teleport(spawnLocation!!)
+            teleport.teleport(spawnLocation)
         }
     }
 

@@ -1,18 +1,17 @@
 package me.mrscopes.beans.events.listeners
 
-import me.mrscopes.beans.Beans
-import me.mrscopes.beans.utilities.color
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.util.Vector
 
-class StepListener : Listener {
-    @EventHandler
-    fun onStep(event: PlayerSt) {
-        val player = event.player
-        event.quitMessage("&8[&c-&8] &7${player.name}".color())
-        Beans.discord.serverChat.sendMessage("❌ **${player.name}** left the server.").queue()
-
-        Beans.events.chatListener.antispam.remove(player.uniqueId)
+class InteractListener : Listener {
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onInteract(event: PlayerInteractEvent) {
+        if (event.clickedBlock?.type == Material.HEAVY_WEIGHTED_PRESSURE_PLATE) {
+            event.player.velocity = Vector(50, 5, 50)
+        }
     }
 }

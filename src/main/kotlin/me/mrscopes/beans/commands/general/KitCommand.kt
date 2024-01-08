@@ -1,4 +1,4 @@
-package me.mrscopes.beans.oldcommands.general
+package me.mrscopes.beans.commands.general
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 @CommandAlias("kit")
 @Description("Get the starter kit")
 class KitCommand : BaseCommand() {
-    val kit = listOf(
+    private val kit = listOf(
         ItemStack(Material.IRON_SWORD),
         ItemStack(Material.IRON_PICKAXE),
         ItemStack(Material.ELYTRA)

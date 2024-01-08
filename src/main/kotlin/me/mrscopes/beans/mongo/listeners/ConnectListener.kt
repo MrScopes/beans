@@ -11,7 +11,7 @@ class ConnectListener : Listener {
     fun onConnect(event: AsyncPlayerPreLoginEvent) {
         val mongo = Beans.mongo
         val uuid = event.uniqueId
-        val player = mongo.playerFromDatabase(uuid)!!
+        val player = mongo.playerFromDatabase(uuid)
         mongo.mongoPlayers[uuid] = player
         mongo.putPlayerInDatabase(player)
     }

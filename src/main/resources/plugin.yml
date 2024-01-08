@@ -1,6 +1,4 @@
 name: beans
 version: '${project.version}'
 main: me.mrscopes.beans.Beans
-api-version: 1.19
-depend:
-  - Vault
+api-version: 1.20

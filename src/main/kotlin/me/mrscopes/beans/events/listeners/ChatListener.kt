@@ -4,8 +4,6 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import me.mrscopes.beans.utilities.color
 import me.mrscopes.beans.utilities.plainText
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextReplacementConfig
-import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

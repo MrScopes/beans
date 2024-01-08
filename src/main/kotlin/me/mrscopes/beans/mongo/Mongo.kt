@@ -42,13 +42,13 @@ class Mongo(val plugin: Beans, url: String) {
         playerCollection = database.withCodecRegistry(pojoCodecRegistry).getCollection("players", MongoPlayer::class.java)
         mongoPlayers = HashMap()
 
-        Events.registerEvents(listOf(ConnectListener(), QuitListener()))
+        Events.registerListeners(listOf(ConnectListener(), QuitListener()))
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
             plugin.logger.info("Backing up all players...")
             mongoPlayers.values.forEach { putPlayerInDatabase(it) }
             plugin.logger.info("Backed up all players.")
-        }, 0, 6000)
+        }, 6000, 6000)
     }
 
     fun playerFromDatabase(uuid: UUID): MongoPlayer {
@@ -65,17 +65,12 @@ class Mongo(val plugin: Beans, url: String) {
     fun putPlayerInDatabase(mongoPlayer: MongoPlayer) {
         playerCollection.findOneAndReplace(eq("uuid", mongoPlayer.uuid), mongoPlayer, FindOneAndReplaceOptions().upsert(true))
     }
-
-    fun putPlayerInDatabaseAsync(mongoPlayer: MongoPlayer) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
-            playerCollection.findOneAndReplace(eq("uuid", mongoPlayer.uuid), mongoPlayer, FindOneAndReplaceOptions().upsert(true))
-        })
-    }
 }
 
 data class MongoPlayer(
     var uuid: String = "",
     var money: Double = 100.0,
     var kills: Double = 0.0,
-    var deaths: Double = 0.0
+    var deaths: Double = 0.0,
+    var totalXP: Double = 0.0
 )

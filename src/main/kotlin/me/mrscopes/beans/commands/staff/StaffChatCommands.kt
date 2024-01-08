@@ -1,4 +1,4 @@
-package me.mrscopes.beans.oldcommands.staff
+package me.mrscopes.beans.commands.staff
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -18,7 +18,6 @@ class StaffChatCommand : BaseCommand() {
     fun run(sender: CommandSender, args: Array<String>) {
         val message = args.joinToString()
         Utilities.broadcastToStaff("&4&l! &6[Staff Chat] &e${sender.name}&8: &f$message".color())
-        Beans.discord.staffChat.sendMessage("${sender.name}: $message").queue()
     }
 }
 
@@ -30,6 +29,5 @@ class AdminChatCommand : BaseCommand() {
     fun run(sender: CommandSender, args: Array<String>) {
         val message = args.joinToString()
         Utilities.broadcastToAdmins("&4&l! &4[Admin Chat] &c${sender.name}&8: &f$message".color())
-        Beans.discord.adminChat.sendMessage("${sender.name}: $message").queue()
     }
 }

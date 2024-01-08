@@ -1,34 +1,51 @@
 package me.mrscopes.beans.events
 
 import me.mrscopes.beans.Beans
-import me.mrscopes.beans.events.listeners.ChatListener
-import me.mrscopes.beans.events.listeners.JoinListener
-import me.mrscopes.beans.events.listeners.QuitListener
-import me.mrscopes.beans.events.listeners.RespawnListener
+import me.mrscopes.beans.enchantments.listeners.EnchBlockBreakListener
+import me.mrscopes.beans.events.listeners.*
+import me.mrscopes.beans.regions.WorldGuard
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 
-class Events() {
+class Events {
     val chatListener = ChatListener()
 
     init {
-        registerEvents(
+        registerListeners(
             listOf(
+
+                /*
+                Generic Listeners
+                 */
+
                 chatListener,
                 JoinListener(),
                 QuitListener(),
-                RespawnListener()
+                RespawnListener(),
+                InteractListener(),
+
+                /*
+                Other Listeners
+                 */
+
+                BowListeners(),
+                WorldGuard(),
+
+                /*
+                Enchantment Listeners
+                 */
+
+                EnchBlockBreakListener()
+
             )
         )
     }
 
     companion object {
-        fun registerEvents(listeners: List<Listener>) {
-            listeners.forEach { listener -> registerEvent(listener) }
-        }
-
-        fun registerEvent(listener: Listener) {
-            Bukkit.getPluginManager().registerEvents(listener, Beans.instance)
+        fun registerListeners(listeners: List<Listener>) {
+            listeners.forEach {
+                Bukkit.getPluginManager().registerEvents(it, Beans.instance)
+            }
         }
     }
 }
