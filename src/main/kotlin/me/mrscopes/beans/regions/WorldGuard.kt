@@ -19,10 +19,10 @@ class WorldGuard : Listener {
     fun onBlockPlace(event: BlockPlaceEvent) { event.isCancelled = isLocationGuarded(event.player, event.block.location) }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun onSpawn(event: EntitySpawnEvent) { event.isCancelled = isLocationGuarded(event.location) }
+    fun onEntitySpawn(event: EntitySpawnEvent) { event.isCancelled = isLocationGuarded(event.location) }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun onDamage(event: EntityDamageEvent) { event.isCancelled = isLocationGuarded(event.entity.location) }
+    fun onEntityDamage(event: EntityDamageEvent) { event.isCancelled = isLocationGuarded(event.entity.location) }
 
     companion object {
         fun isLocationGuarded(player: Player, location: Location): Boolean {
@@ -33,6 +33,10 @@ class WorldGuard : Listener {
 
         fun isLocationGuarded(location: Location): Boolean {
             return (Regions.spawnRegion.contains(BlockVector3.at(location.x, location.y, location.z)) || location.y < 20)
+        }
+
+        fun isInMine(location: Location): Boolean {
+            return Regions.mineRegion.contains(BlockVector3.at(location.x, location.y, location.z))
         }
     }
 }

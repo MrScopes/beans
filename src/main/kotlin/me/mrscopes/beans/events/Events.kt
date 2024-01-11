@@ -2,6 +2,7 @@ package me.mrscopes.beans.events
 
 import me.mrscopes.beans.Beans
 import me.mrscopes.beans.enchantments.listeners.EnchBlockBreakListener
+import me.mrscopes.beans.enchantments.listeners.EnchItemDamageListener
 import me.mrscopes.beans.events.listeners.*
 import me.mrscopes.beans.regions.WorldGuard
 import org.bukkit.Bukkit
@@ -35,7 +36,8 @@ class Events {
                 Enchantment Listeners
                  */
 
-                EnchBlockBreakListener()
+                EnchBlockBreakListener(),
+                EnchItemDamageListener()
 
             )
         )

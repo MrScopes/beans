@@ -23,18 +23,19 @@ object Utilities {
         }
     }
 
-    fun moneyFormat(double: Double): String {
-        val formatter = NumberFormat.getCurrencyInstance()
-        var moneyString = formatter.format(double)
+    fun moneyFormat(money: Int): String {
+        return "$${String.format("%,d", money)}"
+    }
 
-        if (moneyString.endsWith(".00")) {
-            val centsIndex = moneyString.lastIndexOf(".00")
-            if (centsIndex != -1) {
-                moneyString = moneyString.substring(1, centsIndex)
-            }
+    fun romanNumeral(int: Int): String {
+        return when(int) {
+            1 -> "I"
+            2 -> "II"
+            3 -> "III"
+            4 -> "IV"
+            5 -> "V"
+            else -> int.toString()
         }
-
-        return "$$moneyString"
     }
 
     fun whileLoop(condition: () -> Boolean, fn: () -> Unit, interval: Long, delay: Long = 0): BukkitTask {
@@ -72,7 +73,7 @@ object Utilities {
     }
 
     fun getNearbyBlocks(location: Location, radius: Int): List<Block> {
-        val blocks: MutableList<Block> = ArrayList<Block>()
+        val blocks: MutableList<Block> = ArrayList()
         for (x in location.blockX - radius..location.blockX + radius) {
             for (y in location.blockY - radius..location.blockY + radius) {
                 for (z in location.blockZ - radius..location.blockZ + radius) {

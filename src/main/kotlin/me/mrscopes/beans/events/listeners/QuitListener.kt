@@ -2,7 +2,6 @@ package me.mrscopes.beans.events.listeners
 
 import me.mrscopes.beans.Beans
 import me.mrscopes.beans.utilities.color
-import me.mrscopes.beans.utilities.mongoPlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent

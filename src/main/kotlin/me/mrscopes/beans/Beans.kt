@@ -14,10 +14,7 @@ class Beans : JavaPlugin() {
         val tasks = listOf(
             StartupTask("Connect to mongo") { mongo = Mongo(this, config.getString("mongo url")!!) },
             StartupTask("Create commands") { commands = Commands(this) },
-            StartupTask("Create events") { events = Events() },
-            StartupTask("Initial enchantments") {
-                enchantments = Enchantments()
-            },
+            StartupTask("Create events") { events = Events() }
         )
 
         tasks.forEach { task ->

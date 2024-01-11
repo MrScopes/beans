@@ -69,8 +69,8 @@ class Mongo(val plugin: Beans, url: String) {
 
 data class MongoPlayer(
     var uuid: String = "",
-    var money: Double = 100.0,
-    var kills: Double = 0.0,
-    var deaths: Double = 0.0,
-    var totalXP: Double = 0.0
+    var money: Int = 100,
+    var kills: Int = 0,
+    var deaths: Int = 0,
+    var totalXP: Int = 0
 )

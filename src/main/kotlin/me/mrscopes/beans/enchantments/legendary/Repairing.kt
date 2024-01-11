@@ -2,13 +2,15 @@ package me.mrscopes.beans.enchantments.legendary
 
 import me.mrscopes.beans.enchantments.EnchantmentRarity
 import me.mrscopes.beans.enchantments.Enchantment
+import me.mrscopes.beans.enchantments.EnchantmentType
 import me.mrscopes.beans.utilities.Utilities
+import org.bukkit.block.Block
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class Repairing : Enchantment("Repairing", 3, intArrayOf(10, 20, 100), EnchantmentRarity.LEGENDARY) {
-    override fun activate(item: ItemStack, level: Int, player: Player) {
+class Repairing : Enchantment("Repairing", 3, intArrayOf(10, 20, 100), EnchantmentRarity.LEGENDARY, EnchantmentType.ALL) {
+    override fun activate(item: ItemStack, level: Int, player: Player?, block: Block?) {
         Utilities.after({
             item.editMeta {
                 val damageable = it as Damageable
@@ -19,6 +21,6 @@ class Repairing : Enchantment("Repairing", 3, intArrayOf(10, 20, 100), Enchantme
 
     override fun description(level: Int): String {
         if (level == 3) return "Unbreakable Item"
-        return "${this.chance[level - 1]}% to repair ${level * 2} durability on item use."
+        return "${this.chance[level - 1]}% to repair ${level * 2} durability on item use"
     }
 }

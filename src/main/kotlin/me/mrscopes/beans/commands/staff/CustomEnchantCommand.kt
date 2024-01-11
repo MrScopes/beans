@@ -5,7 +5,9 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
-import me.mrscopes.beans.enchantments.legendary.Repairing
+import me.mrscopes.beans.Beans
+import me.mrscopes.beans.enchantments.Enchantment
+import me.mrscopes.beans.enchantments.Enchantments
 import me.mrscopes.beans.utilities.addCustomEnchantment
 import org.bukkit.entity.Player
 
@@ -14,7 +16,7 @@ import org.bukkit.entity.Player
 @Description("Custom Enchant Test")
 class CustomEnchantCommand: BaseCommand() {
     @Default
-    fun run(player: Player) {
-        player.inventory.itemInMainHand.addCustomEnchantment(Repairing(), 2)
+    fun run(player: Player, enchantment: String, level: Int) {
+        player.inventory.itemInMainHand.addCustomEnchantment(Enchantments.enchantments.first { it.name == enchantment }, level)
     }
 }

@@ -3,6 +3,7 @@ package me.mrscopes.beans.commands
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
 import me.mrscopes.beans.Beans
+import me.mrscopes.beans.commands.economy.SellCommand
 import me.mrscopes.beans.commands.general.*
 import me.mrscopes.beans.commands.staff.AdminChatCommand
 import me.mrscopes.beans.commands.staff.BroadcastCommand
@@ -24,7 +25,8 @@ class Commands(plugin: Beans) {
                 BroadcastCommand(),
                 DiscordCommand(),
                 MineCommand(),
-                CustomEnchantCommand()
+                CustomEnchantCommand(),
+                SellCommand()
             )
         )
     }
