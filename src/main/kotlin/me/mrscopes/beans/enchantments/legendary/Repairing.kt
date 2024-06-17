@@ -14,7 +14,7 @@ class Repairing : Enchantment("Repairing", 3, intArrayOf(10, 20, 100), Enchantme
         Utilities.after({
             item.editMeta {
                 val damageable = it as Damageable
-                damageable.damage -= level * 2
+                damageable.damage = maxOf(0, damageable.damage - level * 2)
             }
         }, 1)
     }

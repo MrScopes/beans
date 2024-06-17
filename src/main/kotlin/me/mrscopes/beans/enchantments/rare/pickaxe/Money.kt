@@ -3,7 +3,6 @@ package me.mrscopes.beans.enchantments.rare.pickaxe
 import me.mrscopes.beans.enchantments.EnchantmentRarity
 import me.mrscopes.beans.enchantments.Enchantment
 import me.mrscopes.beans.enchantments.EnchantmentType
-import me.mrscopes.beans.utilities.Utilities
 import me.mrscopes.beans.utilities.isInMine
 import me.mrscopes.beans.utilities.mongoPlayer
 import org.bukkit.block.Block

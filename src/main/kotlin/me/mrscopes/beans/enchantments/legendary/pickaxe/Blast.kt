@@ -19,6 +19,6 @@ class Blast : Enchantment("Blast", 3, intArrayOf(20, 40, 60), EnchantmentRarity.
     }
 
     override fun description(level: Int): String {
-        return "${this.chance[level - 1]}% chance to break in $level block radius"
+        return "${this.chance[level - 1]}% to break in $level block radius"
     }
 }

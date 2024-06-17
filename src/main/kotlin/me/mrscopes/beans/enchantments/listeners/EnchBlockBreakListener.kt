@@ -3,6 +3,7 @@ package me.mrscopes.beans.enchantments.listeners
 import me.mrscopes.beans.Beans
 import me.mrscopes.beans.enchantments.Enchantments
 import me.mrscopes.beans.regions.WorldGuard
+import me.mrscopes.beans.utilities.mongoPlayer
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

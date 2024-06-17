@@ -16,7 +16,7 @@ class Magnet : Enchantment("Magnet", 3, intArrayOf(30, 50, 100), EnchantmentRari
             val x = AtomicLong(30)
             Utilities.whileLoop({ x.get() > 0 }, {
                 block!!.location.getNearbyEntities(4.0, 4.0, 4.0).forEach {
-                    if (it.type == EntityType.DROPPED_ITEM) {
+                    if (it.type == EntityType.ITEM) {
                         val direction = player!!.location.toVector().subtract(it.location.toVector()).normalize()
                         it.velocity = direction.multiply(0.8)
                     }
