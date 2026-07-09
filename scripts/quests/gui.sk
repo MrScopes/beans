@@ -1,0 +1,165 @@
+command /quests [<text>]:
+    trigger:
+        if arg 1 is "blocks":
+            set {-blocks quest gui::%player%} to chest inventory with 5 rows named formatNumber({blocks::%player%})
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-blocks quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            # Repeatable quests header items
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::1::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::1::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::1::reward::money})%", "" to {-blocks quest gui::%player%}
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::2::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::2::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::2::reward::money})%", "&bBeacons: %formatNumber({-quests::blocks::repeatable::2::reward::beacon})%", "" to {-blocks quest gui::%player%}
+
+            # One-time block quests
+            loop 21 times:
+                if {-quests::blocks::%loop-number%::blocks} is set:
+                    if {quests::%player%::blocks::%loop-number%} is set:
+                        # Completed
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
+                            set {_item} to gray stained glass pane named "&a&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", ""
+                        else:
+                            set {_item} to gray stained glass pane named "&a&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                    else:
+                        # Not yet completed
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
+                            set {_item} to {-quests::blocks::%loop-number%::reward::item}
+                            add "", "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", "" to lore of {_item}
+                        else:
+                            set {_item} to green stained glass pane named "&c&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                    add {_item} to {-blocks quest gui::%player%}
+
+            open {-blocks quest gui::%player%} to player
+
+        else if arg 1 is "levels":
+            set {-level quest gui::%player%} to chest inventory with 5 rows named "%{level::%player%}%"
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-level quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            loop integers between 0 and 20:
+                set {_needed level} to loop-number * 5
+                if {-quests::level::%{_needed level}%::reward::item} is set:
+                    set {_name} to name of {-quests::level::%{_needed level}%::reward::item}
+                    if {quests::%player%::level::%{_needed level}%::reward::claimed} isn't set:
+                        set {_item} to {-quests::level::%{_needed level}%::reward::item}
+                    else:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    add "" to lore of {_item}
+                    add "&7Reach level %{_needed level}%." to lore of {_item}
+                    add "" to lore of {_item}
+
+                    add "&aReward:" to lore of {_item}
+                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to lore of {_item}
+                    add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to lore of {_item}
+
+                    if {-quests::level::%{_needed level}%::reward::beacon} is set:
+                        add "&b%{-quests::level::%{_needed level}%::reward::beacon}% Beacons" to lore of {_item}
+
+                    if {-quests::level::%{_needed level}%::reward::text} is set:
+                        add "&e%{-quests::level::%{_needed level}%::reward::text}%" to lore of {_item}
+
+                    add "" to lore of {_item}
+                    add formatted "%{_name}%" to lore of {_item}
+                    add "" to lore of {_item}
+                else:
+                    if {quests::%player%::level::%{_needed level}%::reward::claimed} is set:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    else if {-quests::level::%{_needed level}%::reward::text} is set:
+                        set {_item} to yellow stained glass pane named "&e&lQuest"
+                    else:
+                        set {_item} to green stained glass pane named "&c&lQuest"
+                    set {_lore::*} to "&7Reach level %{_needed level}%."
+                    add "" to {_lore::*}
+
+                    add "&aReward:" to {_lore::*}
+                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to {_lore::*}
+                    add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to {_lore::*}
+
+                    if {-quests::level::%{_needed level}%::reward::beacon} is set:
+                        add "&b%{-quests::level::%{_needed level}%::reward::beacon}% Beacons" to {_lore::*}
+
+                    if {-quests::level::%{_needed level}%::reward::text} is set:
+                        add "&e%{-quests::level::%{_needed level}%::reward::text}%" to {_lore::*}
+
+                    add "" to {_lore::*}
+
+                    set lore of {_item} to {_lore::*}
+                add {_item} to {-level quest gui::%player%}
+            open {-level quest gui::%player%} to player
+
+        else if arg 1 is "playtime":
+            set {-playtime quest gui::%player%} to chest inventory with 5 rows named time_format(player's playtime)
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-playtime quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            loop 21 times:
+                set {_needed time} to {-quests::playtime::%loop-number%::time}
+
+                if {-quests::playtime::%loop-number%::reward::item} is set:
+                    set {_name} to name of {-quests::playtime::%loop-number%::reward::item}
+
+                    if {quests::%player%::playtime::%loop-number%::reward::claimed} isn't set:
+                        set {_item} to {-quests::playtime::%loop-number%::reward::item}
+                    else:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                else:
+                    if {quests::%player%::playtime::%loop-number%::reward::claimed} is set:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    else if {-quests::playtime::%loop-number%::reward::text} is set:
+                        set {_item} to yellow stained glass pane named "&e&lQuest"
+                    else:
+                        set {_item} to green stained glass pane named "&c&lQuest"
+
+                set {_lore::*} to ""
+                add "&7Play for %{_needed time}%." to {_lore::*}
+                add "" to {_lore::*}
+
+                add "&aReward:" to {_lore::*}
+                add "&7%formatNumber({-quests::playtime::%loop-number%::reward::xp})% XP" to {_lore::*}
+                add "&7$%formatNumber({-quests::playtime::%loop-number%::reward::money})%" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::beacon} is set:
+                    add "&b%{-quests::playtime::%loop-number%::reward::beacon}% Beacons" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::text} is set:
+                    add "&e%{-quests::playtime::%loop-number%::reward::text}%" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::item} is set:
+                    add formatted "%{_name}%" to {_lore::*}
+
+                add "" to {_lore::*}
+
+                set lore of {_item} to {_lore::*}
+
+                add {_item} to {-playtime quest gui::%player%}
+
+            open {-playtime quest gui::%player%} to player
+
+        else:
+            set {-quest gui::%player%} to hopper inventory named "Quests"
+            set slot 1 of {-quest gui::%player%} to stone named "&a&lBlock Quests" with lore "&7Mine blocks to earn rewards!" and "&7Click to view progress!"
+            set slot 2 of {-quest gui::%player%} to emerald block named "&d&lLevel Quests" with lore "&7Gain levels to earn rewards!" and "&7Click to view progress!"
+            set slot 3 of {-quest gui::%player%} to clock named "&c&lPlaytime Quests" with lore "&7Earn rewards based on how long you've played!" and "&7Click to view progress!"
+            open {-quest gui::%player%} to player
+
+on tab complete of "/quests":
+    set tab completions for position 1 to "blocks", "levels", and "playtime"
+
+on inventory click:
+    if player's current inventory is {-quest gui::%player%}:
+        cancel event
+        if index of event-slot is 1:
+            player command "/quests blocks"
+        else if index of event-slot is 2:
+            player command "/quests levels"
+        else if index of event-slot is 3:
+            player command "/quests playtime"
+    else if player's current inventory is {-blocks quest gui::%player%} or {-level quest gui::%player%} or {-playtime quest gui::%player%}:
+        cancel event
+        if event-item is a black stained glass pane:
+            player command "/quests"
+
+on inventory close:
+    event-inventory is {-blocks quest gui::%player%} or {-level quest gui::%player%} or {-playtime quest gui::%player%}
+    wait 1 tick
+    player command "/quests"
