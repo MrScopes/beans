@@ -8,3 +8,7 @@ scripts/discord/!token.sk
 variables.csv
 config.sk
 features.sk
+
+plugin/.gradle
+plugin/.idea
+plugin/build
