@@ -1,0 +1,11 @@
+name: beans
+version: '${version}'
+
+main: me.mrscopes.MrScopes
+api-version: '26.1.2'
+load: POSTWORLD
+
+depend:
+  - FastAsyncWorldEdit
+softdepend:
+  - Skript
