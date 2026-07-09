@@ -1,0 +1,15 @@
+on load:
+    set {-vanilla enchantment::sharpness::display} to "Sharpness"
+    
+    set {-vanilla enchantment::sharpness::max} to 5
+
+    set {-vanilla enchantment::sharpness::xp cost::1} to 2000
+    set {-vanilla enchantment::sharpness::xp cost::2} to 24000
+    set {-vanilla enchantment::sharpness::xp cost::3} to 15000
+    set {-vanilla enchantment::sharpness::xp cost::4} to 800000
+    set {-vanilla enchantment::sharpness::xp cost::5} to 2750000
+    set {-vanilla enchantment::sharpness::money cost::1} to 3000
+    set {-vanilla enchantment::sharpness::money cost::2} to 24000
+    set {-vanilla enchantment::sharpness::money cost::3} to 100000
+    set {-vanilla enchantment::sharpness::money cost::4} to 350000
+    set {-vanilla enchantment::sharpness::money cost::5} to 3000000

@@ -1,0 +1,10 @@
+aliases/
+backups/
+logs/
+lang/
+aliases/
+scripts/-backups/
+scripts/discord/!token.sk
+variables.csv
+config.sk
+features.sk

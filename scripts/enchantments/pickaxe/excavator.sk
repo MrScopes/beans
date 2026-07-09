@@ -1,0 +1,29 @@
+on load:
+    setting("excavator", "display", value: "&f<sprite:items:item/netherite_shovel> &9Excavator")
+    setting("excavator", "max", value: 5)
+    setting("excavator", "priority", value: 10)
+    setting("excavator", "type", value: "pickaxe")
+    setting("excavator", "item", value: netherite shovel)
+
+    setting("excavator", "chance", l1: 5, l2: 6, l3: 7, l4: 8, l5: 15)
+
+    setting("excavator", "xp cost", l2: 30_000, l3: 175_000, l4: 325_000, l5: 800_000)
+    setting("excavator", "money cost", l2: 40_000, l3: 225_000, l4: 375_000, l5: 1_000_000)
+
+local function getDescription(level: integer) :: string:
+    return "make you break a nearby block"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:block.gravel.break" with volume 0.5 and pitch 1 at location of {_player}
+    while {_target} isn't set:
+        add 1 to {_n}
+        set {_potential} to random element out of (blocks in radius 3 around {_block})
+        if all:
+            {_potential} is within bound with id "mine"
+            {_potential} isn't bedrock, beacon, obsidian, or packed ice
+        then:
+            set {_target} to {_potential}
+            stop loop
+        if {_n} > 5:
+            set {_target} to {_block}
+    {_player}.breakBlock({_target})

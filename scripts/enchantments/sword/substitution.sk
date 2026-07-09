@@ -1,0 +1,71 @@
+on load:
+    setting("substitution", "display", value: "&f<sprite:blocks:block/oak_log> Substitution")
+    setting("substitution", "max", value: 5)
+    setting("substitution", "priority", value: 0)
+    setting("substitution", "type", value: "sword")
+    setting("substitution", "item", value: oak log)
+
+    setting("substitution", "cooldown", l1: 6 seconds, l2: 6 seconds, l3: 6 seconds, l4: 6 seconds, l5: 6 seconds)
+
+    setting("substitution", "window", l1: 0.5 seconds, l2: 0.6 seconds, l3: 0.7 seconds, l4: 0.8 seconds, l5: 1 seconds)
+    setting("substitution", "speed", l1: potion effect of speed 1 for 3 seconds, l2: potion effect of speed 1 for 4 seconds, l3: potion effect of speed 1 for 5 seconds, l4: potion effect of speed 1 for 6 seconds, l5: potion effect of speed 2 for 6 seconds)
+
+    setting("substitution", "xp cost", l2: 60_000, l3: 200_000, l4: 750_000, l5: 1_000_000)
+    setting("substitution", "money cost", l2: 100_000, l3: 300_000 , l4: 900_000, l5: 1_250_000)
+
+local function getDescription(level: integer) :: string:
+    set {_window} to get_setting("substitution", "window", {_level})
+    set {_speed} to get_setting("substitution", "speed", {_level})
+    return "&e[RMB] &7parry an attack, resetting cooldown and dashing back. &8(&7%time_format({_window})% window, Speed %amplifier of {_speed}% for %time_format(duration of {_speed})%&8)"
+
+local function onrightclick(player: player, item: item, level: integer):
+    set {-parry::%{_player}%} to now
+    set {-parry level::%{_player}%} to {_level}
+    play sound "item.armor.equip_iron" with volume 0.6 and pitch 1.3 at {_player}
+    
+on damage of player with priority high:
+    {-parry::%victim%} is set
+    set {_window} to get_setting("substitution", "window", {-parry level::%victim%})
+
+    set {_ping bonus} to min(victim's ping / 2, 200) * 0.001 seconds
+    set {_dif} to difference between {-parry::%victim%} and now
+    broadcast {_ping bonus}
+
+    if {_dif} <= {_window} + {_ping bonus}:
+        cancel event
+        parry(victim, {-parry level::%victim%})
+        delete {-enchant cooldown::%victim%::substitution}
+        delete {-parry::%victim%}
+        delete {-parry level::%victim%}
+
+function parry(player: player, level: integer):
+    play sound "block.anvil.land" with volume 1 and pitch 1.8 at {_player}
+
+    set {_speed} to get_setting("substitution", "speed", {_level})
+    add {_speed} to {_player}'s potion effects
+
+    spawn block display at {_player}'s head ~ vector(0, 0.5, 0):
+        set {_display} to display
+        make {_display} not persistent
+        set billboard of {_display} to fixed
+        set block data of {_display} to oak log
+        set transformation translation of {_display} to vector(-0.5, -0.5, -0.5)
+        set transformation scale of {_display} to vector(2, 0.75, 2)
+        set teleport duration of {_display} to 5 ticks
+
+    draw 10 large smoke particles with offset vector(0.08, 0.1, 0.08) at {_player}'s location
+    draw 16 smoke particles with offset vector(0.1, 0.15, 0.1) at {_player}'s location
+    draw 10 cloud particles with offset vector(0.4, 0.6, 0.4) at {_player}'s location
+
+    teleport {_display} to {_display} ~ vector(0, -2, 0)
+
+    wait 1 tick
+
+    set {_v} to vector from yaw (yaw of {_player}) and pitch 0
+    set {_v} to {_v} * -3
+
+    set y component of {_v} to 0
+    set velocity of {_player} to {_v}
+
+    wait 5 ticks
+    delete entity within {_display}

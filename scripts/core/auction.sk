@@ -1,0 +1,205 @@
+on load:
+    set {-required auction level} to 10
+
+function canBeAuctioned(item: item) :: boolean:
+    if {_item} is a beacon:
+        return true
+    
+    if data tag "uuid" of {_item} is set:
+        return true
+
+    if data tag "stored_level" of {_item} is set:
+        return true
+
+    return false
+
+function auctionInfo() :: objects:
+    if {auction::item} isn't set:
+        return "&cThere is no active auction."
+
+    set {_name} to text component of (name of {auction::item} ? "&7%translate component of {auction::item}%")
+    if item amount of {auction::item} > 1:
+        set {_amount} to text component of "%item amount of {auction::item}%x "
+    set {_tool} to text component of "%{_amount} ? ""%%{_name}%"
+    set {_component} to merge components ("[", {_tool}, "]")
+    set hover event of {_component} to hover event showing {auction::item}
+
+    add text component of "" to {_info::*}
+
+    add text component of "&3Auction Host: &b%player_display({auction::player}, "[level] [prefix][player]")%" to {_info::*}
+
+    set {_item} to text component of "&3Item: &f[item]"
+    component replace "[item]" with {_component} in {_item}
+    add {_item} to {_info::*}
+
+    set {_bid} to "&3Current Bid: &b$%formatNumber({auction::bid})%"
+    if {auction::bidder} is set:
+        set {_bid} to "%{_bid}% &7(by %player_display({auction::bidder}, "[level] [prefix][player]")%)"
+    add text component of {_bid} to {_info::*}
+
+    add text component of "&3Time Remaining: &b%time_format({auction::end})%" to {_info::*}
+    add text component of "" to {_info::*}
+
+    return {_info::*}
+
+function auctionType(item: item) :: text:
+    if {_item} is a beacon:
+        return "beacon"
+    
+    if any:
+        {_item} is tagged with paper tag "swords"
+        {_item} is tagged with paper tag "bows"
+    then:
+        return "weapon"
+
+    if {_item} is tagged with paper tag "pickaxes":
+        return "tool"
+
+    if any:
+        {_item} is tagged with paper tag "helmets"
+        {_item} is tagged with paper tag "chestplates"
+        {_item} is tagged with paper tag "leggings"
+        {_item} is tagged with paper tag "boots"
+    then:
+        return "armor"
+
+    if data tag "stored_level" of {_item} is set:
+        return "enchantment"
+
+    return "unknown"
+
+command /auction [<text>] [<text>]:
+    trigger:
+        if arg 1 isn't set:
+            send "&c/auction <info | bid | list | cancel> [money]"
+        else if arg 1 is "info":
+            if {auction::item} isn't set:
+                send "&cThere is no active item."
+            else:
+                send component auctionInfo()
+
+        else if arg 1 is "bid":
+            if {auction::item} isn't set:
+                send "&cThere is no active auction."
+            else:
+                if {auction::bidder} is set:
+                    set {_required} to round({auction::bid} * 1.10)
+                else:
+                    set {_required} to {auction::bid}
+                set {_amount} to unformatted number arg 2
+                if {_amount} <= 1:
+                    send "&cPlease specify a bid amount."
+                else if {auction::player} is player:
+                    send "&cYou can't bid on your own auction."
+                else if {auction::bidder} is player:
+                    send "&cYou are already the highest bidder."
+                else if {_amount} > {money::%player%}:
+                    send "&cYou don't have enough money to place that bid."
+                else:
+                    if {_amount} < {_required}:
+                        send "&cYour bid must be at least $%formatNumber({_required})%."
+                    else:
+                        if {auction::bidder} is set:
+                            add {auction::bid} to {money::%{auction::bidder}%}
+                        set {auction::bid} to {_amount}
+                        set {auction::bidder} to player
+                        remove {_amount} from {money::%player%}
+                        
+                        if {auction::end} <= 5 seconds:
+                            set {auction::end} to 5 seconds
+                        broadcast "&3Current Bid: &b$%formatNumber({auction::bid})% &7(by %player_display({auction::bidder}, "[level] [prefix][player]")%)"
+
+        else if arg 1 is "list":
+            if {level::%player%} < {-required auction level}:
+                send "&cYou must be at least level %{-required auction level}% to start an auction."
+            else:
+                if {auction::item} is set:
+                    send "&cThere is already an active auction." to player
+                else:
+                    set {_amount} to unformatted number arg 2
+                    if {_amount} <= 1:
+                        send "&cPlease specify a starting bid amount."
+                    else if canBeAuctioned(player's tool) is false:
+                        send "&cThat item can't be auctioned."
+                    else:
+                        set {auction::player} to player
+                        set {auction::item} to player's tool
+                        set {auction::bid} to {_amount}
+                        set player's tool to air
+                        
+                        set {auction::end} to 30 seconds
+
+                        all players command "/auction info"
+                        wait 1 tick
+
+                        while {auction::item} is set:
+                            if any:
+                                {auction::end} is 20 seconds
+                                {auction::end} is 10 seconds
+                                {auction::end} <= 5 seconds
+                            then:
+                                if all:
+                                    {auction::end} > 0 seconds
+                                    {auction::end} isn't 30 seconds
+                                then:
+                                    send "&3Auction Time Remaining: &b%time_format({auction::end})%" to all players
+
+                            if {auction::end} <= 0 seconds:
+                                if {auction::bidder} is set:
+                                    log "%{auction::bidder}%: %{auction::item}% $%{auction::bid}% - %{auction::player}%" to "auction.log"
+                                    send "&a%{auction::bidder}% won the auction with a bid of $%formatNumber({auction::bid})%!" to all players
+                                    giveORvaultORdrop({auction::bidder}, {auction::item})
+                                    add {auction::bid} to {money::%{auction::player}%}
+                                else:
+                                    giveORvaultORdrop({auction::player}, {auction::item})
+                                    send "&3The auction ended with no bids." to all players
+                                delete {auction::*}
+
+                            remove 1 second from {auction::end}
+                            wait 1 second
+        else if arg 1 is "cancel":
+            if {auction::item} isn't set:
+                send "&cThere is no active auction to cancel."
+            else if {auction::player} isn't player:
+                send "&cYou can't cancel someone else's auction."
+            else if {auction::end} < 20 seconds:
+                send "&cYou can only cancel the auction within 10 seconds."
+            else:
+                giveORvaultORdrop({auction::player}, {auction::item})
+                if {auction::bidder} is set:
+                    add {auction::bid} to {money::%{auction::bidder}%}
+                delete {auction::*}
+                send "&cThe auction has been canceled." to all players
+
+on tab complete of "/auction":
+    set tab completions for position 1 to "info", "bid", "list", "cancel"
+
+    if tab arg 1 is "list":
+        set tab completions for position 2 to "<price>"
+
+    else if tab arg 1 is "bid":
+        if {auction::bidder} is set:
+            set {_required} to round({auction::bid} * 1.10)
+        else:
+            set {_required} to {auction::bid}
+
+        set tab completions for position 2 to formatNumber({_required})
+
+on tab complete of "/bid":
+    if {auction::bidder} is set:
+        set {_required} to round({auction::bid} * 1.10)
+    else:
+        set {_required} to {auction::bid}
+    set tab completions for position 1 to formatNumber({_required})
+
+command /bid [<text>]:
+    trigger:
+        player command "/auction bid %arg 1%"
+
+on skript start:
+    # clear up old auction
+    if {auction::item} is set:
+        giveORvaultORdrop({auction::player}, {auction::item})
+        if {auction::bidder} is set:
+            add {auction::bid} to {money::%{auction::bidder}%}
+        delete {auction::*}

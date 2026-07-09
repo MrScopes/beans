@@ -1,0 +1,41 @@
+on load:
+    loop integers between 1 and 100:
+        set {-level display::%loop-value%} to levelDisplay(loop-value)
+        set {-required xp::%loop-value%} to requiredXp(loop-value)
+
+function requiredXp(level: integer) :: integer:
+    if {_level} <= 10:
+        return {_level} * 100
+    if {_level} <= 25:
+        return {_level} * 500
+    else if {_level} <= 50:
+        return requiredXp(25) + ({_level} - 25) * 5000
+    else if {_level} <= 90:
+        return requiredXp(50) + ({_level} - 50) * 50000
+    else:
+        return requiredXp(90) + ({_level} - 90) * 250000
+    # return ({_level} * 500) ^ 1.2 #(100 * (1.1 ^ ({_level} - 1) * 50))
+
+function levelDisplay(level: integer) :: text:
+    if {_level} < 10:
+        return "&8[&7%{_level}%&8]"
+    else if {_level} < 20:
+        return "&8[&a%{_level}%&8]"
+    else if {_level} < 30:
+        return "&8[&b%{_level}%&8]"
+    else if {_level} < 40:
+        return "&8[&3%{_level}%&8]"
+    else if {_level} < 50:
+        return "&8[&d%{_level}%&8]"
+    else if {_level} < 60:
+        return "&8[&e%{_level}%&8]"
+    else if {_level} < 70:
+        return "&8[&f%{_level}%&8]"
+    else if {_level} < 80:
+        return "&8[&2%{_level}%&8]"
+    else if {_level} < 90:
+        return "&8[&c%{_level}%&8]"
+    else if {_level} < 100:
+        return "&8[&4%{_level}%&8]"
+    else:
+        return "&4[&4&l%{_level}%&4]"

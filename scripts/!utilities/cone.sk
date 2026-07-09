@@ -1,0 +1,46 @@
+import:
+    java.lang.Math
+
+function coneHit(player: player, target: entity, range: number, yawAngle: number, pitchAngle: number) :: boolean:
+    set {_base} to location of {_target}
+    set {_eyeHeight} to {_target}.getEyeHeight()
+
+    loop 0.45, 0.65, 0.85, 1.05:
+        set {_targetLoc} to {_base}
+        add ({_eyeHeight} * loop-value) to y-coordinate of {_targetLoc}
+
+        if pointInAimCone({_player}, {_targetLoc}, {_range}, {_yawAngle}, {_pitchAngle}) is true:
+            return true
+
+    return false
+
+function pointInAimCone(player: player, point: location, range: number, yawAngle: number, pitchAngle: number) :: boolean:
+    set {_origin} to eye location of {_player}
+
+    set {_toTarget} to {_point}.toVector()
+    {_toTarget}.subtract({_origin}.toVector())
+
+    if {_toTarget}.lengthSquared() > ({_range} * {_range}):
+        return false
+
+    set {_flatToTarget} to {_toTarget}.clone()
+    set y of {_flatToTarget} to 0
+    set {_horizontalDist} to {_flatToTarget}.length()
+
+    if {_horizontalDist} <= 0:
+        return true
+
+    set {_flatForward} to vector from yaw yaw of {_player} and pitch 0
+    set y of {_flatForward} to 0
+
+    {_flatToTarget}.normalize()
+    {_flatForward}.normalize()
+
+    if {_flatForward}.dot({_flatToTarget}) < cos({_yawAngle} / 2):
+        return false
+
+    set {_dy} to (y-coordinate of {_point}) - (y-coordinate of {_origin})
+    set {_targetPitch} to Math.toDegrees(Math.atan2(-1 * {_dy}, {_horizontalDist}))
+    set {_pitchDiff} to abs((pitch of {_player}) - {_targetPitch})
+
+    return whether {_pitchDiff} <= ({_pitchAngle} / 2)

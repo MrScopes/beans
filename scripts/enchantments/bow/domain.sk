@@ -1,0 +1,31 @@
+on load:
+    setting("domain", "ultimate", value: true)
+    setting("domain", "display", value: "&f<sprite:items:item/barrier> <rainbow><bold>Domain")
+    setting("domain", "max", value: 5)
+    setting("domain", "priority", value: 10)
+    setting("domain", "type", value: "bow")
+    setting("domain", "item", value: nether star)
+
+    setting("domain", "cooldown", l1: 1 minute, l2: 1 minute, l3: 1 minute, l4: 1 minute, l5: 1 minute)
+
+    setting("domain", "radius", l1: 20, l2: 18, l3: 16, l4: 14, l5: 12)
+    setting("domain", "duration", l1: 10 seconds, l2: 11 seconds, l3: 12 seconds, l4: 13 seconds, l5: 15 seconds)
+
+    setting("domain", "xp cost", l2: 200_000, l3: 1_000_000, l4: 2_000_000, l5: 5_000_000)
+    setting("domain", "money cost", l2: 250_000, l3: 1_250_000, l4: 2_500_000, l5: 5_550_000)
+
+local function getDescription(level: integer) :: string:
+    return "on hit&8, &7create an inescapable &f%get_setting("domain", "radius", {_level})%m &7domain for &f%time_format(get_setting("domain", "duration", {_level}))%"
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    if {_victim} is a player:
+        play sound "entity.enderman.death" with volume 1 and pitch 1 at {_victim}
+        send "%{_victim}% was trapped in a domain!" to {_shooter}
+        set worldborder of {_victim} to a virtual worldborder:
+            set worldborder radius of event-worldborder to get_setting("domain", "radius", {_level})
+            set worldborder center of event-worldborder to location of {_victim}
+            set worldborder damage amount of event-worldborder to 5
+        set {_border} to worldborder of {_victim}
+        wait get_setting("domain", "duration", {_level})
+        {_border} is worldborder of {_victim}
+        reset worldborder of {_victim}

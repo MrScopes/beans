@@ -1,0 +1,73 @@
+function openColorGui(player: player):
+    if {_player}'s tool isn't tagged with paper tag "helmets":
+        send "&cYou can only change the color of helmets!" to {_player}
+
+    set {-color gui::%{_player}%} to chest inventory with 3 rows named ""
+    loop colors:
+        set {_item} to leather helmet named "&fChange to <%loop-value%>%loop-value%" with lore "&7Click to change helmet color to %loop-value%."
+        dye {_item} loop-value
+        set item flags of {_item} to hide dye and hide attributes
+        set data tag "color" of {_item} to "%loop-value%"
+        add {_item} to {-color gui::%{_player}%}
+    
+    set {_item} to beacon named "Custom Color" with lore "&7Click to choose a custom color."
+    set data tag "color" of {_item} to "custom"
+    add {_item} to {-color gui::%{_player}%}
+
+    open {-color gui::%{_player}%} to {_player}
+
+on inventory click:
+    player's current inventory is {-color gui::%player%}
+    cancel event
+
+    set {_color} to data tag "color" of event-item
+    if {_color} is set:
+        if player's tool isn't tagged with paper tag "helmets":
+            send "&cYou can only change the color of helmets!"
+        else:
+            set {_parsed} to {_color} parsed as color
+            if {_parsed} is set:
+                dye player's tool {_parsed}
+                send "&aChanged helmet color to %{_color}%!"
+            else:
+                send "Choose your color. Example, you can type ""green"" or ""0,255,0"" to get green color." 
+                set {-choosing color::%player%} to 10 seconds from now
+                close player's inventory
+
+on chat:
+    if difference between {-choosing color::%player%} and now < 20 seconds:
+        cancel event
+        set {_input} to message
+        set {_parsed} to {_input} parsed as color
+        if {_parsed} is set:
+            dye player's tool {_parsed}
+            send "&aChanged helmet color to %{_input}%!"
+            delete {-choosing color::%player%}
+        else:
+            set {_rgb split::*} to {_input} split at ","
+            if size of {_rgb split::*} is 3:
+                set {_r} to {_rgb split::1} parsed as integer
+                set {_g} to {_rgb split::2} parsed as integer
+                set {_b} to {_rgb split::3} parsed as integer
+                if all:
+                    {_r} is set
+                    {_g} is set
+                    {_b} is set
+                then:
+                    if all:
+                        {_r} >= 0
+                        {_r} <= 255
+                        {_g} >= 0
+                        {_g} <= 255
+                        {_b} >= 0
+                        {_b} <= 255
+                    then:
+                        dye player's tool ({_r}, {_g}, {_b})
+                        send "&aChanged helmet color to %{_input}%!"
+                        delete {-choosing color::%player%}
+                    else:
+                        send "&cRGB values must be between 0 and 255!"
+                else:
+                    send "&cInvalid RGB format! Please enter in the format R,G,B (e.g. 255,0,0 for red)."
+            else:
+                send "&cInvalid color! Please try again."

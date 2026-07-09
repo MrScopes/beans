@@ -1,0 +1,20 @@
+on load:
+    setting("crit", "display", value: "&f<sprite:items:item/diamond_sword> &cCrit")
+    setting("crit", "max", value: 5)
+    setting("crit", "priority", value: 10)
+    setting("crit", "type", value: "sword")
+    setting("crit", "item", value: diamond sword)
+
+    setting("crit", "chance", l1: 10, l2: 15, l3: 20, l4: 25, l5: 30)
+
+    setting("crit", "increase", l1: 0.1, l2: 0.15, l3: 0.20, l4: 0.25, l5: 0.35)
+
+    setting("crit", "xp cost", l2: 6_000, l3: 24_000, l4: 100_000, l5: 400_000)
+    setting("crit", "money cost", l2: 10_000, l3: 30_000, l4: 140_000, l5: 550_000)
+
+local function getDescription(level: integer) :: string:
+    return "increase final damage by %get_setting("crit", "increase", {_level}) * 100%%%"
+
+local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
+    play sound "minecraft:entity.bat.hurt" with volume 1 and pitch 1 to {_attacker}
+    return {_damage} * (1 + get_setting("crit", "increase", {_level}))

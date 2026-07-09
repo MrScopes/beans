@@ -1,0 +1,66 @@
+on load:
+    setting("creeper", "display", value: "&f<head:creeper> &2Creeper")
+    setting("creeper", "max", value: 5)
+    setting("creeper", "priority", value: 0)
+    setting("creeper", "type", value: "bow")
+    setting("creeper", "item", value: creeper spawn egg)
+    
+    setting("creeper", "manual chance::onhit", l1: true, l2: true, l3: true, l4: true, l5: true)
+    setting("creeper", "chance", l1: 20, l2: 25, l3: 30, l4: 35, l5: 50)
+    setting("creeper", "threshold", l1: 0.5, l2: 0.4, l3: 0.35, l4: 0.3, l5: 0.20)
+
+    setting("creeper", "manual cooldown::onhit", l1: true, l2: true, l3: true, l4: true, l5: true)
+    setting("creeper", "cooldown", l1: 18 seconds, l2: 17 seconds, l3: 16 seconds, l4: 15 seconds, l5: 12 seconds)
+    setting("creeper", "radius", l1: 2.5, l2: 2.75, l3: 3, l4: 3.25, l5: 3.75)
+    setting("creeper", "damage", l1: 0.5, l2: 0.75, l3: 1, l4: 1.25, l5: 1.75)
+    setting("creeper", "fuse", l1: 20, l2: 17, l3: 15, l4: 13, l5: 10)
+
+    setting("creeper", "xp cost", l2: 16_000, l3: 120_000, l4: 400_000, l5: 1_000_000)
+    setting("creeper", "money cost", l2: 24_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
+
+local function getDescription(level: integer) :: string:
+    return "Spawn creeper on arrow. %get_setting("creeper", "fuse", {_level}) / 20%s fuse, %get_setting("creeper", "damage", {_level})%&f<sprite:gui:hud/heart/full>&7, %get_setting("creeper", "radius", {_level})%m"
+
+local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
+    set {-%{_projectile}%::spawn creeper} to true
+    play sound "entity.creeper.hurt" with volume 1 and pitch 1 at {_shooter}
+    while {_projectile} is alive:
+        wait 1 tick
+        draw 5 green dust particle at location of {_projectile}
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    if {-%{_projectile}%::spawn creeper} is set:
+        delete {-%{_projectile}%::spawn creeper}
+        spawn creeper at {_projectile}:
+            set max health of creeper to 1
+            set movement speed attribute of creeper to 0.3
+            set scale attribute of creeper to 0.3
+            creeper.setMaxFuseTicks(get_setting("creeper", "fuse", {_level}))
+            set {-creeper %creeper%::damage} to get_setting("creeper", "damage", {_level})
+            set {-creeper %creeper%::radius} to get_setting("creeper", "radius", {_level})
+            set {-creeper %creeper%::owner} to {_shooter}
+            set {_creeper} to creeper
+        while {_creeper} is alive:
+            wait 12 ticks
+            damage {_creeper} by 0.1
+            reset no damage time of {_creeper}
+
+on explode:
+    {-creeper %event-entity%::damage} is set
+    cancel event
+    play sound "entity.generic.explode" with volume 1 and pitch 1 at location of event-entity
+    draw ({-creeper %event-entity%::radius} * 20) explosion particle at (location of event-entity)
+
+on damage:
+    {-creeper %attacker%::damage} is set
+    cancel event
+    loop living entities in radius {-creeper %attacker%::radius} around location of victim:
+        {-creeper %attacker%::owner} isn't loop-entity
+        damage loop-entity by customDamage(loop-entity, {-creeper %attacker%::damage})
+    wait 1 tick
+    delete {-creeper %attacker%::*}
+
+on target:
+    {-creeper %entity%::owner} is set
+    target is {-creeper %entity%::owner}
+    cancel event

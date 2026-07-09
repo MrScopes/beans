@@ -1,0 +1,28 @@
+on load:
+    setting("grounding", "display", value: "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding")
+    setting("grounding", "max", value: 5)
+    setting("grounding", "priority", value: 0)
+    setting("grounding", "type", value: "bow")
+    setting("grounding", "item", value: glow squid spawn egg)
+    
+    setting("grounding", "chance", l1: 30, l2: 40, l3: 50, l4: 60)
+    setting("grounding", "threshold", l1: 0.5, l2: 0.5, l3: 0.5, l4: 0.5, l5: 0.5)
+
+    setting("grounding", "duration", l1: 10 seconds, l2: 11 seconds, l3: 12 seconds, l4: 13 seconds, l5: 15 seconds)
+    
+    setting("grounding", "xp cost", l2: 16_000, l3: 120_000, l4: 400_000, l5: 1_000_000)
+    setting("grounding", "money cost", l2: 24_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
+
+local function getDescription(level: integer) :: string:
+    return "Ground a player, disabling their elytra for %time_format(get_setting("grounding", "duration", {_level}))%"
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    if {_victim} is a player:
+        play sound "entity.shulker.hurt" to {_shooter} and {_victim}
+        set gliding of {_victim} to false
+        set cooldown of elytra for {_victim} to get_setting("grounding", "duration", {_level})
+
+on gliding state change:
+    if gliding state of player is false:
+        cooldown of elytra for player > 0 seconds
+        cancel event

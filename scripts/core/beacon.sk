@@ -1,0 +1,253 @@
+on load:
+    set {-beacon chance random::1} to 80
+    set {-beacon chance random::2} to 19
+    set {-beacon chance random::3} to 0.9
+
+    set {-beacon chance specific::1} to 95
+    set {-beacon chance specific::2} to 4.5
+    set {-beacon chance specific::3} to 0.45
+
+    set {-beacon chance ultimate random} to 20 #0.1
+    set {-beacon chance ultimate specific} to 20 #0.05
+
+    set {-beacon gui} to hopper inventory named "Spin an enchantment"
+    set slot 0 of {-beacon gui} to enchanted book named "&5Random Enchantment" with lore "&7Click to receive a random enchantment book.", "&7Level 1: %{-beacon chance random::1}%%% chance", "&bLevel 2-3: %{-beacon chance random::2}%%% chance", "&b&lLevel 3+: %{-beacon chance random::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate random}%%% chance"
+    set slot 1 of {-beacon gui} to diamond pickaxe named "&6Mining Enchantment" with lore "&7Click to receive a random mining enchantment book.", "&7Level 1: %{-beacon chance specific::1}%%% chance", "&bLevel 2-3: %{-beacon chance specific::2}%%% chance", "&b&lLevel 3+: %{-beacon chance specific::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate specific}%%% chance"
+    set slot 2 of {-beacon gui} to diamond sword named "&bSword Enchantment" with lore "&7Click to receive a random sword enchantment book.", "&7Level 1: %{-beacon chance specific::1}%%% chance", "&bLevel 2-3: %{-beacon chance specific::2}%%% chance", "&b&lLevel 3+: %{-beacon chance specific::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate specific}%%% chance"
+    set slot 3 of {-beacon gui} to diamond chestplate named "&7Armor Enchantment" with lore "&7Click to receive a random armor enchantment book.", "&7Level 1: %{-beacon chance specific::1}%%% chance", "&bLevel 2-3: %{-beacon chance specific::2}%%% chance", "&b&lLevel 3+: %{-beacon chance specific::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate specific}%%% chance"
+    set slot 4 of {-beacon gui} to bow named "&eBow Enchantment" with lore "&7Click to receive a random bow enchantment book.", "&7Level 1: %{-beacon chance specific::1}%%% chance", "&bLevel 2-3: %{-beacon chance specific::2}%%% chance", "&b&lLevel 3+: %{-beacon chance specific::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate specific}%%% chance"
+
+function beaconItem() :: item:
+    set {_item} to beacon named "&b&lBEACON" with lore "&7Right click to open the custom enchantment menu!"
+    enchant {_item} with unbreaking 10
+    set {_item} to {_item} with all item flags
+    damage {_item} by 0 # for some reason... some beacons have 0 damage? ill just set all of them to it
+    return {_item}
+
+on right click with beacon:
+    cancel event
+    data tag "stored_level" of event-item isn't set
+    open {-beacon gui} to player
+
+on inventory click:
+    player's current inventory is {-beacon gui}
+    cancel event
+
+    if player's tool isn't a beacon:
+        send "You must hold a beacon to use this GUI!"
+        close player's inventory
+
+    else:
+        if index of event-slot is 0:
+            set {_type} to "random"
+        else if index of event-slot is 1:
+            set {_type} to "pickaxe"
+        else if index of event-slot is 2:
+            set {_type} to "sword"
+        else if index of event-slot is 3:
+            set {_type} to "armor"
+        else if index of event-slot is 4:
+            set {_type} to "bow"
+
+        {_type} is set
+
+        if {_type} is "random":
+            set {_level1Chance} to {-beacon chance random::1}
+            set {_luckyChance} to {-beacon chance random::2}
+            set {_ultraChance} to {-beacon chance random::3}
+            set {_ultimateChance} to {-beacon chance ultimate random}
+        else:
+            set {_level1Chance} to {-beacon chance specific::1}
+            set {_luckyChance} to {-beacon chance specific::2}
+            set {_ultraChance} to {-beacon chance specific::3}
+            set {_ultimateChance} to {-beacon chance ultimate specific}
+
+        set {_roll} to random number between 0 and 100
+
+        if {_roll} < {_ultimateChance}:
+            set {_rolledUltimate} to true
+            send formatted "<rainbow><bold>ULTIMATE!"
+
+        else if {_roll} < {_ultimateChance} + {_level1Chance}:
+            set {_tier} to 1
+
+        else if {_roll} < {_ultimateChance} + {_level1Chance} + {_luckyChance}:
+            set {_tier} to 2
+            send "&bLucky!"
+
+        else:
+            set {_tier} to 3
+            send "&b&lULTRA LUCKY!"
+
+        loop indexes of {-ce::*}:
+            if {_type} isn't "random":
+                if {-ce::%loop-value%::type} isn't {_type}:
+                    continue
+
+            {-ce::%loop-value%::disabled} isn't true
+            loop-value isn't "armor"
+
+            if {_rolledUltimate} is true:
+                {-ce::%loop-value%::ultimate} is true
+                add loop-value to {_applicableEnchantments::*}
+            else:
+                {-ce::%loop-value%::ultimate} isn't true
+                add loop-value to {_applicableEnchantments::*}
+
+        set {_enchantment} to random element out of {_applicableEnchantments::*}
+        set {_max} to {-ce::%{_enchantment}%::max}
+
+        remove 1 from item amount of player's tool
+
+        if {_max} is 1:
+            set {_level} to 1
+            set {_chance} to 1
+
+        else if {_tier} is 1:
+            set {_level} to 1
+            set {_chance} to {_level1Chance} / 100
+
+        else if {_tier} is 2:
+            set {_high} to min(3, {_max})
+            set {_level} to random integer between 2 and {_high}
+
+            set {_range} to {_high} - 1
+            set {_chance} to ({_luckyChance} / 100) * (1 / {_range})
+
+        else:
+            set {_level} to random integer between 3 and {_max}
+
+            set {_range} to {_max} - 2
+            set {_chance} to ({_ultraChance} / 100) * (1 / {_range})
+
+        set {_level} to clamp({_level}, 1, {_max})
+        set {_item} to createStoredCustomBook({_enchantment}, {_level})
+
+        giveORvaultORdrop(player, {_item})
+
+        send formatted "You rolled a %name of {_item}% &fenchantment book!"
+    
+        if {_rolledUltimate} is true:  
+            set {_odds} to {_chance} * 100000
+            broadcast formatted "<rainbow><bold>ULTIMATE! &f%player% rolled a %name of {_item}% &fbook!"
+            play sound "entity.ender_dragon.death" at volume 0.2 to all players
+
+        else if {_level} is {_max}:
+            {_level} > 3
+            set {_insanelyChance} to 0
+
+            loop {_applicableEnchantments::*}:
+                set {_loopMax} to {-ce::%loop-value%::max}
+
+                if {_loopMax} is {_level}:
+                    add (1 / size of {_applicableEnchantments::*}) * {_chance} to {_insanelyChance}
+
+            set {_odds} to round(1 / {_insanelyChance})
+
+            broadcast formatted "<aqua><bold>INSANELY LUCKY! &f%player% rolled a %name of {_item}% &fbook! &8(&f1 in %{_odds}%&8)"
+
+        else if {_level} >= 3:
+            broadcast formatted "%player% rolled a %name of {_item}% &fenchantment book!"
+
+command /beacons [<text>] [<text>] [<integer>]:
+    trigger:
+        if arg 1 isn't set:
+            if player is op:
+                send "&c/beacons <balance | pay | withdraw | deposit | &4admin&c>"
+            else:
+                send "&c/beacons <balance | pay | withdraw | deposit>"
+        else:
+            if arg 1 is "balance":
+                send "&7You have &b&l%formatNumber({beacons::%player%} ? 0)% BEACONS&7."
+
+            else if arg 1 is "pay":
+                if {level::%player%} < 25:
+                    send "&cYou can't pay beacons until you reach level 25." to player
+                else:
+                    if arg 2 isn't set:
+                        send "&c/beacons pay <player> <amount>"
+                    else:
+                        set {_player} to offlineplayer(arg 2, false)
+                        if {level::%{_player}%} < 25:
+                            send "&cThat player can't receive beacons until they reach level 25." to player
+                        else:
+                            if arg 3 isn't set:
+                                send "&c/beacons pay <player> <amount>"
+                            else:
+                                if {beacons::%player%} >= arg 3:
+                                    remove arg 3 from {beacons::%player%}
+                                    add arg 3 to {beacons::%{_player}%}
+                                    send "&7Paid &b&l%arg 3% BEACONS &7to %{_player}%."
+                                    send "&7Received &b&l%arg 3% BEACONS &7from %player%." to {_player}
+                                else:
+                                    send "&cYou don't have that many beacons."
+
+            else if arg 1 is "withdraw":
+                if arg 2 isn't set:
+                    send "&c/beacons withdraw <amount>"
+                else:
+                    set {_amount} to arg 2 parsed as integer
+                    if {_amount} isn't greater than 0:
+                        send "&c/beacons withdraw <amount>"
+                    else:
+                        if {beacons::%player%} >= {_amount}:
+                            if player has space for {_amount} of beaconItem():
+                                remove {_amount} from {beacons::%player%}
+                                giveORvaultORdrop(player, {_amount} of beaconItem())
+                                send "&7Withdrew &b&l%{_amount}% BEACONS &7for &b%{_amount}% &7items."
+                            else:
+                                send "&cYou don't have enough inventory space."
+                        else:
+                            player command "/beacons"
+
+            else if arg 1 is "deposit":
+                if arg 2 isn't set:
+                    send "&c/beacons deposit <amount>"
+                else:
+                    set {_amount} to arg 2 parsed as integer
+                    if {_amount} isn't greater than 0:
+                        send "&c/beacons deposit <amount>"
+                    else:
+                        if player has {_amount} of beaconItem():
+                            remove {_amount} of beaconItem() from player's inventory
+                            add {_amount} to {beacons::%player%}
+                            send "&7Deposited &b&l%{_amount}% BEACONS &7from your inventory."
+                        else:
+                            send "&cYou don't have that many beacon items."
+
+            else if arg 1 is "admin":
+                player is op
+                set {_target} to offlineplayer(arg 2, false)
+                if arg 3 isn't set:
+                    send "&7%{_target}% has &b&l%formatNumber({beacons::%{_target}%})% BEACONS&7."
+                else:
+                    if arg 3 isn't greater than 0:
+                        send "&c/beacons admin <player> <amount>"
+                    else:
+                        set {beacons::%{_target}%} to arg 3
+                        send "&7%{_target}% now has &b&l%arg 3% BEACONS&7."
+
+            else:
+                player command "/beacons"
+
+on tab complete of "/beacons":
+    if player is op:
+        set tab completions of position 1 to "balance", "pay", "withdraw", "deposit", "admin"
+    else:
+        set tab completions of position 1 to "balance", "pay", "withdraw", "deposit"
+
+    if tab arg 1 is "pay":
+        set tab completions of position 2 to all players
+        set tab completions of position 3 to {beacons::%player%} ? 0
+    else if tab arg 1 is "admin":
+        set tab completions of position 2 to all players
+    else if tab arg 1 is "withdraw":
+        set tab completions of position 2 to {beacons::%player%} ? 0
+
+function giveBeacons(player: player, amount: integer):
+    if {_player} has space for {_amount} of beaconItem():
+        give {_amount} of beaconItem() to {_player}
+        send "&7Added &b%{_amount}% beacons &7to your inventory." to {_player}
+    else:
+        add {_amount} to {beacons::%{_player}%}
+        send "&7Your inventory is full. Added &b%{_amount}% beacons &7to your balance (/beacons)." to {_player}

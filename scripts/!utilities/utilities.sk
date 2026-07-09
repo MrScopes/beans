@@ -1,0 +1,154 @@
+on load:
+    set {-romannumerals::roman::*} to "M", "XM", "CM", "D", "XD", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
+    set {-romannumerals::arabic::*} to 1000, 990, 900, 500, 490, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1
+
+function romanNumeral(arabic:number) :: string:
+    loop {-romannumerals::arabic::*}:
+        set {_roman} to {-romannumerals::roman::%loop-index%}
+        while {_arabic} >= loop-value:
+            set {_romanNumeral} to "%{_romanNumeral} ? ""%%{_roman}%"
+            remove loop-value from {_arabic}
+    return {_romanNumeral}
+
+import:
+    java.lang.System 
+    java.lang.Float
+
+expression current (:m|:n)s:
+    get:
+        if parse tags is "m":
+            return System.currentTimeMillis()
+        else if parse tags is "n":
+            return System.nanoTime()
+
+function capitalizeFirst(input: string) :: string:
+    set {_split::*} to split {_input} at ""
+    set {_split::1} to capitalized {_split::1}
+    return join {_split::*} with ""
+
+# utilities
+ # some of these scripts aren't mine
+
+function kNumber(number: number) :: string:
+    set {_n} to {_number}
+    set {_data} to "QT,18|Q,15|T,12|B,9|M,6|k,3"
+    loop split {_data} at "|":
+        set {_s::*} to split loop-value at ","
+        {_n} >= 10 ^ {_s::2} parsed as number
+        return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+    return "%{_n} ? 0%"
+
+# creator: forgot 
+# unformatted number 10k -> 10000
+expression unformatted number %string%:
+	get:
+		set {_t} to expr-1
+		replace all "," with "" in {_t}
+		set {_v} to ""
+		set {_data} to "Q,15|T,12|B,9|M,6|k,3"
+		loop split {_data} at "|":
+			set {_s::*} to split loop-value at ","
+			set {_d::%{_s::1}%} to {_s::2} parsed as number
+		loop split {_t} at "":
+			if {_d::%loop-value%} is set:
+				add {_d::%loop-value%} to {_n}
+			else:
+				set {_v} to "%{_v}%%loop-value%"
+		return ({_v} parsed as number) * 10^{_n}
+		
+command /up <number>:
+	permission: beans.admin
+	trigger:
+		set block at block arg - 1 above player to glass if block at block arg - 1 above player is air
+		teleport player to block arg above player
+			
+import:
+	java.util.ArrayList
+	ch.njol.skript.lang.LiteralList
+	ch.njol.skript.lang.Condition
+	ch.njol.skript.lang.Expression
+
+expression player %string%:
+    get:
+        return offlineplayer(expr-1)
+
+on load:
+    set {-time::s} to "second"
+    set {-time::m} to "minute"
+    set {-time::h} to "hour"
+    set {-time::d} to "day"
+    set {-time::w} to "week"
+    set {-time::mo} to "month"
+    set {-time::y} to "year"
+
+function stringToTimespan(input: string) :: timespan:
+    replace all " " in {_input} with ""
+    loop regex {_input} split at "(?<=\d[a-z])(?=\d)":
+        set {_t::*} to regex loop-value split at "(?<=\d)(?=[a-z])"
+        set {_t::2} to " %{-time::%{_t::2}%} ? {_t::2}% "
+        add (join {_t::*} with "") to {_result::*}
+    set {_result} to (join {_result::*} with "")
+    return {_result} parsed as timespan
+
+function time_format(time: timespan) :: string:
+  set {_time} to "%{_time}%"
+  set {_timespan::*} to {_time} parsed as "%number% %string%[s][ and %number% %string%[s]]"
+  set {_first} to "%{_timespan::1}%%first character of {_timespan::2}%"
+  set {_second} to "%{_timespan::3}%%first character of {_timespan::4}%"
+
+  return ("%{_first}% %{_second}%" if {_timespan::3} is set, else "%{_first}%")
+
+###
+###
+
+function scramble(text: text) :: text:
+    return join (shuffled ({_t} split at ""))
+
+###
+###
+
+on load:
+    set {-effect::speed::display} to "<sprite:gui:mob_effect/speed>"
+    set {-effect::slowness::display} to "<sprite:gui:mob_effect/slowness>"
+    set {-effect::strength::display} to "<sprite:gui:mob_effect/strength>"
+    set {-effect::weakness::display} to "<sprite:gui:mob_effect/weakness>"
+    set {-effect::haste::display} to "<sprite:gui:mob_effect/haste>"
+    set {-effect::mining fatigue::display} to "<sprite:gui:mob_effect/mining_fatigue>"
+    set {-effect::regeneration::display} to "<sprite:gui:mob_effect/regeneration>"
+    set {-effect::poison::display} to "<sprite:gui:mob_effect/poison>"
+    set {-effect::wither::display} to "<sprite:gui:mob_effect/wither>"
+    set {-effect::fire resistance::display} to "<sprite:gui:mob_effect/fire_resistance>"
+    set {-effect::invisibility::display} to "<sprite:gui:mob_effect/invisibility>"
+    set {-effect::night vision::display} to "<sprite:gui:mob_effect/night_vision>"
+    set {-effect::absorption::display} to "<sprite:gui:mob_effect/absorption>"
+    set {-effect::luck::display} to "<sprite:gui:mob_effect/luck>"
+    set {-effect::unluck::display} to "<sprite:gui:mob_effect/unluck>"
+    set {-effect::water breathing::display} to "<sprite:gui:mob_effect/water_breathing>"
+    set {-effect::jump boost::display} to "<sprite:gui:mob_effect/jump_boost>"
+    set {-effect::resistance::display} to "<sprite:gui:mob_effect/resistance>"
+    set {-effect::blindness::display} to "<sprite:gui:mob_effect/blindness>"
+    set {-effect::glowing::display} to "<sprite:gui:mob_effect/glowing>"
+    set {-effect::hunger::display} to "<sprite:gui:mob_effect/hunger>"
+    set {-effect::armor::display} to "<sprite:gui:hud/armor_full>"
+
+function smallNumber(number: number) :: text:
+    set {_text} to "%{_number}%"
+    replace all "1" with "¹" in {_text}
+    replace all "2" with "²" in {_text}
+    replace all "3" with "³" in {_text}
+    replace all "4" with "⁴" in {_text}
+    replace all "5" with "⁵" in {_text}
+    replace all "6" with "⁶" in {_text}
+    replace all "7" with "⁷" in {_text}
+    replace all "8" with "⁸" in {_text}
+    replace all "9" with "⁹" in {_text}
+    replace all "0" with "⁰" in {_text}
+    return {_text}
+
+function effectDisplay(effect: potion effect, force: boolean = false) :: text:
+    if {_force} is true:
+        return "%{-effect::%type of {_effect}%::display}%%smallNumber(amplifier of {_effect})% &f%time_format(duration of {_effect})%&"
+    if amplifier of {_effect} > 1:
+        return "%{-effect::%type of {_effect}%::display}%%smallNumber(amplifier of {_effect})% &f%time_format(duration of {_effect})%"
+    else:
+        return "%{-effect::%type of {_effect}%::display}% &f%time_format(duration of {_effect})%"

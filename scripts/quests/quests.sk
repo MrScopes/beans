@@ -1,0 +1,538 @@
+on load:
+    delete {-quests::*}
+    
+    # ---- Block Quests ----
+    set {-quests::blocks::2::blocks}  to 1_000
+    set {-quests::blocks::2::reward::xp}     to 10_000
+    set {-quests::blocks::2::reward::money}  to 10_000
+    set {-quests::blocks::2::reward::beacon} to 1
+    set {-quests::blocks::2::reward::item}   to createStoredCustomBook("blast", 1)
+
+    set {-quests::blocks::3::blocks}  to 15_000
+    set {-quests::blocks::3::reward::xp}     to 10_000
+    set {-quests::blocks::3::reward::money}  to 10_000
+    set {-quests::blocks::3::reward::beacon} to 1
+
+    set {-quests::blocks::4::blocks}  to 20_000
+    set {-quests::blocks::4::reward::xp}     to 10_000
+    set {-quests::blocks::4::reward::money}  to 10_000
+    set {-quests::blocks::4::reward::beacon} to 1
+
+    set {-quests::blocks::5::blocks}  to 25_000
+    set {-quests::blocks::5::reward::xp}     to 10_000
+    set {-quests::blocks::5::reward::money}  to 10_000
+    set {-quests::blocks::5::reward::beacon} to 1
+    set {-quests::blocks::5::reward::item}   to createStoredCustomBook("feeding", 1)
+
+    set {-quests::blocks::6::blocks}  to 40_000
+    set {-quests::blocks::6::reward::xp}     to 10_000
+    set {-quests::blocks::6::reward::money}  to 10_000
+    set {-quests::blocks::6::reward::beacon} to 1
+
+    set {-quests::blocks::7::blocks}  to 50_000
+    set {-quests::blocks::7::reward::xp}     to 10_000
+    set {-quests::blocks::7::reward::money}  to 10_000
+    set {-quests::blocks::7::reward::beacon} to 1
+
+    set {-quests::blocks::8::blocks}  to 60_000
+    set {-quests::blocks::8::reward::xp}     to 10_000
+    set {-quests::blocks::8::reward::money}  to 10_000
+    set {-quests::blocks::8::reward::beacon} to 1
+
+    set {-quests::blocks::9::blocks}  to 75_000
+    set {-quests::blocks::9::reward::xp}     to 10_000
+    set {-quests::blocks::9::reward::money}  to 10_000
+    set {-quests::blocks::9::reward::beacon} to 1
+
+    set {-quests::blocks::10::blocks} to 100_000
+    set {-quests::blocks::10::reward::xp}     to 25_000
+    set {-quests::blocks::10::reward::money}  to 25_000
+    set {-quests::blocks::10::reward::beacon} to 2
+
+    set {-quests::blocks::11::blocks} to 125_000
+    set {-quests::blocks::11::reward::xp}     to 25_000
+    set {-quests::blocks::11::reward::money}  to 25_000
+    set {-quests::blocks::11::reward::beacon} to 2
+
+    set {-quests::blocks::12::blocks} to 175_000
+    set {-quests::blocks::12::reward::xp}     to 25_000
+    set {-quests::blocks::12::reward::money}  to 25_000
+    set {-quests::blocks::12::reward::beacon} to 2
+
+    set {-quests::blocks::13::blocks} to 200_000
+    set {-quests::blocks::13::reward::xp}     to 50_000
+    set {-quests::blocks::13::reward::money}  to 50_000
+    set {-quests::blocks::13::reward::beacon} to 3
+
+    set {-quests::blocks::14::blocks} to 300_000
+    set {-quests::blocks::14::reward::xp}     to 100_000
+    set {-quests::blocks::14::reward::money}  to 100_000
+    set {-quests::blocks::14::reward::beacon} to 3
+
+    set {-quests::blocks::15::blocks} to 400_000
+    set {-quests::blocks::15::reward::xp}     to 100_000
+    set {-quests::blocks::15::reward::money}  to 100_000
+    set {-quests::blocks::15::reward::beacon} to 5
+
+    set {-quests::blocks::16::blocks} to 500_000
+    set {-quests::blocks::16::reward::xp}     to 100_000
+    set {-quests::blocks::16::reward::money}  to 100_000
+    set {-quests::blocks::16::reward::beacon} to 6
+
+    set {-quests::blocks::17::blocks} to 600_000
+    set {-quests::blocks::17::reward::xp}     to 150_000
+    set {-quests::blocks::17::reward::money}  to 150_000
+    set {-quests::blocks::17::reward::beacon} to 7
+
+    set {-quests::blocks::18::blocks} to 750_000
+    set {-quests::blocks::18::reward::xp}     to 250_000
+    set {-quests::blocks::18::reward::money}  to 250_000
+    set {-quests::blocks::18::reward::beacon} to 8
+
+    set {-quests::blocks::19::blocks} to 1_000_000
+    set {-quests::blocks::19::reward::xp}     to 500000
+    set {-quests::blocks::19::reward::money}  to 500000
+    set {-quests::blocks::19::reward::beacon} to 9
+
+    set {-quests::blocks::20::blocks} to 5_000_000
+    set {-quests::blocks::20::reward::xp}     to 750_000
+    set {-quests::blocks::20::reward::money}  to 750_000
+    set {-quests::blocks::20::reward::beacon} to 10
+
+    set {-quests::blocks::21::blocks} to 10_000_000
+    set {-quests::blocks::21::reward::xp}     to 2_500_000
+    set {-quests::blocks::21::reward::money}  to 2_500_000
+    set {-quests::blocks::21::reward::beacon} to 20
+
+    # ---- Repeatable Block Quests ----
+    set {-quests::blocks::repeatable::1::blocks}        to 5_000
+    set {-quests::blocks::repeatable::1::reward::xp}    to 5_000
+    set {-quests::blocks::repeatable::1::reward::money} to 5_000
+
+    set {-quests::blocks::repeatable::2::blocks}         to 50_000
+    set {-quests::blocks::repeatable::2::reward::xp}     to 10_000
+    set {-quests::blocks::repeatable::2::reward::money}  to 10_000
+    set {-quests::blocks::repeatable::2::reward::beacon} to 1
+
+    # ---- Level Quests ----
+    set {-quests::level::0::reward::xp}    to 0
+    set {-quests::level::0::reward::money} to 500
+    set {-quests::level::0::reward::text}  to "Welcome to Beans!"
+
+    set {-quests::level::5::reward::xp}     to 1_000
+    set {-quests::level::5::reward::money}  to 1_000
+    set {-quests::level::5::reward::beacon} to 1
+
+    set {-quests::level::10::reward::xp}     to 5_000
+    set {-quests::level::10::reward::money}  to 5_000
+    set {-quests::level::10::reward::beacon} to 1
+    set {-quests::level::10::reward::text}   to "Tier 2 Upgrades. Start Auctions."
+
+    set {-quests::level::15::reward::xp}     to 10_000
+    set {-quests::level::15::reward::money}  to 10_000
+    set {-quests::level::15::reward::beacon} to 1
+
+    set {-quests::level::20::reward::xp}     to 25_000
+    set {-quests::level::20::reward::money}  to 25_000
+    set {-quests::level::20::reward::beacon} to 2
+
+    set {-quests::level::25::reward::xp}     to 50_000
+    set {-quests::level::25::reward::money}  to 50_000
+    set {-quests::level::25::reward::beacon} to 2
+    set {-quests::level::25::reward::text}   to "Tier 3 Upgrades. Able to trade items, beacons, and money."
+
+    set {-quests::level::30::reward::xp}     to 75_000
+    set {-quests::level::30::reward::money}  to 75_000
+    set {-quests::level::30::reward::beacon} to 2
+    set {-quests::level::30::reward::item}   to createStoredCustomBook("beacon finder", 1)
+
+    set {-quests::level::35::reward::xp}     to 100_000
+    set {-quests::level::35::reward::money}  to 100_000
+    set {-quests::level::35::reward::beacon} to 2
+
+    set {-quests::level::40::reward::xp}     to 200_000
+    set {-quests::level::40::reward::money}  to 200_000
+    set {-quests::level::40::reward::beacon} to 3
+    set {-quests::level::40::reward::item}   to createStoredCustomBook("flight", 1)
+
+    set {-quests::level::45::reward::xp}     to 200_000
+    set {-quests::level::45::reward::money}  to 200_000
+    set {-quests::level::45::reward::beacon} to 3
+
+    set {-quests::level::50::reward::xp}     to 500_000
+    set {-quests::level::50::reward::money}  to 500_000
+    set {-quests::level::50::reward::beacon} to 3
+    set {-quests::level::50::reward::text}   to "Tier 4 Upgrades."
+
+    set {-quests::level::55::reward::xp}     to 250_000
+    set {-quests::level::55::reward::money}  to 250_000
+    set {-quests::level::55::reward::beacon} to 4
+
+    set {-quests::level::60::reward::xp}     to 250_000
+    set {-quests::level::60::reward::money}  to 250_000
+    set {-quests::level::60::reward::beacon} to 4
+
+    set {-quests::level::65::reward::xp}     to 250_000
+    set {-quests::level::65::reward::money}  to 250_000
+    set {-quests::level::65::reward::beacon} to 5
+
+    set {-quests::level::70::reward::xp}     to 250_000
+    set {-quests::level::70::reward::money}  to 250_000
+    set {-quests::level::70::reward::beacon} to 5
+
+    set {-quests::level::75::reward::xp}     to 250_000
+    set {-quests::level::75::reward::money}  to 250_000
+    set {-quests::level::75::reward::beacon} to 5
+
+    set {-quests::level::80::reward::xp}     to 250_000
+    set {-quests::level::80::reward::money}  to 250_000
+    set {-quests::level::80::reward::beacon} to 5
+
+    set {-quests::level::85::reward::xp}     to 250_000
+    set {-quests::level::85::reward::money}  to 250_000
+    set {-quests::level::85::reward::beacon} to 5
+
+    set {-quests::level::90::reward::xp}     to 250_000
+    set {-quests::level::90::reward::money}  to 250_000
+    set {-quests::level::90::reward::beacon} to 5
+
+    set {-quests::level::95::reward::xp}     to 250_000
+    set {-quests::level::95::reward::money}  to 250_000
+    set {-quests::level::95::reward::beacon} to 5
+
+    set {-quests::level::100::reward::xp}     to 2_000_000
+    set {-quests::level::100::reward::money}  to 2_000_000
+    set {-quests::level::100::reward::beacon} to 15
+    set {-quests::level::100::reward::text}   to "Congratulations on reaching max level!"
+
+    # ---- Playtime Quests ----
+    set {-quests::playtime::1::time}          to 10 minutes
+    set {-quests::playtime::1::reward::xp}    to 1_000
+    set {-quests::playtime::1::reward::money} to 1_000
+    set {-quests::playtime::1::reward::beacon} to 1
+
+    set {-quests::playtime::2::time}          to 30 minutes
+    set {-quests::playtime::2::reward::xp}    to 2_500
+    set {-quests::playtime::2::reward::money} to 2_500
+    set {-quests::playtime::2::reward::beacon} to 1
+
+    set {-quests::playtime::3::time}           to 1 hour
+    set {-quests::playtime::3::reward::xp}     to 5_000
+    set {-quests::playtime::3::reward::money}  to 5_000
+    set {-quests::playtime::3::reward::beacon} to 1
+
+    set {-quests::playtime::4::time}           to 2 hours
+    set {-quests::playtime::4::reward::xp}     to 10_000
+    set {-quests::playtime::4::reward::money}  to 10_000
+    set {-quests::playtime::4::reward::beacon} to 1
+
+    set {-quests::playtime::5::time}           to 3 hours
+    set {-quests::playtime::5::reward::xp}     to 10_000
+    set {-quests::playtime::5::reward::money}  to 10_000
+    set {-quests::playtime::5::reward::beacon} to 2
+    # set {-quests::playtime::5::reward::item}   to createStoredCustomBook("auto-repair", 1)
+
+    set {-quests::playtime::6::time}           to 6 hours
+    set {-quests::playtime::6::reward::xp}     to 10_000
+    set {-quests::playtime::6::reward::money}  to 10_000
+    set {-quests::playtime::6::reward::beacon} to 2
+
+    set {-quests::playtime::7::time}           to 8 hours
+    set {-quests::playtime::7::reward::xp}     to 20_000
+    set {-quests::playtime::7::reward::money}  to 20_000
+    set {-quests::playtime::7::reward::beacon} to 2
+
+    set {-quests::playtime::8::time}           to 12 hours
+    set {-quests::playtime::8::reward::xp}     to 30_000
+    set {-quests::playtime::8::reward::money}  to 30_000
+    set {-quests::playtime::8::reward::beacon} to 3
+    # set {-quests::playtime::8::reward::item}   to createStoredCustomBook("bloodforge", 1)
+
+    set {-quests::playtime::9::time}           to 16 hours
+    set {-quests::playtime::9::reward::xp}     to 35_000
+    set {-quests::playtime::9::reward::money}  to 35_000
+    set {-quests::playtime::9::reward::beacon} to 3
+
+    set {-quests::playtime::10::time}           to 24 hours
+    set {-quests::playtime::10::reward::xp}     to 50_000
+    set {-quests::playtime::10::reward::money}  to 50_000
+    set {-quests::playtime::10::reward::beacon} to 4
+
+    set {-quests::playtime::11::time}           to 36 hours
+    set {-quests::playtime::11::reward::xp}     to 50_000
+    set {-quests::playtime::11::reward::money}  to 50_000
+    set {-quests::playtime::11::reward::beacon} to 4
+
+    set {-quests::playtime::12::time}           to 2 days
+    set {-quests::playtime::12::reward::xp}     to 60_000
+    set {-quests::playtime::12::reward::money}  to 60_000
+    set {-quests::playtime::12::reward::beacon} to 5
+
+    set {-quests::playtime::13::time}           to 2 days and 12 hours
+    set {-quests::playtime::13::reward::xp}     to 60_000
+    set {-quests::playtime::13::reward::money}  to 60_000
+    set {-quests::playtime::13::reward::beacon} to 5
+
+    set {-quests::playtime::14::time}           to 3 days
+    set {-quests::playtime::14::reward::xp}     to 70_000
+    set {-quests::playtime::14::reward::money}  to 70_000
+    set {-quests::playtime::14::reward::beacon} to 6
+
+    set {-quests::playtime::15::time}           to 3 days and 12 hours
+    set {-quests::playtime::15::reward::xp}     to 80_000
+    set {-quests::playtime::15::reward::money}  to 80_000
+    set {-quests::playtime::15::reward::beacon} to 7
+
+    set {-quests::playtime::16::time}           to 4 days
+    set {-quests::playtime::16::reward::xp}     to 90_000
+    set {-quests::playtime::16::reward::money}  to 90_000
+    set {-quests::playtime::16::reward::beacon} to 8
+
+    set {-quests::playtime::17::time}           to 5 days
+    set {-quests::playtime::17::reward::xp}     to 100_000
+    set {-quests::playtime::17::reward::money}  to 100_000
+    set {-quests::playtime::17::reward::beacon} to 10
+
+    set {-quests::playtime::18::time}           to 6 days
+    set {-quests::playtime::18::reward::xp}     to 150_000
+    set {-quests::playtime::18::reward::money}  to 150_000
+    set {-quests::playtime::18::reward::beacon} to 10
+
+    set {-quests::playtime::19::time}           to 6 days and 12 hours
+    set {-quests::playtime::19::reward::xp}     to 200_000
+    set {-quests::playtime::19::reward::money}  to 200_000
+    set {-quests::playtime::19::reward::beacon} to 10
+
+    set {-quests::playtime::20::time}           to 7 days
+    set {-quests::playtime::20::reward::xp}     to 300_000
+    set {-quests::playtime::20::reward::money}  to 300_000
+    set {-quests::playtime::20::reward::beacon} to 10
+
+    set {-quests::playtime::21::time}           to 14 days
+    set {-quests::playtime::21::reward::xp}     to 2_000_000
+    set {-quests::playtime::21::reward::money}  to 2_000_000
+    set {-quests::playtime::21::reward::beacon} to 20
+
+async every second:
+    loop all players:
+
+        # -- Block quests (one-time) --
+        loop 21 times:
+            if {-quests::blocks::%loop-number%::blocks} is set:
+                if {quests::%loop-player%::blocks::%loop-number%} isn't set:
+                    if {blocks::%loop-player%} >= {-quests::blocks::%loop-number%::blocks}:
+                        set {quests::%loop-player%::blocks::%loop-number%} to true
+                        add {-quests::blocks::%loop-number%::reward::xp} to loop-player's experience
+                        add {-quests::blocks::%loop-number%::reward::money} to {money::%loop-player%}
+                        wait 1 tick
+                        if {-quests::blocks::%loop-number%::reward::beacon} is set:
+                            giveBeacons(loop-player, {-quests::blocks::%loop-number%::reward::beacon})
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            giveORvaultORdrop(loop-player, {-quests::blocks::%loop-number%::reward::item})
+
+        # -- Block quests (repeatable) --
+        loop 2 times:
+            if {blocks::%loop-player%} >= {-quests::blocks::repeatable::%loop-number%::blocks} * ({quests::%loop-player%::blocks::repeatable::%loop-number%::completions} + 1):
+                add 1 to {quests::%loop-player%::blocks::repeatable::%loop-number%::completions}
+                if {blocks::%loop-player%} isn't 0:
+                    add {-quests::blocks::repeatable::%loop-number%::reward::xp} to loop-player's experience
+                    add {-quests::blocks::repeatable::%loop-number%::reward::money} to {money::%loop-player%}
+                    wait 1 tick
+                    if {-quests::blocks::repeatable::%loop-number%::reward::beacon} is set:
+                        giveBeacons(loop-player, {-quests::blocks::repeatable::%loop-number%::reward::beacon})
+
+        # -- Level quests --
+        set {_level} to {level::%loop-player%}
+        loop all numbers between 0 and {_level}:
+            if {-quests::level::%loop-number%::reward::xp} is set:
+                if {quests::%loop-player%::level::%loop-number%::reward::claimed} isn't set:
+                    set {quests::%loop-player%::level::%loop-number%::reward::claimed} to true
+                    add {-quests::level::%loop-number%::reward::xp} to loop-player's experience
+                    add {-quests::level::%loop-number%::reward::money} to {money::%loop-player%}
+                    wait 1 tick
+                    if {-quests::level::%loop-number%::reward::beacon} is set:
+                        giveBeacons(loop-player, {-quests::level::%loop-number%::reward::beacon})
+                    if {-quests::level::%loop-number%::reward::text} is set:
+                        send "&a&l%{-quests::level::%loop-number%::reward::text}%" to loop-player
+                    if {-quests::level::%loop-number%::reward::item} is set:
+                        giveORvaultORdrop(loop-player, {-quests::level::%loop-number%::reward::item})
+
+        # -- Playtime quests --
+        loop 21 times:
+            if {-quests::playtime::%loop-number%::reward::xp} is set:
+                if {quests::%loop-player%::playtime::%loop-number%::reward::claimed} isn't set:
+                    if loop-player's playtime >= {-quests::playtime::%loop-number%::time}:
+                        set {quests::%loop-player%::playtime::%loop-number%::reward::claimed} to true
+                        add {-quests::playtime::%loop-number%::reward::xp} to loop-player's experience
+                        add {-quests::playtime::%loop-number%::reward::money} to {money::%loop-player%}
+                        wait 1 tick
+                        if {-quests::playtime::%loop-number%::reward::beacon} is set:
+                            giveBeacons(loop-player, {-quests::playtime::%loop-number%::reward::beacon})
+                        if {-quests::playtime::%loop-number%::reward::item} is set:
+                            giveORvaultORdrop(loop-player, {-quests::playtime::%loop-number%::reward::item})
+
+command /quests [<text>]:
+    trigger:
+        if arg 1 is "blocks":
+            set {-blocks quest gui::%player%} to chest inventory with 5 rows named formatNumber({blocks::%player%})
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-blocks quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            # Repeatable quests header items
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::1::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::1::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::1::reward::money})%", "" to {-blocks quest gui::%player%}
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::2::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::2::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::2::reward::money})%", "&bBeacons: %formatNumber({-quests::blocks::repeatable::2::reward::beacon})%", "" to {-blocks quest gui::%player%}
+
+            # One-time block quests
+            loop 21 times:
+                if {-quests::blocks::%loop-number%::blocks} is set:
+                    if {quests::%player%::blocks::%loop-number%} is set:
+                        # Completed
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
+                            set {_item} to gray stained glass pane named "&a&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", ""
+                        else:
+                            set {_item} to gray stained glass pane named "&a&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                    else:
+                        # Not yet completed
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
+                            set {_item} to {-quests::blocks::%loop-number%::reward::item}
+                            add "", "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", "" to lore of {_item}
+                        else:
+                            set {_item} to green stained glass pane named "&c&lQuest"
+                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                    add {_item} to {-blocks quest gui::%player%}
+
+            open {-blocks quest gui::%player%} to player
+
+        else if arg 1 is "levels":
+            set {-level quest gui::%player%} to chest inventory with 5 rows named "%{level::%player%}%"
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-level quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            loop integers between 0 and 20:
+                set {_needed level} to loop-number * 5
+                if {-quests::level::%{_needed level}%::reward::item} is set:
+                    set {_name} to name of {-quests::level::%{_needed level}%::reward::item}
+                    if {quests::%player%::level::%{_needed level}%::reward::claimed} isn't set:
+                        set {_item} to {-quests::level::%{_needed level}%::reward::item}
+                    else:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    add "" to lore of {_item}
+                    add "&7Reach level %{_needed level}%." to lore of {_item}
+                    add "" to lore of {_item}
+
+                    add "&aReward:" to lore of {_item}
+                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to lore of {_item}
+                    add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to lore of {_item}
+
+                    if {-quests::level::%{_needed level}%::reward::beacon} is set:
+                        add "&b%{-quests::level::%{_needed level}%::reward::beacon}% Beacons" to lore of {_item}
+
+                    if {-quests::level::%{_needed level}%::reward::text} is set:
+                        add "&e%{-quests::level::%{_needed level}%::reward::text}%" to lore of {_item}
+
+                    add "" to lore of {_item}
+                    add formatted "%{_name}%" to lore of {_item}
+                    add "" to lore of {_item}
+                else:
+                    if {quests::%player%::level::%{_needed level}%::reward::claimed} is set:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    else if {-quests::level::%{_needed level}%::reward::text} is set:
+                        set {_item} to yellow stained glass pane named "&e&lQuest"
+                    else:
+                        set {_item} to green stained glass pane named "&c&lQuest"
+                    set {_lore::*} to "&7Reach level %{_needed level}%."
+                    add "" to {_lore::*}
+
+                    add "&aReward:" to {_lore::*}
+                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to {_lore::*}
+                    add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to {_lore::*}
+
+                    if {-quests::level::%{_needed level}%::reward::beacon} is set:
+                        add "&b%{-quests::level::%{_needed level}%::reward::beacon}% Beacons" to {_lore::*}
+
+                    if {-quests::level::%{_needed level}%::reward::text} is set:
+                        add "&e%{-quests::level::%{_needed level}%::reward::text}%" to {_lore::*}
+
+                    add "" to {_lore::*}
+
+                    set lore of {_item} to {_lore::*}
+                add {_item} to {-level quest gui::%player%}
+            open {-level quest gui::%player%} to player
+
+        else if arg 1 is "playtime":
+            set {-playtime quest gui::%player%} to chest inventory with 5 rows named time_format(player's playtime)
+            set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-playtime quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
+
+            loop 21 times:
+                set {_needed time} to {-quests::playtime::%loop-number%::time}
+
+                if {-quests::playtime::%loop-number%::reward::item} is set:
+                    set {_name} to name of {-quests::playtime::%loop-number%::reward::item}
+
+                    if {quests::%player%::playtime::%loop-number%::reward::claimed} isn't set:
+                        set {_item} to {-quests::playtime::%loop-number%::reward::item}
+                    else:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                else:
+                    if {quests::%player%::playtime::%loop-number%::reward::claimed} is set:
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                    else if {-quests::playtime::%loop-number%::reward::text} is set:
+                        set {_item} to yellow stained glass pane named "&e&lQuest"
+                    else:
+                        set {_item} to green stained glass pane named "&c&lQuest"
+
+                set {_lore::*} to ""
+                add "&7Play for %{_needed time}%." to {_lore::*}
+                add "" to {_lore::*}
+
+                add "&aReward:" to {_lore::*}
+                add "&7%formatNumber({-quests::playtime::%loop-number%::reward::xp})% XP" to {_lore::*}
+                add "&7$%formatNumber({-quests::playtime::%loop-number%::reward::money})%" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::beacon} is set:
+                    add "&b%{-quests::playtime::%loop-number%::reward::beacon}% Beacons" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::text} is set:
+                    add "&e%{-quests::playtime::%loop-number%::reward::text}%" to {_lore::*}
+
+                if {-quests::playtime::%loop-number%::reward::item} is set:
+                    add formatted "%{_name}%" to {_lore::*}
+
+                add "" to {_lore::*}
+
+                set lore of {_item} to {_lore::*}
+
+                add {_item} to {-playtime quest gui::%player%}
+
+            open {-playtime quest gui::%player%} to player
+
+        else:
+            set {-quest gui::%player%} to hopper inventory named "Quests"
+            set slot 1 of {-quest gui::%player%} to stone named "&a&lBlock Quests" with lore "&7Mine blocks to earn rewards!" and "&7Click to view progress!"
+            set slot 2 of {-quest gui::%player%} to emerald block named "&d&lLevel Quests" with lore "&7Gain levels to earn rewards!" and "&7Click to view progress!"
+            set slot 3 of {-quest gui::%player%} to clock named "&c&lPlaytime Quests" with lore "&7Earn rewards based on how long you've played!" and "&7Click to view progress!"
+            open {-quest gui::%player%} to player
+
+on tab complete of "/quests":
+    set tab completions for position 1 to "blocks", "levels", and "playtime"
+
+on inventory click:
+    if player's current inventory is {-quest gui::%player%}:
+        cancel event
+        if index of event-slot is 1:
+            player command "/quests blocks"
+        else if index of event-slot is 2:
+            player command "/quests levels"
+        else if index of event-slot is 3:
+            player command "/quests playtime"
+    else if player's current inventory is {-blocks quest gui::%player%} or {-level quest gui::%player%} or {-playtime quest gui::%player%}:
+        cancel event
+        if event-item is a black stained glass pane:
+            player command "/quests"
+
+on inventory close:
+    event-inventory is {-blocks quest gui::%player%} or {-level quest gui::%player%} or {-playtime quest gui::%player%}
+    wait 1 tick
+    player command "/quests"

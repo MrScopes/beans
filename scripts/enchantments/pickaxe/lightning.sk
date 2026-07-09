@@ -1,0 +1,30 @@
+on load:
+    setting("lightning", "display", value: "&f<sprite:items:item/trident> &9Lightning")
+    setting("lightning", "max", value: 5)
+    setting("lightning", "priority", value: 10)
+    setting("lightning", "type", value: "pickaxe")
+    setting("lightning", "item", value: 1 of trident)
+
+    setting("lightning", "chance", l1: 10, l2: 15, l3: 20, l4: 25, l5: 30)
+
+    setting("lightning", "blocks", l1: 5, l2: 6, l3: 7, l4: 8, l5: 9)
+
+    setting("lightning", "xp cost", l2: 80_000, l3: 200_000, l4: 600_000, l5: 1_250_000)
+    setting("lightning", "money cost", l2: 100_000, l3: 300_000, l4: 800_000, l5: 1_500_000)
+
+local function getDescription(level: integer) :: string:
+    return "break %get_setting("lightning", "blocks", {_level})% blocks below"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_y} to (y coordinate of {_block}) - (get_setting("lightning", "blocks", {_level}) + 4)
+    strike lightning effect at location of {_block}
+    loop all blocks below location of {_block} where [y coordinate of input >= {_y}]:
+        if any:
+            loop-block is obsidian
+            loop-block is bedrock
+        then:
+            stop loop
+            
+        blockReward({_player}, {_player}'s tool, loop-block, "lightning enchantment")
+
+        set loop-block to air

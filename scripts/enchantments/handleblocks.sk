@@ -1,0 +1,30 @@
+function blockReward(player: player, tool: item, block: block, reason: text):
+    if type of {_block} isn't air:
+        add 1 to {blocks::%{_player}%}
+
+    add 1 to {level progress::%{_player}%}
+    add 1 to {total level progress::%{_player}%}
+
+    set {_xp} to xpYield({_block})
+    add {_xp} to {_player}'s experience
+
+    set {_drops::*} to drops of {_block} using {_tool}
+    if type of {_block} is packed ice:
+        add ((level of fortune on {_tool} + 1) of packed ice) to {_drops::*}
+
+    loop {_drops::*}:
+        set {_money} to ({-sell::%type of loop-value%} * item amount of loop-value)
+        add {_money} to {money::%{_player}%}
+
+    if {_block} is a beacon:
+        broadcast "%{_player}% found a beacon!"
+        giveBeacons({_player}, 2)
+        async run 0 ticks later:
+            loop all blocks within bound (bound with id "mine"):
+                if loop-block is a beacon:
+                    add 1 to {_beacons}
+            broadcast "There are currently %{_beacons}% beacons in the mine."
+            if {_beacons} isn't set:
+                broadcast "The mine is out of beacons! Resetting..."
+                wait 1 tick
+                execute console command "mine"

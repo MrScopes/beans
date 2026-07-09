@@ -1,0 +1,28 @@
+on load:
+    setting("wither", "display", value: "&f<sprite:items:item/wither_spawn_egg> &7Wither")
+    setting("wither", "max", value: 5)
+    setting("wither", "priority", value: 10)
+    setting("wither", "type", value: "bow")
+    setting("wither", "item", value: wither skeleton skull)
+
+    setting("wither", "threshold", l1: 0.5, l2: 0.5, l3: 0.5, l4: 0.5, l5: 0.5)
+    setting("wither", "cooldown", l1: 10 seconds, l2: 10 seconds, l3: 10 seconds, l4: 10 seconds, l5: 10 seconds)
+
+    setting("wither", "effect", l1: potion effect of wither 1 for 4 seconds, l2: potion effect of wither 1 for 5 seconds, l3: potion effect of wither 2 for 6 seconds, l4: potion effect of wither 2 for 7 seconds, l5: potion effect of wither 3 for 7 seconds)
+
+    setting("wither", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
+    setting("wither", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+
+local function getDescription(level: integer) :: string:
+    set {_effect} to get_setting("wither", "effect", {_level})
+    set {_duration} to duration of {_effect}
+    set {_amplifier} to amplifier of {_effect}
+    return "applies Wither %{_amplifier}% for %time_format({_duration})% and Blindness for %time_format({_duration} / 2)%"
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    if {_victim} is a living entity:
+        set {_effect} to get_setting("wither", "effect", {_level})
+        set {_blindness} to potion effect of blindness 1 for duration of {_effect} / 2
+        add {_effect} to {_victim}'s potion effects
+        add {_blindness} to {_victim}'s potion effects
+        play sound "entity.wither.shoot" with volume 1 and pitch 1 at {_victim}

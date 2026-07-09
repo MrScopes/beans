@@ -1,0 +1,37 @@
+on load:
+    setting("flight", "display", value: "&f<sprite:items:item/elytra> &dFlight")
+    setting("flight", "max", value: 1)
+    setting("flight", "priority", value: 10)
+    setting("flight", "type", value: "pickaxe")
+    setting("flight", "item", value: elytra)
+
+local function getDescription(level: integer) :: string:
+    return "enables flight while mining"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_dif} to difference between {-combat tag::%{_player}%} and now
+    {_dif} isn't less than {-combat log time}
+    if {-fly loop::%{_player}%} is not set:
+        set {-fly loop::%{_player}%} to true
+        while {-fly loop::%{_player}%} is true:
+            wait 1 tick
+            set {_dif} to difference between {-combat tag::%{_player}%} and now
+            if {_dif} < {-combat log time}:
+                set {-fly loop::%{_player}%} to false
+                if {_player}'s game mode isn't creative:
+                    set {_player}'s flight mode to false
+                reset {_player}'s block break speed attribute
+                delete {-fly loop::%{_player}%}
+
+            if {_player} is within bound with id "mine flight":
+                set {_player}'s flight mode to true
+                if {_player} is flying:
+                    set {_player}'s block break speed attribute to 5
+                else:
+                    reset {_player}'s block break speed attribute
+            else:
+                set {-fly loop::%{_player}%} to false
+                if {_player}'s game mode isn't creative:
+                    set {_player}'s flight mode to false
+                reset {_player}'s block break speed attribute
+                delete {-fly loop::%{_player}%}

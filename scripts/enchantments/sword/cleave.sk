@@ -1,0 +1,82 @@
+on load:
+    setting("cleave", "display", value: "&f<sprite:particles:damage> &4Cleave")
+    setting("cleave", "max", value: 5)
+    setting("cleave", "priority", value: 0)
+    setting("cleave", "type", value: "sword")
+    setting("cleave", "item", value: diamond spear)
+
+    setting("cleave", "requirement", l1: 8, l2: 8, l3: 7, l4: 7, l5: 6)
+    setting("cleave", "damage", l1: 1, l2: 1.15, l3: 1.35, l4: 1.45, l5: 1.75)
+    setting("cleave", "bleed", l1: 0.5, l2: 0.6, l3: 0.7, l4: 0.8, l5: 1)
+    setting("cleave", "bleed duration", value: 3 seconds)
+    setting("cleave", "distance", l1: 5, l2: 6, l3: 7, l4: 8, l5: 9)
+    setting("cleave", "radius", l1: 2, l2: 2.5, l3: 3, l4: 3.5, l5: 4)
+
+    setting("cleave", "xp cost", l1: 60_000, l2: 200_000, l3: 750_000, l4: 1_000_000, l5: 1_500_000)
+    setting("cleave", "money cost", l1: 100_000, l2: 300_000, l3: 900_000, l4: 1_250_000, l5: 1_800_000)
+
+local function getDescription(level: integer) :: string:
+    set {_damage} to get_setting("cleave", "damage", {_level})
+    set {_bleed} to get_setting("cleave", "bleed", {_level})
+    set {_bleed duration} to get_setting("cleave", "bleed duration")
+    set {_requirement} to get_setting("cleave", "requirement", {_level})
+    set {_distance} to get_setting("cleave", "distance", {_level})
+    set {_radius} to get_setting("cleave", "radius", {_level})
+    return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%time_format({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
+
+local function onleftclick(player: player, item: item, level: integer):
+    set {_requirement} to get_setting("cleave", "requirement", {_level})
+    if {-cleave::%{_player}%} >= {_requirement}:
+        delete {-cleave::%{_player}%}
+        set {_damage} to get_setting("cleave", "damage", {_level})
+        set {_bleed} to get_setting("cleave", "bleed", {_level})
+        set {_bleed duration} to get_setting("cleave", "bleed duration")
+        set {_distance} to get_setting("cleave", "distance", {_level})
+        set {_radius} to get_setting("cleave", "radius", {_level})
+
+        play sound "entity.player.attack.sweep" at {_player}
+        set {_origin} to location of {_player}'s head
+        set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
+
+        add {_player} to {_affected::*}
+        loop {_distance} * 4 times:
+            if mod(loop-iteration, 5) is 0:
+                wait 1 tick
+            set vector length of {_vector} to loop-value / 4
+            set {_bullet} to {_origin} ~ {_vector}
+            play sound "entity.player.attack.sweep" at {_bullet}
+            loop clamp(({_radius} / 2), 1, 4) times:
+                draw 4 sweep attack particle at ({_bullet} ~ vector((random numbers between -1 and 1), (random numbers between -1 and 1), (random numbers between -1 and 1)))
+
+            loop all living entities in radius {_radius} around {_bullet}:
+                {_affected::*} doesn't contain loop-entity
+                add loop-entity to {_affected::*}
+                cleave(loop-entity, {_player}, {_level})
+                
+local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
+    add 1 to {-cleave::%{_attacker}%}
+    if {-cleave::%{_attacker}%} >= get_setting("cleave", "requirement", {_level}):
+        send action bar "&4&lCleave &fis ready." to {_attacker}
+    return 0
+
+local function cleave(victim: entity, attacker: entity, level: integer):
+    set {_damage} to get_setting("cleave", "damage", {_level})
+    set {_bleed} to get_setting("cleave", "bleed", {_level})
+    set {_bleed duration} to get_setting("cleave", "bleed duration")
+
+    damage {_victim} by customDamage({_victim}, {_damage})
+    reset no damage time of {_victim}
+
+    set {_interval} to 5 ticks
+    set {_hits} to floor((ticks of {_bleed duration}) / 5)
+    if {_hits} <= 0:
+        set {_hits} to 1
+
+    set {_bleed per hit} to {_bleed} / {_hits}
+
+    loop {_hits} times:
+        wait {_interval}
+        if {_victim} is alive:
+            damage {_victim} by customDamage({_victim}, {_bleed per hit})
+            show 4 red dust particle at {_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1)
+            reset no damage time of {_victim}

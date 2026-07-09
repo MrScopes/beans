@@ -1,0 +1,67 @@
+on load:
+    set {-mine corner 1} to location(-0.5, -49.5, -0.5, world "world")
+    set {-mine corner 2} to location(-99.5, 0, -99.5, world "world")
+    delete bound with id "mine"
+    create bound with id "mine" within {-mine corner 1} and {-mine corner 2}
+
+on load:
+    set {-sell::%("cobblestone" parsed as item type)%} to 1
+    set {-sell::%("stone" parsed as item type)%} to 1
+
+    set {-sell::%("coal" parsed as item type)%} to 2
+    set {-sell::%("coal ore" parsed as item type)%} to 2
+
+    set {-sell::%("raw iron" parsed as item type)%} to 3
+    set {-sell::%("iron ore" parsed as item type)%} to 3
+
+    set {-sell::%("diamond" parsed as item type)%} to 5
+    set {-sell::%("diamond ore" parsed as item type)%} to 5
+
+    set {-sell::%("emerald" parsed as item type)%} to 10
+    set {-sell::%("emerald ore" parsed as item type)%} to 10
+    
+    set {-sell::%("packed ice" parsed as item type)%} to 30
+    set {-sell::%("obsidian" parsed as item type)%} to 250
+
+    set {-xp::%("stone" parsed as item type)%::min} to 0
+    set {-xp::%("stone" parsed as item type)%::max} to 1
+
+    set {-xp::%("coal ore" parsed as item type)%::min} to 0
+    set {-xp::%("coal ore" parsed as item type)%::max} to 2
+
+    set {-xp::%("iron ore" parsed as item type)%::min} to 1
+    set {-xp::%("iron ore" parsed as item type)%::max} to 3
+
+    set {-xp::%("diamond ore" parsed as item type)%::min} to 2
+    set {-xp::%("diamond ore" parsed as item type)%::max} to 6
+
+    set {-xp::%("emerald ore" parsed as item type)%::min} to 3
+    set {-xp::%("emerald ore" parsed as item type)%::max} to 7
+
+    set {-xp::%("packed ice" parsed as item type)%::min} to 50
+    set {-xp::%("packed ice" parsed as item type)%::max} to 100
+
+    set {-xp::%("obsidian" parsed as item type)%::min} to 100
+    set {-xp::%("obsidian" parsed as item type)%::max} to 250
+
+    set {-xp::%("beacon" parsed as item type)%::min} to 1000
+    set {-xp::%("beacon" parsed as item type)%::max} to 2500
+
+on break with priority highest:
+    event isn't canceled
+    cancel drops
+    blockReward(player, player's tool, block, "mining")
+
+function xpYield(block: block) :: number:
+    return random integer between {-xp::%type of {_block}%::min} and {-xp::%type of {_block}%::max}
+
+function sell(player: player) :: number:
+    loop {_player}'s inventory:
+        # set {_type} to "%type of loop-value%"
+        lore of loop-value isn't set
+        set {_value} to {-sell::%type of loop-value%}
+        if {_value} is set:
+            add ({_value} * item amount of loop-value) to {_total}
+            remove loop-value from {_player}'s inventory   
+    add {_total} to {money::%{_player}%}
+    return {_total}

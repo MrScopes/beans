@@ -1,0 +1,69 @@
+on load:
+    setting("flamethrower", "display", value: "&f<sprite:items:item/blaze_powder> &6Flamethrower")
+    setting("flamethrower", "max", value: 5)
+    setting("flamethrower", "priority", value: 0)
+    setting("flamethrower", "type", value: "sword")
+    setting("flamethrower", "item", value: blaze powder)
+
+    setting("flamethrower", "cooldown", l1: 20 seconds, l2: 18 seconds, l3: 16 seconds, l4: 14 seconds, l5: 12 seconds)
+    setting("flamethrower", "angle", l1: 35, l2: 40, l3: 45, l4: 50, l5: 55)
+    setting("flamethrower", "damage", l1: 0.4, l2: 0.45, l3: 0.5, l4: 0.55, l5: 0.65)
+
+    setting("flamethrower", "base range", l1: 2, l2: 2, l3: 2, l4: 2, l5: 2)
+    setting("flamethrower", "addrange", l1: 2, l2: 2.25, l3: 2.35, l4: 2.5, l5: 2.75)
+
+    setting("flamethrower", "iterations", l1: 5, l2: 5, l3: 5, l4: 5, l5: 5)
+    setting("flamethrower", "xp cost", l1: 60_000, l2: 200_000, l3: 750_000, l4: 1_000_000, l5: 1_500_000)
+    setting("flamethrower", "money cost", l1: 100_000, l2: 300_000, l3: 900_000, l4: 1_250_000, l5: 1_800_000)
+
+local function getDescription(level: integer) :: string:
+    set {_damage} to get_setting("flamethrower", "damage", {_level})
+    set {_iterations} to get_setting("flamethrower", "iterations", {_level})
+    set {_angle} to get_setting("flamethrower", "angle", {_level})
+    set {_range} to get_setting("flamethrower", "base range", {_level}) + get_setting("flamethrower", "addrange", {_level})
+    return "&e[LMB] &7shoots a cone of fire &8(&f%{_angle}%°&8, &f%{_range}%m&8) &7dealing &8(&f%{_damage}% &8- &f%{_damage} * {_iterations}%&f<sprite:gui:hud/heart/full>&8)"
+
+local function onleftclick(player: player, item: item, level: integer):
+    set {_source} to a custom damage source:
+        set the damage type to {_projectile}
+        set the causing entity to {_shooter}
+        set the direct entity to {_projectile}
+        set the damage location to location of {_projectile}
+    set {_range} to get_setting("flamethrower", "base range", {_level})
+    set {_addrange} to get_setting("flamethrower", "addrange", {_level})
+    set {_angle} to get_setting("flamethrower", "angle", {_level})
+    set {_damage} to get_setting("flamethrower", "damage", {_level})
+    set {_iterations} to get_setting("flamethrower", "iterations", {_level})
+    loop {_iterations} times:
+        wait 1 tick
+        drawConeFilled({_player}'s eye ~ vector(0, -0.35, 0), {_range}, {_angle}, 16)
+        loop all living entities in radius ({_range}) * 2 around {_player}:
+            loop-entity isn't {_player}
+            if coneHit({_player}, loop-entity, {_range}, {_angle} * 1.25, 10) is true:
+                ignite loop-entity for 2 seconds
+                damage loop-entity by customDamage({_shooter}, {_damage}) using {_source}
+                reset loop-entity's no damage time
+
+        add {_addrange} to {_range}
+
+local function drawConeFilled(origin: location, range: number, coneAngle: number, spokes: number):
+    set {_half} to {_coneAngle} / 2
+    set {_yaw} to -1 * yaw of {_origin}
+    set {_pitch} to pitch of {_origin}
+
+    set {_ray} to a line in direction vector(0, 0, 1) with length {_range}
+
+    create custom small flame particle:
+        count: 1
+        velocity: vector(0, 0, 0)
+        extra: 0
+    set particle of {_ray} to last created particle
+    set particle density of {_ray} to 1
+
+    loop numbers from 0 to {_spokes}:
+        set {_t} to loop-number / {_spokes}
+        set {_ang} to ({_t} * {_coneAngle}) - {_half}
+
+        draw shape {_ray} at {_origin} for 1 tick:
+            rotate drawn shape around x axis by {_pitch} degrees
+            rotate drawn shape around y axis by ({_yaw} + {_ang}) degrees

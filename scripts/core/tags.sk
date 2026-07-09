@@ -1,0 +1,226 @@
+on load:
+    delete {-tag::*}
+
+    set {-tag::contributor::display} to "&f<sprite:items:item/knowledge_book>"
+    set {-tag::contributor::description} to "Given to players who have contributed significantly to the beans source code."
+
+    set {-tag::beta::display} to "&8[&b&lBETA&8]"
+    set {-tag::beta::description} to "Given to beans beta testers."
+
+    set {-tag::og::display} to "&8[&6&lOG&8]"
+    set {-tag::og::description} to "Given to players who played in past years of beans."
+
+    set {-tag::verified::display} to "&8(&a&l<sprite:gui:container/beacon/confirm>&8)"
+    set {-tag::verified::description} to "Given to players who have verified their account with Discord."
+
+    set {-tag::fire::display} to "&f<sprite:blocks:block/fire_1>"
+    set {-tag::fire::description} to "Fire"
+
+    set {-tag::grass::display} to "&f<sprite:blocks:block/seagrass>"
+    set {-tag::grass::description} to "Seagrass"
+
+    set {-tag::bubble::display} to "&f<sprite:gui:hud/air>"
+    set {-tag::bubble::description} to "Bubble"
+
+    set {-tag::wet::display} to "&f<sprite:gui:hud/air_bursting>"
+    set {-tag::wet::description} to "Wet"
+
+    set {-tag::heart::display} to "&f<sprite:gui:mob_effect/health_boost>"
+    set {-tag::heart::description} to "Heart"
+
+    set {-tag::music::display} to "&f<sprite:gui:icon/music_notes>"
+    set {-tag::music::description} to "Music"
+
+    set {-tag::diamond::display} to "&f<sprite:gui:icon/trial_available>"
+    set {-tag::diamond::description} to "Diamond"
+
+    set {-tag::lucky::display} to "&f<sprite:gui:mob_effect/luck>"
+    set {-tag::lucky::description} to "Given to players who got very lucky spinning an enchantment."
+
+    set {-tag::miner::display} to "&f<sprite:gui:mob_effect/haste>"
+    set {-tag::miner::description} to "Automatically given to player who have the most blocked mined."
+
+    set {-tag::trophies::display} to "&f<sprite:gui:player_list/remove_operator>"
+    set {-tag::trophies::description} to "Automatically given to the player who has the most trophies."
+
+    set {-tag::money::display} to "&f<sprite:gui:mob_effect/hero_of_the_village>"
+    set {-tag::money::description} to "Automatically given to the player who has the most money."
+
+    set {-tag::playtime::display} to "&f<sprite:blocks:block/sculk_catalyst_top_bloom>"
+    set {-tag::playtime::description} to "Given to the player with the most playtime."
+
+    set {-tag::bounty::display} to "&f<sprite:particles:raid_omen>"
+    set {-tag::bounty::description} to "Given to the player with the highest bounty."
+
+function calculateTopMiner():
+    set {_sorted blocks::*} to sorted indices of {blocks::*} in descending order
+    set {_player} to offlineplayer({_sorted blocks::1}, false)
+    if {top miner} is set:
+        if {top miner} is {_player}:
+            stop
+        else:
+            removeTag({top miner}, "miner")
+
+    set {top miner} to {_player}
+    addTag({_player}, "miner")
+    
+function calculateTopTrophies():
+    set {_sorted trophies::*} to sorted indices of {trophies::*} in descending order
+    set {_player} to offlineplayer({_sorted trophies::1}, false)
+    if {top trophies} is set:
+        if {top trophies} is {_player}:
+            stop
+        else:
+            removeTag({top trophies}, "trophies")
+
+    set {top trophies} to {_player}
+    addTag({_player}, "trophies")
+
+function calculateTopMoney():
+    set {_sorted money::*} to sorted indices of {money::*} in descending order
+    set {_player} to offlineplayer({_sorted money::1}, false)
+    if {top money} is set:
+        if {top money} is {_player}:
+            stop
+        else:
+            removeTag({top money}, "money")
+
+    set {top money} to {_player}
+    addTag({_player}, "money")
+
+function calculateTopPlaytime():
+    set {_sorted playtime::*} to sorted indices of {cached playtime::*} in descending order
+    set {_player} to offlineplayer({_sorted playtime::1}, false)
+    if {top playtime} is set:
+        if {top playtime} is {_player}:
+            stop
+        else:
+            removeTag({top playtime}, "playtime")
+
+    set {top playtime} to {_player}
+    addTag({_player}, "playtime")
+
+function calculateTopBounty():
+    set {_sorted bounty::*} to sorted indices of {bounty::*} in descending order
+    set {_player} to offlineplayer({_sorted bounty::1}, false)
+    if {top bounty} is set:
+        if {top bounty} is {_player}:
+            stop
+        else:
+            removeTag({top bounty}, "bounty")
+
+    set {top bounty} to {_player}
+    addTag({_player}, "bounty")
+
+async every 5 minutes:
+    calculateTopMiner()
+    calculateTopTrophies()
+    calculateTopMoney()
+    calculateTopPlaytime()
+    calculateTopBounty()
+
+on load:
+    async run 0 ticks later:
+        calculateTopMiner()
+        calculateTopTrophies()
+        calculateTopMoney()
+        calculateTopPlaytime()
+        calculateTopBounty()
+
+command /tags [<text>] [<text>] [<text>]:
+    trigger:
+        if arg 1 is set:
+            if player has permission "beans.admin":
+                if arg 1 is "add":
+                    if arg 3 is set:
+                        set {_player} to offlineplayer(arg 2)
+                        if {-tag::%arg 3%::display} isn't set:
+                            send "&cThat tag doesn't exist!"
+                        else:
+                            addTag({_player}, arg 3)
+                            send formatted "&7Added tag %{-tag::%arg 3%::display}% &7to player %arg 2%."
+                    else:
+                        send "&c/tags add <player> <tag>"
+                else if arg 1 is "remove":
+                    if arg 3 is set:
+                        set {_player} to offlineplayer(arg 2)
+                        if {-tag::%arg 3%::display} isn't set:
+                            send "&cThat tag doesn't exist!"
+                        else if {unlocked tags::%{_player}%::*} doesn't contain arg 3:
+                            send "&cThat player doesn't have that tag!"
+                        else:
+                            remove arg 3 from {unlocked tags::%{_player}%::*}
+                            send formatted "&7Removed tag %{-tag::%arg 3%::display}% &7from player %arg 2%."
+                    else:
+                        send "&c/tags remove <player> <tag>"
+                else:
+                    send "&c/tags <add/remove> <player> <tag>"
+            else:
+                player command "/tags"
+        else:
+            set {-tag gui::%player%} to chest inventory with 5 rows named "Tags"
+
+            set slot integers between 0 and 8, 9, 17, 18, 26, 27, 35, integers between 36 and 44 of {-tag gui::%player%} to black stained glass pane named ""
+
+            loop {unlocked tags::%player%::*}:
+                set {_tag} to loop-value
+                set {_display} to {-tag::%{_tag}%::display}
+                {_display} is set
+                set {_description} to {-tag::%{_tag}%::description}
+                set {_item} to name tag named formatted "&f%{_display}%" with lore "&7- %{_description}%"
+                set {_item} to {_item} with all item flags
+                if {tag::%player%} is {_tag}:
+                    enchant {_item} with unbreaking 1
+                set data tag "tag" of {_item} to {_tag}
+                add {_item} to {-tag gui::%player%}
+
+            open {-tag gui::%player%} to player
+
+on tab complete of "/tags":
+    player has permission "beans.admin"
+    set tab completions for position 1 to "add" and "remove"
+    set tab completions for position 2 to all players
+    if tab arg 1 is "add":
+        loop indices of {-tag::*}:
+            {_tags::*} doesn't contain loop-value
+            add loop-value to {_tags::*}
+        set tab completions for position 3 to {_tags::*}
+    else if tab arg 1 is "remove":
+        set {_player} to offlineplayer(tab arg 2, true)
+        loop {unlocked tags::%{_player}%::*}:
+            add loop-value to {_tags::*}
+        set tab completions for position 3 to {_tags::*}
+
+on inventory click:
+    player's current inventory is {-tag gui::%player%}
+    cancel event
+    event-item is a name tag
+    set {_tag} to data tag "tag" of event-item
+    if {unlocked tags::%player%::*} doesn't contain {_tag}:
+        send "&cYou haven't unlocked this tag yet!"
+    else:
+        if {tag::%player%} is {_tag}:
+            delete {tag::%player%}
+            send "&7You have removed your tag."
+        else:
+            set {tag::%player%} to {_tag}
+            set {_display} to {-tag::%{_tag}%::display}
+            send formatted "&7You have selected the &f%{_display}% &7tag!" to player
+    player command "/tags"
+
+function addTag(player: offline player, tag: text):
+    if {unlocked tags::%{_player}%::*} doesn't contain {_tag}:
+        add {_tag} to {unlocked tags::%{_player}%::*}
+        set {_display} to {-tag::%{_tag}%::display}
+        set {_hover} to {-tag::%{_tag}%::description}
+        send formatted "&7You now have access to the <hover:show_text:%{_hover}%>%{_display}%</hover> &7tag! &8(&f/tags&8)" to {_player}
+
+function removeTag(player: offline player, tag: text):
+    if {unlocked tags::%{_player}%::*} contains {_tag}:
+        remove {_tag} from {unlocked tags::%{_player}%::*}
+        set {_display} to {-tag::%{_tag}%::display}
+        set {_hover} to {-tag::%{_tag}%::description}
+        send formatted "&7You no longer have access to the <hover:show_text:%{_hover}%>%{_display}%</hover> &7tag! &8(&f/tags&8)" to {_player}
+
+on join:
+    addTag(player, "beta")

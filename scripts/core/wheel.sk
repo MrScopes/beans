@@ -1,0 +1,336 @@
+function addWheelReward(chance: number, item: item stack, display: text):
+    add 1 to {-wheel reward count}
+    set {_id} to {-wheel reward count}
+
+    set {-wheel rewards::%{_id}%::chance} to {_chance}
+    set {-wheel rewards::%{_id}%::item} to {_item}
+    set {-wheel rewards::%{_id}%::display} to {_display}
+
+
+function setupWheelRewards():
+    delete {-wheel rewards::*}
+    delete {-wheel reward count}
+
+    addWheelReward(70, beaconItem(), "&f1x &b&lBEACON")
+    addWheelReward(25, 3 of beaconItem(), "&f3x &b&lBEACON")
+    addWheelReward(2.5, 6 of beaconItem(), "&f6x &b&lBEACON")
+
+    set {_voucher} to 1 book named "&fEnchantment Voucher" with lore "&7Use this to get an enchantment of your choice."
+    set data tag "enchantment_voucher" of {_voucher} to 1
+    addWheelReward(1.65, {_voucher}, "&3Enchantment Voucher")
+
+    set {_ultimate} to 1 nether star named formatted "<rainbow>Ultimate Enchantment" with lore "&7Use this to get a random ultimate enchantment."
+    set data tag "ultimate_enchantment" of {_ultimate} to 1
+    addWheelReward(0.5, {_ultimate}, formatted "<rainbow>Ultimate Enchantment")
+
+    set {_maxVoucher} to 1 enchanted book named "&fEnchantment Voucher (MAX)" with lore "&7Use this to get a maxed enchantment of your choice."
+    set data tag "enchantment_voucher" of {_maxVoucher} to -1
+    addWheelReward(0.25, {_maxVoucher}, "&3Enchantment Voucher &b&l(MAX)")
+
+    set {_overleveled} to barrier named "&6Overleveled Enchantment" with lore "&7Get a random overleveled enchantment."
+    set data tag "enchantment_voucher" of {_overleveled} to 99
+    addWheelReward(0.1, {_overleveled}, "&f1x &8???")
+
+
+function wheelTotalChance() :: number:
+    set {_total} to 0
+
+    loop {-wheel reward count} times:
+        add {-wheel rewards::%loop-number%::chance} to {_total}
+
+    return {_total}
+
+
+function wheelChanceText(chance: number) :: text:
+    if {_chance} >= 1:
+        set {_text} to round({_chance} * 100) / 100
+    else:
+        set {_text} to round({_chance} * 1000) / 1000
+
+    return "%{_text}%%%"
+
+
+function wheelReward() :: item stack:
+    if {-wheel reward count} is not set:
+        setupWheelRewards()
+
+    set {_total} to wheelTotalChance()
+    set {_rng} to random number between 0 and {_total}
+
+    set {_current} to 0
+
+    loop {-wheel reward count} times:
+        add {-wheel rewards::%loop-number%::chance} to {_current}
+
+        if {_rng} <= {_current}:
+            return {-wheel rewards::%loop-number%::item}
+
+    return {-wheel rewards::1::item}
+
+
+function wheelOddsItem() :: item stack:
+    if {-wheel reward count} is not set:
+        setupWheelRewards()
+
+    set {_win} to yellow stained glass pane named "&e&lOdds&8:"
+
+    loop {-wheel reward count} times:
+        set {_chance} to {-wheel rewards::%loop-number%::chance}
+        set {_display} to {-wheel rewards::%loop-number%::display}
+        set {_chanceText} to wheelChanceText({_chance})
+        add "&8- %{_display}% &8(&f%{_chanceText}%&8)" to lore of {_win}
+
+    return {_win}
+
+
+function wheelStepTicks(step: number) :: number:
+    if {_step} <= 12:
+        return 2
+    else if {_step} <= 20:
+        return 3
+    else if {_step} <= 27:
+        return 4
+    else if {_step} <= 32:
+        return 6
+    else if {_step} <= 36:
+        return 9
+    else:
+        return 13
+
+
+function updateWheelGui(p: player):
+    if {-wheel gui::%{_p}%} is not set:
+        stop
+
+    set slot 10 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::1}
+    set slot 11 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::2}
+    set slot 12 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::3}
+    set slot 13 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::4}
+    set slot 14 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::5}
+    set slot 15 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::6}
+    set slot 16 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::7}
+
+
+function advanceWheelGui(p: player, incoming: item stack):
+    set {-wheel items::%{_p}%::1} to {-wheel items::%{_p}%::2}
+    set {-wheel items::%{_p}%::2} to {-wheel items::%{_p}%::3}
+    set {-wheel items::%{_p}%::3} to {-wheel items::%{_p}%::4}
+    set {-wheel items::%{_p}%::4} to {-wheel items::%{_p}%::5}
+    set {-wheel items::%{_p}%::5} to {-wheel items::%{_p}%::6}
+    set {-wheel items::%{_p}%::6} to {-wheel items::%{_p}%::7}
+    set {-wheel items::%{_p}%::7} to {_incoming}
+
+    updateWheelGui({_p})
+
+
+function forceCleanupWheel(p: player):
+    delete {-wheel spinning::%{_p}%}
+    delete {-wheel paid::%{_p}%}
+    delete {-wheel cancelled::%{_p}%}
+    delete {-wheel reward::%{_p}%}
+    delete {-wheel items::%{_p}%::*}
+    delete {-wheel gui::%{_p}%}
+
+
+function giveWheelReward(p: player):
+    if {-wheel paid::%{_p}%} is true:
+        stop
+
+    set {_reward} to {-wheel reward::%{_p}%}
+
+    if {_reward} is not set:
+        stop
+
+    set {-wheel paid::%{_p}%} to true
+    give {_reward} to {_p}
+    send "&eYou won: &f%{_reward}%&e!" to {_p}
+
+
+function finishWheelEarly(p: player):
+    if {-wheel spinning::%{_p}%} is not true:
+        forceCleanupWheel({_p})
+        stop
+
+    set {-wheel cancelled::%{_p}%} to true
+    giveWheelReward({_p})
+    forceCleanupWheel({_p})
+
+
+function startWheelSpin(p: player):
+    if {-wheel spinning::%{_p}%} is true:
+        stop
+
+    set {-wheel spinning::%{_p}%} to true
+    set {-wheel paid::%{_p}%} to false
+    set {-wheel cancelled::%{_p}%} to false
+
+    set {-wheel reward::%{_p}%} to wheelReward()
+    set {_reward} to {-wheel reward::%{_p}%}
+
+    loop 7 times:
+        set {-wheel items::%{_p}%::%loop-number%} to wheelReward()
+
+    updateWheelGui({_p})
+
+    set {_steps} to 40
+    set {_rewardStep} to {_steps} - 3
+
+    loop {_steps} times:
+        if {-wheel cancelled::%{_p}%} is true:
+            stop
+        if {-wheel spinning::%{_p}%} is not true:
+            stop
+        if {-wheel reward::%{_p}%} is not set:
+            stop
+
+        set {_step} to loop-number
+
+        if {_step} = {_rewardStep}:
+            set {_incoming} to {_reward}
+        else:
+            set {_incoming} to wheelReward()
+
+        advanceWheelGui({_p}, {_incoming})
+
+        if {-wheel spinning::%{_p}%} is true:
+            if {-wheel cancelled::%{_p}%} is not true:
+                if {-wheel gui::%{_p}%} is set:
+                    play sound "minecraft:block.note_block.pling" with volume 0.8 and pitch 1.2 to {_p}
+
+        set {_duration} to wheelStepTicks({_step})
+        wait ("%{_duration}% ticks" parsed as timespan)
+
+    if {-wheel cancelled::%{_p}%} is true:
+        stop
+    if {-wheel spinning::%{_p}%} is not true:
+        stop
+    if {-wheel reward::%{_p}%} is not set:
+        stop
+
+    if {-wheel gui::%{_p}%} is set:
+        set slot 13 of {-wheel gui::%{_p}%} to {_reward}
+
+    giveWheelReward({_p})
+    forceCleanupWheel({_p})
+
+
+command /wheel [<text>]:
+    trigger:
+        setupWheelRewards()
+
+        if arg-1 is "reset":
+            forceCleanupWheel(player)
+            send "&aWheel state reset."
+            stop
+
+        if {-wheel spinning::%player%} is true:
+            if {-wheel reward::%player%} is set:
+                send "&cYour wheel is already spinning."
+                stop
+            else:
+                forceCleanupWheel(player)
+
+        set {-wheel gui::%player%} to chest inventory with 3 rows named "            Spin The Wheel"
+
+        set {_filler} to black stained glass pane
+        apply tooltip display component to {_filler}:
+            hide_tooltip: true
+
+        set slot (numbers between 0 and 26) of {-wheel gui::%player%} to {_filler}
+
+        set {_win} to wheelOddsItem()
+
+        set slot 4 of {-wheel gui::%player%} to {_win}
+        set slot 22 of {-wheel gui::%player%} to {_win}
+
+        set slot (numbers between 10 and 16) of {-wheel gui::%player%} to air
+
+        open {-wheel gui::%player%} to player
+
+        wait 5 ticks
+
+        if {-wheel gui::%player%} is set:
+            startWheelSpin(player)
+
+
+on inventory click:
+    if player's current inventory is {-wheel gui::%player%}:
+        cancel event
+
+
+on inventory drag:
+    if player's current inventory is {-wheel gui::%player%}:
+        cancel event
+
+
+on inventory close:
+    if event-inventory is {-wheel gui::%player%}:
+        if {-wheel spinning::%player%} is true:
+            finishWheelEarly(player)
+        else:
+            forceCleanupWheel(player)
+
+
+on quit:
+    if {-wheel spinning::%player%} is true:
+        finishWheelEarly(player)
+    else:
+        forceCleanupWheel(player)
+
+
+on right click:
+    set {_voucher} to data tag "enchantment_voucher" of event-item
+    {_voucher} is set
+
+    remove 1 from item amount of event-item
+
+    if {_voucher} is 1:
+        set {choosing custom enchantment::%player%} to "level 1"
+        player command "/enchantments"
+
+    else if {_voucher} is -1:
+        set {choosing custom enchantment::%player%} to "max"
+        player command "/enchantments"
+
+    else if {_voucher} is 99:
+        loop indexes of {-ce::*}:
+            set {_max} to {-ce::%loop-value%::max}
+            {_max} > 1
+
+            if {_max} >= 5:
+                set {_level} to {_max} + 3
+            else:
+                set {_level} to {_max} + 2
+
+            set {_random enchantment::%loop-value%} to {_level}
+
+        set {_random enchantment} to random element out of indexes of {_random enchantment::*}
+        set {_item} to createStoredCustomBook({_random enchantment}, {_random enchantment::%{_random enchantment}%}, "Wheel Reward")
+
+        give player 1 of {_item}
+        broadcast formatted "%player% rolled %name of {_item}%&f!"
+
+
+on any inventory click:
+    {choosing custom enchantment::%player%} is set
+    event-inventory is {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
+
+    set {_enchantment} to data tag "custom_enchantment" of event-item
+    {_enchantment} is set
+
+    if {choosing custom enchantment::%player%} is "level 1":
+        set {_level} to 1
+    else if {choosing custom enchantment::%player%} is "max":
+        set {_level} to {-ce::%{_enchantment}%::max}
+
+    set {_item} to createStoredCustomBook({_enchantment}, {_level})
+    give player 1 of {_item}
+
+    delete {choosing custom enchantment::%player%}
+    close player's inventory
+    send formatted "You chose %name of {_item}%&f!"
+
+
+on join:
+    if {choosing custom enchantment::%player%} is set:
+        player command "/enchantments"

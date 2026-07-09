@@ -1,0 +1,105 @@
+import:
+    org.bukkit.Bukkit
+    org.bukkit.permissions.PermissionAttachment
+
+on load:
+    set {-permissions::default::*} to "bukkit.command.tps" and "-minecraft.command.me"
+    set {-permissions::vip::*} to {-permissions::default::*}
+    set {-permissions::premium::*} to {-permissions::vip::*}
+    set {-permissions::legend::*} to {-permissions::premium::*}
+    set {-permissions::gamer::*} to {-permissions::legend::*}
+    set {-permissions::patron::*} to {-permissions::gamer::*}
+    set {-permissions::mod::*} to {-permissions::default::*} and "beans.mod"
+    set {-permissions::sr-mod::*} to {-permissions::mod::*}
+    set {-permissions::admin::*} to {-permissions::sr-mod::*} and "beans.admin"
+
+    loop all players:
+        setPermissions(loop-player)
+
+function setPermissions(player: player):
+    set {_group} to {group::%{_player}%} ? "default"
+
+    if {-permission attachment::%{_player}%} is set:
+        {_player}.removeAttachment({-permission attachment::%{_player}%})
+        delete {-permission attachment::%{_player}%}
+
+    set {_attachment} to {_player}.addAttachment(instance of plugin "Skript")
+
+    for {_permission} in {-permissions::%{_group}%::*} and {permissions::%{_player}%::*}:
+        if {_permission} starts with "-":
+            replace first "-" with "" in {_permission}
+            {_attachment}.setPermission({_permission}, false)
+        else:
+            {_attachment}.setPermission({_permission}, true)
+
+    set {-permission attachment::%{_player}%} to {_attachment}
+
+    {_player}.recalculatePermissions()
+    {_player}.updateCommands()
+
+function addPermission(player: offline player, permission: text):
+    if {permissions::%{_player}%::*} doesn't contain {_permission}:
+        add {_permission} to {permissions::%{_player}%::*}
+    setPermissions({_player})
+
+function removePermission(player: offline player, permission: text):
+    if {permissions::%{_player}%::*} contains {_permission}:
+        remove {_permission} from {permissions::%{_player}%::*}
+    setPermissions({_player})
+
+function addGroup(player: offline player, group: text):
+    if {groups::%{_player}%::*} doesn't contain {_group}:
+        add {_group} to {groups::%{_player}%::*}
+    updateGroup({_player})
+
+function removeGroup(player: offline player, group: text):
+    if {groups::%{_player}%::*} contains {_group}:
+        remove {_group} from {groups::%{_player}%::*}
+    updateGroup({_player})
+
+function setGroup(player: offline player, group: text):
+    set {group::%{_player}%} and {groups::%{_player}%::*} to {_group}
+    setPermissions({_player})
+
+function updateGroup(player: offline player):
+    set {_groups::*} to {groups::%{_player}%::*}
+    sort {_groups::*} in descending order by {-group weight::%input%}
+    set {group::%{_player}%} to {_groups::1} ? "default"
+    setPermissions({_player})
+
+on join:
+    updateGroup(player)
+
+on quit:
+    delete {-permission attachment::%player%}
+
+command /group [<offline player>] [<text>] [<text>]:
+    permission: beans.admin
+    trigger:
+        if arg 3 isn't set:
+            send "&c/group <player> <set|add|remove> <group>"
+        else:
+            if arg 2 is "set":
+                setGroup(arg 1, arg 3)
+                send "&7Set group of '%arg 1%' to '%arg 3%'."
+            else if arg 2 is "add":
+                addGroup(arg 1, arg 3)
+                send "&7Added group '%arg 3%' to '%arg 1%'."
+            else if arg 2 is "remove":
+                removeGroup(arg 1, arg 3)
+                send "&7Removed group '%arg 3%' from '%arg 1%'."
+            else:
+                player command "/group"
+        
+on tab complete of "/group":
+    player has permission "beans.admin"
+    set tab completions for position 1 to all players
+    set tab completions for position 2 to "set", "add", "remove"
+    if tab arg 2 is "set":
+        set tab completions for position 3 to indexes of {-permissions::*}
+    else:
+        set {_player} to offlineplayer(tab arg 1, false)
+        if tab arg 2 is "add":
+            set tab completions for position 3 to (indexes of {-permissions::*}) where [{groups::%{_player}%::*} doesn't contain input]
+        else if tab arg 2 is "remove":
+            set tab completions for position 3 to {groups::%{_player}%::*} where [input isn't "default"]

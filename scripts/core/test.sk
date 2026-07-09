@@ -1,0 +1,61 @@
+import:
+    io.papermc.paper.datacomponent.item.ResolvableProfile
+
+command /man:
+    trigger:
+        set {_profile} to ResolvableProfile.resolvableProfile(player.getPlayerProfile())
+
+        spawn mannequin at player:
+            set mannequin's tool to bow
+            set {_mannequin} to mannequin
+            {_mannequin}.setProfile({_profile})
+
+        while {_mannequin} is alive:
+            wait 1 tick
+
+            set {_prevPos} to {_currPos}
+            set {_currPos} to player's location
+
+            set {_v} to vector from {_mannequin}'s head location to player's head location
+            set {_dist} to vector length of {_v}
+            set {_flightTime} to {_dist} / 2.8
+
+            set {_predicted} to player's head location
+            if {_prevPos} is set:
+                set {_manualVel} to vector from {_prevPos} to {_currPos}
+                set {_leadMult} to {_flightTime} * 1.2
+
+                add (x-component of {_manualVel} * {_leadMult}) to x-component of {_predicted}
+                add (z-component of {_manualVel} * {_leadMult}) to z-component of {_predicted}
+
+            set {_v} to vector from {_mannequin}'s head location to {_predicted}
+
+            # physics constant * gravity constant
+            set {_drop} to 0.5 * 0.05 * ({_flightTime} ^ 2)
+            set {_compensation} to atan({_drop} / {_dist})
+
+            set yaw of {_mannequin} to yaw of {_v}
+            set pitch of {_mannequin} to (pitch of {_v}) - {_compensation}
+
+            push {_mannequin} towards player at speed 0.1
+
+            if mod(loop-iteration, 6) is 0:
+                {_mannequin}.startUsingItem(main hand)
+
+            if mod(loop-iteration, 25) is 0:
+                {_mannequin}.completeUsingActiveItem()
+
+                shoot arrow from {_mannequin} at speed 2.8
+                set {_arrow} to last shot projectile
+                set shooter of {_arrow} to {_mannequin}
+
+command /allowedhomes:
+    trigger:
+        loop player's permissions:
+            loop-value starts with "skript.homes."
+            set {_split::*} to loop-value split at "." # now we get {_split::1} = skript, {_split::2} = home, {_split::3} = number
+            set {_amount} to {_split::3} parsed as number # we need to let skript know it's a number
+            add {_amount} to {_amounts::*}
+        sort {_amounts::*} in descending order
+        set {_max homes} to {_amounts::1} ? 1
+        send "You can set %{_max homes}% homes" 

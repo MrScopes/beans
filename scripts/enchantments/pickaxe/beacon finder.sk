@@ -1,0 +1,18 @@
+on load:
+    setting("beacon finder", "display", value: "&f<sprite:blocks:block/beacon> &b&lBEACON &bFinder")
+    setting("beacon finder", "max", value: 5)
+    setting("beacon finder", "priority", value: 10)
+    setting("beacon finder", "type", value: "pickaxe")
+    setting("beacon finder", "item", value: beacon)
+
+    setting("beacon finder", "chance", l1: 0.001, l2: 0.002, l3: 0.003, l4: 0.004, l5: 0.005)
+
+    setting("beacon finder", "xp cost", l2: 55_000, l3: 250_000, l4: 700_000, l5: 1_600_000)
+    setting("beacon finder", "money cost", l2: 75_000, l3: 300_000, l4: 800_000, l5: 2_000_000)
+
+local function getDescription(level: integer) :: string:
+    return "instantly gives you a beacon"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:block.beacon.activate" with volume 0.5 and pitch 1 at location of {_player}
+    giveBeacons({_player}, 1)

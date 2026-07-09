@@ -1,0 +1,26 @@
+on load:
+    setting("concuss", "display", value: "&f<sprite:blocks:block/cobweb> &fConcuss")
+    setting("concuss", "max", value: 5)
+    setting("concuss", "priority", value: 10)
+    setting("concuss", "type", value: "bow")
+    setting("concuss", "item", value: cobweb)
+
+    setting("concuss", "chance", l1: 20, l2: 25, l3: 30, l4: 35, l5: 40)
+    
+    setting("concuss", "effect", l1: potion effect of slowness 1 for 4 seconds, l2: potion effect of slowness 1 for 5 seconds, l3: potion effect of slowness 2 for 6 seconds, l4: potion effect of slowness 2 for 7 seconds, l5: potion effect of slowness 3 for 7 seconds)
+
+    setting("concuss", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
+    setting("concuss", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+
+local function getDescription(level: integer) :: string:
+    set {_effect} to get_setting("concuss", "effect", {_level})
+    set {_amplifier} to amplifier of {_effect}
+    set {_duration} to time_format(duration of {_effect})
+    return "applies Slowness %{_amplifier}% and disables Fireworks for %{_duration}%"
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    if {_victim} is a living entity:
+        set {_effect} to get_setting("concuss", "effect", {_level})
+        add {_effect} to {_victim}'s potion effects
+        set cooldown of firework for {_victim} to duration of {_effect}
+        play sound "entity.spider.ambient" with volume 1 and pitch 1 at {_victim}

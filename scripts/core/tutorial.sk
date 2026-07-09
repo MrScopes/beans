@@ -1,0 +1,107 @@
+command /tutorial:
+    trigger:
+        if {tutorial::%player%} is set:
+            send "You completed the tutorial on %{tutorial::%player%}%."
+        else:
+            set {tutorial::%player%} to now
+            send "&bWelcome to the tutorial!"
+
+            wait 1 second
+            send "&7Run forward and use the pressure plate to get blasted into the world&8."
+            wait 2 seconds
+            send "&7You're safe here at spawn but outside&8, &7pvp is enabled&8."
+
+            wait 3 seconds
+            send "&7You can upgrade your items by Shift + Right Clicking them&8."
+            send "&7Open &b&lBEACONS &7to spin for custom enchantments to improve your items&8."
+            giveBeacons(player, 1)
+
+            wait 3 seconds
+            send "&7Here's a boost to help your early game progression&8."
+            send "&7These enchantments are designed to be used to boost your XP and Money gain&8."
+            give player createStoredCustomBook("xp boost", 1)
+            give player createStoredCustomBook("money boost", 1)
+
+            wait 3 seconds
+            send "&7Progress to unlock new features and rewards&8. &7Check out &8/&7quests&8."
+
+            wait 3 seconds
+            teleport player to {spawn}
+
+            send "&bGood Luck!"
+            giveBeacons(player, 8)
+
+            player command "/daily"
+
+            ###
+            make player fly
+            make player invulnerable
+            wait 2 seconds
+            
+            teleport player to {tutorial mine}
+            send "&7This is the mine&8. &7You come here to earn money and xp to progress&8."
+
+            wait 3 seconds
+            teleport player to {tutorial afk}
+            send "&7This is the AFK area&8. &7You can sit here and earn rewards&8."
+
+            wait 3 seconds
+            giveBeacons(player, 1)
+
+            send "&7Here's a beacon&8. &7You can find these by mining&8, &7or by doing certain tasks&8."
+            wait 3 seconds
+            send "&7Beacons are used to spin custom enchantments&8, &7vastly upgrading your items&8."
+            wait 3 seconds
+            send "&7You can spin for a specific enchantment&8, &7but spinning a random one has increased odds for a higher level enchantment&8."
+            wait 3 seconds
+            send "&7If you don't like the enchantment you get&8, &7you can sell it with /sellenchantments&8."
+            send "&7Or, you can even sell it to players who are interested once you reach a certain level&8."
+
+            wait 3 seconds
+            send "&7There's several forms of progression&8."
+            send "&7The main being your level&8, &7going from 1 to 100&8."
+            send "&7Leveling up gives you rewards&8, &7and unlocks new features&8."
+            send "&7To view these rewards&8, &7use /quests levels&8."
+
+            wait 3 seconds
+            send "&7On the topic of quests&8, &7there are several&8."
+            wait 1 second
+            send "&7There's block breaking quests&8, &7which reward you for mining blocks&8."
+            wait 1 second
+            send "&7There's playtime quests&8, &7which reward you for spending time on the server&8."
+            wait 1 second
+            send "&7and then finally there's the level quests&8, &7which reward you for leveling up&8."
+
+            wait 3 seconds
+            send "&7Level can be seen on the sidebar&8, &7look at %levelDisplay({level::%player%})%&f."
+
+            wait 3 seconds
+            send "&7You'll also see there's Money and XP&8."
+            wait 1 second
+            send "&7Don't mix this XP up with level progression&8&7, it's separately used for enchanting&8."
+            wait 1 second
+            send "&7Money can be traded with players&8&7, but XP has to be earned by mining and combat&8."
+
+            wait 3 seconds
+
+            send "&7Here's a boost to help your early game progression&8."
+            send "&7These enchantments are designed to be used to boost your XP and Money gain&8."
+            give player createStoredCustomBook("xp boost", 1)
+            give player createStoredCustomBook("money boost", 1)
+
+            wait 3 seconds
+            send "&7To put an enchantment on an item, drag the enchantment book onto the item&8."
+            send "&7To view an item's enchantments, hold the item and Shift + Right Click&8."
+            send "&7Enchantments can be upgraded in this GUI&8."
+
+            wait 3 seconds
+            send "&7To view a list of enchantments, use /enchantments&8."
+
+            wait 3 seconds
+            send ""
+            send "&7Have fun! You can see a list of commands with /help&8."
+            send "&7Don't forget to join our Discord! /discord&8."
+            send "&7Linking your account gives you a beacon&8."
+            send ""
+
+            ###

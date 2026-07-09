@@ -1,0 +1,155 @@
+using reflection
+
+function getEnchantments(item: item) :: objects:
+    set {_uuid} to data tag "uuid" of {_item}
+    return keyed {custom enchantments::%{_uuid}%::*}
+
+function enchantItem(item: item, enchantment: string, level: integer, player: player = {_}) :: item:
+    set {_uuid} to data tag "uuid" of {_item}
+    if {_uuid} isn't set:
+        return {_item}
+    
+    set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+
+    if all:
+        {_special} isn't set
+        {_level} > {-ce::%{_enchantment}%::max}
+    then:
+        send "&bOVER MAX LEVEL" to ops and console
+        send "%{_player}%, %{_enchantment}% %{_level}%. max: %{-ce::%{_enchantment}%::max}%" to ops and console
+
+    if {_level} is 0:
+        if {-ce::%{_enchantment}%::onunapply} is set:
+            run {-ce::%{_enchantment}%::onunapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
+        delete {custom enchantments::%{_uuid}%::%{_enchantment}%}
+    else:
+        set {custom enchantments::%{_uuid}%::%{_enchantment}%} to {_level}
+        if {-ce::%{_enchantment}%::onapply} is set:
+            run {-ce::%{_enchantment}%::onapply} with arguments ({_item}, {_level}, {_player})
+    set {_item} to updateLore({_item})
+
+    return {_item}
+    
+function getDescription(enchantment: string, level: integer) :: text:
+    set {_cooldown} to get_setting({_enchantment}, "cooldown", {_level})
+    set {_chance} to get_setting({_enchantment}, "chance", {_level})
+    if {_chance} < 0.01:
+        set {_chance} to formatNumber({_chance}, "###,###0.000")
+    set {_threshold} to get_setting({_enchantment}, "threshold", {_level})
+    if {_threshold} isn't less than 0:
+        set {_threshold} to {_threshold} * 100
+
+    add text component of "&8» " to {_line::*}
+
+    if all:
+        {_cooldown} is set
+        {_cooldown} is greater than 0 seconds
+        {_cooldown} isn't 0
+    then:
+        add text component of "&f<sprite:items:item/clock_63><#E8C1BA>%time_format({_cooldown})% " to {_line::*}
+    if all:
+        {_chance} is set
+        {_chance} isn't greater than 100
+        {_chance} isn't 0
+    then:
+        add text component of "&f<sprite:items:item/enchanted_book><#D8DEE9>%{_chance}%%% " to {_line::*}
+    if all:
+        {_threshold} is set
+        {_threshold} isn't less than 1
+    then:
+        add text component of "&f<sprite:items:item/bow_pulling_2><#E8C1BA>%{_threshold}%%% " to {_line::*}
+
+    if {_level} > {-ce::%{_enchantment}%::max}:
+        set {_description} to result of {-ce::%{_enchantment}%::getDescription} with arguments ({_level})
+    else:
+        set {_description} to {-ce::%{_enchantment}%::description::%{_level}%}
+    add text component of "&7%{_description}%" to {_line::*}
+
+    return merge components {_line::*}
+
+function canBeApplied(enchantment: string, item: item) :: boolean:
+    if data tag "stored_custom_enchantment" of {_item} is set:
+        return true
+    if {-ce::%{_enchantment}%::item} is not set:
+        broadcast "TRIED TO CHECK APPLICABILITY OF NONEXISTENT ENCHANTMENT %{_enchantment}%!"
+        return false
+    else:
+        set {_type} to {-ce::%{_enchantment}%::type}
+
+        if {_type} is "pickaxe":
+            if {_item} isn't tagged with minecraft tag "pickaxes":
+                return false
+
+        else if {_type} is "sword":
+            if {_item} isn't tagged with minecraft tag "swords":
+                return false
+        else if {_type} is "armor":
+            if {_item} isn't tagged with paper tag "helmets":
+                return false
+
+        else if {_type} is "bow":
+            if {_item} isn't tagged with paper tag "bows":
+                return false
+
+        return true
+
+function enchantmentDisplay(enchantment: text, level: integer, special: string = {_}) :: string:
+    if {-ce::%{_enchantment}%::display} isn't set:
+        set {_name} to {-vanilla enchantment::%{_enchantment}%::display}
+        if {-vanilla enchantment::%{_enchantment}%::max} > 1:
+            set {_name} to "&a%{_name}% %romanNumeral({_level})%"
+        else:
+            set {_name} to "&a%{_name}%"
+    else:
+        set {_name} to {-ce::%{_enchantment}%::display}
+        if {-ce::%{_enchantment}%::max} > 1:
+            set {_name} to "&7%{_name}% %romanNumeral({_level})%"
+        else:
+            set {_name} to "&7%{_name}%"
+    
+    if {_special} is set:
+        set {_name} to "&7%{_name}% &f<sprite:particles:glint> &e%{_special}%"
+
+    return {_name}
+
+function updateLore(tool: item, showDescriptions: boolean = true) :: item:
+    set {_old::*} to lore of {_tool}
+
+    loop {_old::*}:
+        if loop-value end with "§":
+            continue
+        add loop-value to {_cleanOld::*}
+
+    set {_enchantments::*} to keyed getEnchantments({_tool})
+    if size of {_enchantments::*} >= 10:
+        set {_showDescriptions} to false
+
+    set {_uuid} to data tag "uuid" of {_tool}
+        
+    loop {_enchantments::*}:
+        if {-ce::%loop-index%::display} isn't set:
+            if {-ce::%loop-index%::max} isn't set:
+                if {-ce::%loop-index%::type} isn't set:
+                    # shouldn't exist. let's remove it and retry
+                    send "enchantment %loop-index% for %{_tool}% is missing data, removing..." to console
+                    set {_tool} to enchantItem({_tool}, loop-index, 0)
+                    set data tag "deleted_custom_enchantment_%loop-index%" of {_tool} to {_enchantments::%loop-index%}
+                    return updateLore({_tool}, {_showDescriptions})
+        add formatted "%enchantmentDisplay(loop-index, loop-value, {custom enchantments::%{_uuid}%::%loop-index%::special})%§" to {_enchLore::*}
+        if {_showDescriptions} is true:
+            add formatted "%getDescription(loop-index, loop-value)%§" to {_enchLore::*}
+
+    add {_enchLore::*} to {_newLore::*}
+    add {_cleanOld::*} to {_newLore::*}
+
+    set lore of item within {_tool} to {_newLore::*}
+    return {_tool}
+
+on inventory slot change:
+    if event-item is tagged with paper tag "pickaxes", paper tag "helmets", paper tag "swords", or paper tag "bows":
+        set {_item} to event-slot
+        if {_item} doesn't have data tag "uuid":
+            set data tag "uuid" of {_item} to random uuid
+            set data tag "original_owner" of {_item} to player's uuid
+            set data tag "original_owner_name" of {_item} to "%player's name%"
+        set event-slot to {_item}

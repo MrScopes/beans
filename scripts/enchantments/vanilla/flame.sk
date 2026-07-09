@@ -1,0 +1,16 @@
+on load:
+    set {-vanilla enchantment::flame::display} to "Flame"
+    
+    set {-vanilla enchantment::flame::max} to 5
+
+    set {-vanilla enchantment::flame::xp cost::1} to 12000
+    set {-vanilla enchantment::flame::xp cost::2} to 24000
+    set {-vanilla enchantment::flame::xp cost::3} to 75000
+    set {-vanilla enchantment::flame::xp cost::4} to 250000
+    set {-vanilla enchantment::flame::xp cost::5} to 500000
+
+    set {-vanilla enchantment::flame::money cost::1} to 16000
+    set {-vanilla enchantment::flame::money cost::2} to 32000
+    set {-vanilla enchantment::flame::money cost::3} to 100000
+    set {-vanilla enchantment::flame::money cost::4} to 350000
+    set {-vanilla enchantment::flame::money cost::5} to 750000

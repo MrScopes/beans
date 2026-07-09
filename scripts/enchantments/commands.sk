@@ -1,0 +1,128 @@
+command /ce <text> <integer> [<text>] [<text>]:
+    trigger:
+        if {-ce::%arg 1%::max} isn't set:
+            send "Unknown enchantment." to player
+
+        else:
+            if arg 3 is "item":
+                give createStoredCustomBook(arg 1, arg 2, arg 4) to player
+            else:
+                if arg 4 is set:
+                    set {custom enchantments::%{_uuid}%::%{_enchantment}%::special} to arg 4
+                set player's tool to enchantItem(player's tool, arg 1, arg 2, player)
+
+command /reloadenchantment [<text>]:
+    permission: beans.admin
+    trigger:
+        if arg 1 is set:
+            player command "/sk reload %arg 1%"
+            set {_string::*} to arg 1 split at "\"
+            replace all ".sk" in {_string::*} with ""
+            set {_enchantment} to {_string::3}
+            wait 1 ticks
+            cache_specific_enchantment({_enchantment})
+            refreshEnchantmentGui()
+        else:
+            player command "/sk reload enchantments/"
+
+on tab complete of "/reloadenchantment":
+    loop all scripts:
+        if loop-value starts with "enchantments\armor\", "enchantments\pickaxe", "enchantments\sword\", "enchantments\armor\", or "enchantments\bow\":
+            add loop-value to {_completions::*}
+    
+    set tab completions for position 1 to {_completions::*}
+
+command /upgrade:
+    trigger:
+        if any:
+            player's tool is tagged with minecraft tag "pickaxes"
+            player's tool is tagged with minecraft tag "swords"
+            #player's tool is tagged with paper tag "chest_equippable"
+            #player's tool is tagged with paper tag "armor"
+            player's tool is tagged with paper tag "helmets"
+            player's tool is tagged with paper tag "bows"
+        then:
+            data tag "stored_custom_enchantment" of player's tool isn't set
+            openUpgradeGui(player)
+
+on tab complete of "/ce":
+    set tab completions for position 1 to indexes of {-ce::*}
+    if {-ce::%tab arg 1%::max} is set:
+        set tab completions for position 2 to all integers between 0 and {-ce::%tab arg 1%::max}
+    set tab completions for position 3 to "item"
+
+on right click:
+    player's tool is tagged with paper tag "pickaxes", paper tag "swords", paper tag "helmets", or paper tag "bows"
+    player is sneaking
+    cancel event
+    player command "/upgrade"
+
+on load:
+    set {-all enchantments gui} to dropper inventory named "All Enchantments"
+    set slot 0 of {-all enchantments gui} to diamond pickaxe named "&6Mining Enchantments" with lore "&7Mining enchantments."
+    set slot 2 of {-all enchantments gui} to diamond sword named "&bSword Enchantments" with lore "&7Sword enchantments."
+    set slot 6 of {-all enchantments gui} to diamond chestplate named "&7Armor Enchantments" with lore "&7Armor enchantments."
+    set slot 8 of {-all enchantments gui} to bow named "&eBow Enchantments" with lore "&7Bow enchantments."
+
+    refreshEnchantmentGui()
+
+function refreshEnchantmentGui():
+    for {_enchantment type} in "pickaxe", "sword", "armor", "bow":
+        set {-enchantments gui::%{_enchantment type}%} to chest inventory named "%capitalizeFirst({_enchantment type})% Enchantments"
+
+        for {_enchantment} in indexes of {-ce::*}:
+            {-ce::%{_enchantment}%::type} is {_enchantment type}
+            {-ce::%{_enchantment}%::disabled} isn't true
+
+            if {-ce::%{_enchantment}%::ultimate} is true:
+                add {_enchantment} to {_ultimates::*}
+            else:
+                add {_enchantment} to {_enchantments::*}
+
+        for {_enchantment} in {_ultimates::*} and {_enchantments::*}:
+            {-ce::%{_enchantment}%::type} is {_enchantment type}
+            set {_item} to {-ce::%{_enchantment}%::item} with all item flags
+            enchant {_item} with unbreaking 10
+            set name of {_item} to formatted "&f%{-ce::%{_enchantment}%::display}%"
+            set data tag "custom_enchantment" of {_item} to {_enchantment}
+            for {_level} in integers between 1 and {-ce::%{_enchantment}%::max}:
+                add formatted getDescription({_enchantment}, {_level}) + " &b(Upgrade Cost: &a$%kNumber({-ce::%{_enchantment}%::money cost::%{_level}%})%&b, &d%kNumber({-ce::%{_enchantment}%::xp cost::%{_level}%})% XP&b)" to lore of {_item}
+            add {_item} to {-enchantments gui::%{_enchantment type}%}
+
+command /enchantments [<text>]:
+    trigger:
+        if arg 1 isn't set:
+            open {-all enchantments gui} to player
+        else if arg 1 is "pickaxe", "sword", "armor", or "bow":
+            set {_type} to arg 1
+            open {-enchantments gui::%{_type}%} to player
+        else:
+            player command "/enchantments"
+
+on tab complete of "/enchantments":
+    set tab completions for position 1 to "pickaxe", "sword", "armor", and "bow"
+
+on inventory click:
+    player's current inventory is {-all enchantments gui}
+    cancel event
+
+    if event-item is a diamond pickaxe:
+        set {_type} to "pickaxe"
+    else if event-item is a diamond sword:
+        set {_type} to "sword"
+    else if event-item is a diamond chestplate:
+        set {_type} to "armor"
+    else if event-item is a bow:
+        set {_type} to "bow"
+
+    {_type} is set
+    player command "/enchantments %{_type}%"
+
+on inventory click:
+    player's current inventory is {-all enchantments gui}, {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
+    cancel event
+
+on inventory close:
+    event-inventory is {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
+    wait 1 tick
+    player command "/enchantments"

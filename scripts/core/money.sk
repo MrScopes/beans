@@ -1,0 +1,34 @@
+command /balance [<text>]:
+    aliases: /bal
+    trigger:
+        if arg 1 isn't set:
+            set {_player} to player
+        else:
+            set {_player} to offlineplayer(arg 1, false)
+        if {_player} isn't set:
+            send "&cThat player has never played."
+        else:
+            send "&b%{_player}% &7has &f$%kNumber({money::%{_player}%})%&7."
+
+command /pay [<text>] [<text>]:
+    trigger:
+        set {_player} to offlineplayer(arg 1, false)
+        if {_player} isn't set:
+            send "&cThat player has never played."
+        else:
+            if {level::%{_player}%} < 25:
+                send "&cYou can only pay players level 25 or higher."
+            else:
+                set {_number} to unformatted number arg 2
+                if {_number} isn't greater than 0:
+                    send "&c/pay <player> <amount>"
+                else if {money::%player%} < {_number}:
+                    send "&cYou don't have enough money to pay that."
+                else:
+                    remove {_number} from {money::%player%}
+                    add {_number} to {money::%{_player}%}
+                    send "&bYou paid %{_player}% &f$%kNumber({_number})%&b."
+                    send "&bYou received &f$%kNumber({_number})%&b from %player%."
+
+on tab complete of "/pay", "/balance", or "/bal":
+    set tab completions for position 1 to all players

@@ -1,0 +1,26 @@
+on load:
+    set {-vanilla enchantment::efficiency::display} to "Efficiency"
+    
+    set {-vanilla enchantment::efficiency::max} to 10
+
+    set {-vanilla enchantment::efficiency::xp cost::1} to 1000
+    set {-vanilla enchantment::efficiency::xp cost::2} to 4000
+    set {-vanilla enchantment::efficiency::xp cost::3} to 12000
+    set {-vanilla enchantment::efficiency::xp cost::4} to 26000
+    set {-vanilla enchantment::efficiency::xp cost::5} to 65000
+    set {-vanilla enchantment::efficiency::xp cost::6} to 150000
+    set {-vanilla enchantment::efficiency::xp cost::7} to 350000
+    set {-vanilla enchantment::efficiency::xp cost::8} to 550000
+    set {-vanilla enchantment::efficiency::xp cost::9} to 750000
+    set {-vanilla enchantment::efficiency::xp cost::10} to 1000000
+
+    set {-vanilla enchantment::efficiency::money cost::1} to 1500
+    set {-vanilla enchantment::efficiency::money cost::2} to 5000
+    set {-vanilla enchantment::efficiency::money cost::3} to 15000
+    set {-vanilla enchantment::efficiency::money cost::4} to 30000
+    set {-vanilla enchantment::efficiency::money cost::5} to 75000
+    set {-vanilla enchantment::efficiency::money cost::6} to 200000
+    set {-vanilla enchantment::efficiency::money cost::7} to 400000
+    set {-vanilla enchantment::efficiency::money cost::8} to 650000
+    set {-vanilla enchantment::efficiency::money cost::9} to 850000
+    set {-vanilla enchantment::efficiency::money cost::10} to 1250000

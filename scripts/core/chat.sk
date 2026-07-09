@@ -1,0 +1,369 @@
+on load:
+	set {-blacklisted words::*} to "nigger", "nigga", "niglet", "fag", "dyke", "tranny", "trannie", "kike", "spic", "wetback", "chink", "gook", "raghead", "towelhead", "coon", "porchmonkey", "beaner", "cracker", "honky", "redskin", "injun", "paki", "cameljockey", "sandnigger", "zipperhead", "heeb", "gypsy", "mongoloid", "autist", "sperg", "windowlicker", "nazi", "hitler", "kkk", "klan"
+
+function leet(input: text) :: text:
+	replace all "1" with "i" in {_input}
+	replace all "3" with "e" in {_input}
+	replace all "4" with "a" in {_input}
+	replace all "5" with "s" in {_input}
+	replace all "6" with "g" in {_input}
+	replace all "7" with "t" in {_input}
+	replace all "@" with "a" in {_input}
+	replace all "$" with "s" in {_input}
+	return {_input}
+
+on async chat:
+	set {_rank} to {group::%player%} ? "default"
+
+	if {-chat reaction start} is set:
+		if async chat message is "%{-chat reaction required}%":
+			if {-chat reaction reward} is a number:
+				add {-chat reaction reward} to {money::%player%}
+				add {-chat reaction reward} to player's experience
+			else:
+				give player {-chat reaction reward}
+			broadcast formatted "%player_display(player, "[prefix][player]")% &fhas completed the chat reaction in %time_format(difference between now and {-chat reaction start})%!"
+			add "%player's uuid%:%difference between now and {-chat reaction start}%" to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
+			set {_sorted::*} to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
+			sort {_sorted::*} in ascending order
+			loop {_sorted::*}:
+				set {_split::*} to loop-value split at ":"
+				set {_player} to offlineplayer({_split::1})
+				set {_time} to {_split::2} parsed as timespan
+				if loop-value is "%player's uuid%:%difference between now and {-chat reaction start}%":
+					broadcast "&c#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
+				else:
+					broadcast "&b#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
+				if loop-iteration is 3:
+					stop loop
+			delete {-chat reaction required}
+			delete {-chat reaction reward}
+			delete {-chat reaction start}
+			delete {-chat reaction job}
+			cancel event
+
+	if player doesn't have permission "beans.mod":
+		if {-chat muted} is set:
+			cancel event
+			send "Chat is currently muted: %{-chat muted}%" to player
+
+	event isn't canceled
+	if {_rank} is "default":
+		set {_dif} to difference between now and {-last message time::%player%}
+		if {_dif} < 2 seconds:
+			cancel event
+			send "&cWait %time_format(2 seconds - {_dif})% before chatting again." to player
+		else:
+			set {-last message time::%player%} to now
+
+			if {-last message::%player%} is message:
+				cancel event
+				send "&cDon't repeat the same message." to player
+			else:
+				set {-last message::%player%} to message
+
+	event isn't canceled
+	set {_leet} to leet(message)
+	replace all " " with "" in {_leet}
+	loop {-blacklisted words::*}:
+		if {_leet} contains loop-value:
+			send formatted "&d%player% blacklisted word? &f'%loop-value%'&7." to all players where [input has permission "beans.mod"]
+			send "&8: &f%message%" to all players where [input has permission "beans.mod"]
+			#loop (length of loop-value) times:
+			#	add "*" to {_replacement::*}
+			#set {_replacement} to join {_replacement::*} with ""
+			send "&cYour message contains blacklisted word: '%loop-value%'."
+			cancel event
+			#replace all {_leet} in message with {_replacement}
+
+	#set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover] [clan]")%&8: "
+	set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
+	set {_m::2} to async chat message
+	set color format of {_m::2} to {-chatcolor::%{_rank}%}
+
+	if "%{_m::2}%" contains "[item]":
+		set {_name} to (name of tool ? "&7%translate component of tool%")
+		set {_amount} to text component of "%item amount of tool%x " if item amount of tool > 1 else ""
+		set {_component} to merge components ("[", {_amount}, {_name}, "]")
+		set hover event of {_component} to hover event showing player's tool
+		component replace "[item]" with {_component} in {_m::2}
+
+	loop all players:
+		if "%{_m::2}%" contains player's name:
+			set {_component} to text component of "&b@%player_display(loop-player, "[prefix][player]")%"
+			component replace player's name with {_component} in {_m::2}
+			send formatted "&7You were mentioned by %player_display(player, "[prefix][player]")%&7." to loop-player
+			play sound "minecraft:block.note_block.pling" with volume 1 and pitch 2 to loop-player
+
+	set {_format} to merge components {_m::*}
+	set async chat format to {_format}
+
+command /chat <text> [<text>]:
+	permission: beans.mod
+	usage: &c/chat <clear | mute | unmute> [reason]
+	trigger:
+		if arg 1 is "clear":
+			broadcast ""
+			loop 250 times:
+				send "" to all players where [input doesn't have permission "beans.mod"]
+			broadcast formatted " &8&l| &fChat has been cleared by %player_display(player, "[prefix][player]")%."
+			if arg 2 is set:
+				broadcast formatted " &8&l| &fReason: %arg 2%"
+			broadcast ""
+		else if arg 1 is "mute":
+			set {-chat muted} to arg 2 ? "No Reason Provided"
+			broadcast formatted " &8&l| &fChat has been muted by %player_display(player, "[prefix][player]")%."
+			if arg 2 is set:
+				broadcast formatted " &8&l| &fReason: %arg 2%"
+			broadcast ""
+		else if arg 1 is "unmute":
+			delete {-chat muted}
+			broadcast formatted " &8&l| &fChat has been unmuted by %player_display(player, "[prefix][player]")%.&7"
+
+on tab complete of "/chat":
+	set tab completions for position 1 to "clear", "mute", "unmute"
+	if tab arg 1 is "clear" or "mute":
+		set tab completions for position 2 to "<reason>"
+
+#
+# chat reactions
+#
+
+function force():
+	set {-chat reaction job} to "type"
+	set {-chat reaction start} to now
+	set {-chat reaction required} to "test"
+	set {-chat reaction reward} to 1
+
+on load:
+	# Sentences
+	add "The quick brown fox jumps over the lazy dog." to {-chat reactions::sentences::*}
+	add "Sphinx of black quartz, judge my vow." to {-chat reactions::sentences::*}
+	add "Pack my box with five dozen liquor jugs." to {-chat reactions::sentences::*}
+	add "How razorback jumping frogs can level six piqued gymnasts!" to {-chat reactions::sentences::*}
+	add "A wizard's job is to vex chumps quickly in fog." to {-chat reactions::sentences::*}
+	add "The five boxing wizards jump quickly." to {-chat reactions::sentences::*}
+	add "Grumpy wizards make toxic brew for the evil queen and jack." to {-chat reactions::sentences::*}
+	add "Never underestimate the power of a well timed critical hit." to {-chat reactions::sentences::*}
+	add "The enchanted pickaxe shimmered beneath the moonlit sky." to {-chat reactions::sentences::*}
+	add "A skilled blacksmith can forge weapons worthy of legends." to {-chat reactions::sentences::*}
+	add "Every great adventure begins with a single step forward." to {-chat reactions::sentences::*}
+	add "Knowledge is earned through effort, patience, and persistence." to {-chat reactions::sentences::*}
+	add "The treasure was hidden beyond the forgotten mountain pass." to {-chat reactions::sentences::*}
+	add "Lightning flashed across the horizon as the storm approached." to {-chat reactions::sentences::*}
+	add "The marketplace buzzed with merchants selling rare artifacts." to {-chat reactions::sentences::*}
+	add "Success favors those who prepare long before opportunity arrives." to {-chat reactions::sentences::*}
+	add "An ancient dragon slept beneath the ruined castle." to {-chat reactions::sentences::*}
+	add "The mysterious traveler carried secrets no one could decipher." to {-chat reactions::sentences::*}
+	add "Practice does not make perfect, it makes permanent." to {-chat reactions::sentences::*}
+	add "A chain is only as strong as its weakest link." to {-chat reactions::sentences::*}
+	add "The crystal cavern echoed with distant dripping water." to {-chat reactions::sentences::*}
+	add "Victory belongs to those who refuse to surrender." to {-chat reactions::sentences::*}
+	add "The clock struck midnight and the gates slowly opened." to {-chat reactions::sentences::*}
+	add "Sometimes the simplest solution is the correct one." to {-chat reactions::sentences::*}
+	add "The brave knight crossed the drawbridge without hesitation." to {-chat reactions::sentences::*}
+	add "Deep in the jungle, ruins of a lost civilization waited." to {-chat reactions::sentences::*}
+	add "The alchemist mixed reagents by the glow of a lantern." to {-chat reactions::sentences::*}
+	add "Shadows danced across the cavern walls as the torch flickered." to {-chat reactions::sentences::*}
+	add "A single arrow can change the outcome of a battle." to {-chat reactions::sentences::*}
+	add "The sea captain charted a course through uncharted waters." to {-chat reactions::sentences::*}
+	add "Patience and precision are the hallmarks of a master craftsman." to {-chat reactions::sentences::*}
+	add "The wolf howled as the full moon rose above the pines." to {-chat reactions::sentences::*}
+	add "No map can guide you through a path you must forge yourself." to {-chat reactions::sentences::*}
+	add "The fortress stood silent, its banners torn by the wind." to {-chat reactions::sentences::*}
+	add "A wise merchant knows when to trade and when to wait." to {-chat reactions::sentences::*}
+	add "The lantern's glow revealed footprints leading into the fog." to {-chat reactions::sentences::*}
+	add "Rivers carve canyons not through force, but through persistence." to {-chat reactions::sentences::*}
+	add "The rogue vanished into the crowd before the guards arrived." to {-chat reactions::sentences::*}
+	add "Stars aligned over the ancient temple at the solstice." to {-chat reactions::sentences::*}
+	add "The library held answers to questions no one had yet asked." to {-chat reactions::sentences::*}
+	add "A potion brewed in haste is a poison waiting to happen." to {-chat reactions::sentences::*}
+	add "The dungeon floor shook as the golem awoke from its slumber." to {-chat reactions::sentences::*}
+	add "With every level gained, a greater challenge lay ahead." to {-chat reactions::sentences::*}
+	add "The blacksmith's hammer rang out across the quiet village." to {-chat reactions::sentences::*}
+	add "He who controls the high ground controls the battlefield." to {-chat reactions::sentences::*}
+	add "The scroll crumbled to dust the moment it was unrolled." to {-chat reactions::sentences::*}
+	add "Trust is earned slowly and lost in an instant." to {-chat reactions::sentences::*}
+	add "The glacier moved imperceptibly but reshaped the valley over centuries." to {-chat reactions::sentences::*}
+	add "Every kingdom was once a single campfire in the wilderness." to {-chat reactions::sentences::*}
+
+	# Easy Words
+	add "apple" to {-chat reactions::words::easy::*}
+	add "banana" to {-chat reactions::words::easy::*}
+	add "orange" to {-chat reactions::words::easy::*}
+	add "castle" to {-chat reactions::words::easy::*}
+	add "dragon" to {-chat reactions::words::easy::*}
+	add "sword" to {-chat reactions::words::easy::*}
+	add "shield" to {-chat reactions::words::easy::*}
+	add "diamond" to {-chat reactions::words::easy::*}
+	add "emerald" to {-chat reactions::words::easy::*}
+	add "beacon" to {-chat reactions::words::easy::*}
+	add "village" to {-chat reactions::words::easy::*}
+	add "zombie" to {-chat reactions::words::easy::*}
+	add "creeper" to {-chat reactions::words::easy::*}
+	add "skeleton" to {-chat reactions::words::easy::*}
+	add "spawner" to {-chat reactions::words::easy::*}
+	add "pickaxe" to {-chat reactions::words::easy::*}
+	add "fortune" to {-chat reactions::words::easy::*}
+	add "enchanted" to {-chat reactions::words::easy::*}
+	add "treasure" to {-chat reactions::words::easy::*}
+	add "adventure" to {-chat reactions::words::easy::*}
+	add "volcano" to {-chat reactions::words::easy::*}
+	add "thunder" to {-chat reactions::words::easy::*}
+	add "lightning" to {-chat reactions::words::easy::*}
+	add "waterfall" to {-chat reactions::words::easy::*}
+	add "blueprint" to {-chat reactions::words::easy::*}
+	add "mountain" to {-chat reactions::words::easy::*}
+	add "backpack" to {-chat reactions::words::easy::*}
+	add "minecraft" to {-chat reactions::words::easy::*}
+	add "keyboard" to {-chat reactions::words::easy::*}
+	add "computer" to {-chat reactions::words::easy::*}
+	add "lantern" to {-chat reactions::words::easy::*}
+	add "compass" to {-chat reactions::words::easy::*}
+	add "potion" to {-chat reactions::words::easy::*}
+	add "goblin" to {-chat reactions::words::easy::*}
+	add "wizard" to {-chat reactions::words::easy::*}
+	add "archer" to {-chat reactions::words::easy::*}
+	add "dungeon" to {-chat reactions::words::easy::*}
+	add "forest" to {-chat reactions::words::easy::*}
+	add "cavern" to {-chat reactions::words::easy::*}
+	add "harbor" to {-chat reactions::words::easy::*}
+	add "jungle" to {-chat reactions::words::easy::*}
+	add "candle" to {-chat reactions::words::easy::*}
+	add "bucket" to {-chat reactions::words::easy::*}
+	add "rocket" to {-chat reactions::words::easy::*}
+	add "bridge" to {-chat reactions::words::easy::*}
+	add "gravel" to {-chat reactions::words::easy::*}
+	add "spider" to {-chat reactions::words::easy::*}
+	add "ghast" to {-chat reactions::words::easy::*}
+	add "blaze" to {-chat reactions::words::easy::*}
+	add "piston" to {-chat reactions::words::easy::*}
+	add "redstone" to {-chat reactions::words::easy::*}
+	add "portal" to {-chat reactions::words::easy::*}
+	add "nether" to {-chat reactions::words::easy::*}
+	add "anvil" to {-chat reactions::words::easy::*}
+	add "saddle" to {-chat reactions::words::easy::*}
+	add "arrow" to {-chat reactions::words::easy::*}
+	add "rabbit" to {-chat reactions::words::easy::*}
+	add "parrot" to {-chat reactions::words::easy::*}
+	add "turtle" to {-chat reactions::words::easy::*}
+	add "dolphin" to {-chat reactions::words::easy::*}
+	add "phantom" to {-chat reactions::words::easy::*}
+
+	# Hard Words
+	add "quartz" to {-chat reactions::words::hard::*}
+	add "zephyr" to {-chat reactions::words::hard::*}
+	add "rhythm" to {-chat reactions::words::hard::*}
+	add "awkward" to {-chat reactions::words::hard::*}
+	add "jukebox" to {-chat reactions::words::hard::*}
+	add "vortex" to {-chat reactions::words::hard::*}
+	add "croquet" to {-chat reactions::words::hard::*}
+	add "gazebo" to {-chat reactions::words::hard::*}
+	add "subpoena" to {-chat reactions::words::hard::*}
+	add "mnemonic" to {-chat reactions::words::hard::*}
+	add "oxygenate" to {-chat reactions::words::hard::*}
+	add "quizzical" to {-chat reactions::words::hard::*}
+	add "xylophone" to {-chat reactions::words::hard::*}
+	add "mischievous" to {-chat reactions::words::hard::*}
+	add "bureaucracy" to {-chat reactions::words::hard::*}
+	add "entrepreneur" to {-chat reactions::words::hard::*}
+	add "philanthropy" to {-chat reactions::words::hard::*}
+	add "metamorphosis" to {-chat reactions::words::hard::*}
+	add "photosynthesis" to {-chat reactions::words::hard::*}
+	add "conscientious" to {-chat reactions::words::hard::*}
+	add "simultaneous" to {-chat reactions::words::hard::*}
+	add "extraordinary" to {-chat reactions::words::hard::*}
+	add "misconception" to {-chat reactions::words::hard::*}
+	add "circumference" to {-chat reactions::words::hard::*}
+	add "characteristic" to {-chat reactions::words::hard::*}
+	add "counterfeit" to {-chat reactions::words::hard::*}
+	add "hypnotize" to {-chat reactions::words::hard::*}
+	add "labyrinth" to {-chat reactions::words::hard::*}
+	add "oblivion" to {-chat reactions::words::hard::*}
+	add "phenomenon" to {-chat reactions::words::hard::*}
+	add "acquiesce" to {-chat reactions::words::hard::*}
+	add "belligerent" to {-chat reactions::words::hard::*}
+	add "cacophony" to {-chat reactions::words::hard::*}
+	add "dilapidated" to {-chat reactions::words::hard::*}
+	add "egregious" to {-chat reactions::words::hard::*}
+	add "flabbergasted" to {-chat reactions::words::hard::*}
+	add "garrulous" to {-chat reactions::words::hard::*}
+	add "harrowing" to {-chat reactions::words::hard::*}
+	add "idiosyncratic" to {-chat reactions::words::hard::*}
+	add "juxtaposition" to {-chat reactions::words::hard::*}
+	add "kaleidoscope" to {-chat reactions::words::hard::*}
+	add "loquacious" to {-chat reactions::words::hard::*}
+	add "magnanimous" to {-chat reactions::words::hard::*}
+	add "nefarious" to {-chat reactions::words::hard::*}
+	add "ostentatious" to {-chat reactions::words::hard::*}
+	add "paraphernalia" to {-chat reactions::words::hard::*}
+	add "quintessential" to {-chat reactions::words::hard::*}
+	add "recalcitrant" to {-chat reactions::words::hard::*}
+	add "surreptitious" to {-chat reactions::words::hard::*}
+	add "tenacious" to {-chat reactions::words::hard::*}
+	add "ubiquitous" to {-chat reactions::words::hard::*}
+	add "vicissitude" to {-chat reactions::words::hard::*}
+	add "whimsical" to {-chat reactions::words::hard::*}
+	add "xenophobia" to {-chat reactions::words::hard::*}
+	add "zealousness" to {-chat reactions::words::hard::*}
+	add "archipelago" to {-chat reactions::words::hard::*}
+	add "catastrophic" to {-chat reactions::words::hard::*}
+	add "discombobulate" to {-chat reactions::words::hard::*}
+	add "exacerbate" to {-chat reactions::words::hard::*}
+	add "facetious" to {-chat reactions::words::hard::*}
+	
+async every 5 minutes:
+	chatReaction()
+
+function chatReaction():
+	set {_type} to "word" or "sentence"
+	if {_type} is "word":
+		set {_job} to "type" or "unscramble"
+		set {-chat reaction job} to {_job}
+		set {_difficulty} to "easy" or "hard"
+		if {_difficulty} is "easy":
+			set {-chat reaction required} to random element out of {-chat reactions::words::easy::*}
+			if {_job} is "type":
+				set {-chat reaction reward} to 25_000
+			else:
+				set {-chat reaction reward} to 35_000
+		else:
+			set {-chat reaction required} to random element out of {-chat reactions::words::hard::*}
+			if {_job} is "type":
+				set {-chat reaction reward} to 1 of beaconItem()
+			else:
+				set {-chat reaction reward} to 2 of beaconItem()
+	else:
+		set {_job} to "type"
+		set {-chat reaction required} to random element out of {-chat reactions::sentences::*}
+		set {-chat reaction reward} to 1 of beaconItem()
+	
+	broadcast "", " &b&lCHAT REACTION!", ""
+	if {_job} is "type":
+		broadcast "&7Type the following:"
+		broadcast "%{-chat reaction required}%"
+	else if {_job} is "unscramble":
+		broadcast "&7Unscramble the following:"
+		broadcast scramble({-chat reaction required})
+	broadcast ""
+	broadcast "&7Reward:"
+	if {-chat reaction reward} is a number:
+		broadcast "&b$%kNumber({-chat reaction reward})%&f, &a%kNumber({-chat reaction reward})% XP"
+	else:
+		set {_name} to text component of name of {-chat reaction reward}
+		set {_amount} to "%item amount of {-chat reaction reward}%x " if item amount of {-chat reaction reward} > 1 else ""
+		set {_display} to "%{_amount}%%{_name}%"
+		broadcast formatted {_display} ? {-chat reaction reward}
+	broadcast ""
+
+	set {-chat reaction start} to now
+
+	wait 30 seconds
+	if {-chat reaction start} is set:
+		broadcast "The chat reaction has expired. Better luck next time!"
+		if {_job} is "unscramble":
+			broadcast "The correct answer was: &7%{-chat reaction required}%"
+		delete {-chat reaction required}
+		delete {-chat reaction reward}
+		delete {-chat reaction start}
+		delete {-chat reaction job}

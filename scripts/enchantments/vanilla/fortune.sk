@@ -1,0 +1,26 @@
+on load:
+    set {-vanilla enchantment::fortune::display} to "Fortune"
+    
+    set {-vanilla enchantment::fortune::max} to 10
+
+    set {-vanilla enchantment::fortune::xp cost::1} to 1000
+    set {-vanilla enchantment::fortune::xp cost::2} to 8000
+    set {-vanilla enchantment::fortune::xp cost::3} to 24000
+    set {-vanilla enchantment::fortune::xp cost::4} to 75000
+    set {-vanilla enchantment::fortune::xp cost::5} to 150000
+    set {-vanilla enchantment::fortune::xp cost::6} to 350000
+    set {-vanilla enchantment::fortune::xp cost::7} to 550000
+    set {-vanilla enchantment::fortune::xp cost::8} to 850000
+    set {-vanilla enchantment::fortune::xp cost::9} to 1250000
+    set {-vanilla enchantment::fortune::xp cost::10} to 1500000
+
+    set {-vanilla enchantment::fortune::money cost::1} to 1500
+    set {-vanilla enchantment::fortune::money cost::2} to 12000
+    set {-vanilla enchantment::fortune::money cost::3} to 32000
+    set {-vanilla enchantment::fortune::money cost::4} to 100000
+    set {-vanilla enchantment::fortune::money cost::5} to 150000
+    set {-vanilla enchantment::fortune::money cost::6} to 400000
+    set {-vanilla enchantment::fortune::money cost::7} to 650000
+    set {-vanilla enchantment::fortune::money cost::8} to 1000000
+    set {-vanilla enchantment::fortune::money cost::9} to 1500000
+    set {-vanilla enchantment::fortune::money cost::10} to 2000000

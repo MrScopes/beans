@@ -1,0 +1,237 @@
+function bar(entity: entity):
+    canBeBarred({_entity}) is true
+
+    # clean the old bar
+    deleteBar({_entity})
+
+    # healthbar
+    spawn text display at {_entity}:
+        set {-healthbar::%{_entity}%} to text display
+        make text display not persistent
+        make text display ride {_entity}
+        set billboard of text display to center
+        set color of text display to rgb(0, 0, 0, 0)
+        set transformation translation of text display to vector(0, 0.25 + {-bar height modifier::%{_entity}%}, 0)
+        set transformation scale of text display to vector(0.35, 1.25, 0.35)
+        set line width of text display to 400
+        set view range of text display to 0.5
+        apply drop shadow to text display
+        set data tag "bar" of text display to true
+
+    # nametag
+    spawn text display at {_entity}:
+        set {-nametag::%{_entity}%} to text display
+        make text display not persistent
+        make text display ride {-healthbar::%{_entity}%}
+        set billboard of text display to center
+        set transformation translation of text display to vector(0, 0.15 + {-bar height modifier::%{_entity}%}, 0)
+        set transformation scale of text display to vector(0.75, 0.75, 0.75)
+        set line width of text display to 400
+        set view range of text display to 0.5
+        make text display visible through blocks
+        apply drop shadow to text display
+        set data tag "bar" of text display to true
+
+    updateHealthbar({_entity})
+    updateNametag({_entity})
+    updateVisibility({_entity})
+
+function canBeBarred(entity: entity) :: boolean:
+    {_entity} is a living entity
+    {_entity} isn't an armor stand
+    {-no bar::%{_entity}%} isn't set
+    return true
+
+function deleteBar(entity: entity):
+    delete {-no bar::%{_entity}%}
+    kill {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}
+    delete {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-last health::%{_entity}%}
+
+function updateHealthbar(entity: entity):
+    set {_lastHealth} to {-lasthealth::%{_entity}%} ? {_entity}'s health
+    set {_currentHealth} to {_entity}'s health
+    set {_healthPercentage} to ({_currentHealth} / {_entity}'s max health)
+    set {_filledGreen} to round({_healthPercentage} * 50)
+    set {_deltaHealth} to round((({_currentHealth} - {_lastHealth}) / {_entity}'s max health) * 50)
+
+    if {_filledGreen} > 50:
+        set {_filledGreen} to 50
+    if {_filledGreen} < 0:
+        set {_filledGreen} to 0
+
+    set {_healthColor} to "&a"
+    if {_filledGreen} <= 10:
+        set {_healthColor} to "&c"
+    else if {_filledGreen} <= 24:
+        set {_healthColor} to "&e"
+
+    set {_filledGold} to round(({_entity}'s absorption amount / 2) / {_entity}'s max health * 50)
+
+    if {_filledGold} > 50:
+        set {_filledGold} to 50
+    if {_filledGold} < 0:
+        set {_filledGold} to 0
+
+    set {_visibleGreen} to {_filledGreen}
+    if {_visibleGreen} > (50 - {_filledGold}):
+        set {_visibleGreen} to (50 - {_filledGold})
+    if {_visibleGreen} < 0:
+        set {_visibleGreen} to 0
+
+    if {_deltaHealth} != 0:
+        if {_deltaHealth} < 0:
+            loop {_visibleGreen} times:
+                add "%{_healthColor}%&m " to {_flashBar::*}
+
+            loop (0 - {_deltaHealth}) times:
+                add "&4&m " to {_flashBar::*}
+
+            loop {_filledGold} times:
+                add "&6&m " to {_flashBar::*}
+        else:
+            loop {_visibleGreen} - {_deltaHealth} times:
+                add "%{_healthColor}%&m " to {_flashBar::*}
+
+            loop {_deltaHealth} times:
+                add "&2&m " to {_flashBar::*}
+
+            loop {_filledGold} times:
+                add "&6&m " to {_flashBar::*}
+
+        set {_remaining} to 50 - size of {_flashBar::*}
+        loop {_remaining} times:
+            add "&8&m " to {_flashBar::*}
+
+        set text of {-healthbar::%{_entity}%} to join {_flashBar::*} with ""
+        wait 1 ticks
+        delete {_flashBar::*}
+
+    loop {_visibleGreen} times:
+        add "%{_healthColor}%&m " to {_bar::*}
+
+    loop {_filledGold} times:
+        add "&6&m " to {_bar::*}
+
+    set {_remainingEmpty} to 50 - ({_visibleGreen} + {_filledGold})
+    loop {_remainingEmpty} times:
+        add "&8&m " to {_bar::*}
+
+    set text of {-healthbar::%{_entity}%} to join {_bar::*} with ""
+    set {-lasthealth::%{_entity}%} to {_currentHealth}
+
+function updateNametag(entity: entity):
+    set {_name} to {_entity}'s display name
+
+    if {_name} is not set:
+        set {_name} to {_entity}'s name
+
+    if {_entity} is a player:
+        set {_display} to player_display({_entity}, "[level] [prefix][player]")
+    else:
+        set {_display} to {_name}
+
+    set text of {-nametag::%{_entity}%} to {_display} ? "&7%{_name}%"
+
+function updateVisibility(entity: entity):
+    if any:
+        {_entity} is sneaking
+        potion level of invisibility potion effect of {_entity} > 0
+    then:
+        set color of {-nametag::%{_entity}%} to rgb(0, 0, 0, 0)
+        set text opacity of {-nametag::%{_entity}%} to 0
+        set text opacity of {-healthbar::%{_entity}%} to 0
+    else:
+        reset color of {-nametag::%{_entity}%}
+        set text opacity of {-nametag::%{_entity}%} to 255
+        set text opacity of {-healthbar::%{_entity}%} to 255
+
+on load:
+    resetBars()
+
+function resetBars(wait: boolean = true):
+    loop all entities where [input is a display or a living entity]:
+        if {_wait} is true:
+            wait 1 tick
+        if loop-entity is a display:
+            set {_isHealthbar} to data tag "bar" of loop-entity
+            if {_isHealthbar} is set:
+                kill loop-entity
+        else:
+            bar(loop-entity)
+
+function heal(entity: entity, amount: number):
+    heal {_entity} by {_amount}
+    wait 1 tick
+    updateHealthbar({_entity})
+    damageIndicator({_entity}, healing: {_amount})
+
+function damageIndicator(entity: entity, damage: number = {_}, healing: number = {_}):
+    spawn text display at {_entity}'s head ~ vector(random number between -0.5 and 0.5, 0.5, random number between -0.5 and 0.5):
+        set {_display} to text display
+        set billboard of {_display} to center
+        make {_display} not persistent
+        if {_healing} is set:
+            set text of {_display} to "&a%{_healing}%"
+        else if {_damage} is set:
+            set text of {_display} to "&c%{_damage}%" 
+        apply drop shadow to text of {_display}
+        set teleport duration of {_display} to 5 ticks
+    teleport {_display} to {_display} ~ vector(0, 0.5, 0)
+    
+    wait 5 ticks
+    kill {_display}
+
+# events
+
+on damage:
+    wait 1 tick
+    {-healthbar::%victim%} is set
+    updateHealthbar(victim)
+    final damage > 0
+    damageIndicator(victim, damage: final damage)
+
+on heal:
+    wait 1 tick
+    {-healthbar::%entity%} is set
+    updateHealthbar(entity)
+    damageIndicator(entity, healing: heal amount)
+
+on respawn:
+    wait 3 ticks
+    bar(player)
+
+on teleport:
+    wait 1 tick
+    {-healthbar::%entity%} is set
+    make {-healthbar::%entity%} ride entity
+
+on join:
+    wait 1 tick
+    bar(player)
+
+on spawn:
+    wait 1 tick
+    bar(entity)
+
+on death:
+    deleteBar(victim)
+
+on quit:
+    deleteBar(player)
+
+on entity remove:
+    deleteBar(entity)
+
+on entity potion effect:
+    wait 1 tick
+    updateHealthbar(entity)
+    updateVisibility(entity)
+
+on sneak toggle:
+    wait 1 tick
+    updateVisibility(player)
+
+on command:
+    player is set
+    wait 2 ticks
+    updateNametag(player)

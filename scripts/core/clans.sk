@@ -1,0 +1,244 @@
+#
+# {clan::%player%} = id of the clan the player is in
+# {clans::%id%::id} = id of the clan
+# {clans::%id%::name} = name of the clan
+# {clans::%id%::owner} = uuid of the owner of the clan
+# {clans::%id%::members::*} = uuid of the members of the clan
+
+on load:
+    set {clans::1::id} to 1
+    set {clans::1::name} to "beans"
+    set {clans::1::owner} to player "MrScopes"
+    set {clans::1::members::*} to player "MrScopes" and offlineplayer("Notch")
+    set {clan::649ddc08-5406-4d15-83ab-c00974a7fee7} to 1
+
+command /clan [<text>] [<text>] [<text>]:
+    trigger:
+        async run 0 ticks later:
+            if arg 1 isn't set:
+                if player has permission "beans.admin":
+                    send "&c/clan <info | manage | join | leave | &4admin&c> (...)"
+                else:
+                    send "&c/clan <info | manage | join | leave> (...)"
+            else if arg 1 is "admin":
+                if player doesn't have permission "beans.admin":
+                    run 0 ticks later:
+                        player command "/clan"
+                else:
+                    send "not yet implemented."
+            else if arg 1 is "info":
+                if arg 2 isn't set:
+                    if {clan::%player%} is set:
+                        run 0 ticks later:
+                            player command "/clan info %{clan::%player%}%"
+                    else:
+                        send "&c/clan info (clan name | player name | clan id)"
+                else:
+                    set {_searched clan} to searchClan(arg 2)
+                    if {_searched clan} isn't set:
+                        send "&cClan not found."
+                    else:
+                        set {_members::*} to {clans::%{_searched clan}%::members::*}
+                        map {_members::*} using input's name
+                        set {_members} to join {_members::*} with "&8, &f" 
+                        send ""
+                        send " &3&l| &b%{clans::%{_searched clan}%::name}%"
+                        send "   &7ID: &f%{clans::%{_searched clan}%::id}%"
+                        send ""
+                        send " &3&l| &bOwner: &f%{clans::%{_searched clan}%::owner}%"
+                        send " &3&l| &bMembers: &f%{_members}%"
+                        send ""
+            else if arg 1 is "manage":
+                if arg 2 is "create":
+                    if {clan::%player%} is set:
+                        send "&cYou are already in a clan."
+                    else:
+                        if arg 3 isn't set:
+                            send "&c/clan manage create (clan name)"
+                        else:
+                            loop {clans::*}:
+                                if {clans::%loop-value%::name} is arg 3:
+                                    send "&cA clan with that name already exists."
+                                    stop
+
+                            set {_id} to size of {clans::*} + 1
+                            set {clans::%{_id}%::id} to {_id}
+                            set {clans::%{_id}%::name} to arg 3
+                            set {clans::%{_id}%::owner} to player
+                            set {clans::%{_id}%::members::*} to player
+                            set {clan::%player%} to {_id}
+
+                            run 0 ticks later:
+                                player command "/clan info"
+                            
+                else if arg 2 is "disband":
+                    if {clan::%player%} isn't set:
+                        send "&cYou aren't in a clan."
+                    else:
+                        if {clans::%{clan::%player%}%::owner} is player:
+                            if difference between {-clan disband confirm::%player%} and now < 10 seconds:
+                                set {_clan} to {clan::%player%}
+                                loop {clans::%{_clan}%::members::*}:
+                                    send formatted "%player_display(player)% &7has disbanded the clan." to loop-value
+                                    delete {clan::%loop-value%}
+                                delete {clans::%{_clan}%::*}
+                            else:
+                                send "&cAre you sure you want to disband your clan?" 
+                                send "&cRun the command again within 10 seconds to confirm."
+                                set {-clan disband confirm::%player%} to now
+                        else:
+                            send "&cOnly the owner of the clan can disband it."
+                else if arg 2 is "transfer":
+                    if {clan::%player%} isn't set:
+                        send "&cYou aren't in a clan."
+                    else:
+                        if {clans::%{clan::%player%}%::owner} isn't player:
+                            send "&cOnly the owner of the clan can transfer ownership."
+                        else:
+                            set {_searched player} to offlineplayer(arg 3)
+                            if {_searched player} isn't set:
+                                send "&cPlayer not found."
+                            else:
+                                if {_searched player} is player:
+                                    send "&cYou are already the owner of the clan."
+                                else if {clans::%{clan::%player%}%::members::*} contains {_searched player}:
+                                    if difference between {-clan transfer confirm::%player%} and now < 10 seconds:
+                                        set {clans::%{clan::%player%}%::owner} to {_searched player}
+                                        send formatted "&7You have transferred ownership of the clan to %player_display({_searched player})%&7." to player
+                                        send formatted "%player_display(player)% &7has transferred ownership of the clan to you." to {_searched player}
+                                        delete {-clan transfer confirm::%player%}
+                                    else:
+                                        send "&cAre you sure you want to transfer ownership of your clan to %player_display({_searched player})%&7?" 
+                                        send "&cRun the command again within 10 seconds to confirm."
+                                        set {-clan transfer confirm::%player%} to now
+                                else:
+                                    send "&cThat player isn't in your clan."
+                else if arg 2 is "invite":
+                    if {clan::%player%} isn't set:
+                        send "&cYou aren't in a clan."
+                    else:
+                        if {clans::%{clan::%player%}%::owner} isn't player:
+                            send "&cOnly the owner of the clan can invite players."
+                        else:
+                            set {_searched player} to offlineplayer(arg 3)
+                            if {_searched player} isn't set:
+                                send "&cPlayer not found."
+                            else:
+                                if {clans::%{clan::%player%}%::members::*} contains {_searched player}:
+                                    send "&cThat player is already in your clan."
+                                else:
+                                    if {-clan invites::%{_searched player}%::*} contains {clan::%player%}:
+                                        send "&cThat player is already invited to your clan."
+                                    else:
+                                        add {clan::%player%} to {-clan invites::%{_searched player}%::*}
+                                        send formatted "&7You have invited %player_display({_searched player})% &7to your clan." to player
+                                        send formatted "%player_display(player)% &7has invited you to join their clan. Type &b/clan join %player% &7to accept." to {_searched player}
+                else if arg 2 is "kick":
+                    if {clan::%player%} isn't set:
+                        send "&cYou aren't in a clan."
+                    else:
+                        if {clans::%{clan::%player%}%::owner} isn't player:
+                            send "&cOnly the owner of the clan can kick players."
+                        else:
+                            set {_searched player} to offlineplayer(arg 3)
+                            if {_searched player} isn't set:
+                                send "&cPlayer not found."
+                            else:
+                                if {_searched player} is player:
+                                    send "&cYou can't kick yourself."
+                                else if {clans::%{clan::%player%}%::members::*} contains {_searched player}:
+                                    remove {_searched player} from {clans::%{clan::%player%}%::members::*}
+                                    delete {clan::%{_searched player}%}
+                                    send formatted "&7You have kicked %player_display({_searched player})% &7from the clan." to player
+                                    send formatted "%player_display(player)% &7has kicked you from the clan." to {_searched player}
+                                else:
+                                    send "&cThat player isn't in your clan."
+                else:
+                    send "&c/clan manage <create | disband | transfer | invite> (...)"
+            else if arg 1 is "join":
+                set {_searched clan} to searchClan(arg 2)
+                if {_searched clan} isn't set:
+                    send "&c/clan join (clan name | player name | clan id)"
+                else:
+                    if {-clan invites::%player%::*} contains {_searched clan}:
+                        set {clan::%player%} to {_searched clan}
+                        add player to {clans::%{_searched clan}%::members::*}
+                        remove {_searched clan} from {-clan invites::%player%::*}
+                        loop {clans::%{_searched clan}%::members::*}:
+                            send formatted "%player_display(player)% &7has joined the clan." to loop-value
+                        run 0 ticks later:
+                            player command "/clan info"
+                    else:
+                        send "&cYou aren't invited to that clan."
+            else if arg 1 is "leave":
+                if {clan::%player%} isn't set:
+                    send "&cYou aren't in a clan."
+                else:
+                    if {clans::%{clan::%player%}%::owner} is player:
+                        send "&cYou must disband your clan or transfer ownership before leaving."
+                    else:
+                        loop {clans::%{clan::%player%}%::members::*}:
+                            send formatted "%player_display(player)% &7has left the clan." to loop-value
+                        remove player from {clans::%{clan::%player%}%::members::*}
+                        delete {clan::%player%}
+            else:
+                run 0 ticks later:
+                    player command "/clan"
+                    
+
+on tab complete of "/clan":
+    set tab completions for position 1 to "info", "manage", "join", and "leave"
+    set tab completions for position 2 to "create", "disband", "transfer", "invite", and "kick"
+
+    if tab arg 1 is "info":
+        set tab completions for position 2 to all players
+
+    else if tab arg 1 is "manage":
+        if tab arg 2 is "transfer" or "kick":
+            set {_applicable::*} to {clans::%{clan::%player%}%::members::*} where [input isn't player]
+            set tab completions for position 3 to {_applicable::*}
+        else if tab arg 2 is "invite":
+            set {_applicable::*} to all players where [{clan::%input%} isn't {clan::%player%}]
+            set tab completions for position 3 to {_applicable::*}
+
+    if player has permission "beans.admin":
+        add "admin" to tab completions for position 1
+
+function searchClan(input: text) :: number:
+    if {clans::%{_input}%::id} is set:
+        return {clans::%{_input}%::id}
+
+    set {_offlineplayer} to offlineplayer({_input}, false)
+    if {_offlineplayer} is set:
+        if {_offlineplayer}'s name is {_input}:
+            set {_offlineplayer clan} to {clan::%{_offlineplayer}%}
+            if {_offlineplayer clan} is set:
+                if {clans::%{_offlineplayer clan}%::id} is set:
+                    return {clans::%{_offlineplayer clan}%::id}
+
+    loop all players:
+        if {clan::%loop-player%} is set:
+            if loop-player's name is {_input}:
+                set {_player clan} to {clan::%loop-player%}
+                if {_player clan} is set:
+                    if {clans::%{_player clan}%::id} is set:
+                        return {clans::%{_player clan}%::id}
+    
+    loop indexes of {clans::*}:
+        broadcast "%{clans::%loop-value%::name}%"
+        if {clans::%loop-value%::name} is {_input}:
+            return {clans::%loop-value%::id}
+        else if {clans::%loop-value%::player::%{_input}%} is set:
+            return {clans::%loop-value%::id}
+
+import:
+    com.destroystokyo.paper.event.server.AsyncTabCompleteEvent
+    java.util.List
+
+on AsyncTabCompleteEvent:
+    set {_buffer::*} to split event.getBuffer() at " "
+
+    if {_buffer::1} is "/tab":
+        set {_completion} to AsyncTabCompleteEvent.Completion.completion("test", formatted "tooltip")
+        set {_list} to List.of({_completion})
+        event.completions({_list})

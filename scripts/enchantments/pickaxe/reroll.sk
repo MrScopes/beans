@@ -1,0 +1,22 @@
+on load:
+    setting("reroll", "display", value: "&f<sprite:items:item/axolotl_spawn_egg> &1Reroll")
+    setting("reroll", "max", value: 5)
+    setting("reroll", "priority", value: 0)
+    setting("reroll", "type", value: "pickaxe")
+    setting("reroll", "item", value: axolotl spawn egg)
+
+    setting("reroll", "chance", l1: 3, l2: 6, l3: 9, l4: 12, l5: 18)
+
+    setting("reroll", "xp cost", l2: 100_000, l3: 300_000, l4: 800_000, l5: 1_750_000)
+    setting("reroll", "money cost", l2: 150_000, l3: 400_000, l4: 1_000_000, l5: 2_000_000)
+
+local function getDescription(level: integer) :: string:
+    return "retry enchantments"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    {-rerolling::%{_player}%} isn't set
+    play sound "minecraft:block.wooden_button.click_on" with volume 0.5 and pitch 1 at location of {_player}
+    set {-rerolling::%{_player}%} to true
+    miningEnchants({_player}, {_block})
+    wait 1 tick
+    delete {-rerolling::%{_player}%}

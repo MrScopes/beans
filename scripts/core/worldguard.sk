@@ -1,0 +1,49 @@
+on break:
+    player's gamemode isn't creative
+    if "%bounds at block%" contains "spawn":
+        cancel event
+
+    else if "%bounds at player%" contains "spawn":
+        cancel event
+
+    if y coordinate of event-block < 0:
+        bounds at event-block doesn't contain bound with id "mine"
+        cancel event
+
+on shoot:
+    shooter's gamemode isn't creative
+    if "%bounds at shooter%" contains "spawn":
+        cancel event
+
+on place:
+    player's gamemode isn't creative
+    if "%bounds at block%" contains "spawn":
+        cancel event
+
+    else if "%bounds at player%" contains "spawn":
+        cancel event
+
+on right click:
+    player's gamemode isn't creative
+    event-block is set
+    if "%bounds at clicked block%" contains "spawn":
+        cancel event
+
+    else if "%bounds at player%" contains "spawn":
+        cancel event
+
+on left click:
+    player's gamemode isn't creative
+    if "%bounds at clicked block%" contains "spawn":
+        cancel event
+
+    else if "%bounds at player%" contains "spawn":
+        cancel event
+
+on damage with priority lowest:
+    attacker's gamemode isn't creative
+    if bounds at victim contains bound with id "spawn":
+        cancel event
+    
+    else if bounds at attacker contains bound with id "spawn":
+        cancel event

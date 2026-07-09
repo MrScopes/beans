@@ -1,0 +1,113 @@
+function vault_purchase_cost(player: player) :: number:
+    set {_current} to {unlocked vaults::%{_player}%}
+
+    if {_current} isn't set:
+        return 100_000
+
+    if {_current} is 1:
+        return 250_000
+
+    if {_current} is 2:
+        return 1_000_000
+
+    else:
+        return 5_000_000
+
+command /vault <text=1> [<text>]:
+    aliases: /pv
+    trigger:
+        if arg 1 is "purchase":
+            set {_cost} to vault_purchase_cost(player)
+            if {money::%player%} < {_cost}:
+                send "&cYou don't have enough money. You need $%formatNumber({_cost})% to purchase."
+            else:
+                if difference between {-vault purchase confirm::%player%} and now < 10 seconds:
+                    delete {-vault purchase confirm::%player%}
+                    remove {_cost} from {money::%player%}
+                    add 1 to {unlocked vaults::%player%}
+                    send formatted "Purchase confirmed."
+                else:
+                    send "&fYou are about to purchase a vault for $%formatNumber({_cost})%."
+                    send "&7Run the command again within 10s to confirm."
+                    set {-vault purchase confirm::%player%} to 10 seconds from now
+        else:
+            set {_vault} to arg-1 parsed as integer
+
+            set {_owner} to player
+            if player has permission "beans.admin":
+                set {_owner} to offlineplayer(arg-2, false) ? player
+
+            set {_max} to vault_amount_player({_owner})
+            
+            if all:
+                {_vault} > {_max}
+                {_owner} is player
+            then:
+                send "&cYou only have %{_max}% vaults."
+                send "&cYou can purchase more with /buy or with /vault purchase."
+            else:
+                set {-vault inventory::%player%} to chest inventory with 6 rows named "%{_owner}%'s vault #%{_vault}%"
+                set {-open vault::%player%} to {_vault}
+                set {-open vault owner::%player%} to {_owner}
+
+                loop integers between 0 and 53:
+                    if {vault::%{_owner}%::%{_vault}%::%loop-number%} is set:
+                        set slot loop-number of {-vault inventory::%player%} to {vault::%{_owner}%::%{_vault}%::%loop-number%}
+
+                updateInventory({-vault inventory::%player%})
+                open {-vault inventory::%player%} to player
+
+on tab complete of "/vault":
+    player has permission "beans.admin"
+    set tab completions for position 2 to all players
+
+function giveORvaultORdrop(player: offline player, item: item):
+    set {_remaining} to amount of {_item}
+    set {_base} to {_item}
+    set amount of {_base} to 1
+    set {_maxStack} to maximum stack size of {_item}
+
+    while {_remaining} > 0:
+        set {_giveAmount} to {_remaining}
+        if {_giveAmount} > {_maxStack}:
+            set {_giveAmount} to {_maxStack}
+
+        set {_stack} to {_base}
+        set amount of {_stack} to {_giveAmount}
+
+        if {_player} has space for {_stack}:
+            give {_stack} to {_player}
+            remove {_giveAmount} from {_remaining}
+            continue
+
+        set {_stored} to false
+        set {_max} to vault_amount_player({_player})
+
+        loop integers between 1 and {_max}:
+            loop integers between 0 and 53:
+                if {vault::%{_player}%::%loop-number-1%::%loop-number-2%} isn't set:
+                    set {vault::%{_player}%::%loop-number-1%::%loop-number-2%} to {_stack}
+                    send formatted "Added %{_giveAmount}%x %{_base}% &fto vault %loop-number-1%." to {_player}
+                    remove {_giveAmount} from {_remaining}
+                    set {_stored} to true
+                    stop loop
+
+            if {_stored} is true:
+                stop loop
+
+        if {_stored} is false:
+            drop {_stack} at {_player}
+            remove {_giveAmount} from {_remaining}
+
+on inventory close:
+    if event-inventory is {-vault inventory::%player%}:
+        loop integers between 0 and 53:
+            if slot loop-number of event-inventory isn't air:
+                set {vault::%{-open vault owner::%player%}%::%{-open vault::%player%}%::%loop-number%} to slot loop-number of event-inventory
+            else:
+                delete {vault::%{-open vault owner::%player%}%::%{-open vault::%player%}%::%loop-number%}
+
+on tab complete of "/vault":
+    loop integers between 1 and vault_amount_player(player):
+        add loop-number to {_completions::*}
+    set tab completions for position 1 to {_completions::*} and "purchase"

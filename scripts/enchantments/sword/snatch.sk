@@ -1,0 +1,47 @@
+on load:
+    setting("snatch", "display", value: "&f<sprite:items:item/ominous_bottle> &5Snatch")
+    setting("snatch", "max", value: 5)
+    setting("snatch", "priority", value: 0)
+    setting("snatch", "type", value: "sword")
+    setting("snatch", "item", value: ominous bottle)
+
+    setting("snatch", "cooldown", l1: 20 seconds, l2: 18 seconds, l3: 15 seconds, l4: 12 seconds, l5: 10 seconds)
+
+    setting("snatch", "distance", l1: 20, l2: 22, l3: 25, l4: 27, l5: 30)
+    setting("snatch", "disable duration", l1: 2 seconds, l2: 3 seconds, l3: 4 seconds, l4: 5 seconds, l5: 6 seconds)
+
+    setting("snatch", "xp cost", l2: 60_000, l3: 200_000, l4: 750_000, l5: 1_000_000)
+    setting("snatch", "money cost", l2: 100_000, l3: 300_000 , l4: 900_000, l5: 1_250_000)
+
+local function getDescription(level: integer) :: string:
+    return "&e[LMB] &7projectile that pulls in entities within %get_setting("snatch", "distance", {_level})%m. disables their elytra for %time_format(get_setting("snatch", "disable duration", {_level}))%."
+
+local function onleftclick(player: player, item: item, level: integer):
+    set {_origin} to location of {_player}'s head
+    set {_direction} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
+    set {_distance} to get_setting("snatch", "distance", {_level})
+    set {_steps} to {_distance} * 4
+
+    loop {_steps} times:
+        if {_stop} is set:
+            stop loop
+
+        if mod(loop-iteration, 4) is 0:
+            wait 1 tick
+        set {_vector} to {_direction}
+        set vector length of {_vector} to loop-value / 4
+        set {_bullet} to {_origin} ~ {_vector}
+
+        draw 2 blue dust particle at {_bullet}
+        loop all living entities in radius 2 around {_bullet}:
+            if loop-entity is not {_player}:
+                set cooldown of elytra for loop-entity to 3 seconds
+                delete {_bullet}
+                while distance between loop-entity and {_player} > 2.5:
+                    wait 1 tick
+                    add 1 to {_ticks}
+                    if {_ticks} > 60:
+                        set {_stop} to true
+                        stop loop
+                    push loop-entity towards {_player} with speed 0.25
+                set {_stop} to true

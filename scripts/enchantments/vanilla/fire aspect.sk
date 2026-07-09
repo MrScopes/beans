@@ -1,0 +1,16 @@
+on load:
+    set {-vanilla enchantment::fire aspect::display} to "Fire Aspect"
+    
+    set {-vanilla enchantment::fire aspect::max} to 5
+
+    set {-vanilla enchantment::fire aspect::xp cost::1} to 8000
+    set {-vanilla enchantment::fire aspect::xp cost::2} to 24000
+    set {-vanilla enchantment::fire aspect::xp cost::3} to 100000
+    set {-vanilla enchantment::fire aspect::xp cost::4} to 250000
+    set {-vanilla enchantment::fire aspect::xp cost::5} to 500000
+
+    set {-vanilla enchantment::fire aspect::money cost::1} to 12000
+    set {-vanilla enchantment::fire aspect::money cost::2} to 36000
+    set {-vanilla enchantment::fire aspect::money cost::3} to 150000
+    set {-vanilla enchantment::fire aspect::money cost::4} to 375000
+    set {-vanilla enchantment::fire aspect::money cost::5} to 750000

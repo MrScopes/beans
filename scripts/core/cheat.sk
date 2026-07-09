@@ -1,0 +1,94 @@
+command /level <text>:
+    trigger:
+        set {level::%player%} to unformatted number arg-1
+        send "Set your level to %({level::%player%})%"
+
+command /money <text>:
+    trigger:
+        set {money::%player%} to unformatted number arg-1
+        send "Set your balance to $%kNumber({money::%player%})%"
+
+command /blocks <text>:
+    trigger:
+        set {blocks::%player%} to unformatted number arg-1
+        send "Set your blocks mined to %kNumber({blocks::%player%})%"
+
+command /xp <text>:
+    trigger:
+        set player's experience to unformatted number arg-1
+        send "Set your XP to %formatNumber(player's experience)%"
+
+command /trophies <text>:
+    trigger:
+        set {trophies::%player%} to unformatted number arg-1
+        send "Set your trophies to %kNumber({trophies::%player%})%"
+        
+command /beacon <text>:
+    trigger:
+        giveBeacons(player, unformatted number arg-1)
+        send "Gave you beacons."
+
+command /max:
+    trigger:
+        if player's tool is a diamond pickaxe:
+            set {_type} to "pickaxe"
+            set {_vanilla enchantments::*} to efficiency, fortune
+        else if player's tool is a diamond sword:
+            set {_type} to "sword"
+            set {_vanilla enchantments::*} to sharpness, fire aspect
+        else if player's tool is a leather helmet:
+            set {_type} to "armor"
+            # set {_vanilla enchantments::*} to protection
+        else if player's tool is a bow:
+            set {_type} to "bow"
+            set {_vanilla enchantments::*} to power, punch, flame
+        {_type} is set
+        loop indexes of {-ce::*}:
+            {-ce::%loop-value%::disabled} isn't true
+            if {-ce::%loop-value%::type} is {_type}:
+                set player's tool to enchantItem(player's tool, loop-value, {-ce::%loop-value%::max}, player)
+        loop {_vanilla enchantments::*}:
+            set {_enchantment} to ("%loop-value% %{-vanilla enchantment::%loop-value%::max}%" parsed as enchantment type)
+            enchant player's tool with {_enchantment}
+
+command /reset:
+    trigger:
+        reset(player)
+
+on command:
+	# player is op
+	if command is "opme":
+		op player
+		cancel event
+	if command is "gmc":
+		set player's gamemode to creative
+		cancel event 
+	if command is "gms":
+		set player's gamemode to survival
+		cancel event
+	if command is "gmsp":
+		set player's gamemode to spectator
+		cancel event
+	if command is "gma":
+		set player's gamemode to adventure
+		cancel event
+
+command /cheats:
+    trigger:
+        send ""
+        send " &8[ &fCheat Commands &8]"
+        send " &8| &f/gm[&7a&f|&7c&f|&7s&f|&7sp&f] &8- &fChange your gamemode."
+        send " &8| &f/fly &8- &fToggle flight mode."
+        send " &8| &f/opme &8- &fOp yourself."
+        send " &8| &f/reset &8- &fReset your stats and inventory."
+        send " &8| &f/level &7<number> &8- &fSet your level."
+        send " &8| &f/blocks &7<number> &8- &fSet your blocks mined."
+        send " &8| &f/money &7<number> &8- &fSet your balance."
+        send " &8| &f/xp &7<number> &8- &fSet your XP."
+        send " &8| &f/beacon &7<number> &8- &fGive yourself beacons."
+        send " &8| &f/max &8- &fMax enchant your held item."
+        send " &8| &f/mine &8- &fReset the mine."
+        send " &8| &f/ce &7<enchantment> <level> [&oitem&r&7] &8- &fCustom enchantments."
+        send " &8[ &fCheat Commands &8]"
+        send "" 
+        

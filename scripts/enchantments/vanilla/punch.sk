@@ -1,0 +1,12 @@
+on load:
+    set {-vanilla enchantment::punch::display} to "Punch"
+    
+    set {-vanilla enchantment::punch::max} to 3
+
+    set {-vanilla enchantment::punch::xp cost::1} to 8000
+    set {-vanilla enchantment::punch::xp cost::2} to 500000
+    set {-vanilla enchantment::punch::xp cost::3} to 1000000
+
+    set {-vanilla enchantment::punch::money cost::1} to 12000
+    set {-vanilla enchantment::punch::money cost::2} to 750000
+    set {-vanilla enchantment::punch::money cost::3} to 1250000

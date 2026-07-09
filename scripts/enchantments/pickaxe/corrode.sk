@@ -1,0 +1,31 @@
+on load:
+    setting("corrode", "display", value: "&f<sprite:items:item/fermented_spider_eye> &8Corrode")
+    setting("corrode", "max", value: 5)
+    setting("corrode", "priority", value: 10)
+    setting("corrode", "type", value: "pickaxe")
+    setting("corrode", "item", value: fermented spider eye)
+
+    setting("corrode", "chance", l1: 1, l2: 2, l3: 3, l4: 4, l5: 5)
+
+    setting("corrode", "radius", l1: 3, l2: 3, l3: 3, l4: 3, l5: 3)
+    setting("corrode", "expansion", l1: 0.5, l2: 0.5, l3: 0.5 , l4: 0.5, l5: 0.75)
+
+    setting("corrode", "xp cost", l2: 80_000, l3: 200_000, l4: 600_000, l5: 1_000_000)
+    setting("corrode", "money cost", l2: 100_000, l3: 300_000, l4: 750_000, l5: 1_300_000)
+
+local function getDescription(level: integer) :: string:
+    return "break blocks within %get_setting("corrode", "radius", {_level})%m, expanding by %get_setting("corrode", "expansion", {_level})% * 5"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:entity.zombie.break_wooden_door" with volume 0.5 and pitch 1 at location of {_player}
+
+    set {_center} to location of {_block}
+    set {_radius} to get_setting("corrode", "radius", {_level})
+    set {_expansion} to get_setting("corrode", "expansion", {_level})
+    
+    loop 5 times:
+        wait 10 ticks
+        play sound "minecraft:entity.zombie.break_wooden_door" with volume 0.5 and pitch 1 at {_center}
+        add {_expansion} to {_radius}
+
+        fastRadiusClear({_player}, {_center}, {_radius})

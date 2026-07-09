@@ -1,0 +1,41 @@
+on load:
+    setting("beam", "display", value: "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam")
+    setting("beam", "max", value: 5)
+    setting("beam", "priority", value: 10)
+    setting("beam", "type", value: "pickaxe")
+    setting("beam", "item", value: blaze rod)
+
+    setting("beam", "chance", l1: 5, l2: 7, l3: 9, l4: 11, l5: 13)
+    setting("beam", "radius", l1: 1.25, l2: 1.35, l3: 1.5, l4: 1.65, l5: 1.75)
+    setting("beam", "distance", l1: 30, l2: 35, l3: 40, l4: 45, l5: 50)
+
+    setting("beam", "xp cost", l2: 40_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+    setting("beam", "money cost", l2: 60_000, l3: 200_000, l4: 600_000, l5: 1_500_000)
+
+local function getDescription(level: integer) :: string:
+    return "break blocks in a %get_setting("beam", "radius", {_level})%m beam"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:entity.ender_dragon.flap" with volume 0.5 and pitch 1 at {_player}
+    set {_origin} to location of {_player}'s head
+    set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
+
+    loop get_setting("beam", "distance", {_level}) times:
+        set vector length of {_vector} to loop-value / 4
+        set {_bullet} to {_origin} ~ {_vector}
+        
+        draw 4 red dust particle at {_bullet}
+
+        loop all blocks in radius get_setting("beam", "radius", {_level}) around {_bullet}:
+            loop-block isn't air
+            loop-block isn't bedrock, beacon, obsidian, or packed ice
+            loop-block is within bound with id "mine"
+            {_affected::*} doesn't contain loop-block
+
+            if mod(loop-iteration-1, 8) = 0:
+                wait 1 tick
+
+            blockReward({_player}, {_player}'s tool, loop-block, "beam enchantment")
+
+            set loop-block to air
+            add loop-block to {_affected::*}

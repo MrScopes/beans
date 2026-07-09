@@ -1,0 +1,1535 @@
+function spawnBasketballGoal(loc: location):
+    set {_origin} to {_loc}
+    add -0.5 to x-coordinate of {_origin}
+    add -0.5 to y-coordinate of {_origin}
+    add -0.5 to z-coordinate of {_origin}
+
+    # pole
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to black concrete
+        set transformation scale of block display to vector(0.2, 5, 0.1)
+        set transformation translation of block display to vector(0, 0, 0)
+
+    # backboard
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to white concrete
+        set transformation scale of block display to vector(3, 2, 0.1)
+        set transformation translation of block display to vector(-1.35, 4.25, 0.1)
+
+    # red square / rim pieces
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to red concrete
+        set transformation scale of block display to vector(1, 0.1, 0.1)
+        set transformation translation of block display to vector(-0.3798, 4.75, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to red concrete
+        set transformation scale of block display to vector(1, 0.1, 0.1)
+        set transformation translation of block display to vector(-0.4, 5.65, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to red concrete
+        set transformation scale of block display to vector(1, 0.1, 0.1)
+        set left transformation rotation of block display to quaternion(0.7071068, 0, 0, 0.7071068)
+        set transformation translation of block display to vector(-0.3646, 4.7502, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to red concrete
+        set transformation scale of block display to vector(1, 0.1, 0.1)
+        set left transformation rotation of block display to quaternion(0.7071068, 0, 0, 0.7071068)
+        set transformation translation of block display to vector(0.6457, 4.7502, 0.15)
+
+    # orange rim
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to orange concrete
+        set transformation scale of block display to vector(0.1, 0.1, 0.8)
+        set transformation translation of block display to vector(-0.375, 4.54, 0.15)
+        set {_displays::backboard} to {_origin} ~ vector(-0.375, 5.54, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to orange concrete
+        set transformation scale of block display to vector(0.1, 0.1, 0.8)
+        set transformation translation of block display to vector(0.5, 4.54, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to orange concrete
+        set transformation scale of block display to vector(0.1, 0.1, 0.8)
+        set left transformation rotation of block display to quaternion(0.7071068, 0, -0.7071068, 0)
+        set transformation translation of block display to vector(0.5, 4.54, 0.15)
+
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to orange concrete
+        set transformation scale of block display to vector(0.1, 0.1, 0.975)
+        set left transformation rotation of block display to quaternion(0.7071068, 0, -0.7071068, 0)
+        set transformation translation of block display to vector(0.6, 4.54, 0.9375)
+
+    # net
+    spawn block display at {_origin}:
+        make block display not persistent
+        add block display to {_displays::*}
+        set block data of block display to cobweb
+        set transformation scale of block display to vector(0.875, 0.875, 0.75)
+        set transformation translation of block display to vector(-0.3125, 3.75, 0.25)
+
+    set {_circle} to circle of radius 2
+    set particle of {_circle} to blue dust particle
+
+    set {_front} to {_origin}
+
+    set {_yaw} to yaw of {_origin}
+
+    # forward vector from yaw
+    set {_x} to 0 - sin({_yaw}) * 1.5
+    set {_z} to cos({_yaw}) * 1.5
+    
+    add 0.5 to y coordinate of {_front}
+    add {_x} to x coordinate of {_front}
+    add {_z} to z coordinate of {_front}
+
+    set {-test} to true
+    while {-test} is set:
+        wait 1 tick
+        draw shape {_circle} at {_front}
+        loop all living entities in radius 2 of {_front}:
+            poster({_displays::*}, player "MrScopes", loop-entity, {_front}, {_displays::backboard})
+            delete {-test}
+            stop loop
+
+function poster(displays: entities, attacker: entity, victim: entity, front: location, backboard: location):
+    make {_attacker} invulnerable
+
+    set item cooldown of elytra for {_victim} to 1 second
+
+    teleport {_victim} to {_front}
+    push {_victim} upward at speed 0.7
+
+    set {_yaw} to yaw of {_front}
+
+    # forward vector from yaw
+    set {_x} to 0 - sin({_yaw}) * 3
+    set {_z} to cos({_yaw}) * 3
+    add {_x} to x coordinate of {_front}
+    add {_z} to z coordinate of {_front}
+
+    teleport {_attacker} to {_front}
+    wait 1 tick
+    make {_attacker} face block 1 under {_victim}
+    push {_attacker} towards {_backboard} at speed 1
+    wait 6 ticks
+
+    # slam dunk
+    launch flickering trailing burst firework colored orange at {_attacker}
+    detonate last launched firework
+
+    reset {_attacker}'s velocity
+
+    reset {_victim}'s velocity
+    push {_victim} downward at speed 0.5
+
+    wait 20 ticks
+    make {_attacker} vulnerable
+
+    wait 2 seconds
+    loop {_displays::*}:
+        delete entity within loop-value
+    
+
+function spawnBasketballGoalAtPlayer(p: player):
+    set {_loc} to location of {_p}
+
+    set {_yaw} to yaw of {_p}
+
+    set {_x} to sin({_yaw}) * 5
+    set {_z} to cos({_yaw}) * -5
+
+    add {_x} to x-coordinate of {_loc}
+    add {_z} to z-coordinate of {_loc}
+
+    set yaw of {_loc} to {_yaw}
+    set pitch of {_loc} to 0
+
+    spawnBasketballGoal({_loc})
+
+command /x:
+    trigger:
+        set {_origin} to location of player
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTMzMTc4OSwKICAicHJvZmlsZUlkIiA6ICIzMzU3MWJiY2UyMDE0MTRiYmNkMDYyMjEyZTI4MjBlMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGFkb21JbmF0b3I0NzgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWZmMzEzZGIyZWRmZmU2MTU5YjIxMDQzMjM2NWU2YjhkOGNhMmQ0MzM2MzllM2ZhYzFiNDBkMmRiNjBhMTE1IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.25, 0.25)
+            set transformation translation of item display to vector(-0.0625, 0.96875, -0.733594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTMzNzQ1MSwKICAicHJvZmlsZUlkIiA6ICI1MTAwZGZmZDI0NDI0M2I0OGQxMmVkZTVkMjgxMzk2ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbGVjdHJvbmljU2V4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzkyZTU4OGY1NjdhZTUzZDcwYzFkMWVjZTQ1ZDQ5MDZlNDI5YjhjZDFmOTVlZjQ0MmM4ZDk3OTZjY2I0OGE4MDEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.0625, 1.03125, -0.733594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM0NDgyMiwKICAicHJvZmlsZUlkIiA6ICIxOTc0ZWI5YzU5NjY0MTc3OTMxNzQ1ZDFmMmIwYTUyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJhY3Rpb24zNiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xMzIwNGEzNmU0NDYzNjRmODNiZGRlMDI5ZTcyOWM5NzQ1Mzc5YWU5OWQ4MTNhNjI3OTkwOGZlOTM4MGQzOGU1IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(0.125, 0.96875, -0.733594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM1MTQ2NywKICAicHJvZmlsZUlkIiA6ICJlOThhZTBlMTI5MDg0ZDA5OTk0MTg4N2Q2YTk0ZTI2NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTZXh5SGF1c2VNYXN0ZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDU4MmVlNWJiYjMxOWUyMTA3MDFmMTM4ODVkZGI5NTM5ZDI5ZjIyNDQ1Y2VkNWE2MzlmOTE2ZjQ3YzFhZWQ1YSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(0.125, 1.03125, -0.733594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM1ODg1MiwKICAicHJvZmlsZUlkIiA6ICIyNDY1ODI2NWVjMjg0NTY4YTg3MDJkOTVlYzdlYTc4MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJBcmdvc1oxMiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hNGQ5ZGMwY2RiNTI1MThjYTdhNjE0ZDVmOTU2MTBhZWZjZmI3MGEyMWM5YTZjOTA0Yzk4N2YzNjQyNTAzZDRjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set transformation translation of item display to vector(-0.0625, 0.9375, -0.797312)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM1ODg1MiwKICAicHJvZmlsZUlkIiA6ICIyNDY1ODI2NWVjMjg0NTY4YTg3MDJkOTVlYzdlYTc4MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJBcmdvc1oxMiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hNGQ5ZGMwY2RiNTI1MThjYTdhNjE0ZDVmOTU2MTBhZWZjZmI3MGEyMWM5YTZjOTA0Yzk4N2YzNjQyNTAzZDRjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set transformation translation of item display to vector(0.0625, 0.9375, -0.797312)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM2NzQ5NCwKICAicHJvZmlsZUlkIiA6ICJiYzRlZGZiNWYzNmM0OGE3YWM5ZjFhMzlkYzIzZjRmOCIsCiAgInByb2ZpbGVOYW1lIiA6ICI4YWNhNjgwYjIyNDYxMzQwIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzY0MjEyZGI3ZGEzYTc1M2M3NWU2MGJiNDdiNjk2NzAzMGY1ODNhODc3YzU4Mjk2MWNlNDdlMzM0OWU0NTk3MjYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.125, 0.25)
+            set transformation translation of item display to vector(0, 0.875, -0.624219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM3NDcyOCwKICAicHJvZmlsZUlkIiA6ICJiNTQ1ZDcxNDJkZmM0MWVlYjBjMDcwOTkwOTI4NTE0MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJraXdpNDgxMiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80MTJiZDE5MTkwZGQwNWExY2MyMWEyOGVhMTczM2IyM2VlY2NlYjdkNDg4MWZjOGExODEyMjVlNTJjYjZlY2MxIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.03125, 0.875625, -0.717969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM4MDc3NSwKICAicHJvZmlsZUlkIiA6ICJmZDIwMGYwMDE4OTI0NzgxODI5OWIzZjE5Yzc4Y2E3MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0dXNnIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc2ZGExYWE4NGYxMGMxZjRiMTM3ZGJmMWVjYzc2OGRkN2NhNmMzNTQ0ZTZhOGZhNDg3OTA2ZTMwMzEzOTQ1NTAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set transformation translation of item display to vector(0.125, 0.875625, -0.717969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM4NjQyNywKICAicHJvZmlsZUlkIiA6ICI1NjExYmE1MjFmNDM0OWYwOWE0MTI5ZTM0NjQzMDM1OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHdXlOYW1lZEthaW5lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ0NWY3OGNiYTdjZmJmYWY4YTE4ZTY3Zjc4ZjAyODlkZTE4YjkwOGYwYjY1OTQwMzE2NzM3ZDIwYjAxYmM2ZjEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.868163, -0.359605, 0.315985, -0.130885)
+            set transformation translation of item display to vector(0.121293, 0.910544, -0.720683)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM4NjQyNywKICAicHJvZmlsZUlkIiA6ICI1NjExYmE1MjFmNDM0OWYwOWE0MTI5ZTM0NjQzMDM1OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHdXlOYW1lZEthaW5lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ0NWY3OGNiYTdjZmJmYWY4YTE4ZTY3Zjc4ZjAyODlkZTE4YjkwOGYwYjY1OTQwMzE2NzM3ZDIwYjAxYmM2ZjEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.868163, -0.359605, -0.315985, 0.130885)
+            set transformation translation of item display to vector(-0.120766, 0.910856, -0.720371)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM5NDk5OSwKICAicHJvZmlsZUlkIiA6ICJmYWU5NzYzY2FmMDU0OWI2YjlmZTM0MmNjM2E3YzNlMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJHUjFaWkxZMTgwIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2UyYmYzNzk5NzU4NzM3MzA0ZTZkMTRhNWI0NWRhN2FkNjgyNDA2M2QzNjE0N2U5ODg5M2FmZGZhOGI5MDUwY2IiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(0.18125, 1.125, -0.618594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQwMDI3OSwKICAicHJvZmlsZUlkIiA6ICI1MzE4YWJhNDJiMTk0ODNiODFiMWY2N2Y1ODVjNDdkNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJocHllZiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS85ODM5YmIzZDcxODIzOGQxN2MxMzlmNTE4Mzc2MWQ2NjRkOWZiNGI3NTJhMDRhMTY4NGFjNzYwZDhmYWM1MmUyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(0.18125, 1.1875, -0.618594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQwNjkzOCwKICAicHJvZmlsZUlkIiA6ICIwNmY4YmNhNzc0NWY0OGIzYWVkMmMxMGY0MGMzN2VjYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJEYXNoTmV0d29yayIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zNmVmODIxNWIzODBkZDI5N2U3MzBlMjBmMzBlOWFjNjg3YjVlMWE5OTE3YzI0ODcwYmEzMzg1YWI0NjI0NzYyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.25, 0.125)
+            set transformation translation of item display to vector(0.251594, 1.125, -0.656094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQxMjY0NSwKICAicHJvZmlsZUlkIiA6ICJhODMwMTUxNzNlOGQ0MWEyOGY0ZDk1ZDM2Njc4MGJmNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdGFybGl0R2FtZXMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWNjNjE5OGZmMzlmMTVlZjQ2MDdjNzBiZTZhMzExMmEwNWYwZjVlYjMxNDk2NDcxY2QzMzM0YmZmOWQzNjE5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set transformation translation of item display to vector(0.251594, 1.1875, -0.656094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQxNzk1NywKICAicHJvZmlsZUlkIiA6ICJmNThkZWJkNTlmNTA0MjIyOGY2MDIyMjExZDRjMTQwYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ1bnZlbnRpdmV0YWxlbnQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMwMTk0NDUyNGE0YzkxNWMxNjc5ZWQzZTk5ZmY4ZWJjOThiM2I4MDUxMGE1YWYwMjczNTBkNDMwNWVhMDQ5YSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.25, 0.125)
+            set transformation translation of item display to vector(0.250969, 1.125, -0.624844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQyNTk1MSwKICAicHJvZmlsZUlkIiA6ICI1ZjU5NmViY2JlOTQ0NmQxYmI0M2JlNGYzZjRiOGJlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUZWlsMHNzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzEyYWNmN2IzM2JlOGZlN2Q4ZWJkYWY5N2IxN2YzNjNmYzU5YmZkNWU3YzRiMDM0YjVjNWYyNzRlOGMzOTNjYzEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set transformation translation of item display to vector(0.156875, 1.1875, -0.68825)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQzMjk1MSwKICAicHJvZmlsZUlkIiA6ICIxMzA1ODk0NWNjZWQ0MzQwYTQ2ZDhhNDE4OTk3NDMzNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlbGRlZGlhbWFudGUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjkzMTIzNDlhY2ZiNzljNzU0YWNlNTNjZWEyZmMxZWM5NzhiZDNlNjQ5N2QyODRhNDU1Nzk2MGQyZDI1YTNmYyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.0014)
+            set transformation translation of item display to vector(0.188125, 1.15625, -0.687625)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQzODI1NCwKICAicHJvZmlsZUlkIiA6ICI2OTU3YjQyOTZiOTI0NGJkOGQzNWJiZGU4M2JiZDI3OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJjb2xpblBBUEEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmVlMzQwMGI0ZGJhNTczNDczZjMyYzk5NTIxNGYxYzc4YmIwYzJiNGE5OTI1NDFlMTY4ZDY4NTIxZWE3OGFlNCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.251, 0.0014)
+            set transformation translation of item display to vector(0.18875, 1.125, -0.686875)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ0NDU5NSwKICAicHJvZmlsZUlkIiA6ICIwZWQ2MDFlMDhjZTM0YjRkYWUxZmI4MDljZmEwNTM5NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOZWVkTW9yZUFjY291bnRzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2IxMzg1ZjcxNjZhMDliMzM1NWIwZTVjOTIxYzVmYjUyZTM2YzI5ZDEyZjQ3OWQ1MTZlOTRhYTcwZjIyMjAzMTQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set transformation translation of item display to vector(0.1575, 1.1875, -0.687)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ1MTU4NSwKICAicHJvZmlsZUlkIiA6ICJiOTc3ODUwYWMxMGE0Mjk4YmRiNWNhYjBhODA0NmM4YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTb3JheER1YmJlciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83M2Y1ZWNjZjYwMDNlMmNkMDkyYzEyY2Y4M2YyMjZhYTgzNmMxYzcyZWU0YWU1OWE2YWVhNWYyZDY0YzM3NTMzIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.126, 0.0014)
+            set transformation translation of item display to vector(0.18875, 1.1875, -0.686875)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ1NzcxNCwKICAicHJvZmlsZUlkIiA6ICIwMzA5NGIxMzM1ZjY0M2RlOGQxM2MzN2MzYTliOTQxYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJMaWFtWFNhZ2UiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDgyMTU5MjlhMDM1MjQ2N2NjZjU0NmExZjBlYzFlZTdkM2JkYTg0MzcxMWU1ODkxOGY3YzY2YWU4Zjg3MWI1NSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(-0.18125, 1.125, -0.618594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ2NDQ2MywKICAicHJvZmlsZUlkIiA6ICJmMTA0NzMxZjljYTU0NmI0OTkzNjM4NTlkZWY5N2NjNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ6aWFkODciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODYwNTc5YWQwN2Q2MTk2NzRjMWRiOTYxZGE0OTViMWM0YzViMjNmM2I0ODA0ZTA0OGI5MGNiZDFjNGRkMDUxYiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.18125, 1.1875, -0.618594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ2OTc5NSwKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mOTgwNmU0OTZjNDk2YWU3MThkODg0YzdjZGRmNDk1MGQ3YTJhNDFjZTFiNGJlZmZlNGE3ZGU0OTJkMzUzZDFjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.25, 0.125)
+            set transformation translation of item display to vector(-0.250906, 1.125, -0.656094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ3NTIwMywKICAicHJvZmlsZUlkIiA6ICJkZWFmNjAxNDU1NDY0MGU5YWJmNmUyMWZiZDgyZDU2NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBaWxvcnlLIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzU2MjQ5YmUyZGJhOGE2NWZiY2NkZWY2MjRjM2RkZGVkM2VlMGIwNDg0YjY3YTc1MThlMTA5ZDUyNzI2OWEyOGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set transformation translation of item display to vector(-0.250906, 1.1875, -0.656094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQxNzk1NywKICAicHJvZmlsZUlkIiA6ICJmNThkZWJkNTlmNTA0MjIyOGY2MDIyMjExZDRjMTQwYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJ1bnZlbnRpdmV0YWxlbnQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjMwMTk0NDUyNGE0YzkxNWMxNjc5ZWQzZTk5ZmY4ZWJjOThiM2I4MDUxMGE1YWYwMjczNTBkNDMwNWVhMDQ5YSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.25, 0.125)
+            set transformation translation of item display to vector(-0.250281, 1.125, -0.624844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQyNTk1MSwKICAicHJvZmlsZUlkIiA6ICI1ZjU5NmViY2JlOTQ0NmQxYmI0M2JlNGYzZjRiOGJlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUZWlsMHNzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzEyYWNmN2IzM2JlOGZlN2Q4ZWJkYWY5N2IxN2YzNjNmYzU5YmZkNWU3YzRiMDM0YjVjNWYyNzRlOGMzOTNjYzEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set transformation translation of item display to vector(-0.156875, 1.1875, -0.68825)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQzMjk1MSwKICAicHJvZmlsZUlkIiA6ICIxMzA1ODk0NWNjZWQ0MzQwYTQ2ZDhhNDE4OTk3NDMzNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJlbGRlZGlhbWFudGUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjkzMTIzNDlhY2ZiNzljNzU0YWNlNTNjZWEyZmMxZWM5NzhiZDNlNjQ5N2QyODRhNDU1Nzk2MGQyZDI1YTNmYyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.0014)
+            set transformation translation of item display to vector(-0.188125, 1.15625, -0.687625)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ5MjA2OCwKICAicHJvZmlsZUlkIiA6ICI3OThlZWM3OGYzNGU0MGJhYjlmNjk0ODIwYzM3ZTcxYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbENoYW5vbk1DIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzRjMzM1ODlhNzNjY2VkZDQwZTQ3OWE0MGVmOGZkZTBhOTc2YzdiMmE3OGRiZGExMTM0NjZhN2EwYmJlMTUzZDMiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.0014)
+            set transformation translation of item display to vector(-0.1875, 1.125, -0.686875)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTQ5NzUwNiwKICAicHJvZmlsZUlkIiA6ICJiZTFkOTJiYTkwY2E0NzMwYTIyMzQ2MTIxZWM2MTNmMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUZW5zb3JCeXRlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc4MTY5MmIwZjFkOTdmNTIxMWRiZWMxY2UzYjRiZWNkNGY2YjQ4MWI1MDQyNjcwNjQxNzQzYmZmMjAzNDVlOWEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.0014)
+            set transformation translation of item display to vector(-0.1875, 1.1875, -0.686875)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUwNDI3MywKICAicHJvZmlsZUlkIiA6ICI1NzI1YWJkMzY4MGI0MWVlOWJjMzhhNmUyM2M5OGNiMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBYmVuZHJlZ2VuXyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mN2RkMTRjNzBlZjFlNmY5NmVjMjQ3OTRmZDY5N2E1ODZjMTJjNzNiODE3Y2I4ZWE0ZDY1Y2NlMGE3ODdmYjViIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 1, 0.5)
+            set transformation translation of item display to vector(0, 1.3125, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUwOTY1MCwKICAicHJvZmlsZUlkIiA6ICIwMTIxYzFjZDUxOTM0M2NmYWM4YzgyZThiNjVjYTFjZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJfVmV4X1RWIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc0NGFmODViZjU4MThiMzc5MmQ4YjZmYjM3MjYxZjdlZmJiNzhlN2JmNWM4MjEwZjBmOWY1ZmRlODMyMGNjNGEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 1, 0.25)
+            set transformation translation of item display to vector(0, 1.3125, -0.249219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUxNTMwOSwKICAicHJvZmlsZUlkIiA6ICI2NGRiNmMwNTliOTk0OTM2YTY0M2QwODEwODE0ZmJkMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVTaWx2ZXJEcmVhbXMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE1Y2NjZWZkOTZmOGZkOGY4NDAxYTZkNjY3MjQ1ZTg1OWI4NDYyYzAwZTVjOTE1ODI5NzYyNzI2NTQwNjI4ZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.5, 0.25)
+            set transformation translation of item display to vector(0, 1.1875, -0.624219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUyMDU5MiwKICAicHJvZmlsZUlkIiA6ICJlNzVjZTk1MTc1OWI0MmVlYmY4ZmVjZDhhYjM0YjM2MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJfS0tYRF8iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzhmNjMyN2U2NWIwZjgxM2E0NGFhNWY1N2NiYzkyNjQxOGM4NWI5ZTBiZTY4NzVmZWRjMWY0OTcyMzQ1ZDNiMyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.25, 0.25)
+            set transformation translation of item display to vector(0, 1.3125, -0.624219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUyNTk4OCwKICAicHJvZmlsZUlkIiA6ICIwM2FlZmNjYWE2NzE0ZDFhOThhY2Q2N2QxNjA0NzQyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUYXpyaXh4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzZiMmJlZjgwMWM4YWExM2M5NTE3YjdmZDA5MTY1MTQxZGI3ZTEzODM2NDVhNmJhYmUxZmYwMjY5MzNmMTM5NjIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.125, 0.25)
+            set transformation translation of item display to vector(0, 0.9375, -0.624219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUzMTY1OSwKICAicHJvZmlsZUlkIiA6ICJjYmYxNGIxMGJhNWU0NzgwYjIyNmFiNmQzOTUxODk4YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJFZ2d5QnV0dG9uMjQxMSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTk4YTZlOTMyMTVlMGJiYjFhZTdjNmI0NmIxM2MxZGIzZTU1MWMxMmEwNGRlMTQ5MWU4MTdlMjJmNDExNTllIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.868163, -0.359605, 0.315985, -0.130885)
+            set transformation translation of item display to vector(0.166035, 0.917316, -0.637043)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUzMTY1OSwKICAicHJvZmlsZUlkIiA6ICJjYmYxNGIxMGJhNWU0NzgwYjIyNmFiNmQzOTUxODk4YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJFZ2d5QnV0dG9uMjQxMSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTk4YTZlOTMyMTVlMGJiYjFhZTdjNmI0NmIxM2MxZGIzZTU1MWMxMmEwNGRlMTQ5MWU4MTdlMjJmNDExNTllIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.868163, -0.359605, -0.315985, 0.130885)
+            set transformation translation of item display to vector(-0.165508, 0.917628, -0.63673)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU0MjI5NCwKICAicHJvZmlsZUlkIiA6ICI0YzZhZTVkNzc0ZDE0MjBkYmJiNThjNDMzZGM3NjNlMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJKdXN0VHJhbnNHaXJsIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzEzMzg1MzY3OTMyMzY3ODAzMmZhODE2MWQ3MjUzNmU2YjQwNjZjMDY5NTdmMGQ0MWQ0ZjgxMjkwNzVmNTYzODAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.25, 0.5)
+            set transformation translation of item display to vector(-0.0625, 0.84375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU0ODIyNywKICAicHJvZmlsZUlkIiA6ICJiM2E1M2VlMDgwMmI0NzE5OGVkM2VhMjRmYjZmNmQ3YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4WF9Kb2JsZXNzX1h4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzZkMjdjZjhiNDg5NzdhOTAwOWZmNWVhM2ZkZTQ5MTBmNGVhNjQ2YWU1N2RkMDNjMmE4M2ZjMDgxMjM2NzliMjkiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.25, 0.125)
+            set transformation translation of item display to vector(-0.0625, 0.84375, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU1MzY3MywKICAicHJvZmlsZUlkIiA6ICIxNjEzYmM0MWY4NTA0MWM0YjA0Y2UyODJhNTlmZmJlNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTaGFyX2QiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdkZDg4NGQ4NDRhNTI2MTkwYmViMjJjNDhjYTQ2M2Q5OWI2ZTY5Y2ZjZGZhOTE4MzFkY2QxNTY4Nzc3MzlmNCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.125, 0.5)
+            set transformation translation of item display to vector(-0.0625, 0.90625, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU1ODg1MywKICAicHJvZmlsZUlkIiA6ICJkZTU3MWExMDJjYjg0ODgwOGZlN2M5ZjQ0OTZlY2RhZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNSEZfTWluZXNraW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmFiMGU4YTM1NThjZjRkOTczYjE0N2YwMDA4NzI0Y2MwYmNmMjdhZmJkODhiZDJhYzkwZjBjYzRhMDhmMmRhZSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.125, 0.125)
+            set transformation translation of item display to vector(-0.0625, 0.90625, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU2NDIyNywKICAicHJvZmlsZUlkIiA6ICI1MWI4MjcxNDE5YWE0NDA5YTFhNmU1OTcwYTc1MzgyNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJYRHJha2U5OSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84NjJiMGNlNmM0YjJjMDQxYzRjYmJmZTgzMmNiNjllMTk4NmFjMWMyOGIyNmY3M2QzZTcxY2FhNjc2ZGJlYmMxIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.5)
+            set transformation translation of item display to vector(0.125, 0.84375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU2OTIxMSwKICAicHJvZmlsZUlkIiA6ICIyZmI1ZGJhYTY2NTA0OGEyYjZhYzU5YWE2Nzk5MDYzNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJkcmFnbG9uZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjE5ZWRmMTM2N2NhOGFhZDA4M2VkNzkxNjA2YTBlOTBkMWVhYTA1MjNkMjQwNThmYjM4YTZjZmI4MzZjYTQ3YiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set transformation translation of item display to vector(0.125, 0.84375, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU3NDMyOSwKICAicHJvZmlsZUlkIiA6ICIxN2I5ZDBmOWYxYzE0OTE5ODRkY2Y5ZGM2YzczZDYzYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJuYWJlNDk3NSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iMzEyZjJmOTMzZDFiNzE2ZWY1ZGI2OWU0MjFkMGE1NmQ5YTg1YzNkYTk0MTc2Y2MwYjkzZGI3Y2NlYjVkMjFmIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.5)
+            set transformation translation of item display to vector(0.125, 0.90625, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU3OTcxOSwKICAicHJvZmlsZUlkIiA6ICI5OGQxYTQyNmRlMmU0NjBkYjdjNWExMmY5MGNhODg0OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJLdWJpbm9TSyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMWM2NThjMjhkZTdkMzJlMjE5Yzc5MzU0ZDIwMTY2YjQ2ZGUwYzZmYzk3ZjkzMTc1ZjNjMDU3ODFmNWMzNTFiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set transformation translation of item display to vector(0.125, 0.90625, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU4NDY2NiwKICAicHJvZmlsZUlkIiA6ICI1MDMyYTA2NWQ5MWQ0NTgyYjZmODM0MDRlMGYyOTA4MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNYWNCb29rUHJvTTIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY3YTI0NjhkOTlkNzdjZmYyYTA3MmI2ZTQ3ZjUwNTI1OGVjYTIyNmNmYWFkYzYzOWY5Y2ZmNzg2YzA0OGRkYyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.363439, 0.562402, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU5MTU1NywKICAicHJvZmlsZUlkIiA6ICJmZDFhYjdjNTYwMTM0YzQ1YTA2YWZjZWY1OGViZDVkNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDbGF1MTA3IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FlYzgyNWExMTExYjA3ZDEzZmJkZTljZWFlNTU2MGEzZGI1Yzc5YzdmNDJhNjBlNWE3ZmEwZjZhOGE5NzI3OTMiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.363439, 0.562402, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU5Njg4OSwKICAicHJvZmlsZUlkIiA6ICIyYjcyZWYyYWUzMmQ0Zjc1OGEyMThlMDI4MTViYmNjZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ2b2xrb2RhZl82MyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80MTU3NTljN2ZjZTc1NTcyMDhhZDM0MTU0ZmVkNTJjMWUyMzdhNTg4ZTE3MDZhOGM3Mzc2MjJlNjJkNWNlNjJhIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.407633, 0.606596, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYwMzU2NSwKICAicHJvZmlsZUlkIiA6ICIyMDZlMWZkYjI5Yzk0NGYxOTQ5OTg4NzAwNTQxMGQ2NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJoNHlsMzMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmQxNzQwNzk2NmIwMzVmNjZiZTRiNDI1YjBkYWI0MjJmYTkzZWU5MWI0OGNlZDYzM2NhZWNlYTYxZGE0NTU4OSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.407633, 0.606596, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYwOTE3MywKICAicHJvZmlsZUlkIiA6ICJjNGRiNjkxZDNkYmU0ZWI5YThiNjgzM2I4ODNkYmM0NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJmb3NzaW5hbHQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDMzZDkwNDZmMDU0ZWM1YjNhZDQ1ZmU1ODQ1ZThmYjY0OWRmYTA3OWIxMWIyMDM5MWYyMjljYzgwZWZhYjNlNyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.429731, 0.49611, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYxNTE1NSwKICAicHJvZmlsZUlkIiA6ICI3YjA5ZDg5NWQyYjc0NTU3YmM0YTkzNWYyNjU0NWNjNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJBaXJwbGFuZUdvQnJyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2E4YTE1ZmQ3OGUzYWFkZGFmYzA4MTE3OTRhMjZjZjI1MDJmYmNkYjIyMDU1NWE1ZjYwYWRhNzE0ODMyNTFkN2EiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.429731, 0.49611, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYyMTY4MSwKICAicHJvZmlsZUlkIiA6ICJkOTcwYzEzZTM4YWI0NzlhOTY1OGM1ZDQ1MjZkMTM0YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmltcHlMYWNlODUxMjciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzU4YzgyZjQ5ODc4NmYzZGNiNTE4MWZkNDE1NzcxMGJmMThiNzFhZWZhYWIzMmNkYzc1ZWZmNGQ4NThjYjA3NyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.473925, 0.540305, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYyODY3MiwKICAicHJvZmlsZUlkIiA6ICJiZmQ3MjMxMGNmYWY0Yjc5OTNlYzhiYzU3ODg3YzU5ZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbHBoYVNwQW0iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTkyMGQwZDdlOGE2NTAyMzEwZGZlZTUxMGFkYTg3ODAxOTYyOGE4ODgyYjgyNTM4YTk2NWM4NDk0YjhiZjhhMiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.473925, 0.540305, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzNDEwMCwKICAicHJvZmlsZUlkIiA6ICJkZTE0MGFmM2NmMjM0ZmM0OTJiZTE3M2Y2NjA3MzViYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJTUlRlYW0iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODJiMGNhYTZmMjdhNTMyMzY2YWEwOTI2MjY4NTE1YTNlNDdmODYyODFkNmYxZjlmMGM5NzQ5MzVkMmM4N2M3MyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.868163, 0.315985, -0.130885, -0.359605)
+            set transformation translation of item display to vector(0.46272, 0.440711, -0.342705)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzOTg1MywKICAicHJvZmlsZUlkIiA6ICI4OGMyOGYwOTY3MjU0NmNkYTg3ZjVhMTc0ODU0MzExYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRlQ2F2ZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yYzI4NzQzNzdiZjFmMzExMGVmNDJmNGUyNzU5ZjIwZjczYWMzZGEyMDM4NmU5NTFjNjgzYTI0NThkMjZjYjQ4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.918388, 0.10058, -0.041662, -0.380409)
+            set transformation translation of item display to vector(0.507018, 0.485009, -0.420758)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY0NTU2NiwKICAicHJvZmlsZUlkIiA6ICI3MDYwMDk0OTgyZDc0MTczYTNjZjg1Zjc1NjQ3MGE5YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJpbmV4YWN0b3N0ZW50YXQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliNGMwNGFkZGE5YjRlYzI3ZTY3MGRhZWVkODZhMzYxZjQxNzIwODJlYzY1MThkMzAyMTdhYmM2OTBlNjMzNiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.0014, 0.125)
+            set left transformation rotation of item display to quaternion(0.88697, -0.258528, 0.107086, -0.367395)
+            set transformation translation of item display to vector(0.41913, 0.397122, -0.468153)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzOTg1MywKICAicHJvZmlsZUlkIiA6ICI4OGMyOGYwOTY3MjU0NmNkYTg3ZjVhMTc0ODU0MzExYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRlQ2F2ZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yYzI4NzQzNzdiZjFmMzExMGVmNDJmNGUyNzU5ZjIwZjczYWMzZGEyMDM4NmU5NTFjNjgzYTI0NThkMjZjYjQ4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.88112, 0.277816, -0.115075, -0.364972)
+            set transformation translation of item display to vector(0.504933, 0.482924, -0.364975)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY1NzE5OSwKICAicHJvZmlsZUlkIiA6ICI0MDUxNzNiODY0OTM0NTUxOThlOGMzOGJmNmJmNjZiMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZWNhZGV0MTgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4Y2Q1NGY2YWZjYjAyMTk1ZjZlYTQ5YzhlZmUwY2ZmNjhjMmZjNDk1NWY1YTA3YTM5NzJjZjUwNjU1NGY5MSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.230857, 0.694984, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY2MjM1MSwKICAicHJvZmlsZUlkIiA6ICJiMzMwZWE4OWE3MTY0OWZjYTMwZmI5ZjU5MTQ5ZjNjMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUQUxLX0FMT1RfIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzVkMTIzMmNhMTAwNzdkZDg3MmRmYTI2ZmY1MzQ1OTk1MDYyODAyNDRiOWM2Y2FmNDY2ZDcyOWRhNDRiNjk1ZjEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.230857, 0.694984, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY2OTk4NiwKICAicHJvZmlsZUlkIiA6ICI5ZjJiY2M1M2U4YzM0OTY4YTc5Yzc0NTExYWQ2NmQyYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJLYWJveWlvIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Y1NDlmMDY0NTUxZTIxNTQ4ZmYxNGUwMmEwMGQwZDk0ZmM5NThkZWY2OGVlOTIwNDdjODE4MjU5Y2Y1MDAyMDciLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.275051, 0.739178, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY3NjE2MCwKICAicHJvZmlsZUlkIiA6ICJhZWNkODIxZTQyYzE0ZDJlOThmNTA1OTg1MWI5OWMzNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJSb2RyaVgyMDc1IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2ZkZGM1YzMwZTE2MWI4YjVhM2FiMmU4YWUwN2YwNDA1NWU5MzJjZmU3Yzg0MjFlYTNiNTI2NzkyYjcwNjI1MjYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.275051, 0.739178, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY4MTUxOCwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICI4Qml0czFCeXRlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2MxNDBmM2FkNWEzMTU2ODk2YmMzZGUxNGU5MTIzMTgzY2RjNTFmMmUzZWRjYWFmNzM2NTI2YTMxZDVmYzZhZTQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.297148, 0.628693, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY4OTgwNCwKICAicHJvZmlsZUlkIiA6ICJkYmUzNWRjMjY1ZDQ0OTYwOTJjNTA2ZTBjYWMyZTk4NSIsCiAgInByb2ZpbGVOYW1lIiA6ICJnYXlzb2Z0cGF3cyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83ZDc5YWNlY2U5ZDc3NjJkZGMyMDFiMzBjMjIwMDM0N2QxZDU4Y2M4MTBiMGE1NzhjNTNkZTdhMGVhNTM2NzQ1IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.297148, 0.628693, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY5NjM2OCwKICAicHJvZmlsZUlkIiA6ICI5N2VmNDYyMzdhNGY0ZTQxYWY2ZTljYjg2MTdmNzc2OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJtaWtvclBMIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzNlMjU0NzgxM2Q5MWU3MmFjNWU1N2M1NDFiYTNkMzUyMzQ1MjUyNTExMGM4MDNkN2RkMDliZDI2ODQ3YzFiNWIiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.341342, 0.672887, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTcwMzM4OCwKICAicHJvZmlsZUlkIiA6ICJhYjNkNTgwMjVkOWM0NTcyODNkNTFlYTcwYTY4N2U1NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJsdWN5X2ludGhlc2t5XyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lZDMzOWVmYTUyZGI3OTVlMzE5MDE0ZmVlYmM2OGI5YTY3Nzg0YjU3Y2VhMDU0MDhlZTUyODJlMmIzMWVjNTg4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, -0.382683)
+            set transformation translation of item display to vector(0.341342, 0.672887, -0.342969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTcwODM0MywKICAicHJvZmlsZUlkIiA6ICJiYWNlNWU3MGIzOGM0YjNhYmRkODU5NGY3YjE2Njg1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbG1pZ2h0eUJ1bm55eSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81ZjlkMTJiZTAwNWMyZGZkNzA3N2RiNWMzZDhmOGI4MDc4Y2MwMGM0YWUzZDQ2MzkyODliYTllYjc3NDczNDk4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.395954, 0.518996, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTcxNDcxMiwKICAicHJvZmlsZUlkIiA6ICJmZjQ3NzI5YmQwZDI0YWYwOThiMTFjMGE3ZTFiMGVlZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJtYXRzY2FuIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzNjNmM3ZTU4MzM5NzUxNDI0ZGIxYmM2NGZkNzJkNjY4NzFlODc4ZjY4OGU3YmZlNDA3MThlOWMyZGQxOTEzYSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.395954, 0.518996, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTcyMTM1NiwKICAicHJvZmlsZUlkIiA6ICI0ZWE3NGM1ZGUyZGI0OGY2YjViOTk1YTVhNTYzMmU0NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJNclNjYXJ5U3BhY2VDYXQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjFhZjYyNGEzOTIwZDY3ZDNiMmQ4ZGNlMjhjYjNkNjMyZThiODQ3N2M0NDc1MzlmOWVkODFhMDkyOGFlNWMzYiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.440148, 0.563191, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTcyOTY3MSwKICAicHJvZmlsZUlkIiA6ICJhZDEwM2FhODMzNWM0ZDA4YjNlZWI2ZDI2NjNkMzA0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJJY2hpaW5uIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ1OTU3MzhmZmE2YmY2MTgyYzVlZDIxZDk0NzlkNDBhYWE3NmUxNDNhODg4ZTg3M2VmN2FjMDIxMDAzYTJiNDEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.440148, 0.563191, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTczNjAxOSwKICAicHJvZmlsZUlkIiA6ICJjNTI3ZWI1ZTQ1MDE0NTRkYWQwMjhmM2Q0M2ZkZGViNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJDYWxsQmFkIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzVhOTEwNjQ4MTJiY2E4ZDgxMmViZTYzZjYxY2U4MTgyNzkxOGY2MjI1ZmZkMThmMDRjMzc0NjhiMzJiMjY3ZTAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.329663, 0.585288, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc0NDI3MCwKICAicHJvZmlsZUlkIiA6ICI2NGY0MGFiNzFmM2E0NGZiYjg0N2I5ZWFhOWZjNDRlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJvZGF2aWRjZXNhciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kM2Q3ZDVhOTliZGNlZjZhYzhjZDk3NWJiZDJmMDdiZTliMjYzMjhiYzMwZWY3OWNkMGMyZGY2M2VmN2IxMzQxIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.329663, 0.585288, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc0OTI0NCwKICAicHJvZmlsZUlkIiA6ICJmYzFhOTdlNTgxM2Y0NDI2YTNmZTI4ZjJiNDc1ZjA4ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJnZXRPbmxpbmVQbGF5ZXJzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2RiYmY3ZDdiNDA4YmVkOThiNzJmMmZjYWQwYjQ5NzBhYTc4NDBjYmE2YTQ1NTlmZDQ5ZmI0MzRkMzZiNzIxZjAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.373857, 0.629482, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc1NTExMiwKICAicHJvZmlsZUlkIiA6ICJhZTQyMTU2N2QzODg0YWUxOTJhNmNiNTY4ZmZkNGZhMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0aW1vdGh5ZGVvZG9yYW50IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg1MWI1MjIwOTFkMDAwMzMzZWJkMTFkNjdhMzdiZTU1NWEwOTc1ZmRjMTRkNTYxZTEzY2YzMWRkNjZkYWEzODciLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.373857, 0.629482, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTY0NTU2NiwKICAicHJvZmlsZUlkIiA6ICI3MDYwMDk0OTgyZDc0MTczYTNjZjg1Zjc1NjQ3MGE5YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJpbmV4YWN0b3N0ZW50YXQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliNGMwNGFkZGE5YjRlYzI3ZTY3MGRhZWVkODZhMzYxZjQxNzIwODJlYzY1MThkMzAyMTdhYmM2OTBlNjMzNiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.0014, 0.125)
+            set left transformation rotation of item display to quaternion(0.88697, -0.258528, -0.107086, 0.367395)
+            set transformation translation of item display to vector(-0.40745, 0.39791, -0.467958)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzOTg1MywKICAicHJvZmlsZUlkIiA6ICI4OGMyOGYwOTY3MjU0NmNkYTg3ZjVhMTc0ODU0MzExYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRlQ2F2ZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yYzI4NzQzNzdiZjFmMzExMGVmNDJmNGUyNzU5ZjIwZjczYWMzZGEyMDM4NmU5NTFjNjgzYTI0NThkMjZjYjQ4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.918388, 0.10058, 0.041662, 0.380409)
+            set transformation translation of item display to vector(-0.495338, 0.485798, -0.420563)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzNDEwMCwKICAicHJvZmlsZUlkIiA6ICJkZTE0MGFmM2NmMjM0ZmM0OTJiZTE3M2Y2NjA3MzViYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJTUlRlYW0iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODJiMGNhYTZmMjdhNTMyMzY2YWEwOTI2MjY4NTE1YTNlNDdmODYyODFkNmYxZjlmMGM5NzQ5MzVkMmM4N2M3MyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.868163, 0.315985, 0.130885, 0.359605)
+            set transformation translation of item display to vector(-0.45104, 0.4415, -0.34251)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTYzOTg1MywKICAicHJvZmlsZUlkIiA6ICI4OGMyOGYwOTY3MjU0NmNkYTg3ZjVhMTc0ODU0MzExYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJOaXRlQ2F2ZSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yYzI4NzQzNzdiZjFmMzExMGVmNDJmNGUyNzU5ZjIwZjczYWMzZGEyMDM4NmU5NTFjNjgzYTI0NThkMjZjYjQ4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.0014)
+            set left transformation rotation of item display to quaternion(0.88112, 0.277816, 0.115075, 0.364972)
+            set transformation translation of item display to vector(-0.493253, 0.483713, -0.36478)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc3NTA1OCwKICAicHJvZmlsZUlkIiA6ICJlYzU4NzQxMjM2M2E0ZTQ0OTEwNzJjMWU5M2RkOGMzOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJ3aXJlZGZyYW1lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2MxZWNlZThkM2JjNDQ1NDYwMzJhNzM1NTgxOTM3YjA3OTVlMzE2MDJjMWY1NGViOTMwNWE5YTMzNWYwNWQ3MjgiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.263371, 0.651579, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc4MTI4NywKICAicHJvZmlsZUlkIiA6ICIxMjE4YWNiNDJiYzA0MzY4YjIxOTU4ZTZiYWU2NDMyMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJQYXRhdGplTUMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjNhNGM0OTQ4Y2NmYTkzYjg2OGY0ZWM4MGQ5MWQ2NzAxZTcwNWVjM2FjYWNjNjM2OTliYmFkMTk4MjdjYjRlNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.263371, 0.651579, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc4NzQ3MiwKICAicHJvZmlsZUlkIiA6ICI3MjU1MDA3NjQzYzQ0YTZiYjM3MjJlNzc3OTk5OTFkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4M250YW55IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2NiZDQ3NGVlODNmZDNlNzRlYWI3N2NiMjExM2ViOGU0MjU4OTIwNWVlMWEyMjBmMDRjMzUxOWVhMDFlNjliMDEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.307566, 0.695773, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc5Mjg1NSwKICAicHJvZmlsZUlkIiA6ICI0YzAzYzAyNTZjODU0ODM0YjIwMThiYWFiZDdjNzBiNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJKYXdvbGxvMDciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTkyMTAxOGYyNDNjNTM4NDE5NmUyODhjN2I4Nzg2NDdlNDgyNTAzN2NlZjQzYmIwZThhZGM3YzgyYTU1OGY5OCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.307566, 0.695773, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTc5ODI5MywKICAicHJvZmlsZUlkIiA6ICJhYzY1NDYwOWVkZjM0ODhmOTM0ZWNhMDRmNjlkNGIwMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZUd1cmxTa3kiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTFhM2YyNjZlOGE3MjA4NmFiN2RhM2U5ZmFiMTY1YWNkZjk4YmQwYWFjOTQ5M2QyNmMwYmI1ZjlmMjk4M2VjZCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.19708, 0.71787, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTU2OTIxMSwKICAicHJvZmlsZUlkIiA6ICIyZmI1ZGJhYTY2NTA0OGEyYjZhYzU5YWE2Nzk5MDYzNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJkcmFnbG9uZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjE5ZWRmMTM2N2NhOGFhZDA4M2VkNzkxNjA2YTBlOTBkMWVhYTA1MjNkMjQwNThmYjM4YTZjZmI4MzZjYTQ3YiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.19708, 0.71787, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTgwOTU0NCwKICAicHJvZmlsZUlkIiA6ICJkYjQwYmNjNWUzMDE0ZmZjOGVlOWQxNDU5MTcyYjdhNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJhWGUxOCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8zNzYxOTdlZjdhNGQwMWY3OTVhYjZlNjU4OWRlNTdiZGQyOTBmZjRkNGJjZmZmODUyYTIxZjM1YzRjYmNiOWU3IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.241274, 0.762064, -0.436523)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTgxNTI0NSwKICAicHJvZmlsZUlkIiA6ICIzN2JhNjRkYzkxOTg0OGI4YjZhNDdiYTg0ZDgwNDM3MCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTb3lLb3NhIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2VhNmQwZjFkNjlmNjFkYTc0NzBmMTE0YjZhY2VjMDBlOTg5ODk3ZDM4Zjc2ZWQxY2VlNzgyNzM3MDA5ZDRjNGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.92388, 0, 0, 0.382683)
+            set transformation translation of item display to vector(-0.241274, 0.762064, -0.342773)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTgyMzM5NywKICAicHJvZmlsZUlkIiA6ICIwM2FlZmNjYWE2NzE0ZDFhOThhY2Q2N2QxNjA0NzQyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUYXpyaXh4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ5MmYwNTQ0YTZhMDVkNTRhMTlmNTM1ZDBjMzdmNzZhMWY4MzRlMTgwODQ0ZmM3YjQ0ZWU0MTIxMDIwNmY3MDEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.5, 0.5)
+            set transformation translation of item display to vector(-0.09375, 0.78125, -0.467969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTgyODc5MCwKICAicHJvZmlsZUlkIiA6ICJlNzM4MTYzZTYwM2M0MTFkOTg4MzNiYzkyZTI4Y2IyYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJYZW5va3JhdGVzUml0dmEiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGNlMjk1OGMwNmNlZmJhODRiMTE5N2FjNDRkNjE3ZTc3YmUzNjEyMTA2N2NlZDQwYWRhZTE2MWI0MzRlNGQzZSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.5, 0.25)
+            set transformation translation of item display to vector(-0.09375, 0.78125, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTgzNzU4NCwKICAicHJvZmlsZUlkIiA6ICI1N2I3OWE2NTllZTM0ODhmODBhM2ExOGQwNDYxMTg3YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaW1hdGlrX1giLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDhiN2Q2MjhjOWM2YmQ0NzgyMzJiNDUxMzEzMTEzNDNlZGJiMTUzODRhMzQyMTFiYTE5ZmE2YTZhOGE1ZjgzZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.5)
+            set transformation translation of item display to vector(0.09375, 0.78125, -0.467969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg0NTQwNywKICAicHJvZmlsZUlkIiA6ICJiOTc3ODUwYWMxMGE0Mjk4YmRiNWNhYjBhODA0NmM4YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTb3JheER1YmJlciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9kMWZlM2EyMzk2ZTZlNGQzNzdiZTk2NGIzNjE1NWRiNTY5MzUzYTMyNDliOGYwMjdkNmU3ZGVkZjBjMmZlY2IyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.25)
+            set transformation translation of item display to vector(0.09375, 0.78125, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg1MDY0OSwKICAicHJvZmlsZUlkIiA6ICJmMTA0NzMxZjljYTU0NmI0OTkzNjM4NTlkZWY5N2NjNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJ6aWFkODciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWYyYjcyOGEwMzFkNjU0MzlhNDg2MTNiYTJmYjcwYjVjNDg2NjMzZmUzNzM4YWQwMTQ0OGU3NWU3OTZkMDQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.5)
+            set transformation translation of item display to vector(0.1875, 0.78125, -0.467969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg1NzA3NCwKICAicHJvZmlsZUlkIiA6ICJlYTdiMmRmZDZjNGU0NDU0YWQ2YWMwZDFjZWNjYjNhMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbGV2ZW5DaGFycyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80N2Y0Njk2ZTU1MTQ0NDJmODEwOTA2ZTVmNzc2N2FhNDk2M2EwM2YxMTk3YmIxNWUzODEzMDY3MDFlMjc0ZTM3IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.25)
+            set transformation translation of item display to vector(0.1875, 0.78125, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2MzI3OSwKICAicHJvZmlsZUlkIiA6ICI4YmM3MjdlYThjZjA0YWUzYTI4MDVhY2YzNjRjMmQyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJub3RpbnZlbnRpdmUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTliYzUwMzViMGFlMGYyZjM0ODQyZThhZWI3YjYyNjBiOTcyNzQ2NDljNGFjYzA4YjgxZDUxNTEwNTJhYTYyNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.6375, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2ODUyOCwKICAicHJvZmlsZUlkIiA6ICJlNjY3ZTI3OTdkMGM0Y2VjYWEyOWRlODljNjM4OGVjMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVic1RoZURpZGR5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQxNTIzOTIzZjVjM2QwNTI1ZWNiMzBmZmUxMmU3NzFlZWNjYTFjMzljNjNmMDE2MDE4ZmRkMTdjMDFmZWJiNGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0, 0.7625, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg3NDY4MSwKICAicHJvZmlsZUlkIiA6ICIzY2I3YTA3YWY3ZjM0ZWZiYTlkNGI4ODQ3NDM4Mzc0ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGlwb3R0ZXNoIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2IxMGQ3MDhhZDRjNGQ3YWY5YmMyMTBiOGQ3MjkwODllY2NkMzJhYzI2ZGY5OTJkZjIxNGE2ODY3N2U3MDdhYWQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.7, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2ODUyOCwKICAicHJvZmlsZUlkIiA6ICJlNjY3ZTI3OTdkMGM0Y2VjYWEyOWRlODljNjM4OGVjMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVic1RoZURpZGR5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQxNTIzOTIzZjVjM2QwNTI1ZWNiMzBmZmUxMmU3NzFlZWNjYTFjMzljNjNmMDE2MDE4ZmRkMTdjMDFmZWJiNGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0.0625, 0.7, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg4MzQ2OSwKICAicHJvZmlsZUlkIiA6ICJiOWIzY2RlZmIyZmQ0YWY1ODQxMGViZWZjY2ZmYTBhYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJpbnRlcnNlY2F0byIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iMTQxNjAyYjRjNzRjNTM2YWM1YzFjNDQwYmExZDBjN2FmMDJjNzc3NGJlN2IyN2FkZmIxMTRmODdmY2JjMWU4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0.03125, 0.575, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg4OTQ4NSwKICAicHJvZmlsZUlkIiA6ICJkNGUwNTFjZGRhNDU0NTUxYjk1ZWRiZjdkNTM1ZTA3ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbGVtZW50YWxfTWF4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I2NGNmNmU3OTgxNWYxODdhMmRhNDFhMDZlNTFlYzQyNmJhODEwMTJlMDQxZjkyN2Q4MDJhNWJhMjVjYTdlNzYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.45, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg5NjU1MSwKICAicHJvZmlsZUlkIiA6ICJiZTFkOTJiYTkwY2E0NzMwYTIyMzQ2MTIxZWM2MTNmMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUZW5zb3JCeXRlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYwZmJhODQyN2NhNzE2NDEzNDkyZWIxZTkwOWZkZGViNDdiMTZmMjA4NjZiMmIxNGY1ZTMzZWI4ZTRkNmIxZCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0.125, 0.45, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkwMjkwNiwKICAicHJvZmlsZUlkIiA6ICJhZTg3MzEyNjBmMzY0ZWE2YjU3YTRkYjI5Mjk1YTA1OCIsCiAgInByb2ZpbGVOYW1lIiA6ICJGdW50aW1lX0ZveHlfMTkiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTk1NGU0ZDNhMGRlYTdhNzNjNDBjODEzOWMwYzZlZDFmMzZhYjhiN2Y0Mzc3NDJmZjI1OGU4NDVmZmNiNzQ5OSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.3875, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkwOTIzMywKICAicHJvZmlsZUlkIiA6ICJhNzdkNmQ2YmFjOWE0NzY3YTFhNzU1NjYxOTllYmY5MiIsCiAgInByb2ZpbGVOYW1lIiA6ICIwOEJFRDUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRkMmM3OGM5M2MwMWM4Y2Y2Y2I2ZGQ5M2Y3YmVhNzEzMGNkMWMzMWI3MjIxMjVmMTNmMWFkMTRhMzE2NWYzMiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0.125, 0.3875, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkxNTcxNywKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80M2NkMDhiNjg3YzAwNzk5OTJhNGNmYWYyNjI3ZjUyZTc2NmQ4ZTQxYWM0OWNlMzc4NDNmMjM0MjdiMTA3MjhiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.325, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkxNTcxNywKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80M2NkMDhiNjg3YzAwNzk5OTJhNGNmYWYyNjI3ZjUyZTc2NmQ4ZTQxYWM0OWNlMzc4NDNmMjM0MjdiMTA3MjhiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(0.0625, 0.325, 0.641062)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2ODUyOCwKICAicHJvZmlsZUlkIiA6ICJlNjY3ZTI3OTdkMGM0Y2VjYWEyOWRlODljNjM4OGVjMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVic1RoZURpZGR5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQxNTIzOTIzZjVjM2QwNTI1ZWNiMzBmZmUxMmU3NzFlZWNjYTFjMzljNjNmMDE2MDE4ZmRkMTdjMDFmZWJiNGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.7625, 0.641406)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg3NDY4MSwKICAicHJvZmlsZUlkIiA6ICIzY2I3YTA3YWY3ZjM0ZWZiYTlkNGI4ODQ3NDM4Mzc0ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGlwb3R0ZXNoIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2IxMGQ3MDhhZDRjNGQ3YWY5YmMyMTBiOGQ3MjkwODllY2NkMzJhYzI2ZGY5OTJkZjIxNGE2ODY3N2U3MDdhYWQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.7, 0.672656)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2ODUyOCwKICAicHJvZmlsZUlkIiA6ICJlNjY3ZTI3OTdkMGM0Y2VjYWEyOWRlODljNjM4OGVjMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJDcmVic1RoZURpZGR5IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQxNTIzOTIzZjVjM2QwNTI1ZWNiMzBmZmUxMmU3NzFlZWNjYTFjMzljNjNmMDE2MDE4ZmRkMTdjMDFmZWJiNGQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.7, 0.578906)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkxNTcxNywKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80M2NkMDhiNjg3YzAwNzk5OTJhNGNmYWYyNjI3ZjUyZTc2NmQ4ZTQxYWM0OWNlMzc4NDNmMjM0MjdiMTA3MjhiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.25)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.325, 0.672656)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkxNTcxNywKICAicHJvZmlsZUlkIiA6ICIyMWUzNjdkNzI1Y2Y0ZTNiYjI2OTJjNGEzMDBhNGRlYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJHZXlzZXJNQyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS80M2NkMDhiNjg3YzAwNzk5OTJhNGNmYWYyNjI3ZjUyZTc2NmQ4ZTQxYWM0OWNlMzc4NDNmMjM0MjdiMTA3MjhiIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.325, 0.578906)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkwMjkwNiwKICAicHJvZmlsZUlkIiA6ICJhZTg3MzEyNjBmMzY0ZWE2YjU3YTRkYjI5Mjk1YTA1OCIsCiAgInByb2ZpbGVOYW1lIiA6ICJGdW50aW1lX0ZveHlfMTkiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTk1NGU0ZDNhMGRlYTdhNzNjNDBjODEzOWMwYzZlZDFmMzZhYjhiN2Y0Mzc3NDJmZjI1OGU4NDVmZmNiNzQ5OSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.3875, 0.672656)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTkwOTIzMywKICAicHJvZmlsZUlkIiA6ICJhNzdkNmQ2YmFjOWE0NzY3YTFhNzU1NjYxOTllYmY5MiIsCiAgInByb2ZpbGVOYW1lIiA6ICIwOEJFRDUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRkMmM3OGM5M2MwMWM4Y2Y2Y2I2ZGQ5M2Y3YmVhNzEzMGNkMWMzMWI3MjIxMjVmMTNmMWFkMTRhMzE2NWYzMiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.3875, 0.516406)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg4OTQ4NSwKICAicHJvZmlsZUlkIiA6ICJkNGUwNTFjZGRhNDU0NTUxYjk1ZWRiZjdkNTM1ZTA3ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJFbGVtZW50YWxfTWF4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2I2NGNmNmU3OTgxNWYxODdhMmRhNDFhMDZlNTFlYzQyNmJhODEwMTJlMDQxZjkyN2Q4MDJhNWJhMjVjYTdlNzYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.45, 0.672656)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg5NjU1MSwKICAicHJvZmlsZUlkIiA6ICJiZTFkOTJiYTkwY2E0NzMwYTIyMzQ2MTIxZWM2MTNmMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJUZW5zb3JCeXRlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYwZmJhODQyN2NhNzE2NDEzNDkyZWIxZTkwOWZkZGViNDdiMTZmMjA4NjZiMmIxNGY1ZTMzZWI4ZTRkNmIxZCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.45, 0.516406)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg4MzQ2OSwKICAicHJvZmlsZUlkIiA6ICJiOWIzY2RlZmIyZmQ0YWY1ODQxMGViZWZjY2ZmYTBhYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJpbnRlcnNlY2F0byIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iMTQxNjAyYjRjNzRjNTM2YWM1YzFjNDQwYmExZDBjN2FmMDJjNzc3NGJlN2IyN2FkZmIxMTRmODdmY2JjMWU4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.575, 0.610156)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTg2MzI3OSwKICAicHJvZmlsZUlkIiA6ICI4YmM3MjdlYThjZjA0YWUzYTI4MDVhY2YzNjRjMmQyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJub3RpbnZlbnRpdmUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTliYzUwMzViMGFlMGYyZjM0ODQyZThhZWI3YjYyNjBiOTcyNzQ2NDljNGFjYzA4YjgxZDUxNTEwNTJhYTYyNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000344, 0.6375, 0.672656)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk2NjgxNiwKICAicHJvZmlsZUlkIiA6ICI1ZTI1YzI0ZmIxMGI0MTlmOWIzYTQzMWIyOTYzYjQ2YSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ2NHIxbiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS82N2YyMjViNDRmZDRiNmEzMTg2ZjE1YmEwNGZhMTAyZDNjMjk5ZTMzZTQ4NjM3NmUzNTM0ZTBmZDM2MTAzODY5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0, 0, 1, 0)
+            set transformation translation of item display to vector(-0.000625, 0.51125, 0.673125)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk3MjEzOCwKICAicHJvZmlsZUlkIiA6ICJhYTUwNjRmMDUzOWQ0YmFhYTVkOGMzODllY2JiNGFlMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4WF9FbXBsb3ltZW50X1h4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2FmODVjZTdjZGY3OGMzMWRiZmY2NzE1MGQwZGQyODljMGZjYmJhZTQ2ODg1NWI0Y2ZkMTFiODE0NTBlMzQ0ZTYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.5)
+            set left transformation rotation of item display to quaternion(0.707107, 0, 0.707107, 0)
+            set transformation translation of item display to vector(-0.03125, 0.511875, 0.64125)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk3ODI4MiwKICAicHJvZmlsZUlkIiA6ICIyZmI1ZGJhYTY2NTA0OGEyYjZhYzU5YWE2Nzk5MDYzNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJkcmFnbG9uZXIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzU3NmE1MWMyYjhjY2EzMjM4ZDIxMWZhYWJhM2RiNGUzM2M4N2Y3MDM3ZDRhYjlkZTJkMGZiNDc3YmU0YjVkZCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.5)
+            set transformation translation of item display to vector(0, 0.3125, 0.500781)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk4NDUwMCwKICAicHJvZmlsZUlkIiA6ICJmODY0ZjY3ZGJlN2Y0OTBlYTZlODQzMjg2M2NkZWMxOCIsCiAgInByb2ZpbGVOYW1lIiA6ICJCb3lmcmllbmQ1MDY1IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzUxNzY2ODIzMmUwZDdiZDdjNmMyZDhhMzgyZjhkNzE3NDYyMWE3NjIwZTg1NTE5Yjk2MmEyMjYyNzMzMjFlZDQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.5)
+            set transformation translation of item display to vector(-0.03125, 0.28125, 0.188281)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk5MTIzNywKICAicHJvZmlsZUlkIiA6ICIxN2I5ZDBmOWYxYzE0OTE5ODRkY2Y5ZGM2YzczZDYzYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJuYWJlNDk3NSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZmRhOWFlYjY0NDUzM2E0NmM2ZmJhYWYwZGI2NDVhZTk2ODllMGZjZTE2MTljNTQ2ZGJlNDVlNmMwZTU2NWY5IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(-0.03125, 0.28125, 0.375781)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTk5NjYwNSwKICAicHJvZmlsZUlkIiA6ICI0NDAzZGM1NDc1YmM0YjE1YTU0OGNmZGE2YjBlYjdkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICI4Qml0czFCeXRlIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzFkNjM0YTY4ZGEzZWMzOTJiMDE3ZjliNTMzZjZhODQ3MThhN2M1MzVjNzU1OTYxYmIyNjc0NzIyYTk3MzNhOTkiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.5)
+            set transformation translation of item display to vector(-0.03125, 0.34375, 0.188281)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAwMjkyNCwKICAicHJvZmlsZUlkIiA6ICI2NDg4Y2VjMjc4OGQ0MTI2OTk5NWMyMmY4OTdmMzA4OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJBc3BlbjA1MyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iZTcyMTNhMGM4MzUxNzFhZDhlNGMzOWZlZTNlNGM2MjQ1NDlkNTVjZTgwZTNmMmMwMjQxNzFjYWMxNWU2NmYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.03125, 0.34375, 0.375781)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAwOTk1MywKICAicHJvZmlsZUlkIiA6ICJmNDZkMmVmMmIzM2M0ZjRhODRkYTJhY2U5ZGJhYmU1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJKR3VldmFyYTEyIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2IwOTM0NTRhOTY1NDQ5NmFmZTUxNzQ0N2JjOWJlM2Y2MmQ5OGQ1NzFkZmNiMWMzMDUxOWU5YmEyMWMwYjc1N2QiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.5)
+            set transformation translation of item display to vector(0.0625, 0.28125, 0.188281)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAxNzI4OCwKICAicHJvZmlsZUlkIiA6ICJmNDMyZGEyYTg5ZGU0ZTQzOWM5NWM1YjMzMTdhYzIyZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJTckRla3UiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmM2N2UyMjkzMzdmMDUyMDBhYTUyNTZkMGJkNmY1ZjU1ZWVmYjZiNTg0NDA3NTZjYjA5ODBmNzAxYWRhNGYzIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.25, 0.25)
+            set transformation translation of item display to vector(0.0625, 0.28125, 0.375781)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAyNTIyMywKICAicHJvZmlsZUlkIiA6ICJiYWNlNWU3MGIzOGM0YjNhYmRkODU5NGY3YjE2Njg1NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJBbG1pZ2h0eUJ1bm55eSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jOGRhMzNiYThiZTE2MWYxOGU1NjE3YzliMTExOWRkZmFjMjU0NTMyZGRhYzczYjM3OTRkMmM1NzY4Yjk4OTA0IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.5)
+            set transformation translation of item display to vector(0.0625, 0.34375, 0.188281)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAzMDQwOSwKICAicHJvZmlsZUlkIiA6ICJmNTBjOGRkN2FiN2Y0ZmUyYWI4ZGI1M2NjYzRiYWQxMiIsCiAgInByb2ZpbGVOYW1lIiA6ICJtYWNoYWRvVF9UIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2M2OGY3NTgyZDg1ZDEzNTcwZWRmM2Y0Y2JkNzI2ZmUyZjAyYzAzNDk0Mzc3NDc5NTBjNTU2YzU0NjAzMzY4YTYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set transformation translation of item display to vector(0.0625, 0.34375, 0.375781)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjAzNzIyMCwKICAicHJvZmlsZUlkIiA6ICI1MWI4MjcxNDE5YWE0NDA5YTFhNmU1OTcwYTc1MzgyNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJYRHJha2U5OSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9lOGNlYzViMDk3ZjQ0MTE0ZDk1OWQ2NmI3OTQxM2Q2NWNkZWIwNTMxZTBmZGQ0ZDEzNGMyOWRiZDczNzhjMmRjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.5, 0.5)
+            set transformation translation of item display to vector(0, 0.390625, -0.124219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA0NDQ3NywKICAicHJvZmlsZUlkIiA6ICJkODBlMGYyNjU2M2U0NzI3YWNiZDNlMmRlNDkxYzFiZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJCZWxvemVyb3ZrYSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jNWE5NzU1MTgwZDEzNDRmYzZlMDY2MmU4ZDk5ZTM4Y2E2OWVhZTkwMmExMDZkZWNlM2VkOGJiN2NjYmIyOTBlIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.5, 0.5, 0.25)
+            set transformation translation of item display to vector(0, 0.390625, 0.063281)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA1MTQ2NCwKICAicHJvZmlsZUlkIiA6ICJkNDAwODgyZmY3OGQ0ZGVhYjliMGNlMTc2YmQ1ZTQyMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJQcmF4aWJldGwiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTViN2ZmM2VkMWMxYmM3MTQ2NDMzMmQwYjVkNGE5NTlhNjA2NTY1MjhlZmM5MDllM2FlNzMwMzZkMjI2MjE0YiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.5, 0.5)
+            set transformation translation of item display to vector(0, 0.375, -0.499219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA1NzQwNywKICAicHJvZmlsZUlkIiA6ICIwNTAzNzZmZjAxY2I0OGVjOTUwM2NhMjhjMWU2MzlkMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJKb25haDU1OTAiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTYxYzdhMDcwZTIwYTk2ZGMwNzliYWRlZTFjMzdhZjdiZjNjYjEzZGRiYmNkZTBiMTA2ODIxY2UzZGU0OGJhZSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.5, 0.25)
+            set transformation translation of item display to vector(0, 0.375, -0.311719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA2MzY4NCwKICAicHJvZmlsZUlkIiA6ICI2NGY0MGFiNzFmM2E0NGZiYjg0N2I5ZWFhOWZjNDRlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJvZGF2aWRjZXNhciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yNjZjNTZmYTU5NzllNWU1MTg2OGRiODM3ZmI4NDc5ZjBlYmEzMDRhOTI3MTc5ZTVlOWZiYWFhZGFiODZkNDZlIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.5, 0.125)
+            set transformation translation of item display to vector(0, 0.375, -0.217969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA2ODY0OSwKICAicHJvZmlsZUlkIiA6ICIzYWE3NzRlYjRiNmY0MzlkODA1NDJiNWIzYjFmNzY5ZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUaGVSb3NlUXVlZW4xOTIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDk1YWYwNWU2NWFkY2QxZjA3YzJiNmQ1ZjdiZDY3MWM3OGNlZTZiMGU3NzQ4OTY1NWJmZTJjNTQyNjJlNzU5OSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.25, 0.5)
+            set transformation translation of item display to vector(0, 0.5, -0.499219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA3NDQ3MiwKICAicHJvZmlsZUlkIiA6ICJiYTllNWY4YTc0Yzg0MzQ5YjY3ZTg2MzBlMDRmMTI2ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJhbW9ndXNwYWRvdyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9iODFjMTJhZDc0ZTM5OGFmMTI4ZjkyOWU4YTc2NDFkYTVmYjA2ZDIxYzFmNjhiMDdmNzgzNmU4YjcyOGQ1ZmUzIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.25, 0.25)
+            set transformation translation of item display to vector(0, 0.5, -0.311719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA3OTgyOCwKICAicHJvZmlsZUlkIiA6ICJiODQ5ZjE2MmRkNTE0ZjllYTUwZDlhNjRlZGUwZGIxNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4WF9Ob19JbmNvbWVfWHgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTc1ZTA3MjZiODAzMDcyMWQzYTI4YTk4NTBhZjE4MGIyN2JhNjIwZThlNDFmNjY1YmNkZjNlODY4NzhmNmFmYyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.25, 0.125)
+            set transformation translation of item display to vector(0, 0.5, -0.217969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA4NTIwOSwKICAicHJvZmlsZUlkIiA6ICIyYThjZTE5ZWY3Mjg0NTBjYjY2YmEyNzNhNzVmNjI1MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJYRDROVDNfNjY2IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ4NDk5NDhiMjA2YTM0OGZmYWFjMGZiODhjOTc1NDIwN2FiYTI3MjFiNzllY2FkZjE2MzJkYjJhZWYwMDNiZWQiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.125, 0.5)
+            set transformation translation of item display to vector(0, 0.5625, -0.499219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA5MDg5MCwKICAicHJvZmlsZUlkIiA6ICIxNTUyNmU1OGZhOWE0NjBmODhhNmZhNjk1M2RlNjgzNyIsCiAgInByb2ZpbGVOYW1lIiA6ICJQaWVkcml0YTE3IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2Q3MWI3OWEzODQ5YzZhZWM2YjFmZGUyNjc2ZDM2Yzg0ZDhiM2Q2NmNmN2RiZmQxOWMwOWUzM2E3MjNjNWY4YWMiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.125, 0.25)
+            set transformation translation of item display to vector(0, 0.5625, -0.311719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjA5Nzc2NywKICAicHJvZmlsZUlkIiA6ICI0MDUxNzNiODY0OTM0NTUxOThlOGMzOGJmNmJmNjZiMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzcGFjZWNhZGV0MTgiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjhlNzBkNTExZjI1ZDZlMjU2YmVlMDk4ZmVhN2I0ZmRkYjYzMjdlM2QxZjFhYWRjYzBlZTQwMjJlMWU4NzQyMSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(1, 0.125, 0.125)
+            set transformation translation of item display to vector(0, 0.5625, -0.217969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjExMzY1MSwKICAicHJvZmlsZUlkIiA6ICIxMjE4YWNiNDJiYzA0MzY4YjIxOTU4ZTZiYWU2NDMyMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJQYXRhdGplTUMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYThhZGNhNjRiYTdhYzk3NDhmOWVkZDg3MTQwZjFlYzM3N2U5NDFjMzBkYTkzNjkxZmI4Mjc3YTNhYjk5ZmZlOSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.999048, 0, -0.043619, 0)
+            set transformation translation of item display to vector(0.331191, 0.0625, -0.608445)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM4NjQyNywKICAicHJvZmlsZUlkIiA6ICI1NjExYmE1MjFmNDM0OWYwOWE0MTI5ZTM0NjQzMDM1OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHdXlOYW1lZEthaW5lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ0NWY3OGNiYTdjZmJmYWY4YTE4ZTY3Zjc4ZjAyODlkZTE4YjkwOGYwYjY1OTQwMzE2NzM3ZDIwYjAxYmM2ZjEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set transformation translation of item display to vector(0.250344, 0.0625, -0.608594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUzMTY1OSwKICAicHJvZmlsZUlkIiA6ICJjYmYxNGIxMGJhNWU0NzgwYjIyNmFiNmQzOTUxODk4YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJFZ2d5QnV0dG9uMjQxMSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTk4YTZlOTMyMTVlMGJiYjFhZTdjNmI0NmIxM2MxZGIzZTU1MWMxMmEwNGRlMTQ5MWU4MTdlMjJmNDExNTllIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.999048, 0, 0.043619, 0)
+            set transformation translation of item display to vector(0.169494, 0.0625, -0.608505)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjEyNjQ1OCwKICAicHJvZmlsZUlkIiA6ICJiODU0NWMxMDlhZjE0ZGRjYmY4ZjhmZjg4ZTU2NzI4OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJQdGFrb3B5c2tDWiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83NGI1MWFkNWNhZWUxZDQxMTAxYTUwMWU2M2M3Y2E2OGE2ODVlMTYxODBlODUwODM1N2FlMGYxMWYxN2Q3NzYwIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(0.21875, 0.0625, -0.514844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjEzMTg1MywKICAicHJvZmlsZUlkIiA6ICIxZjk0OTQzN2RlYmQ0ODgyYTlhYzZhZmZmN2RhNDcxMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNaWlra2FLYSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS81ZjA2YjIwYjQxZjQ2Yzk0ZDU2ZWMyNjgyNTkyZjJjNmE3ZWNkMzVlODE0NmJiM2YzMzkzNjM1NmQ0MjYyZWVmIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set transformation translation of item display to vector(0.21875, 0.0625, -0.421094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjEzNzI5OSwKICAicHJvZmlsZUlkIiA6ICJhYjNkNTgwMjVkOWM0NTcyODNkNTFlYTcwYTY4N2U1NiIsCiAgInByb2ZpbGVOYW1lIiA6ICJsdWN5X2ludGhlc2t5XyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mMjBkZmUwZDJjZjRjOWE1YWIwZjg1Y2E0MTlmMTRmYzg0M2M1NmZiMjUxMjZiZTI2N2VlZDhiNGQ4OGI1MTZlIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set transformation translation of item display to vector(0.3125, 0.0625, -0.514844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE0MzAwMiwKICAicHJvZmlsZUlkIiA6ICI3MDYwMDk0OTgyZDc0MTczYTNjZjg1Zjc1NjQ3MGE5YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJpbmV4YWN0b3N0ZW50YXQiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTljNTk4ZDI1MzdmZDZlOTQ0ZGQ1NDE2YmQxOTk5ZTY1NzQ1ODIzYTMwM2IwMzJkMDQzMWVmNjU5MDRmMmEzNCIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set transformation translation of item display to vector(0.3125, 0.0625, -0.421094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE0ODM1NCwKICAicHJvZmlsZUlkIiA6ICIwM2FlZmNjYWE2NzE0ZDFhOThhY2Q2N2QxNjA0NzQyZCIsCiAgInByb2ZpbGVOYW1lIiA6ICJUYXpyaXh4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2U1MDZiNjE4NDhmNjllYTI1NDNmNDBkYTBiNGVmY2E1Zjg2ZTM4NWEzNjNlMzg4MzY0ZDBjZDFjYjdiOTQ5YjgiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(0.25, 0.15625, -0.467969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE1NDI0NiwKICAicHJvZmlsZUlkIiA6ICI3ZGY4NmY1MWFjZmI0MjQzYTkzNDQ1OTAyZDEzYTc0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNclJpcHRpZGUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTM1NWM0MWI1MjhhZjM3MjA2YjBjYTIwNTUzODUxNzVjNGExZGRhNWJkMmUyYTVlN2EwOWMwMDZlZTcwNTNhNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set transformation translation of item display to vector(0.25, 0.15625, -0.374219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE2MDkyOCwKICAicHJvZmlsZUlkIiA6ICI5ZjJiY2M1M2U4YzM0OTY4YTc5Yzc0NTExYWQ2NmQyYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJLYWJveWlvIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzhjNDZjYjA1YTQxNzQ5ZjI0OGEzZWIwNTFlYWIyOTRjMDU1NTE3YjIyYjg3MDhkYWZmMWI4YjIzNzFhMDU2MzYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.5)
+            set transformation translation of item display to vector(0.21875, 0.375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE2NjY1NSwKICAicHJvZmlsZUlkIiA6ICJiYzRlZGZiNWYzNmM0OGE3YWM5ZjFhMzlkYzIzZjRmOCIsCiAgInByb2ZpbGVOYW1lIiA6ICI4YWNhNjgwYjIyNDYxMzQwIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzMyMjk4YzVjMWVhNmY5ZjFjYWQ1NzQ4NzJmNTBkOWM1Nzk3N2YzNzU1ZTEzZTNiMWI1YjU4YjkzMTUwYjI2ZTUiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.125)
+            set transformation translation of item display to vector(0.21875, 0.375, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE3Mjc3MiwKICAicHJvZmlsZUlkIiA6ICI4MDQ2MzdjMTA1ZGY0MzM0ODE3YTNmMDcxMTMyOTYyMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJQcmluY2VDUiIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jYzhkM2ZiOTVjZjlmMjA1NjhmZjYxNTk1NWFmZmJhNWE0YjI2ODYwNDIzOGQyNzU4MzgzMmNjM2QxN2I2YzFhIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.5)
+            set transformation translation of item display to vector(0.3125, 0.375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE3Nzc5MSwKICAicHJvZmlsZUlkIiA6ICJmZDIwMGYwMDE4OTI0NzgxODI5OWIzZjE5Yzc4Y2E3MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0dXNnIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc3N2ZkMTcyY2EyMDBhOTk3ZDA0MjJkNmNiM2ExNGU5ZDNlY2NiZmExZWY5NWM4YmE1YTQwNjRkZDMzZDlmY2IiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.125)
+            set transformation translation of item display to vector(0.3125, 0.375, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjExMzY1MSwKICAicHJvZmlsZUlkIiA6ICIxMjE4YWNiNDJiYzA0MzY4YjIxOTU4ZTZiYWU2NDMyMCIsCiAgInByb2ZpbGVOYW1lIiA6ICJQYXRhdGplTUMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYThhZGNhNjRiYTdhYzk3NDhmOWVkZDg3MTQwZjFlYzM3N2U5NDFjMzBkYTkzNjkxZmI4Mjc3YTNhYjk5ZmZlOSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.999048, 0, 0.043619, 0)
+            set transformation translation of item display to vector(-0.330506, 0.0625, -0.608505)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTM4NjQyNywKICAicHJvZmlsZUlkIiA6ICI1NjExYmE1MjFmNDM0OWYwOWE0MTI5ZTM0NjQzMDM1OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJHdXlOYW1lZEthaW5lIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ0NWY3OGNiYTdjZmJmYWY4YTE4ZTY3Zjc4ZjAyODlkZTE4YjkwOGYwYjY1OTQwMzE2NzM3ZDIwYjAxYmM2ZjEiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set transformation translation of item display to vector(-0.249656, 0.0625, -0.608594)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNTUzMTY1OSwKICAicHJvZmlsZUlkIiA6ICJjYmYxNGIxMGJhNWU0NzgwYjIyNmFiNmQzOTUxODk4YiIsCiAgInByb2ZpbGVOYW1lIiA6ICJFZ2d5QnV0dG9uMjQxMSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTk4YTZlOTMyMTVlMGJiYjFhZTdjNmI0NmIxM2MxZGIzZTU1MWMxMmEwNGRlMTQ5MWU4MTdlMjJmNDExNTllIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.0014, 0.125, 0.125)
+            set left transformation rotation of item display to quaternion(0.999048, 0, -0.043619, 0)
+            set transformation translation of item display to vector(-0.168809, 0.0625, -0.608445)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIwMTU4NiwKICAicHJvZmlsZUlkIiA6ICJiNjZiYTQ5ZWFiZWM0YmY5OWVhOWY5NDBjMTcxYTkzMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJNYXRlaUxpa2VzTWluaW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjQ2MmViZjA5NTZkZGZkN2E2MjhhN2ViYTVhYjQyOTYwZTA5ODZmNzhhYWEwN2VhNjk3MDgxOTU1MmMxMGRmMyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.28125, 0.0625, -0.514844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIwNzMzMiwKICAicHJvZmlsZUlkIiA6ICIwNWU0OTczZTk5ZDk0NGY2YjczNjY3ZTEzMzdiY2IzOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNaW5lX1NraW4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJlMTU1Y2RiN2ZkNzVkZTJjNzA1YWEzMTQ4NzVkZDk3MDZmZDE3MGVkYWExZjBiZmYxNjQyOWNjZTAzZWVjIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.125, 0.125)
+            set transformation translation of item display to vector(-0.28125, 0.0625, -0.421094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIxMjc1MSwKICAicHJvZmlsZUlkIiA6ICJhODMwMTUxNzNlOGQ0MWEyOGY0ZDk1ZDM2Njc4MGJmNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJTdGFybGl0R2FtZXMiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGY4NTg4NGNkZjg5NzVjMWNhYjYxNWE1Yjc4OGQ2OGJiZWIyMDI4MzZhODkyYmU2ZmQzODhhM2UxNjI1M2Q5ZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.25)
+            set transformation translation of item display to vector(-0.1875, 0.0625, -0.514844)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIxODE4NCwKICAicHJvZmlsZUlkIiA6ICI0N2U2MjJjNmE1OWU0NmNhOWU3OGNjYzE1ZDliNzhhZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJEYW5pdG9fUG9uY2UiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTFiYmE2MGY3MDNkMjlkNjU5YWVlNmE4YWQ2ZGFiOWE3YmZjZjI0NjJmYzg0YjI2ODZkMTM0ZGZhYTNhYmY0NSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.125, 0.125)
+            set transformation translation of item display to vector(-0.1875, 0.0625, -0.421094)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIyNDQyNCwKICAicHJvZmlsZUlkIiA6ICJlYTA4ZjhlZTdiOTg0YmFlYWM3N2JhYzk3ZWVkYzE4NSIsCiAgInByb2ZpbGVOYW1lIiA6ICJXYXlkZXJUTSIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS85ZDM1MDJkNzYxOGJhNTU2MmY0OTA0MzFhYWFlN2JhYTY1MmVjYzk5NGU3MzBiZjZiZTBjYjdjMWMwYTg3Mzg2IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.25)
+            set transformation translation of item display to vector(-0.25, 0.15625, -0.467969)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjE1NDI0NiwKICAicHJvZmlsZUlkIiA6ICI3ZGY4NmY1MWFjZmI0MjQzYTkzNDQ1OTAyZDEzYTc0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNclJpcHRpZGUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTM1NWM0MWI1MjhhZjM3MjA2YjBjYTIwNTUzODUxNzVjNGExZGRhNWJkMmUyYTVlN2EwOWMwMDZlZTcwNTNhNSIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.25, 0.125)
+            set transformation translation of item display to vector(-0.25, 0.15625, -0.374219)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIzMzM4NywKICAicHJvZmlsZUlkIiA6ICJjZjc4YzFkZjE3ZTI0Y2Q5YTIxYmU4NWQ0NDk5ZWE4ZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJNYXR0c0FybW9yU3RhbmRzIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzk5Nzc5Y2RkNjZhMGVlOGU0YmMzYjhjNTIxOWIwZTRiM2YxNjM1NjI4MWY4ODAxNGZmMDM0YjEyMjEzZmFhMzYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.5)
+            set transformation translation of item display to vector(-0.28125, 0.375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjIzOTE0OSwKICAicHJvZmlsZUlkIiA6ICI3MjU1MDA3NjQzYzQ0YTZiYjM3MjJlNzc3OTk5OTFkOSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ4M250YW55IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzE2MzcyNGVhYjMyZGE0YTJlNTkwMDBiMTA0NzIzMjIzZjUyN2VhMTNhYWFiZGY2Y2Y5ZTM2ZjU0NjM0OTdhMjAiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.25, 0.5, 0.125)
+            set transformation translation of item display to vector(-0.28125, 0.375, -0.280469)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjI0NDY0NiwKICAicHJvZmlsZUlkIiA6ICIzN2VhNTQ5MTE3MTU0NDgzYmY0N2VmNGM3MzMwMWIzYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJSeXV6bG4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDI5YTNiZDdmYjEyZmZjZmE1YTYyMDU4N2UyYjM0ZGZiOWQyZjliMWViNTcxYzhmNDJiNzIwNWRkMGEwNmY4MyIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.5)
+            set transformation translation of item display to vector(-0.1875, 0.375, -0.436719)
+
+        spawn item display at {_origin}:
+            set {_item} to player head
+            apply profile to {_item}:
+                texture-value: "ewogICJ0aW1lc3RhbXAiIDogMTc1MzYwNjI1MDA4OCwKICAicHJvZmlsZUlkIiA6ICJhYWMxYjA2OWNkMjE0NWE2ODNlNzQxNzE4MDcxMGU4MiIsCiAgInByb2ZpbGVOYW1lIiA6ICJqdXNhbXUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjA5ZjY2YjNhN2Y2ZjU0YWYzZGNlNDIwNjAxN2FkNWZhZjUwYTllYTQ0MmUxYjRkNWFiYjBlZjUyZmMwMjNiYiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9CiAgfQp9"
+            set item of item display to {_item}
+            set transformation scale of item display to vector(0.125, 0.5, 0.125)
+            set transformation translation of item display to vector(-0.1875, 0.375, -0.280469)

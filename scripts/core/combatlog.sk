@@ -1,0 +1,63 @@
+on load:
+    set {-combat log time} to 20 seconds
+
+command /ct:
+    trigger:
+        set {_dif} to difference between {-combat tag::%player%} and now
+        if {_dif} < {-combat log time}:
+            send "&cYou are combat tagged for %({-combat log time} - {_dif})% longer!"
+        else:
+            send "&cYou are not in combat."
+
+on damage with priority monitor:
+    event isn't cancelled
+    victim is a player
+    attacker is a player
+    attacker isn't victim
+    set {-combat tag::%victim%} to now
+    combatLogActionBar(victim)
+
+    set {-combat tag::%attacker%} to now
+    combatLogActionBar(attacker)
+
+on command:
+    player isn't op
+    set {_dif} to difference between {-combat tag::%player%} and now
+    if {_dif} < 20 seconds:
+        if command is "spawn", "home", "warp", "tp", "tpa", "tpahere", "tpaccept", "tpdeny", "tutorial", or "protection":
+            cancel event
+            send "&cYou are combat tagged for %({-combat log time} - {_dif})% longer!"
+
+on quit:
+    set {_dif} to difference between {-combat tag::%player%} and now
+    if {_dif} < {-combat log time}:
+        kill player
+        broadcast "&c%player% has combat logged!"
+
+on respawn:
+    delete {-combat tag::%player%}
+    delete {-combat tag action bar::%player%}
+
+function combatLogActionBar(player: player):
+    set {_now} to now
+    set {_ns} to current ns
+    broadcast "%(current ns - {_ns}) / 1_000_000%"
+    set {-combat tag action bar::%{_player}%} to {_now}
+    while {-combat tag action bar::%{_player}%} is {_now}:
+        set {_dif} to difference between {-combat tag::%{_player}%} and now
+        send action bar "&cYou are combat tagged for %round(({-combat log time} - {_dif}) / 1 second)%s longer!" to {_player}
+        wait 10 ticks
+        if {_dif} >= {-combat log time}:
+            send "&7You are no longer combat tagged." to {_player}
+            send action bar "&7You are no longer combat tagged." to {_player}
+            delete {-combat tag::%{_player}%}
+            delete {-combat tag action bar::%{_player}%}
+
+on bound enter with id "spawn":
+    {-combat tag::%player%} is set
+    set player's gliding state to false
+    set player's velocity to vector(0, 0 ,0)
+    wait 1 tick
+    while bounds at player contains bound with id "spawn":
+        wait 1 tick
+        push player towards location(55, 3, 55, world "world") at speed 0.25

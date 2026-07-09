@@ -1,0 +1,137 @@
+function auctionHouse(player: player, page: integer):
+    async run 0 ticks later:
+        set {_active::*} to indexes of {auction::*} where [{auction::%input%::expired} isn't set]
+        set {_max page} to ceil(size of {_active::*} / 45)
+        if {_max page} is 0:
+            set {_max page} to 1
+        set {_page} to clamp({_page}, 1, {_max page})
+        set {-auction page::%{_player}%} to {_page}
+
+        delete {-auction house::%{_player}%::*}
+        
+        set {-auction house::%{_player}%} to chest inventory with 6 rows named "&8Auction House (Page %{_page}%/%{_max page}%)"
+        set slot (integers between 45 and 53) of {-auction house::%{_player}%} to black stained glass pane named " "
+
+        set slot 49 of {-auction house::%{_player}%} to paper named "&fExpired Auctions" with lore "&7Click to view your expired auctions."
+
+        if {_page} > 1:
+            set slot 48 of {-auction house::%{_player}%} to red stained glass pane named "&cPrevious Page"
+
+        if {_page} < {_max page}:
+            set slot 50 of {-auction house::%{_player}%} to green stained glass pane named "&aNext Page"
+
+        sort {_active::*} in descending order based on {auction::%input%::started at}
+
+        for {_entry} in {_active::*}:
+            set {_entry page} to ceil(loop-iteration-2 / 45)
+            if {_entry page} < {_page}:
+                continue
+            if {_entry page} > {_page}:
+                stop loop
+
+            set {_slot} to index of first empty slot of {-auction house::%{_player}%}
+
+            set {_id} to {auction::%{_entry}%::id}
+            set {_item} to {auction::%{_entry}%::item}
+            set {_seller} to {auction::%{_entry}%::seller}
+            set {_price} to {auction::%{_entry}%::price}
+            set {_started at} to {auction::%{_entry}%::started at}
+
+            set {_dif} to difference between now and {_started at}
+            if {_dif} > 24 hours:
+                set {auction::%{_entry}%::expired} to true
+            else:
+                add "" to lore of {_item}
+                add "&fPrice&8: &a$%{_price}%" to lore of {_item}
+                add "&fSeller&8: &f%{_seller}%" to lore of {_item}
+                add "&fStarted&8: &f%{_dif}% ago" to lore of {_item}
+                add "" to lore of {_item}
+                add "&eClick to buy." to lore of {_item}
+
+                set slot {_slot} of {-auction house::%{_player}%} to {_item}
+                set {-auction house::%{_player}%::%{_slot}%::*} to indexed {auction::%{_entry}%::*}
+
+        run 0 ticks later:
+            open {-auction house::%{_player}%} to {_player}
+
+on inventory click:
+    player's current inventory is {-auction house::%player%}
+    cancel event
+
+    if index of event-slot is 48:
+        auctionHouse(player, {-auction page::%player%} - 1)
+
+    else if index of event-slot is 50:
+        auctionHouse(player, {-auction page::%player%} + 1)
+
+    else if index of event-slot is 49:
+        expiredAuctions(player)
+
+    else:
+        set {_id} to {-auction house::%player%::%index of event-slot%::id}
+        {_id} is set
+
+        if {auction::%{_id}%::id} is not set:
+            send "&cThis auction no longer exists."
+        else:
+            set {_seller} to {auction::%{_id}%::seller}
+            set {_item} to {auction::%{_id}%::item}
+        
+            if {_seller} isn't player:
+                giveORvaultORdrop(player, {_item})
+                delete {auction::%{_id}%::*}
+                auctionHouse(player, {-auction page::%player%})
+            else:
+                set {_price} to {auction::%{_id}%::price}
+
+                if {money::%player%} < {_price}:
+                    send "&cYou don't have enough money."
+                else:
+                    remove {_price} from {money::%player%}
+                    delete {auction::%{_id}%::*}
+
+                    giveORvaultORdrop(player, {_item})
+                    auctionHouse(player, {-auction page::%player%})
+
+                    send "&a%player% purchased your item for $%formatNumber({_price})%." to {_seller}
+
+command /ah:
+    trigger:
+        auctionHouse(player, 1)
+
+command /list <text>:
+    usage: &c/list <price>
+    trigger:
+        set {_number} to unformatted number arg 1
+        if {_number} <= 0:
+            send "&cYou must enter a valid price."
+        else:
+            if canBeAuctioned(player's tool) is false:
+                send "&cThat item can't be auctioned."
+            else:
+                async run 0 ticks later:
+                    for {_entry} in indexes of {auction::*}:
+                        {auction::%{_entry}%::seller} is player
+                        {auction::%{_entry}%::expired} isn't set
+                        add 1 to {_total active auctions}
+                    if {_total active auctions} >= 5:
+                        send "&cYour max active auctions is 5."
+                    else:
+                        set {_id} to random uuid
+                        set {auction::%{_id}%::id} to {_id}
+                        set {auction::%{_id}%::seller} to player
+                        set {auction::%{_id}%::item} to player's tool
+                        set {auction::%{_id}%::price} to {_number}
+                        set {auction::%{_id}%::started at} to now
+                        set player's tool to air
+                        send "&aYou have successfully listed your item for $%formatNumber({_number})%."
+
+function expiredAuctions(player: player):
+    async run 0 ticks later:
+        for {_entry} in indexes of {auction::*}:
+            {auction::%{_entry}%::seller} is {_player}
+            {auction::%{_entry}%::expired} is set
+
+            giveORvaultORdrop({_player}, {auction::%{_entry}%::item})
+
+            delete {auction::%{_entry}%::*}

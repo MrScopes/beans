@@ -1,0 +1,26 @@
+on load:
+    setting("haste", "display", value: "&f<sprite:items:item/sugar> &6Haste")
+    setting("haste", "max", value: 4)
+    setting("haste", "priority", value: 0)
+    setting("haste", "type", value: "pickaxe")
+    setting("haste", "item", value: sugar)
+
+    setting("haste", "chance", l1: 4, l2: 8, l3: 10, l4: 12)
+    
+    setting("haste", "haste", l1: potion effect of haste 1 for 5 seconds, l2: potion effect of haste 2 for 5 seconds, l3: potion effect of haste 3 for 5 seconds, l4: potion effect of haste 4 for 5 seconds, l5: potion effect of haste 5 for 5 seconds)
+    setting("haste", "speed", l1: potion effect of speed 1 for 5 seconds, l2: potion effect of speed 2 for 5 seconds, l3: potion effect of speed 3 for 5 seconds, l4: potion effect of speed 4 for 5 seconds, l5: potion effect of speed 5 for 5 seconds)
+
+    setting("haste", "xp cost", l2: 80_000, l3: 400_000, l4: 800_000)
+    setting("haste", "money cost", l2: 140_000, l3: 500_000, l4: 1_000_000)
+
+local function getDescription(level: integer) :: string:
+    set {_speed} to get_setting("haste", "speed", {_level})
+    set {_haste} to get_setting("haste", "haste", {_level})
+    return "apply Speed %amplifier of {_speed}% for %time_format(duration of {_speed})% and Haste %amplifier of {_haste}% for %time_format(duration of {_haste})%"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_dif} to difference between {-combat tag::%{_player}%} and now
+    {_dif} isn't less than {-combat log time}
+    play sound "minecraft:entity.generic.drink" with volume 0.5 and pitch 1 at location of {_player}
+    add get_setting("haste", "haste", {_level}) to {_player}'s potion effects
+    add get_setting("haste", "speed", {_level}) to {_player}'s potion effects

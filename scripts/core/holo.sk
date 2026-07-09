@@ -1,0 +1,47 @@
+on load:
+    set {_world} to world "world"
+    add chunk at 6,6 in {_world} to {_chunks::*}
+    add chunk at 5,6 in {_world} to {_chunks::*}
+    add chunk at 5,5 in {_world} to {_chunks::*}
+    add chunk at 6,5 in {_world} to {_chunks::*}
+    add chunk at 6,4 in {_world} to {_chunks::*}
+    add chunk at 5,4 in {_world} to {_chunks::*}
+    add chunk at -4,-4 in {_world} to {_chunks::*}
+    for {_chunk} in {_chunks::*}:
+        {_chunk}.load()
+
+    loop all displays:
+        if data tag "holo" of loop-display is set:
+            delete loop-display
+    
+    spawn text display at location(95.5, 51.5, 95.5):
+        set data tag "holo" of display to true
+        set {-holo} to display
+        set billboard of display to center
+        set text of display to "", "&bWelcome to &lBEANS&b!", "&f There are %size of players% players online. ", "", "&f/help", "&f/tutorial", "&f/discord", "&f/quests", ""
+
+    spawn text display at location(96.5, 51.5, 80.5):
+        set data tag "holo" of display to true
+        set billboard of display to center
+        set text of display to "", " &f5s: $1, 1XP, 1EXP ", " &f2h: 1 beacon ", ""
+
+    spawn text display at location(-50, 25, -50):
+        set data tag "holo" of display to true
+        set billboard of display to center
+        set text of display to formatted "<sprite:items:item/diamond_pickaxe>"
+        set transformation scale of display to vector(100, 100, 100)
+        set view distance of display to 1000
+        set color of display to rgb(0, 0, 0, 0)
+
+    spawn text display at location(77, 50.5, 77.1):
+        set data tag "holo" of display to true
+        set billboard of display to center
+        set text of display to formatted "<sprite:items:item/elytra>"
+        set transformation scale of display to vector(3, 3, 3)
+        set color of display to rgb(0, 0, 0, 0)
+
+on join:
+    set text of {-holo} to "", "&bWelcome to &lBEANS&b!", "&f There are %size of players% players online. ", "", "&f/help", "&f/tutorial", "&f/discord", "&f/quests", ""
+
+on quit:
+    set text of {-holo} to "", "&bWelcome to &lBEANS&b!" and "&f There are %size of players% players online. ", "", "&f/help", "&f/tutorial", "&f/discord", "&f/quests", ""

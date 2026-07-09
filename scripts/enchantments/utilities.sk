@@ -1,0 +1,149 @@
+import:
+    java.util.regex.Pattern
+    java.lang.StringBuffer
+
+on load:
+    set {-resolver} to Pattern.compile("<([a-zA-Z]+):([0-9]+(?:\\.[0-9]+)?)>")
+
+function resolve(string: text) :: string:
+    set {_matcher} to {-resolver}.matcher({_string})
+    set {_buffer} to new StringBuffer()
+    while {_matcher}.find():
+        set {_tag} to {_matcher}.group(1)
+        set {_value} to {_matcher}.group(2) parsed as number
+
+        set {_replace} to switch return {_tag}:
+            case "damage" -> "%{_value}%❤"
+            case "duration" -> "%{_value}%s"
+            case "double" -> "%{_value} * 2%"
+
+        {_matcher}.appendReplacement({_buffer}, {_replace})
+
+    {_matcher}.appendTail({_buffer})        
+
+    return "%{_buffer}%"
+
+function inlineDiff(string1: text, string2: text, color: text = "&6", colorAfter: text = "&7") :: text:
+    set {_s1} to uncolored {_string1}
+    set {_s2} to uncolored {_string2}
+
+    # Split punctuation into its own token
+    replace all "(" with " ( " in {_s1}
+    replace all ")" with " ) " in {_s1}
+    replace all "," with " , " in {_s1}
+
+    replace all "(" with " ( " in {_s2}
+    replace all ")" with " ) " in {_s2}
+    replace all "," with " , " in {_s2}
+
+    set {_tokens1::*} to {_s1} split at " "
+    set {_tokens2::*} to {_s2} split at " "
+
+    delete {_tokens1::""}
+    delete {_tokens2::""}
+
+    set {_matches} to 0
+    loop {_tokens2::*}:
+        set {_i} to loop-index
+        if {_tokens1::%{_i}%} is loop-value:
+            add 1 to {_matches}
+
+    set {_total} to size of {_tokens2::*}
+
+    if {_total} > 0:
+        if {_matches} / {_total} <= 0.5:
+            return "%{_colorAfter}%&e%uncolored {_string1}%&r &8<sprite:gui:container/villager/trade_arrow> %{_color}%%uncolored {_string2}%"
+
+    set {_out} to ""
+    set {_first} to true
+
+    loop {_tokens2::*}:
+        set {_i} to loop-index
+        set {_t2} to loop-value
+        set {_t1} to {_tokens1::%{_i}%} ? ""
+
+        if {_first} is false:
+            if all:
+                {_t2} isn't ",", ")", or ":"
+                {_last} isn't "("
+                {_last} isn't ","
+            then:
+                add " " to {_out}
+
+        set {_first} to false
+
+        if {_t1} is {_t2}:
+            add "%{_colorAfter}%%{_t2}%" to {_out}
+        else:
+            if {_t1} is "":
+                add "%{_color}%%{_t2}%&r%{_colorAfter}%" to {_out}
+            else:
+                add "%{_colorAfter}%&e%{_t1}%&r &8<sprite:gui:container/villager/trade_arrow> %{_color}%%{_t2}%&r%{_colorAfter}%" to {_out}
+
+        set {_last} to {_t2}
+
+    return {_out}
+
+
+function setting(enchantment: text, key: text, value: object = {_}, l1: object = {_}, l2: object = {_}, l3: object = {_}, l4: object = {_}, l5: object = {_}, l6: object = {_}, l7: object = {_}, l8: object = {_}, l9: object = {_}, l10: object = {_}):
+    if {_value} is set:
+        set {-ce::%{_enchantment}%::%{_key}%} to {_value}
+    else:
+        delete {-ce::%{_enchantment}%::%{_key}%::*}
+        loop 10 times:
+            set {-ce::%{_enchantment}%::%{_key}%::%loop-number%} to {_l%loop-number%}
+
+function get_setting(enchantment: text, key: text, level: object = {_}) :: object:
+    if {_level} is set:
+        if {_level} > 100_000:
+            set {_level} to 100_000
+
+        set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
+
+        if {_value} isn't set:
+            set {_max} to {-ce::%{_enchantment}%::max}
+
+            if {_max} is set:
+                set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}
+                set {_previousValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max} - 1%}
+
+                set {_value} to {_maxValue}
+
+                if {_level} > {_max}:
+                    if {_maxValue} and {_previousValue} are set:
+                        if {_maxValue} > {_previousValue}:
+                            set {_difference} to {_maxValue} - {_previousValue}
+                            set {_value} to {_maxValue} + ({_level} - {_max}) * {_difference}
+                        else:
+                            set {_ratio} to {_previousValue} / {_maxValue}
+                            set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
+
+        return {_value}
+
+    return {-ce::%{_enchantment}%::%{_key}%}
+
+import:
+    me.mrscopes.mine.FastBlocks
+
+function fastRadiusClear(player: player, location: location, radius: number):
+    set {_drops} to FastBlocks.nuke({_location}, {_radius})
+    set {_fortune} to level of fortune on {_player}'s tool
+    set {_money mult} to 1 + ({_fortune} / 2)
+
+    async run 0 ticks later:
+        loop ...{_drops}:
+            set {_material} to loop-value.material()
+            set {_amount} to loop-value.amount()
+            add {_amount} to {_total blocks}
+
+            set {_material} to "%{_material}%" parsed as item type
+            
+            set {_sell value} to {-sell::%{_material}%} * {_amount} * {_money mult}
+            set {_xp value} to mean({-xp::%{_material}%::min}, {-xp::%{_material}%::max}) * {_amount}
+
+            add {_sell value} to {_total money}
+            add {_xp value} to {_total xp}
+            
+        add {_total blocks} to {blocks::%{_player}%}, {level progress::%{_player}%}, {total level progress::%{_player}%}
+        add {_total money} to {money::%{_player}%}
+        add {_total xp} to {_player}'s experience

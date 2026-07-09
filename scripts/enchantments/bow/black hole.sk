@@ -1,0 +1,31 @@
+on load:
+    setting("black hole", "display", value: "&f<sprite:blocks:block/obsidian> &5Black Hole")
+    setting("black hole", "max", value: 5)
+    setting("black hole", "priority", value: 0)
+    setting("black hole", "type", value: "bow")
+    setting("black hole", "item", value: obsidian)
+    
+    setting("black hole", "cooldown", l1: 20 seconds, l2: 20 seconds, l3: 20 seconds, l4: 20 seconds, l5: 20 seconds)
+    setting("black hole", "threshold", l1: 1, l2: 1, l3: 1, l4: 1, l5: 1)
+
+    setting("black hole", "duration", l1: 3 seconds, l2: 4 seconds, l3: 5 seconds, l4: 6 seconds, l5: 7 seconds)
+    setting("black hole", "radius", l1: 2, l2: 2.5, l3: 3, l4: 3.5, l5: 4)
+
+    setting("black hole", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
+    setting("black hole", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+
+local function getDescription(level: integer) :: string:
+    set {_duration} to get_setting("black hole", "duration", {_level})
+    set {_radius} to get_setting("black hole", "radius", {_level})
+    return "on land, pull in entities within %{_radius}%m for %time_format({_duration})%, disabling elytra"
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    set {_duration} to get_setting("black hole", "duration", {_level})
+    set {_radius} to get_setting("black hole", "radius", {_level})
+    set {_location} to location of {_projectile}
+    loop ticks of {_duration} times:
+        wait 1 ticks
+        show 100 portal particle at {_location}
+        loop all living entities in radius {_radius} around {_location}:
+            push loop-entity towards {_location} at speed 0.1
+            add 2 ticks to cooldown of elytra for loop-entity

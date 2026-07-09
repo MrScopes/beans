@@ -1,0 +1,173 @@
+function duration(input: string) :: object:
+    if {_input} is "forever":
+        return "forever"
+
+    if {_input} doesn't match "^(\d+(y|mo|d|h|m|s))+$":
+        stop
+
+    set {_parts::*} to regex split {_input} at "(?<=\D)(?=\d)|(?<=\d)(?=\D)"
+
+    loop {_parts::*}:
+        if loop-value matches "^\d+$":
+            set {_num} to loop-value parsed as number
+        else if loop-value is "y":
+            add ("%{_num}% years" parsed as timespan) to {_total}
+        else if loop-value is "mo":
+            add ("%{_num}% months" parsed as timespan) to {_total}
+        else if loop-value is "d":
+            add ("%{_num}% days" parsed as timespan) to {_total}
+        else if loop-value is "h":
+            add ("%{_num}% hours" parsed as timespan) to {_total}
+        else if loop-value is "m":
+            add ("%{_num}% minutes" parsed as timespan) to {_total}
+        else if loop-value is "s":
+            add ("%{_num}% seconds" parsed as timespan) to {_total}
+        else:
+            stop
+
+    return {_total}
+
+function durationDisplay(duration: object) :: text:
+    if {_duration} is "forever":
+        return "forever"
+    else:
+        return "for %{_duration}%"
+
+function addToPunishHistory(player: offline player, type: text, reason: text, duration: object, punished at: date, staff: offline player):
+    set {_n} to size of {punish history::%{_player}%::*} + 1
+    set {punish history::%{_player}%::%{_n}%} to {_type}
+    set {punish history::%{_player}%::%{_n}%::reason} to {_reason}
+    set {punish history::%{_player}%::%{_n}%::duration} to {_duration}
+    set {punish history::%{_player}%::%{_n}%::punished at} to {_punished at}
+    set {punish history::%{_player}%::%{_n}%::staff} to {_staff} ? "Console"
+
+command /kick <player> <text>:
+    permission: beans.mod
+    usage: &c/kick <player> <reason>
+    trigger:
+        kick arg 1 due to punishmentMessage("&cYou have been Kicked", arg 1, arg 2, {_}, now, player)
+        broadcast punishmentMessage("&cPlayer Kicked", arg 1, arg 2, {_}, {_}, player)
+        addToPunishHistory(arg 1, "Kick", arg 2, "N/A", now, player)
+
+command /ban <offline player> <text> <text>:
+    permission: beans.mod
+    usage: &c/ban <player> <duration> <reason>
+    trigger:
+        set {_duration} to duration(arg 2)
+        if {_duration} isn't set:
+            send "&cInvalid duration." to player
+            stop
+
+        set {ban::%arg 1%::reason} to arg 3
+        set {ban::%arg 1%::duration} to {_duration}
+        set {ban::%arg 1%::punished at} to now
+        set {ban::%arg 1%::punished by} to player
+
+        kick arg 1 due to punishmentMessage("&cYou are Banned", arg 1, {ban::%arg 1%::reason}, {_duration}, {ban::%arg 1%::punished at}, {ban::%arg 1%::punished by})
+        broadcast punishmentMessage("&cPlayer Banned", arg 1, arg 3, {_duration}, {_}, {ban::%arg 1%::punished by})
+        addToPunishHistory(arg 1, "Ban", arg 3, {_duration}, {ban::%arg 1%::punished at}, {ban::%arg 1%::punished by})
+
+command /unban <offline player>:
+    permission: beans.mod
+    usage: &c/unban <player>
+    trigger:
+        if {ban::%arg 1%::reason} is not set:
+            send "&cPlayer %arg 1% is not banned." to player
+        else:
+            delete {ban::%arg 1%::*}
+            broadcast punishmentMessage("&aPlayer Unbanned", arg 1, {_}, {_}, {_}, player)
+            addToPunishHistory(arg 1, "Unban", "N/A", "N/A", now, player)
+
+command /mute <offline player> <text> <text>:
+    permission: beans.mod
+    usage: &c/mute <player> <duration> <reason>
+    trigger:
+        set {_duration} to duration(arg 2)
+        if {_duration} isn't set:
+            send "&cInvalid duration." to player
+            stop
+
+        set {mute::%arg 1%::reason} to arg 3
+        set {mute::%arg 1%::duration} to {_duration}
+        set {mute::%arg 1%::punished at} to now
+        set {mute::%arg 1%::punished by} to player
+
+        broadcast punishmentMessage("&6Player Muted", arg 1, arg 3, {_duration}, {_}, {mute::%arg 1%::punished by})
+        addToPunishHistory(arg 1, "Mute", arg 3, {_duration}, {mute::%arg 1%::punished at}, {mute::%arg 1%::punished by})
+
+command /unmute <offline player>:
+    permission: beans.mod
+    usage: &c/unmute <player>
+    trigger:
+        if {mute::%arg 1%::reason} is not set:
+            send "&cPlayer %arg 1% is not muted." to player
+            stop
+
+        delete {mute::%arg 1%::*}
+        broadcast punishmentMessage("&aPlayer Unmuted", arg 1, {_}, {_}, {_}, player)
+        addToPunishHistory(arg 1, "Unmute", "N/A", "N/A", now, player)
+
+command /history <offline player> <integer=1>:
+    permission: beans.mod
+    usage: &c/history <player>
+    trigger:
+        if {punish history::%arg 1%::*} is not set:
+            send "&c%arg 1% has no punishment history." to player
+        else:
+            send ""
+            set {_size} to size of {punish history::%arg 1%::*}
+            send "&3&lPunishment History for &b%arg 1%&l:" to player
+            loop {_size} times:
+                set {_hover} to "&3Type: &b%{punish history::%arg 1%::%loop-value%}%%nl%&3Duration: &b%{punish history::%arg 1%::%loop-value%::duration}%%nl%&3Reason: &b%{punish history::%arg 1%::%loop-value%::reason}%%nl%&3Punishment Date: &b%{punish history::%arg 1%::%loop-value%::punished at}%%nl%&3Staff: &b%{punish history::%arg 1%::%loop-value%::staff}%"
+                add "<hover:show_text:'%{_hover}%'>&3#%loop-iteration% &b%{punish history::%arg 1%::%loop-value%}% &3(%{punish history::%arg 1%::%loop-value%::punished at}%)</hover>" to {_history::*}
+            send formatted {_history::*}
+            send "&bHover on each punishment for more details."
+            send ""
+
+on chat:
+    if {mute::%player%::reason} is set:
+        if {mute::%player%::duration} is "forever":
+            cancel event
+            send punishmentMessage("&6You are Muted", player, {mute::%player%::reason}, "forever", {mute::%player%::punished at}, {mute::%player%::punished by}) to player
+        else:
+            set {_elapsed} to difference between now and {mute::%player%::punished at}
+            if {_elapsed} is less than {mute::%player%::duration}:
+                cancel event
+                set {_left} to {mute::%player%::duration}
+                remove {_elapsed} from {_left}
+                send punishmentMessage("&6You are Muted", player, {mute::%player%::reason}, {_left}, {mute::%player%::punished at}, {mute::%player%::punished by}) to player
+            else:
+                delete {mute::%player%::*}
+
+on tab complete of "/ban" and "/mute":
+    set tab completions for position 2 to "forever", "1d", "1h", "1m", "1mo", "1y"
+    set tab completions for position 3 to "<reason>"
+
+on connect:
+    if {ban::%player%::reason} is set:
+        if {ban::%player%::duration} is "forever":
+            kick player due to punishmentMessage("&cYou are Banned", player, {ban::%player%::reason}, "forever", {ban::%player%::punished at}, {ban::%player%::punished by})
+        else:
+            set {_elapsed} to difference between now and {ban::%player%::punished at}
+            if {_elapsed} is less than {ban::%player%::duration}:
+                set {_left} to {ban::%player%::duration}
+                remove {_elapsed} from {_left}
+                kick player due to punishmentMessage("&cYou are Banned", player, {ban::%player%::reason}, {_left}, {ban::%player%::punished at}, {ban::%player%::punished by})
+            else:
+                delete {ban::%player%::*}
+
+function punishmentMessage(header: text, player: offline player, reason: text, remaining: object, punished at: date, staff: offline player) :: text:
+    add "&8&m-----------------------------&r" to {_message::*}
+    add " %{_header}%" to {_message::*}
+    add "&8&m-----------------------------&r" to {_message::*}
+    add " &fPlayer: &7%{_player}%" to {_message::*}
+    if {_reason} is set:
+        add " &fReason: &7%{_reason}%" to {_message::*}
+    if {_remaining} is set:
+        add " &fRemaining: &7%{_remaining}%" to {_message::*}
+    if {_punished at} is set:
+        add " &fPunished At: &7%{_punished at}%" to {_message::*}
+    add " &fStaff: &7%{_staff} ? "Console"%" to {_message::*}
+    add "&8&m-----------------------------&r" to {_message::*}
+    return join {_message::*} with nl
+    

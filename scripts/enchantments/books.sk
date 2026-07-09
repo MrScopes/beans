@@ -1,0 +1,306 @@
+using equippable components
+
+# ============================================================
+#  Book creation
+# ============================================================
+
+function createStoredCustomBook(enchantment: string, level: integer, special: string = {_}) :: item:
+    set {_item} to {-ce::%{_enchantment}%::item} with all item flags
+    set {_equippable} to equippable component of {_item}
+    set equipment slot of {_equippable} to saddle slot
+    enchant {_item} with unbreaking 10
+    set data tag "stored_custom_enchantment" of {_item} to {_enchantment}
+    set data tag "stored_level" of {_item} to {_level}
+
+    if {_special} is set:
+        set data tag "special" of {_item} to {_special}
+
+    set name of {_item} to formatted enchantmentDisplay({_enchantment}, {_level}, {_special})
+
+    set {_money sell value} to moneySaleValue({_enchantment}, {_level})
+    set {_xp sell value} to xpSaleValue({_enchantment}, {_level})
+    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantment_type_sprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%, %formatNumber({_xp sell value})% XP"
+    return {_item}
+
+function createStoredVanillaBook(enchantment: string, level: integer, special: string = {_}) :: item:
+    set {_item} to enchanted book with all item flags
+    set data tag "stored_vanilla_enchantment" of {_item} to {_enchantment}
+    set data tag "stored_level" of {_item} to {_level}
+
+    if {_special} is set:
+        set data tag "special" of {_item} to {_special}
+
+    set name of {_item} to formatted enchantmentDisplay({_enchantment}, {_level}, {_special})
+    set lore of {_item} to formatted "&r", "&r&7Drag onto an item to enchant."
+    return {_item}
+
+
+# ============================================================
+#  Apply result helpers
+# ============================================================
+
+function clearApplyResult(player: player):
+    delete {-apply result::%uuid of {_player}%::*}
+
+function setApplyResult(player: player, status: text, item: item):
+    set {-apply result::%uuid of {_player}%::status} to {_status}
+    set {-apply result::%uuid of {_player}%::item} to {_item}
+
+
+# ============================================================
+#  Apply logic
+# ============================================================
+
+function tryApplyStoredBook(player: player, book: item, target: item):
+    if data tag "stored_custom_enchantment" of {_book} is set:
+        tryApplyStoredCustomBook({_player}, {_book}, {_target})
+        stop
+    if data tag "stored_vanilla_enchantment" of {_book} is set:
+        tryApplyStoredVanillaBook({_player}, {_book}, {_target})
+        stop
+    setApplyResult({_player}, "invalid", {_target})
+
+function tryApplyStoredCustomBook(player: player, book: item, target: item):
+    clearApplyResult({_player})
+
+    {_target} is set
+
+    set {_stored enchantment} to data tag "stored_custom_enchantment" of {_book}
+    set {_level} to data tag "stored_level" of {_book}
+    set {_special} to data tag "special" of {_book}
+    set {_uuid} to data tag "uuid" of {_target}
+
+    if any:
+        {_stored enchantment} is not set
+        {_level} is not set
+    then:
+        setApplyResult({_player}, "invalid", {_target})
+        stop
+
+    if data tag "stored_custom_enchantment" of {_target} is set:
+        send "&cEnchant merging is disabled. &f(/sellenchantments)" to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if data tag "stored_vanilla_enchantment" of {_target} is set:
+        send "&cYou can't apply enchantments to enchant books." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if canBeApplied({_stored enchantment}, {_target}) is false:
+        send "&cYou can't apply this enchantment to that item." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    set {_enchantments::*} to keyed getEnchantments({_target})
+
+    if size of {_enchantments::*} + 1 > getMaxEnchantments({_target}):
+        send "&cUpgrade your item tier for more slots." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if all:
+        {_level} > {-ce::%{_stored enchantment}%::max}
+        {_special} isn't set
+    then:
+        send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max}%." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if {_enchantments::%{_stored enchantment}%} is set:
+        set {_current} to {_enchantments::%{_stored enchantment}%}
+        set {_new level} to {_level}
+
+        if {_new level} is {_current}:
+            add 1 to {_new level}
+
+        if all:
+            {_new level} > {-ce::%{_stored enchantment}%::max}
+            {_special} isn't set
+        then:
+            send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max}%." to {_player}
+            setApplyResult({_player}, "none", {_target})
+            stop
+        else if {_new level} > {_current}:
+            set {custom enchantments::%{_uuid}%::%{_stored enchantment}%::special} to {_special}
+            setApplyResult({_player}, "upgrade", enchantItem({_target}, {_stored enchantment}, {_new level}, {_player}))
+        else:
+            send "&cYou already have this enchantment." to {_player}
+            setApplyResult({_player}, "none", {_target})
+    else:
+        set {custom enchantments::%{_uuid}%::%{_stored enchantment}%::special} to {_special}
+        setApplyResult({_player}, "applied", enchantItem({_target}, {_stored enchantment}, {_level}, {_player}))
+
+function tryApplyStoredVanillaBook(player: player, book: item, target: item):
+    clearApplyResult({_player})
+
+    set {_stored enchantment} to data tag "stored_vanilla_enchantment" of {_book}
+    set {_level} to data tag "stored_level" of {_book}
+
+    if any:
+        {_stored enchantment} is not set
+        {_level} is not set
+    then:
+        setApplyResult({_player}, "invalid", {_target})
+        stop
+
+    set {_parsed enchantment} to {_stored enchantment} parsed as enchantment
+    if {_parsed enchantment} is not set:
+        send "Invalid enchantment." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if data tag "stored_vanilla_enchantment" of {_target} is set:
+        send "Enchant merging is disabled. (/sellenchantments)" to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if data tag "stored_custom_enchantment" of {_target} is set:
+        send "You can't apply enchantments to enchant books." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    if {_parsed enchantment}.canEnchantItem({_target}) is false:
+        send "You can't apply this enchantment to this item." to {_player}
+        setApplyResult({_player}, "none", {_target})
+        stop
+
+    set {_current level} to level of {_parsed enchantment} on {_target}
+
+    if {_current level} > 0:
+        set {_new level} to {_level}
+        if {_new level} is {_current level}:
+            add 1 to {_new level}
+
+        if {_new level} > {-vanilla enchantment::%{_stored enchantment}%::max}:
+            send "This enchantment is already at maximum level." to {_player}
+            setApplyResult({_player}, "none", {_target})
+        else if {_new level} > {_current level}:
+            set level of {_parsed enchantment} on {_target} to {_new level}
+            setApplyResult({_player}, "upgrade", {_target})
+        else:
+            send "You already have this enchantment." to {_player}
+            setApplyResult({_player}, "none", {_target})
+    else:
+        set level of {_parsed enchantment} on {_target} to {_level}
+        setApplyResult({_player}, "applied", {_target})
+
+
+# ============================================================
+#  Misc helpers
+# ============================================================
+
+function enchantmentTypeFromItem(item: item type) :: string:
+    if {_item} is tagged with minecraft tag "pickaxes":
+        return "pickaxe"
+    if {_item} is tagged with minecraft tag "swords":
+        return "sword"
+    if {_item} is tagged with paper tag "helmets":
+        return "armor"
+    if {_item} is tagged with paper tag "bows":
+        return "bow"
+
+function enchantment_type_sprite(type: string) :: text:
+    if {_type} is "pickaxe":
+        return "&f<sprite:items:item/diamond_pickaxe>"
+    if {_type} is "sword":
+        return "&f<sprite:items:item/diamond_sword>"
+    if {_type} is "armor":
+        return "&f<sprite:items:item/diamond_helmet>"
+    if {_type} is "bow":
+        return "&f<sprite:items:item/bow>"
+    return ""
+
+function moneySaleValue(enchantment: string, level: integer) :: number:
+    if {-ce::%{_enchantment}%::max} is 1:
+        return 100_000
+    if {_level} is 1:
+        return round({-ce::%{_enchantment}%::money cost::%{_level} + 1%} / 4)
+    if {_level} > {-ce::%{_enchantment}%::max}:
+        set {_max value} to round({-ce::%{_enchantment}%::money cost::%{-ce::%{_enchantment}%::max}%} / 2)
+        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max})
+    return round({-ce::%{_enchantment}%::money cost::%{_level}%} / 2)
+
+function xpSaleValue(enchantment: string, level: integer) :: number:
+    if {-ce::%{_enchantment}%::max} is 1:
+        return 100_000
+    if {_level} is 1:
+        return round({-ce::%{_enchantment}%::xp cost::%{_level} + 1%} / 4)
+    if {_level} > {-ce::%{_enchantment}%::max}:
+        set {_max value} to round({-ce::%{_enchantment}%::xp cost::%{-ce::%{_enchantment}%::max}%} / 2)
+        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max})
+    return round({-ce::%{_enchantment}%::xp cost::%{_level}%} / 2)
+
+
+# ============================================================
+#  Prevent stored books from being used as tools/weapons
+# ============================================================
+
+on right click:
+    data tag "stored_level" of event-item is set
+    cancel event
+
+on left click:
+    data tag "stored_level" of event-item is set
+    cancel event
+
+on damage:
+    data tag "stored_level" of attacker's tool is set
+    cancel event
+
+
+# ============================================================
+#  /sellenchantments
+# ============================================================
+
+command /sellenchantments:
+    trigger:
+        set {-enchantment sell gui::%player%} to chest inventory with 6 rows named "Sell Enchantments"
+        set slot integers between 0 and 8 of {-enchantment sell gui::%player%} to black stained glass pane named ""
+        set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore "&7Money Value: &b$0", "&7XP Value: &b0 XP"
+        open {-enchantment sell gui::%player%} to player
+
+# Update the sell value display after any click
+on inventory click:
+    player's current inventory is {-enchantment sell gui::%player%}
+    wait 1 tick
+    set {_money sell value} to 0
+    set {_xp sell value} to 0
+    loop items in {-enchantment sell gui::%player%}:
+        index of loop-item > 8
+        set {_level} to data tag "stored_level" of loop-item
+        {_level} is set
+        add moneySaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_money sell value}
+        add xpSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_xp sell value}
+    set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore "&7Money Value: &b$%formatNumber({_money sell value})%", "&7XP Value: &b%formatNumber({_xp sell value})% XP"
+
+# Handle clicking the sell button
+on inventory click:
+    player's current inventory is {-enchantment sell gui::%player%}
+    event-inventory is {-enchantment sell gui::%player%}
+    index of event-slot <= 8
+    cancel event
+    index of event-slot is 4
+
+    set {_money sell value} to 0
+    set {_xp sell value} to 0
+    loop items in {-enchantment sell gui::%player%}:
+        index of loop-item > 8
+        set {_level} to data tag "stored_level" of loop-item
+        {_level} is set
+        add moneySaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_money sell value}
+        add xpSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_xp sell value}
+        set loop-item to air
+
+    add {_money sell value} to {money::%player%}
+    add {_xp sell value} to player's experience
+    send "You sold your enchantments for $%formatNumber({_money sell value})% and %formatNumber({_xp sell value})% XP." to player
+    close player's inventory
+
+on inventory close:
+    if event-inventory is {-enchantment sell gui::%player%}:
+        loop items in {-enchantment sell gui::%player%}:
+            index of loop-item > 8
+            if loop-item isn't air:
+                giveORvaultORdrop(player, loop-item)
+        delete {-enchantment sell gui::%player%}

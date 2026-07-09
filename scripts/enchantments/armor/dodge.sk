@@ -1,0 +1,21 @@
+on load:
+    setting("dodge", "display", value: "&f<sprite:items:item/rabbit_foot> Dodge")
+    setting("dodge", "max", value: 5)
+    setting("dodge", "priority", value: 0)
+    setting("dodge", "type", value: "armor")
+    setting("dodge", "item", value: rabbit foot)
+
+    setting("dodge", "chance", l1: 0.5, l2: 0.75, l3: 1.0, l4: 1.25, l5: 1.75)
+
+    setting("dodge", "speed", l1: potion effect of speed 1 for 3 seconds, l2: potion effect of speed 1 for 4 seconds, l3: potion effect of speed 2 for 4 seconds, l4: potion effect of speed 2 for 4 seconds, l5: potion effect of speed 2 for 5 seconds)
+
+    setting("dodge", "xp cost", l2: 25_000, l3: 200_000, l4: 500_000, l5: 1_250_000)
+    setting("dodge", "money cost", l2: 35_000, l3: 250_000, l4: 600_000, l5: 1_500_000)
+
+local function getDescription(level: integer) :: string:
+    return "take no damage&8, &7gain &f%effectDisplay(get_setting("dodge", "speed", {_level}))%"
+
+local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+    play sound "minecraft:item.totem.use" with volume 0.2 and pitch 1 at {_victim}
+    play (100 totem of undying item particles) with particle speed of 0.2 at {_victim}'s head
+    return -1000

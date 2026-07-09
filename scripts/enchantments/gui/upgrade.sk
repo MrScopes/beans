@@ -1,0 +1,288 @@
+# ============================================================
+#  Upgrade GUI
+# ============================================================
+
+function openUpgradeGui(player: player):
+    set {-upgrade gui::%{_player}%} to chest inventory with 6 rows named "         Upgrade Your Item"
+
+    loop 54 times:
+        set slot loop-number - 1 of {-upgrade gui::%{_player}%} to black stained glass pane named " "
+
+    # --- Column 1: Tier / Color / Trim ---
+    set {_row} to 1
+
+    set slot {_row} * 9 + 1 of {-upgrade gui::%{_player}%} to createTierUpgradeItem({_player}, {_player}'s tool)
+    add 1 to {_row}
+
+    if {_player}'s tool is tagged with paper tag "helmets":
+        set {_colorItem} to purple wool named "&fChoose Color" with lore "&7Click to change color."
+        set data tag "choose_color" of {_colorItem} to true
+        set slot {_row} * 9 + 1 of {-upgrade gui::%{_player}%} to {_colorItem}
+        add 1 to {_row}
+
+        set {_trimItem} to smithing table named "&fChoose Trim" with lore "&7Click to change trim."
+        set data tag "choose_trim" of {_trimItem} to true
+        set slot {_row} * 9 + 1 of {-upgrade gui::%{_player}%} to {_trimItem}
+        add 1 to {_row}
+
+    # --- Column 3: Vanilla enchantments ---
+    set {_row} to 1
+
+    if {_player}'s tool is tagged with minecraft tag "pickaxes":
+        set {_vanilla::*} to efficiency, fortune
+    else if {_player}'s tool is tagged with minecraft tag "swords":
+        set {_vanilla::*} to sharpness, fire aspect, knockback
+    #else if {_player}'s tool is tagged with paper tag "helmets":
+    #    set {_vanilla::*} to protection
+    else if {_player}'s tool is tagged with paper tag "bows":
+        set {_vanilla::*} to power, punch, flame
+
+    loop {_vanilla::*}:
+        set slot {_row} * 9 + 3 of {-upgrade gui::%{_player}%} to createVanillaEnchantGuiItem({_player}, loop-value)
+        add 1 to {_row}
+
+    # --- Columns 5-8: Custom enchantments ---
+    set {_custom slots::*} to 5, 6, 7, 8, 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43, 44
+    set {_slot index} to 1
+
+    set {_tool} to {_player}'s tool
+    set {_uuid} to data tag "uuid" of {_tool}
+    set {_max enchantments} to getMaxEnchantments({_tool})
+    set {_type} to enchantmentTypeFromItem({_tool})
+    set {_max ever enchantments} to 0
+    if {_type} is set:
+        set {_max ever enchantments} to {-tier::%{_type}%::max enchantments::4} ? {_max enchantments}
+
+    loop {_custom slots::*}:
+        set {_slot number} to loop-index parsed as integer
+        if {_slot number} <= {_max enchantments}:
+            set slot loop-value of {-upgrade gui::%{_player}%} to green stained glass pane named "&aAvailable Slot"
+        else if {_slot number} <= {_max ever enchantments}:
+            set {_unlock tier} to 4
+            loop 1, 2, 3 and 4:
+                if {-tier::%{_type}%::max enchantments::%loop-value-2%} >= {_slot number}:
+                    set {_unlock tier} to loop-value-2
+                    stop loop
+            set slot loop-value of {-upgrade gui::%{_player}%} to red stained glass pane named "&cLocked Slot" with lore "&7Unlocks at Tier &f%{_unlock tier}%"
+
+    set {_enchantments::*} to keyed getEnchantments({_player}'s tool)
+    if {_player}'s tool is tagged with paper tag "helmets":
+        if {_enchantments::armor} isn't set:
+            set {_enchantments::armor} to 0
+
+    loop indices of {_enchantments::*}:
+        set {_enchantment} to loop-value
+        set {_level} to {_enchantments::%{_enchantment}%}
+        {_level} is set
+
+        set {_guiItem} to createCustomEnchantGuiItem({_player}, {_tool}, {_enchantment}, {_level}, {_uuid})
+        set slot {_custom slots::%{_slot index}%} of {-upgrade gui::%{_player}%} to {_guiItem}
+        add 1 to {_slot index}
+
+    open {-upgrade gui::%{_player}%} to {_player}
+
+
+# Builds the GUI item for a single vanilla enchantment slot
+function createVanillaEnchantGuiItem(player: player, enchantment: object) :: item:
+    set {_display} to {-vanilla enchantment::%{_enchantment}%::display} ? "&7%{_enchantment}%"
+    set {_level} to level of {_enchantment} on {_player}'s tool ? 0
+
+    if {_level} >= {-vanilla enchantment::%{_enchantment}%::max}:
+        if {_level} > 0:
+            set {_label} to "&c%{_display}% %romanNumeral({_level})%"
+        else:
+            set {_label} to "&c%{_display}% &7(MAX)"
+        set {_book} to enchanted book with all item flags named formatted {_label}
+    else:
+        set {_xp cost} to {-vanilla enchantment::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_money cost} to {-vanilla enchantment::%{_enchantment}%::money cost::%{_level} + 1%}
+        if {_level} > 0:
+            set {_label} to "&a%{_display}% %romanNumeral({_level})%"
+        else:
+            set {_label} to "&a%{_display}%"
+        set {_book} to enchanted book named formatted {_label} with lore "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)", "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)", "&fMax: %{-vanilla enchantment::%{_enchantment}%::max}%" with all item flags
+
+    set data tag "vanilla_enchantment" of {_book} to "%{_enchantment}%"
+    return {_book}
+
+
+# Builds the GUI item for a single custom enchantment slot
+function createCustomEnchantGuiItem(player: player, tool: item, enchantment: string, level: integer, uuid: string) :: item:
+    set {_display} to {-ce::%{_enchantment}%::display} ? "&7%{_enchantment}%"
+    set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+
+    if {_special} is set:
+        set {_specialDisplay} to " &f<sprite:particles:glint> &e%{_special}%"
+    else:
+        set {_specialDisplay} to ""
+
+    set {_item} to {-ce::%{_enchantment}%::item} with all item flags
+    set data tag "custom_enchantment" of {_item} to "%{_enchantment}%"
+    set data tag "tool_uuid" of {_item} to "%{_uuid}%"
+
+    if {_level} >= {-ce::%{_enchantment}%::max}:
+        if {_level} > 0:
+            set {_label} to "&c%{_display}% %romanNumeral({_level})%"
+        else:
+            set {_label} to "&c%{_display}% &7(MAX)"
+        if {_special} is set:
+            set {_label} to "&7%{_label}%%{_specialDisplay}%"
+        enchant {_item} with unbreaking 10
+        set {_item} to {_item} named formatted {_label} with lore formatted getDescription({_enchantment}, {_level})
+    else:
+        set {_xp cost} to {-ce::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
+        set {_lore1} to "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)"
+        set {_lore2} to "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)"
+        set {_lore3} to "&fMax: %{-ce::%{_enchantment}%::max}%"
+        if {_level} is 0:
+            set {_item} to {_item} named formatted "&a%{_display}%%{_specialDisplay}%" with lore {_lore1}, {_lore2}, {_lore3}, "", formatted getDescription({_enchantment}, 1), ""
+        else:
+            set {_item} to {_item} named formatted "&a%{_display}% %romanNumeral({_level})% > %romanNumeral({_level} + 1)%%{_specialDisplay}%" with lore {_lore1}, {_lore2}, {_lore3}, "", formatted inlineDiff(getDescription({_enchantment}, {_level}), getDescription({_enchantment}, {_level} + 1)), ""
+
+    return {_item}
+
+
+# ============================================================
+#  Click handler - Upgrade GUI
+# ============================================================
+
+on inventory click:
+    player's current inventory is {-upgrade gui::%player%}
+    cancel event
+
+    if data tag "choose_color" of event-item is set:
+        openColorGui(player)
+        stop
+
+    if data tag "choose_trim" of event-item is set:
+        openTrimGui(player)
+        stop
+
+    if data tag "custom_enchantment" of event-item is set:
+        handleCustomEnchantClick(player, event-item, click type)
+        stop
+
+    if data tag "vanilla_enchantment" of event-item is set:
+        handleVanillaEnchantClick(player, event-item, click type)
+        stop
+
+    # Stored book clicked from inventory while GUI is open - apply to tool
+    set {_customEnch} to data tag "stored_custom_enchantment" of event-item
+    set {_vanillaEnch} to data tag "stored_vanilla_enchantment" of event-item
+    set {_level} to data tag "stored_level" of event-item
+
+    tryApplyStoredBook(player, event-item, player's tool)
+    set {_success} to handleApplyResult(player, {_customEnch} ? {_vanillaEnch}, {_level})
+    if {_success} is true:
+        set player's tool to {-apply result::%uuid of player%::item}
+        set {_book} to event-item
+        remove 1 from item amount of {_book}
+        if item amount of {_book} <= 0:
+            set event-slot to air
+        else:
+            set event-slot to {_book}
+        openUpgradeGui(player)
+    clearApplyResult(player)
+
+
+# ============================================================
+#  Click handler - drag stored book onto item in inventory
+# ============================================================
+
+on inventory click:
+    player's current inventory isn't inventory of player
+    event-inventory is player's inventory
+    player's cursor slot isn't air
+    event-item isn't air
+
+    set {_cursor} to player's cursor slot
+    set {_level} to data tag "stored_level" of {_cursor}
+    {_level} is set
+
+    set {_customEnch} to data tag "stored_custom_enchantment" of {_cursor}
+    set {_vanillaEnch} to data tag "stored_vanilla_enchantment" of {_cursor}
+    if any:
+        {_customEnch} is set
+        {_vanillaEnch} is set
+    then:
+        cancel event
+        tryApplyStoredBook(player, {_cursor}, event-item)
+        set {_success} to handleApplyResult(player, {_customEnch} ? {_vanillaEnch}, {_level})
+        if {_success} is true:
+            set event-slot to {-apply result::%uuid of player%::item}
+            remove 1 from item amount of player's cursor slot
+        clearApplyResult(player)
+
+
+# ============================================================
+#  Sub-handlers
+# ============================================================
+
+function handleCustomEnchantClick(player: player, guiItem: item, click: click type):
+    set {_enchantment} to data tag "custom_enchantment" of {_guiItem}
+    set {_uuid} to data tag "tool_uuid" of {_guiItem}
+    set {_level} to {custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0
+
+    if {_click} is left mouse button:
+        {_level} < {-ce::%{_enchantment}%::max}
+        set {_xp cost} to {-ce::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
+        if {_player}'s experience < {_xp cost}:
+            send "You need %formatNumber({_xp cost} - {_player}'s experience)% more xp to upgrade this enchantment." to {_player}
+        else if {money::%{_player}%} < {_money cost}:
+            send "You need %formatNumber({_money cost} - {money::%{_player}%})% more money to upgrade this enchantment." to {_player}
+        else:
+            remove {_xp cost} from {_player}'s experience
+            remove {_money cost} from {money::%{_player}%}
+            set {_player}'s tool to enchantItem({_player}'s tool, {_enchantment}, {_level} + 1, {_player})
+            openUpgradeGui({_player})
+
+    else if {_click} is right mouse button:
+        {_level} > 0
+        set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+        give createStoredCustomBook({_enchantment}, {_level}, {_special}) to {_player}
+        set {_player}'s tool to enchantItem({_player}'s tool, {_enchantment}, 0, {_player})
+        openUpgradeGui({_player})
+
+
+function handleVanillaEnchantClick(player: player, guiItem: item, click: click type):
+    set {_enchantment} to data tag "vanilla_enchantment" of {_guiItem}
+    set {_parsed} to {_enchantment} parsed as enchantment
+    set {_level} to level of {_parsed} on {_player}'s tool ? 0
+
+    if {_click} is left mouse button:
+        if {_level} >= {-vanilla enchantment::%{_enchantment}%::max}:
+            send "The max level for that enchantment is %{-vanilla enchantment::%{_enchantment}%::max}%." to {_player}
+            stop
+        set {_xp cost} to {-vanilla enchantment::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_money cost} to {-vanilla enchantment::%{_enchantment}%::money cost::%{_level} + 1%}
+        if {_player}'s experience < {_xp cost}:
+            send "You need %formatNumber({_xp cost} - {_player}'s experience)% more xp to upgrade this enchantment." to {_player}
+        else if {money::%{_player}%} < {_money cost}:
+            send "You need %formatNumber({_money cost} - {money::%{_player}%})% more money to upgrade this enchantment." to {_player}
+        else:
+            remove {_xp cost} from {_player}'s experience
+            remove {_money cost} from {money::%{_player}%}
+            add 1 to level of {_parsed} on {_player}'s tool
+            openUpgradeGui({_player})
+
+    else if {_click} is right mouse button:
+        {_level} > 0
+        give createStoredVanillaBook({_enchantment}, {_level}) to {_player}
+        set level of {_parsed} on {_player}'s tool to 0
+        openUpgradeGui({_player})
+
+
+# Returns true if the result was a successful apply/upgrade.
+# Does NOT clear the apply result — caller must do that after reading the result item.
+function handleApplyResult(player: player, enchantment: text, level: integer) :: boolean:
+    set {_status} to {-apply result::%uuid of {_player}%::status}
+    if any:
+        {_status} is "applied"
+        {_status} is "upgrade"
+        {_status} is "upgraded book"
+    then:
+        send formatted "&7You successfully applied %enchantmentDisplay({_enchantment}, {_level})% &7to your tool." to {_player}
+        return true
+    return false

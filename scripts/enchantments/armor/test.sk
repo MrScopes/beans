@@ -1,0 +1,31 @@
+on load:
+    setting("test", "display", value: "&fTest")
+    setting("test", "max", value: 1)
+    setting("test", "priority", value: 0)
+    setting("test", "type", value: "armor")
+    setting("test", "item", value: barrier)
+    setting("test", "disabled", value: true)
+
+local function getDescription(level: integer) :: string:
+    return "Test"
+
+local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+    send "(%{_armor}%) You were attacked by %{_attacker}% at level %{_level}% for %{_damage}%." to {_victim}
+
+local function onattack(attacker: entity = {_}, armor: item, level: integer, victim: entity, damage: number, damage cause: damage cause) :: number:
+    send "(%{_armor}%) You attacked %{_victim}% at level %{_level}% for %{_damage}%." to {_attacker}
+
+local function onoffhand(player: player, armor: item, level: integer) :: boolean:
+    send "(%{_armor}%) You put armor in your offhand at level %{_level}%." to {_player}
+    chance of 50%:
+        send "50%% chance, canceled event." to {_player}
+        return true
+    else:
+        send "50%% chance, didn't cancel event." to {_player}
+        return false
+
+local function onapply(armor: item, level: integer, player: player = {_}):
+    send "Applied enchantment at level %{_level}%." to {_player}
+
+local function onunapply(armor: item, old level: integer, player: player = {_}):
+    send "Unapplied enchantment at level %{_old level}%." to {_player}

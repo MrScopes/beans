@@ -1,0 +1,21 @@
+on load:
+    setting("experienced", "display", value: "&f<sprite:items:item/experience_bottle> &aExperienced")
+    setting("experienced", "max", value: 5)
+    setting("experienced", "priority", value: 100)
+    setting("experienced", "type", value: "pickaxe")
+    setting("experienced", "item", value: experience bottle)
+
+    setting("experienced", "chance", l1: 0.5, l2: 0.6, l3: 0.7, l4: 0.8, l5: 1)
+
+    setting("experienced", "xp", l1: 750, l2: 1000, l3: 1500, l4: 2000, l5: 3000)
+
+    setting("experienced", "xp cost", l2: 35_000, l3: 225_000, l4: 500_000, l5: 900_000)
+    setting("experienced", "money cost", l2: 50_000, l3: 275_000, l4: 700_000, l5: 1_000_000)
+
+local function getDescription(level: integer) :: string:
+    return "gain %get_setting("experienced", "xp", {_level})% experience"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:entity.experience_orb.pickup" with volume 0.5 and pitch 1 at location of {_player}
+    add get_setting("experienced", "xp", {_level}) to {_player}'s experience
+    add get_setting("experienced", "xp", {_level}) to {xp source::%{_player}%::experienced enchantment}

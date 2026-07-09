@@ -1,0 +1,60 @@
+import:
+    me.lucko.spark.api.SparkProvider
+    me.lucko.spark.api.statistic.StatisticWindow
+    org.bukkit.Bukkit
+    
+on load:
+    set {-spark} to SparkProvider.get()
+
+async every tick:
+    set {_mspt} to Bukkit.getAverageTickTime() #Bukkit.getTickTimes()[0] / 1_000_000
+
+    #if {_mspt} > 50:
+    #set {_tps} to 1000 / {_mspt}
+    #else:
+    set {_tps} to {-spark}.tps().poll(StatisticWindow.TicksPerSecond.SECONDS_10)
+    if {_tps} > 19.9:
+        set {_tps} to "<green>*20.0"
+    else if {_tps} > 19.5:
+        set {_tps} to "<green>%{_tps}%"
+    else if {_tps} > 18.0:
+        set {_tps} to "<yellow>%{_tps}%"
+    else:
+        set {_tps} to "<red>%{_tps}%"
+
+    if {_mspt} < 35:
+        set {_mspt} to "<green>%{_mspt}%ms"
+    else if {_mspt} < 45:
+        set {_mspt} to "<yellow>%{_mspt}%ms"
+    else if {_mspt} < 50:
+        set {_mspt} to "<gold>%{_mspt}%ms"
+    else:
+        set {_mspt} to "<red>%{_mspt}%ms"
+            
+    loop all players:
+        set loop-player's tablist header to "", "     &b&lWelcome to &lBEANS&b!     ", "     &fThere are %size of players% players online.     ", ""
+        set loop-player's tablist footer to "", "&f/help", "&f/discord", "&f/buy", "", "&bServer TPS: &f%{_tps}%", "&bServer MSPT: &f%{_mspt}%", "&bYour Ping: &f%loop-player's ping%ms", "&7&obeans.minehut.gg", ""
+
+        if {level::%loop-player%} < 100:
+            set {_required xp} to {-required xp::%{level::%loop-player%} + 1%}
+            set {-level progress percent::%loop-player%} to ({level progress::%loop-player%} / {_required xp}) * 100
+            if {level progress::%loop-player%} >= {_required xp}:
+                add 1 to {level::%loop-player%}
+                remove {_required xp} from {level progress::%loop-player%}
+        else:
+            set {-level progress percent::%loop-player%} to 100
+
+        set line 4 of loop-player's fastboard to "&bBlocks: &f%kNumber({blocks::%loop-player%})%"
+        set line 5 of loop-player's fastboard to "&bMoney: &f$%kNumber({money::%loop-player%})%"
+        set line 6 of loop-player's fastboard to "&bXP: &f%kNumber(loop-player's experience)%"
+        set line 7 of loop-player's fastboard to "&bLevel: &f%{-level display::%clamp({level::%loop-player%} ? 1, 1, 100)%}% &7(&f%floor({-level progress percent::%loop-player%})%%%&7)"
+
+on join:
+    async run 1 second later:
+        set player's tablist header to "", "", "     &b&lWelcome to &lBEANS&b!     ", "     &fThere are %size of players% players online.     ", "", ""
+        set player's tablist footer to "", "", "&f/help", "&f/discord", "&f/buy", "", "&bServer TPS: &f%{-tps}%", "&bYour Ping: &f%player's ping%ms", "&7&obeans.minehut.gg", ""
+        set title of player's fastboard to "&0     &b&lBEANS     &0"
+        set line 2 of player's fastboard to "&fHello, &b%player%&7!"
+        set line 3 of player's fastboard to ""
+        set line 8 of player's fastboard to ""
+        set line 9 of player's fastboard to "&7&obeans.minehut.gg"

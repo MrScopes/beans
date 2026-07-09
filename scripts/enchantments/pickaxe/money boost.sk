@@ -1,0 +1,20 @@
+on load:
+    setting("money boost", "display", value: "&f<sprite:items:item/emerald> &2Money Boost")
+    setting("money boost", "max", value: 10)
+    setting("money boost", "priority", value: 0)
+    setting("money boost", "type", value: "pickaxe")
+    setting("money boost", "item", value: emerald)
+
+    setting("money boost", "chance", l1: 10, l2: 15, l3: 20, l4: 25, l5: 30, l6: 35, l7: 40, l8: 45, l9: 50, l10: 70)
+    setting("money boost", "reward", l1: 20, l2: 25, l3: 30, l4: 35, l5: 40, l6: 45, l7: 50, l8: 55, l9: 60, l10: 70)
+
+    setting("money boost", "xp cost", l2: 4_000, l3: 16_000, l4: 64_000, l5: 256_000, l6: 500_000, l7: 750_000, l8: 1_000_000, l9: 1_500_000, l10: 2_000_000)
+    setting("money boost", "money cost", l2: 6_000, l3: 24_000, l4: 96_000, l5: 384_000, l6: 768_000, l7: 1_000_000, l8: 1_500_000, l9: 2_000_000, l10: 2_500_000)
+
+local function getDescription(level: integer) :: string:
+    return "gain $%get_setting("money boost", "reward", {_level})%"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    play sound "minecraft:entity.villager.celebrate" with volume 0.1 and pitch 1 at location of {_player}
+    add get_setting("money boost", "reward", {_level}) to {money::%{_player}%}
+    add get_setting("money boost", "reward", {_level}) to {money source::%{_player}%::money enchantment}

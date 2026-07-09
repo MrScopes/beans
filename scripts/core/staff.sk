@@ -1,0 +1,51 @@
+command /vanish:
+    aliases: /v
+    trigger:
+        if {-vanish::%player%} is set:
+            delete {-vanish::%player%}, {-no bar::%player%}
+            bar(player)
+            updatePlayerTabName(player)
+            send "You are no longer vanished."
+            reveal player to all players
+            if all:
+                player's gamemode isn't creative
+                player isn't flying
+            then:
+                set player's flight mode to false
+        else:
+            set {-vanish::%player%} to now
+            set {-no bar::%player%} to true
+            bar(player)
+            send "You are now vanished."
+            set player's flight mode to true
+
+command /staffchat <text>:
+    aliases: /sc
+    permission: beans.mod
+    trigger:
+        send "&8[&6Staff Chat&8] &e%player_display(player, "[prefix][player]")%&8: &f%arg 1%" to all players where [input has permission "beans.mod"]
+        sendToStaffChat("**%unformatted player_display(player, "[prefix][player]")%**: %arg 1%")
+
+async every second:
+    loop all players:
+        if {-vanish::%loop-player%} is set:
+            wait 1 tick
+            hide loop-player from all players where [input doesn't have permission "beans.mod"]
+            if loop-player's tablist name doesn't contain "VANISHED":
+                set tablist name of loop-player to formatted "%player_display(loop-player, "[level] [prefix][player] [trophies]")% &a&l(VANISHED)"
+            if mod(floor(seconds of difference between {-vanish::%loop-player%} and now), 10) is 0:
+                send "&aYou are vanished." to loop-player
+
+command /fly:
+    permission: beans.mod
+    trigger:
+        toggle player's flight mode
+        if player's flight mode is true:
+            send "&aFlight has been enabled."
+        else:
+            send "&cFlight has been disabled."
+
+command /invsee <player>:
+    permission: beans.mod
+    trigger:
+        open arg 1's inventory to player

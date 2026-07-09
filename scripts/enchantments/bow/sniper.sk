@@ -1,0 +1,25 @@
+on load:
+    setting("sniper", "display", value: "&f<sprite:items:item/spyglass> &9Sniper")
+    setting("sniper", "max", value: 5)
+    setting("sniper", "priority", value: 0)
+    setting("sniper", "type", value: "bow")
+    setting("sniper", "item", value: spyglass)
+
+    setting("sniper", "scale", l1: 0.05, l2: 0.06, l3: 0.07, l4: 0.08, l5: 0.1)
+
+    setting("sniper", "xp cost", l2: 25_000, l3: 125_000, l4: 500_000, l5: 1_250_000)
+    setting("sniper", "money cost", l2: 30_000, l3: 175_000, l4: 600_000, l5: 1_500_000)
+
+local function getDescription(level: integer) :: string:
+    return "deals %get_setting("sniper", "scale", {_level})%&f<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
+
+local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
+    set {-%{_projectile}%::starting} to location of {_projectile}
+
+local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+    {_victim} is a living entity
+    set {_distance} to distance between location of {_projectile} and {-%{_projectile}%::starting}
+    set {_damage} to customDamage({_victim}, {_distance} * get_setting("sniper", "scale", {_level}))
+    send action bar "&lSNIPER: &f%{_damage}%&f<sprite:gui:hud/heart/full> &7, &lDISTANCE: &f%{_distance}%" to {_shooter}
+    damage {_victim} by {_damage}
+    delete {-%{_projectile}%::starting}

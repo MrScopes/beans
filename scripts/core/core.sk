@@ -1,0 +1,464 @@
+import:
+    org.bukkit.Bukkit
+
+on load:
+    # really?
+    set {-true} to true
+
+function player_display(player: offline player, show: text = "[level] [prefix][player]") :: text:
+    if {_player} isn't set:
+        return "???"
+
+    if {_player}'s name isn't set:
+        set {_profile} to Bukkit.createProfile({_player}'s uuid)
+        set {_updated} to {_profile}.update().get()
+        set {_name} to {_updated}.getName()
+
+    if {_show} contains "[prefix]":
+        set {_group} to {group::%{_player}%} ? "default"
+        set {_prefix} to {-prefix::%{_group}%}
+        replace all "[prefix]" with {_prefix} in {_show}
+
+    if {_show} contains "[player]":
+        replace all "[player]" with {_name} ? {_player}'s name in {_show}
+
+    if {_show} contains "[level]":
+        set {_level} to clamp({level::%{_player}%} ? 1, 1, 100)
+        set {_level display} to {-level display::%{_level}%}
+        replace all "[level]" with {_level display} in {_show}
+
+    if {_show} contains "[trophies]":
+        set {_trophies} to {trophies::%{_player}%}
+        replace all "[trophies]" with "&6🏆%kNumber({_trophies} ? 0)%" in {_show}
+
+    if {_show} contains "[clan]":
+        set {_clan} to {clan::%{_player}%}
+        if {_clan} is set:
+            replace all "[clan]" with "&3(&b%{clans::%{_clan}%::name}%&3)" in {_show}
+        else:
+            replace all "[clan]" with "{REMOVE}" in {_show}
+
+    if {_show} contains "[tag hover]":
+        set {_selected tag} to {tag::%{_player}%}
+        if all:
+            {_selected tag} is set
+            {unlocked tags::%{_player}%::*} contains {_selected tag}
+        then:
+            set {_tag display} to {-tag::%{_selected tag}%::display}
+            set {_description} to {-tag::%{_selected tag}%::description}
+            {_tag display} is set 
+            replace all "[tag hover]" with "<hover:show_text:'%{_description}%'>&f%{_tag display}%</hover>" in {_show}
+        else:
+            replace all "[tag hover]" with "{REMOVE}" in {_show}
+
+    if {_show} contains "[tag]":
+        set {_selected tag} to {tag::%{_player}%}
+        if all:
+            {_selected tag} is set
+            {unlocked tags::%{_player}%::*} contains {_selected tag}
+        then:
+            set {_tag display} to {-tag::%{_selected tag}%::display}
+            replace all "[tag]" with "&f%{_tag display}%" in {_show}
+        else:
+            replace all "[tag]" with "{REMOVE}" in {_show}
+
+    regex replace "( ?\{REMOVE\} ?)+" with " " in {_show}
+    regex replace " +" with " " in {_show}
+    regex replace "^ | $" with "" in {_show}
+
+    return {_show}
+
+command /daily:
+    trigger:
+        set {_dif} to difference between {daily::%player%} and now
+        if {_dif} < 24 hours:
+            send "&7You must wait &b%time_format(24 hours - {_dif})% &7for your daily reward&7."        
+        else:
+            set {_beacons} to daily_beacons_player(player) ? 1
+            giveBeacons(player, {_beacons})
+            send "&bYou received your daily reward."
+            send "&b&l+%{_beacons}% BEACONS"
+            set {daily::%player%} to now
+
+on join:
+    teleport player to {spawn}
+    wait 20 seconds
+    set {_dif} to difference between {daily::%player%} and now
+    if {_dif} isn't less than 24 hours:
+        send "&7Don't forget to claim your daily reward with &b/daily&7!"
+
+on drop of beacon:
+    cancel event
+    send "&cTrade beacons with /beacons&7." to player
+
+on step on pressure plate:
+    bounds at location of event-block contains bound with id "spawn"
+
+    push player upward at speed 3
+    push player forward at speed 3
+    wait 3 ticks
+    push player forward at speed 3
+    set player's fall damage multiplier attribute to 0
+    wait 8 seconds
+    reset player's fall damage multiplier attribute
+
+on step on purple glazed terracotta:
+    if y coordinate of player > 10:
+        teleport player to {casino}
+    else:
+        teleport player to {casino spawn tp}
+
+
+command /spawn:
+    trigger:
+        if all:
+            player's gamemode isn't creative
+            {-vanish::%player%} isn't set
+        then:
+            set {_seconds} to 3
+            set {_starting location} to player's location
+            while {_seconds} > 0:
+                send "&7Teleporting to spawn in &b%{_seconds}%s&7... Don't move." to player
+                wait 1 second
+                subtract 1 from {_seconds}
+
+                if distance between player's location and {_starting location} > 2:
+                    send "&cCanceled teleportation due to movement."
+                    delete {_seconds}
+                    stop loop
+
+                if {_seconds} is 0:
+                    teleport player to {spawn}
+        else:
+            teleport player to {spawn}
+
+on join:
+    if {-vanish::%player%} is set:
+        set join message to ""
+    else:
+        set {_group} to {group::%player's uuid%} ? "default"
+        set join message to formatted "&8[&a<sprite:gui:container/beacon/confirm>&8] %player_display(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
+        if {level::%player%} isn't set:
+            reset(player)
+
+on quit:
+    if {-vanish::%player%} is set:
+        set quit message to ""
+    else:
+        set {_group} to {group::%player's uuid%} ? "default"
+        set quit message to formatted "&8[&c<sprite:gui:container/beacon/cancel>&8] %player_display(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
+
+function reset(player: player):
+    heal({_player}, 100)
+    feed {_player}
+
+    set {_player}'s gamemode to survival
+    set {_player}'s flight mode to false
+    set {_player}'s experience to 0
+    clear {_player}'s inventory
+    teleport {_player} to {spawn}
+
+    set {_night vision} to potion effect of night vision for eternity:
+        hide the effect's icons
+        hide the effect's particles
+    apply {_night vision} to {_player}
+
+    set {level::%{_player}%} to 1
+    set {level progress::%{_player}%} to 0
+    set {total level progress::%{_player}%} to 0
+    set {money::%{_player}%} to 0
+    set {blocks::%{_player}%} to 0
+    set {trophies::%{_player}%} to 0
+    delete {daily::%{_player}%}
+    delete {tutorial::%{_player}%}
+    delete {quests::%{_player}%::*}
+    delete {beacons::%{_player}%}
+    delete {vault::%{_player}%::*}
+    delete {unlocked vaults::%{_player}%}
+    set {_player}'s play time to 0 seconds
+
+    give {_player} diamond sword
+    give {_player} diamond pickaxe
+    give {_player} bow
+    give {_player} starterHelmet()
+    give {_player} starterElytra()
+    give {_player} firework
+    give {_player} 16 golden carrot
+    give {_player} 64 arrows
+
+    wait 1 second
+
+    send "" to {_player}
+    send " &bWelcome to &lBEANS&b, &f%{_player}'s name%&b!" to {_player}
+    send " &bto get started, use &f/tutorial&b!" to {_player}
+    send " &bit's optional, but you get a massive head start." to {_player}
+    send "" to {_player}
+
+    set {pvp protection::%{_player}%} to 30 minutes from now
+    wait 10 seconds
+    send "&7You are protected from PVP." to {_player}
+    send "&7Disable permanently with /protection." to {_player}
+
+function starterHelmet() :: item:
+    set {_helmet} to leather helmet
+    set item flags of {_helmet} to hide dye, and hide armor trim
+    apply attribute modifier to {_helmet}:
+        attribute: armor
+        id: "skript:default_armor"
+        slot: head_slot_group
+        amount: 8
+        operation: add number
+    return {_helmet}
+
+function starterElytra() :: item:
+    set {_elytra} to elytra
+    set {_elytra} to unbreakable {_elytra}
+    return {_elytra}
+
+command /protection:
+    trigger:
+        if difference between {-pvp protection confirm::%player%} and now < 10 seconds:
+            delete {pvp protection::%player%}
+            delete {-pvp protection confirm::%player%}
+            send ""
+            send " &bPVP protection disabled." to player
+            send ""
+        else:
+            if {pvp protection::%player%} is set:
+                send ""
+                send " &bYou have PVP protection enabled."
+                send " &bTo disable it, Run the command again within 10s to confirm."
+                send ""
+                set {-pvp protection confirm::%player%} to 10 seconds from now
+
+on damage with priority low:
+    event isn't canceled
+    attacker is a player
+    victim is a player
+
+    if {pvp protection::%attacker%} is set:
+        cancel event
+        send "&7You can't attack players while you have PVP protection." to attacker
+        send "&7Disable with /protection." to attacker
+
+    else if {pvp protection::%victim%} is set:
+        cancel event
+        send "&7That player has starter PVP protection on." to attacker
+
+on respawn:
+    set respawn location to {spawn}
+
+    wait 1 tick
+    set {_night vision} to potion effect of night vision for eternity:
+        hide the effect's icons
+        hide the effect's particles
+    apply {_night vision} to player
+
+command /help <integer=1> [<integer=7>]:
+    usage: &c/help <page>
+    trigger:
+        add "help:Shows this message." to {_commands::*}
+        add "tutorial:Beans tutorial." to {_commands::*}
+        add "rules:View the server rules." to {_commands::*}
+        add "discord:Join our discord." to {_commands::*}
+        add "spawn:Teleports you to spawn." to {_commands::*}
+        add "daily:Claim your daily reward." to {_commands::*}
+        add "protection:Toggle starter PVP protection." to {_commands::*}
+        add "top:View which players have the highest of a certain stat." to {_commands::*}
+        add "enchantments:View all enchantments." to {_commands::*}
+        add "shop:Opens the shop menu." to {_commands::*}
+        add "sell:Sell your mined items for money." to {_commands::*}
+        add "pv:View your personal vaults." to {_commands::*}
+        add "beacons:View and trade your beacons." to {_commands::*}
+        add "quests:View available quests." to {_commands::*}
+        add "balance:Check your balance." to {_commands::*}
+        add "pay:Pay another player." to {_commands::*}
+        add "bounty:View and manage bounties." to {_commands::*}
+        add "link:Link your discord account." to {_commands::*}
+        add "unlink:Unlink your discord account." to {_commands::*}
+
+        if sender has permission "beans.mod":
+            add "history:View a player's punishment history." to {_commands::*}
+            add "ban:Ban a player." to {_commands::*}
+            add "unban:Unban a player." to {_commands::*}
+            add "mute:Mute a player." to {_commands::*}
+            add "unmute:Unmute a player." to {_commands::*}
+            add "kick:Kick a player." to {_commands::*}
+            add "fly:Toggle flight mode." to {_commands::*}
+            add "vanish:Toggle vanish mode." to {_commands::*}
+            add "chat:Manage chat." to {_commands::*}
+            add "invsee:View a player's inventory." to {_commands::*}
+
+        if sender has permission "beans.admin":
+            add "map:Map management." to {_commands::*}
+            add "spark:Server performance monitoring." to {_commands::*}
+            add "gmc:Gamemode creative." to {_commands::*}
+            add "gms:Gamemode survival." to {_commands::*}
+            add "gmsp:Gamemode spectator." to {_commands::*}
+            add "gma:Gamemode adventure." to {_commands::*}
+
+        loop {_commands::*}:
+            set {_name::*} to loop-value split at ":"
+            set {_command} to {_name::1}
+            set {_description} to {_name::2}
+            set {_commands::%{_command}%} to {_description}
+            add {_command} to {_names::*}
+
+        set {_page size} to arg 2
+        set {_page max} to ceil(size of {_names::*} / {_page size})
+        if any:
+            arg 1 > {_page max}
+            arg 1 < 1
+        then:
+            send "&7Page %arg 1% doesn't exist. There are %{_page max}% pages."
+        else:
+            send ""
+            send "&3&lCommands &8(&fPage &b%arg 1%&8/&b%{_page max}%&8)"
+            set {_start} to (arg 1 - 1) * {_page size} + 1
+            set {_end} to arg 1 * {_page size}
+            loop {_names::*}:
+                loop-iteration is between {_start} and {_end}:
+                    send "&8/&b%loop-value%&8: &f%{_commands::%loop-value%}%"
+            send ""
+
+command /rules:
+    trigger:
+        send ""
+        send " &8&l1. &fAbsolutely no cheating or exploiting. Permanent ban."
+        send "  &8&l> &7hacked clients, bug exploits, auto-clicking, etc."
+        send " &8&l2. &fSwearing is allowed but don't go over the top. No slurs."
+        send " &8&l3. &fScamming is not allowed. Warning and reversal then ban."
+        send " &8&l4. &fUse common sense. no rule evasion, respect staff, etc."
+        send "  &8&l> &7if it seems like it should be against the rules, it probably is."
+        send ""
+        send " &fJoin our discord to appeal punishments (/discord)."
+        send ""
+
+on drop:
+    if any:
+        data tag "uuid" of event-item is set
+        data tag "stored_level" of event-item is set
+    then:
+        if {level::%player%} < 25:
+            cancel event
+            send "&cYou can't drop those items until level 25." to player
+        else:
+            if any:
+                {-drop confirm::%event-item%} isn't set
+                difference between {-drop confirm::%event-item%} and now > 10 seconds
+            then:
+                send "&cAre you sure you want to drop this? Drop it again within 10s." to player
+                cancel event
+                set {-drop confirm::%event-item%} to 10 seconds from now
+            else:
+                if difference between {-drop confirm::%event-item%} and now < 10 seconds:
+                    delete {-drop confirm::%event-item%}
+
+on craft:
+    cancel event
+    
+on load:
+    set {-broadcast::1} to "broadcast 1"
+    set {-broadcast::2} to "broadcast 2"
+    set {-broadcast::3} to "broadcast 3"
+
+async every 4 minutes and 25 seconds:
+    add 1 to {-broadcast}
+    if {-broadcast::%{-broadcast}%} is set:
+        send formatted {-broadcast::%{-broadcast}%} to all players
+    
+    if {-broadcast::%{-broadcast} + 1%} isn't set:
+        set {-broadcast} to 0
+
+on projectile hit with priority monitor:
+    projectile is an arrow
+    wait 2 ticks
+    delete projectile
+    delete {-%projectile%::*}
+
+function customDamage(victim: entity, damage: number, attacker: entity = {_}) :: number:
+    set {_strength} to 0
+    if {_attacker} is set:
+        set {_strength} to (potion level of strength effect of {_attacker}) ? 0
+    set {_armor} to (sum(modifier amount of armor attribute modifiers of {_victim}'s helmet)) ? 0
+    set {_resistance} to (potion level of {_victim}'s resistance effect) ? 0
+
+    set {_damage} to {_damage} * (1 + ({_strength} * 0.2))
+    set {_damage} to {_damage} * (1 - ({_resistance} * 0.2))
+    set {_damage} to {_damage} * (1 - ({_armor} * 0.02))
+    return {_damage}
+
+on join:
+    updateInventory(player's inventory)
+
+command /update:
+    cooldown: 10 seconds
+    trigger:
+        updateInventory(player's inventory)
+
+function updateInventory(inventory: inventory):
+    loop items in {_inventory}:
+        if mod(loop-iteration, 10) is 0:
+            wait 1 tick
+        set {_amount} to item amount of loop-item
+
+        set {_uuid} to data tag "uuid" of loop-item
+        set {_level} to data tag "stored_level" of loop-item
+        set {_vanilla enchantment} to data tag "stored_vanilla_enchantment" of loop-item
+        set {_custom enchantment} to data tag "stored_custom_enchantment" of loop-item
+
+        if {_custom enchantment} is set:
+            set loop-item to {_amount} of createStoredCustomBook({_custom enchantment}, {_level})
+
+        else if {_vanilla enchantment} is set:
+            set loop-item to {_amount} of createStoredVanillaBook({_vanilla enchantment}, {_level})
+
+        else:
+            if {_uuid} is set:
+                set loop-item to {_amount} of updateLore(loop-item, true)
+
+command /bounty [<text=%player's name%>] [<text>]:
+    trigger:
+        set {_player} to offlineplayer(arg 1, false)
+        set {_money} to unformatted number arg 2
+
+        if {_player} isn't set:
+            send "&cPlayer not found."
+        else:
+            if {_money} < 1:
+                send formatted "&7%player_display({_player})%&7's bounty is &b$%kNumber({bounty::%{_player}%})%&7."
+            else:
+                if {money::%player%} < {_money}:
+                    send formatted "&cYou don't have enough money." to player
+                else:
+                    remove {_money} from {money::%player%}
+                    add {_money} to {bounty::%{_player}%}
+                    broadcast formatted "%player_display(player)% &7added a bounty of &b$%kNumber({_money})%&7 to %player_display({_player})%&7!"
+                    broadcast formatted "Current Bounty: &b$%kNumber({bounty::%{_player}%})%"
+                
+on death of player:
+    attacker is a player
+    attacker isn't victim
+    {bounty::%victim%} is set
+    set {_bounty} to {bounty::%victim%}
+    delete {bounty::%victim%}
+    add {_bounty} to {money::%attacker%}
+    broadcast formatted "%player_display(attacker)% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %player_display(victim)%&7!"
+
+on tab complete of "/bounty":
+    set tab completions for position 1 to all players
+    set tab completions for position 2 to "<amount>"
+
+on item damage:
+    cancel event
+
+on skript start:
+    command "/map restore"
+
+on elytra boost:
+    event isn't canceled
+    prevent the used firework from being consumed
+    wait 1 tick
+    item cooldown of firework for player is 0 seconds
+    set item cooldown of firework for player to 4 seconds
+    remove 0.5 from player's food level

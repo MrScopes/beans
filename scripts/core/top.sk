@@ -1,0 +1,91 @@
+on load:
+    set {-top command::money} to "money"
+    set {-top command::money::display} to "&a$value"
+    set {-top command::money::title} to "Top Money"
+
+    set {-top command::bounty} to "bounty"
+    set {-top command::bounty::display} to "&c$value"
+    set {-top command::bounty::title} to "Top Bounties"
+
+    set {-top command::blocks} to "blocks"
+    set {-top command::blocks::display} to "&bvalue blocks"
+    set {-top command::blocks::title} to "Block Top"
+
+    set {-top command::trophies} to "trophies"
+    set {-top command::trophies::display} to "&6🏆value"
+    set {-top command::trophies::title} to "Top Trophies"
+
+    set {-top command::level} to "level"
+    set {-top command::level::display} to "&dvalue"
+    set {-top command::level::title} to "Highest Level"
+
+    set {-top command::playtime} to "cached playtime"
+    set {-top command::playtime::display} to "&evalue"
+    set {-top command::playtime::title} to "Most Playtime"
+    
+    set {-top command::xp} to "cached xp"
+    set {-top command::xp::display} to "&3value XP"
+    set {-top command::xp::title} to "Top XP"
+
+    calculateTops()
+
+async every 5 minutes:
+    calculateTops()
+
+function calculateTops():
+    async run 0 ticks later:
+        for {_stat} in indexes of {-top command::*}:
+            set {_variable} to {-top command::%{_stat}%}
+            delete {-sorted::%{_variable}%::*}
+
+            for {_player} in sorted indices of {%{_variable}%::*} in descending order:
+                set {-sorted::%{_variable}%::%loop-iteration-3%::player} to {_player}
+                set {-sorted::%{_variable}%::%loop-iteration-3%::value} to {%{_variable}%::%{_player}%}
+                set {-sorted::%{_variable}%::%{_player}%} to loop-iteration-3
+
+function topEntryDisplay(player: offline player, stat: text) :: text:
+    set {_variable} to {-top command::%{_stat}%}
+    set {_stat display} to {-top command::%{_stat}%::display}
+
+    set {_index} to {-sorted::%{_variable}%::%{_player}%}
+    set {_value} to {-sorted::%{_variable}%::%{_index}%::value}
+
+    if {_value} is a number:
+        set {_value} to formatNumber({_value})
+    else if {_value} is a timespan:
+        set {_value} to time_format({_value})
+
+    replace all "value" in {_stat display} with {_value}
+
+    return "&b#%{_index}% &7%player_display({_player}, "[level] [prefix][player] [trophies] [tag] [clan]")%&8: &f%{_stat display}%"
+
+command /top [<text>]:
+    trigger:
+        async run 0 ticks later:
+            set {_variable} to {-top command::%arg 1%}
+            if {_variable} is set:
+                loop 5 times:
+                    set {_player} to offlineplayer({-sorted::%{_variable}%::%loop-value%::player}, false)
+                    {_player} is set
+                    set {_top::%loop-iteration-2%} to topEntryDisplay({_player}, arg 1)
+
+                if {-sorted::%{_variable}%::%player%} is set:
+                    set {_player iteration} to {-sorted::%{_variable}%::%player%}
+                    if {_player iteration} > 5:
+                        set {_top::%{_player iteration}%} to topEntryDisplay(player, arg 1)
+    
+                send ""
+                send {-top command::%arg 1%::title}
+                send ""
+                send formatted {_top::*}
+                send ""
+            else:
+                send "&c/top <%join (indexes of {-top command::*}) with " | "%>"
+
+on tab complete of "/top":
+    set tab completions for position 1 to indexes of {-top command::*}
+
+async every minute:
+    loop all players:
+        set {cached xp::%loop-player%} to experience of loop-player
+        set {cached playtime::%loop-player%} to playtime of loop-player
