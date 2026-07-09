@@ -4,6 +4,10 @@ on load:
     delete bound with id "mine"
     create bound with id "mine" within {-mine corner 1} and {-mine corner 2}
 
+    add 4 to y coordinate of {-mine corner 2}
+    delete bound with id "mine flight"
+    create bound with id "mine flight" within {-mine corner 1} and {-mine corner 2}
+
 on load:
     set {-sell::%("cobblestone" parsed as item type)%} to 1
     set {-sell::%("stone" parsed as item type)%} to 1
