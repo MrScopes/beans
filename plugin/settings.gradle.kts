@@ -1,4 +1,4 @@
-rootProject.name = "plugin"
+rootProject.name = "beans"
 
 pluginManagement {
     repositories {

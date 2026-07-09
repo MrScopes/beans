@@ -41,5 +41,6 @@ tasks {
 }
 
 tasks.jar {
-    destinationDirectory.set(file("../"))
+    destinationDirectory.set(file("../../"))
+    archiveFileName.set("beans.jar")
 }

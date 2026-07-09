@@ -28,7 +28,7 @@ public class SkriptDeployCommand {
         this.plugin = MrScopes.getInstance();
 
         commands.register(
-                Commands.literal("skriptpull")
+                Commands.literal("skriptdeploy")
                         .requires(hasPermission("beans.admin"))
                         .executes(context -> {
                             deploy(context.getSource().getSender());
@@ -55,11 +55,11 @@ public class SkriptDeployCommand {
     }
 
     private DeployResult pullCopyAndDetectChanges(CommandSender sender) throws IOException, InterruptedException {
-        Path repoFolder = getPath("skript-deploy.repo-folder", "skript-repo");
-        String repoScriptsFolderName = plugin.getConfig().getString("skript-deploy.repo-scripts-folder", "scripts");
+        Path repoFolder = Path.of("plugins/Skript");
+        String repoScriptsFolderName = "scripts";
         Path repoScriptsFolder = repoFolder.resolve(repoScriptsFolderName).normalize();
-        Path skriptScriptsFolder = getPath("skript-deploy.skript-scripts-folder", "plugins/Skript/scripts");
-        Path backupsFolder = getPath("skript-deploy.backup-folder", "plugins/beans/skript-backups");
+        Path skriptScriptsFolder = Path.of("plugins/Skript/scripts");
+        Path backupsFolder = Path.of("plugins/beans/skript-backups");
 
         if (!Files.isDirectory(repoFolder)) {
             throw new IOException("Repo folder does not exist: " + repoFolder);
@@ -147,7 +147,7 @@ public class SkriptDeployCommand {
 
         if (result.needsFullReload()) {
             sender.sendMessage(Component.text("Deleted or missing script detected. Reloading all scripts...", NamedTextColor.YELLOW));
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skript reload scripts");
+            Bukkit.dispatchCommand(sender, "skript reload scripts");
             sender.sendMessage(Component.text("Skript deploy complete with full reload.", NamedTextColor.GREEN));
             return;
         }
@@ -159,7 +159,7 @@ public class SkriptDeployCommand {
 
         for (String script : result.scriptsToReload()) {
             sender.sendMessage(Component.text("Reloading " + script + "...", NamedTextColor.YELLOW));
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skript reload " + script);
+            Bukkit.dispatchCommand(sender, "skript reload " + script);
         }
 
         sender.sendMessage(Component.text("Skript deploy complete. Reloaded " + result.scriptsToReload().size() + " changed script(s).", NamedTextColor.GREEN));
@@ -226,10 +226,6 @@ public class SkriptDeployCommand {
         }
 
         return lines.getFirst();
-    }
-
-    private Path getPath(String configPath, String fallback) {
-        return Paths.get(plugin.getConfig().getString(configPath, fallback)).toAbsolutePath().normalize();
     }
 
     private String toSkriptPath(Path path) {
