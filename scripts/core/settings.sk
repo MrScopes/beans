@@ -1,0 +1,26 @@
+command /settings:
+    trigger:
+        set {-settings gui::%player%} to chest inventory with 3 rows named "Settings"
+
+        set {_mining enchantment sounds} to note block named "&fMining Enchantment Sounds"
+        if {setting::%player%::mining enchantment sounds} isn't set:
+            force {_mining enchantment sounds} to glint
+            set lore of {_mining enchantment sounds} to "&7Click to &cdisable &7mining enchantment sounds."
+        else:
+            force {_mining enchantment sounds} to stop glinting
+            set lore of {_mining enchantment sounds} to "&7Click to &aenable &7mining enchantment sounds."
+
+        set slot 0 of {-settings gui::%player%} to {_mining enchantment sounds}
+
+        open {-settings gui::%player%} to player
+
+on inventory click:
+    player's current inventory is {-settings gui::%player%}
+    cancel event
+    event-inventory is {-settings gui::%player%}
+    if index of event-slot is 0:
+        if {setting::%player%::mining enchantment sounds} isn't set:
+            set {setting::%player%::mining enchantment sounds} to true
+        else:
+            delete {setting::%player%::mining enchantment sounds}
+        player command "/settings"
