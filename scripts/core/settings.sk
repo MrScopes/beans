@@ -3,7 +3,13 @@ function simpleToggleSetting(player: player, item: item type, setting: text, tit
 
     set {_item} to {_item} named "&f%{_title}%" with all item flags
 
-    set {_enabled} to {setting::%{_player}%::%{_setting}%} ? {_enabledByDefault}
+    if {setting::%{_player}%::%{_setting}%} is set:
+        if {_enabledByDefault} is true:
+            set {_enabled} to false
+        else:
+            set {_enabled} to true
+    else:
+        set {_enabled} to {_enabledByDefault}
 
     if {_enabled} is true:
         force {_item} to glint
@@ -33,7 +39,7 @@ function multiOptionSetting(player: player, item: item type, setting: text, titl
         else:
             add "&8- &7%{_option}%" to lore of {_item}
     add "" to lore of {_item}
-    
+
     set {-settings gui::%{_player}%::%{_index}%::type} to "multi"
     set {-settings gui::%{_player}%::%{_index}%::setting} to {_setting}
     set {-settings gui::%{_player}%::%{_index}%::options::*} to {_options::*}
@@ -63,9 +69,8 @@ on inventory click:
     {_setting} is set
     play sound "ui.button.click" with volume 1 and pitch 1 to player
     if {_type} is "toggle":
-        set {_current} to {setting::%player%::%{_setting}%} ? {_default}
-        if {_current} is true:
-            set {setting::%player%::%{_setting}%} to false
+        if {setting::%player%::%{_setting}%} is set:
+            delete {setting::%player%::%{_setting}%}
         else:
             set {setting::%player%::%{_setting}%} to true
     else if {_type} is "multi":
@@ -89,3 +94,12 @@ on inventory click:
             set {setting::%player%::%{_setting}%} to {_next}
 
     player command "/settings"
+
+function enchantmentSoundRecipients(type: text) :: players:
+    if {_type} is "mining":
+        set {_setting} to "mining enchantment sounds"
+    else if {_type} is "combat":
+        set {_setting} to "combat enchantment sounds"
+
+    set {_recipients::*} to all players where [{setting::%input%::%{_setting}%} isn't set]
+    return {_recipients::*}
