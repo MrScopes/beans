@@ -261,6 +261,7 @@ command /help <integer=1> [<integer=7>]:
         add "tutorial:Beans tutorial." to {_commands::*}
         add "rules:View the server rules." to {_commands::*}
         add "discord:Join our discord." to {_commands::*}
+        add "github:Visit the GitHub repository." to {_commands::*}
         add "spawn:Teleports you to spawn." to {_commands::*}
         add "daily:Claim your daily reward." to {_commands::*}
         add "protection:Toggle starter PVP protection." to {_commands::*}
@@ -462,3 +463,7 @@ on elytra boost:
     item cooldown of firework for player is 0 seconds
     set item cooldown of firework for player to 4 seconds
     remove 0.5 from player's food level
+
+command /github:
+    trigger:
+        send formatted "<click:open_url:'https://github.com/MrScopes/beans'>&bVisit the GitHub repository &lHERE! &bContributions welcome."
