@@ -4,7 +4,7 @@ logs/
 lang/
 aliases/
 scripts/-backups/
-scripts/discord/!token.sk
+scripts/discord/
 variables.csv
 config.sk
 features.sk
