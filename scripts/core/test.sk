@@ -48,14 +48,3 @@ command /man:
                 shoot arrow from {_mannequin} at speed 2.8
                 set {_arrow} to last shot projectile
                 set shooter of {_arrow} to {_mannequin}
-
-command /allowedhomes:
-    trigger:
-        loop player's permissions:
-            loop-value starts with "skript.homes."
-            set {_split::*} to loop-value split at "." # now we get {_split::1} = skript, {_split::2} = home, {_split::3} = number
-            set {_amount} to {_split::3} parsed as number # we need to let skript know it's a number
-            add {_amount} to {_amounts::*}
-        sort {_amounts::*} in descending order
-        set {_max homes} to {_amounts::1} ? 1
-        send "You can set %{_max homes}% homes" 
