@@ -1,3 +1,6 @@
+on load:
+    broadcast "Deploy Test"
+
 command /afk:
     trigger:
         if all:
