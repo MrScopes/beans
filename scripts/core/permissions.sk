@@ -3,7 +3,7 @@ import:
     org.bukkit.permissions.PermissionAttachment
 
 on load:
-    set {-permissions::default::*} to "bukkit.command.tps" and "-minecraft.command.me"
+    set {-permissions::default::*} to "spark.tps" and "-minecraft.command.me"
     set {-permissions::vip::*} to {-permissions::default::*}
     set {-permissions::premium::*} to {-permissions::vip::*}
     set {-permissions::legend::*} to {-permissions::premium::*}
