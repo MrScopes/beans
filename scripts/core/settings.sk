@@ -95,11 +95,12 @@ on inventory click:
 
     player command "/settings"
 
-function enchantmentSoundRecipients(type: text) :: players:
+function playEnchantmentSound(type: text, sound: text, volume: number, pitch: number, at: location, players: players):
     if {_type} is "mining":
         set {_setting} to "mining enchantment sounds"
     else if {_type} is "combat":
         set {_setting} to "combat enchantment sounds"
 
-    set {_recipients::*} to all players where [{setting::%input%::%{_setting}%} isn't set]
-    return {_recipients::*}
+    for {_player} in {_players::*}:
+        {setting::%{_player}%::%{_setting}%} isn't set
+        play sound {_sound} with volume {_volume} and pitch {_pitch} at {_at} for {_player}
