@@ -1,16 +1,25 @@
+function simpleToggleSetting(player: player, item: item type, setting: text, title: text, description: text):
+    set {_index} to index of first empty slot of {-settings gui::%{_player}%}
+
+    set {_item} to {_item} named "&f%{_title}%"
+    
+    if {setting::%{_player}%::%{_setting}%} isn't set:
+        force {_item} to glint
+        set lore of {_item} to "&7Click to &cdisable &7%{_description}%."
+    else:
+        force {_item} to stop glinting
+        set lore of {_item} to "&7Click to &aenable &7%{_description}%."
+
+    set {-settings gui::%{_player}%::%{_index}%::type} to "toggle"
+    set {-settings gui::%{_player}%::%{_index}%::setting} to {_setting}
+
+    set slot {_index} of {-settings gui::%{_player}%} to {_item}
+
 command /settings:
     trigger:
-        set {-settings gui::%player%} to chest inventory with 3 rows named "Settings"
+        set {-settings gui::%player%} to chest inventory with 1 rows named "Settings"
 
-        set {_mining enchantment sounds} to note block named "&fMining Enchantment Sounds"
-        if {setting::%player%::mining enchantment sounds} isn't set:
-            force {_mining enchantment sounds} to glint
-            set lore of {_mining enchantment sounds} to "&7Click to &cdisable &7mining enchantment sounds."
-        else:
-            force {_mining enchantment sounds} to stop glinting
-            set lore of {_mining enchantment sounds} to "&7Click to &aenable &7mining enchantment sounds."
-
-        set slot 0 of {-settings gui::%player%} to {_mining enchantment sounds}
+        simpleToggleSetting(player, note block, "mining enchantment sounds", "Mining Enchantment Sounds", "mining enchantment sounds")
 
         open {-settings gui::%player%} to player
 
@@ -18,9 +27,13 @@ on inventory click:
     player's current inventory is {-settings gui::%player%}
     cancel event
     event-inventory is {-settings gui::%player%}
-    if index of event-slot is 0:
-        if {setting::%player%::mining enchantment sounds} isn't set:
-            set {setting::%player%::mining enchantment sounds} to true
+    set {_type} to {-settings gui::%player%::%index of event-slot%::type}
+    set {_setting} to {-settings gui::%player%::%index of event-slot%::setting}
+    {_type} is set
+    {_setting} is set
+    if {_type} is "toggle":
+        if {setting::%player%::%{_setting}%} isn't set:
+            set {setting::%player%::%{_setting}%} to true
         else:
-            delete {setting::%player%::mining enchantment sounds}
-        player command "/settings"
+            delete {setting::%player%::%{_setting}%}
+    player command "/settings"
