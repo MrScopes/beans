@@ -18,6 +18,28 @@ function simpleToggleSetting(player: player, item: item type, setting: text, tit
 
     set slot {_index} of {-settings gui::%{_player}%} to {_item}
 
+function multiOptionSetting(player: player, item: item type, setting: text, title: text, description: text, options: texts):
+    set {_index} to index of first empty slot of {-settings gui::%{_player}%}
+
+    set {_item} to {_item} named "&f%{_title}%" with lore "&7%{_description}%" with all item flags
+    force {_item} to glint
+
+    set {_selected} to {setting::%{_player}%::%{_setting}%} ? 1st element out of {_options::*}
+
+    add "" to lore of {_item}
+    for {_option} in {_options::*}:
+        if {_option} is {_selected}:
+            add "&8- &a%{_option}%" to lore of {_item}
+        else:
+            add "&8- &7%{_option}%" to lore of {_item}
+    add "" to lore of {_item}
+    
+    set {-settings gui::%{_player}%::%{_index}%::type} to "multi"
+    set {-settings gui::%{_player}%::%{_index}%::setting} to {_setting}
+    set {-settings gui::%{_player}%::%{_index}%::options::*} to {_options::*}
+
+    set slot {_index} of {-settings gui::%{_player}%} to {_item}
+
 command /settings:
     trigger:
         set {-settings gui::%player%} to chest inventory with 1 rows named "Settings"
@@ -26,6 +48,7 @@ command /settings:
         simpleToggleSetting(player, diamond sword, "combat enchantment sounds", "Combat Enchantment Sounds", "combat enchantment sounds", true)
         simpleToggleSetting(player, compass, "chat pinging", "Chat Pinging", "players pinging you in chat", true)
         simpleToggleSetting(player, music disc far, "instant wheel", "Instant Wheel Spin", "instant wheel spin", false)
+        multiOptionSetting(player, beacon, "beacon announcements", "Beacon Announcements", "Show other player's beacon rewards", ("All", "Ultra Rare Only", "Ultimate Only", "None"))
 
         open {-settings gui::%player%} to player
 
@@ -38,11 +61,31 @@ on inventory click:
     set {_default} to {-settings gui::%player%::%index of event-slot%::default}
     {_type} is set
     {_setting} is set
+    play sound "ui.button.click" with volume 1 and pitch 1 to player
     if {_type} is "toggle":
         set {_current} to {setting::%player%::%{_setting}%} ? {_default}
         if {_current} is true:
             set {setting::%player%::%{_setting}%} to false
         else:
             set {setting::%player%::%{_setting}%} to true
+    else if {_type} is "multi":
+        set {_options::*} to {-settings gui::%player%::%index of event-slot%::options::*}
+        set {_current} to {setting::%player%::%{_setting}%} ? 1st element out of {_options::*}
+
+        loop {_options::*}:
+            if loop-value is {_current}:
+                set {_n} to loop-iteration
+
+        set {_size} to size of {_options::*}
+        if {_n} is {_size}:
+            set {_nextIndex} to 1
+        else:
+            set {_nextIndex} to {_n} + 1
+
+        if {_nextIndex} is 1:
+            delete {setting::%player%::%{_setting}%}
+        else:
+            set {_next} to {_nextIndex}th element out of {_options::*}
+            set {setting::%player%::%{_setting}%} to {_next}
 
     player command "/settings"
