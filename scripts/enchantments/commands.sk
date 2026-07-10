@@ -18,7 +18,10 @@ command /reloadenchantment [<text>]:
             player command "/sk reload %arg 1%"
             set {_string::*} to arg 1 split at "\"
             replace all ".sk" in {_string::*} with ""
-            set {_enchantment} to {_string::3}
+            if {_string::*} contains "ultimate":
+                set {_enchantment} to {_string::5}
+            else:
+                set {_enchantment} to {_string::4}
             wait 1 ticks
             cache_specific_enchantment({_enchantment})
             refreshEnchantmentGui()
@@ -27,7 +30,7 @@ command /reloadenchantment [<text>]:
 
 on tab complete of "/reloadenchantment":
     loop all scripts:
-        if loop-value starts with "enchantments\armor\", "enchantments\pickaxe", "enchantments\sword\", "enchantments\armor\", or "enchantments\bow\":
+        if loop-value starts with "enchantments\custom":
             add loop-value to {_completions::*}
     
     set tab completions for position 1 to {_completions::*}
