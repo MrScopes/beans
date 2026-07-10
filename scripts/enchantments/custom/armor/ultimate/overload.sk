@@ -8,8 +8,8 @@ on load:
 
     setting("overload", "health", l1: 2, l2: 4, l3: 6, l4: 8, l5: 10)
 
-    setting("overload", "xp cost", l1: 5_000, l2: 16_000, l3: 100_000, l4: 500_000, l5: 1_250_000)
-    setting("overload", "money cost", l1: 6_000, l2: 18_000, l3: 150_000, l4: 750_000, l5: 1_500_000)
+    setting("overload", "xp cost", l1: 400_000, l2: 1_500_000, l3: 2_500_000, l4: 4_000_000, l5: 6_000_000)
+    setting("overload", "money cost", l1: 500_000, l2: 2_000_000, l3: 3_000_000, l4: 5_000_000, l5: 7_500_000)
 
 local function getDescription(level: integer) :: string:
     set {_health} to get_setting("overload", "health", {_level})
