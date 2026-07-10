@@ -6,7 +6,6 @@ function addWheelReward(chance: number, item: item stack, display: text):
     set {-wheel rewards::%{_id}%::item} to {_item}
     set {-wheel rewards::%{_id}%::display} to {_display}
 
-
 function setupWheelRewards():
     delete {-wheel rewards::*}
     delete {-wheel reward count}
@@ -40,7 +39,6 @@ function wheelTotalChance() :: number:
 
     return {_total}
 
-
 function wheelChanceText(chance: number) :: text:
     if {_chance} >= 1:
         set {_text} to round({_chance} * 100) / 100
@@ -48,7 +46,6 @@ function wheelChanceText(chance: number) :: text:
         set {_text} to round({_chance} * 1000) / 1000
 
     return "%{_text}%%%"
-
 
 function wheelReward() :: item stack:
     if {-wheel reward count} is not set:
@@ -67,7 +64,6 @@ function wheelReward() :: item stack:
 
     return {-wheel rewards::1::item}
 
-
 function wheelOddsItem() :: item stack:
     if {-wheel reward count} is not set:
         setupWheelRewards()
@@ -81,7 +77,6 @@ function wheelOddsItem() :: item stack:
         add "&8- %{_display}% &8(&f%{_chanceText}%&8)" to lore of {_win}
 
     return {_win}
-
 
 function wheelStepTicks(step: number) :: number:
     if {_step} <= 12:
@@ -97,7 +92,6 @@ function wheelStepTicks(step: number) :: number:
     else:
         return 13
 
-
 function updateWheelGui(p: player):
     if {-wheel gui::%{_p}%} is not set:
         stop
@@ -110,7 +104,6 @@ function updateWheelGui(p: player):
     set slot 15 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::6}
     set slot 16 of {-wheel gui::%{_p}%} to {-wheel items::%{_p}%::7}
 
-
 function advanceWheelGui(p: player, incoming: item stack):
     set {-wheel items::%{_p}%::1} to {-wheel items::%{_p}%::2}
     set {-wheel items::%{_p}%::2} to {-wheel items::%{_p}%::3}
@@ -122,7 +115,6 @@ function advanceWheelGui(p: player, incoming: item stack):
 
     updateWheelGui({_p})
 
-
 function forceCleanupWheel(p: player):
     delete {-wheel spinning::%{_p}%}
     delete {-wheel paid::%{_p}%}
@@ -130,7 +122,6 @@ function forceCleanupWheel(p: player):
     delete {-wheel reward::%{_p}%}
     delete {-wheel items::%{_p}%::*}
     delete {-wheel gui::%{_p}%}
-
 
 function giveWheelReward(p: player):
     if {-wheel paid::%{_p}%} is true:
@@ -145,7 +136,6 @@ function giveWheelReward(p: player):
     give {_reward} to {_p}
     send "&eYou won: &f%{_reward}%&e!" to {_p}
 
-
 function finishWheelEarly(p: player):
     if {-wheel spinning::%{_p}%} is not true:
         forceCleanupWheel({_p})
@@ -154,7 +144,6 @@ function finishWheelEarly(p: player):
     set {-wheel cancelled::%{_p}%} to true
     giveWheelReward({_p})
     forceCleanupWheel({_p})
-
 
 function startWheelSpin(p: player):
     if {-wheel spinning::%{_p}%} is true:
@@ -213,7 +202,6 @@ function startWheelSpin(p: player):
     giveWheelReward({_p})
     forceCleanupWheel({_p})
 
-
 command /wheel [<text>]:
     trigger:
         setupWheelRewards()
@@ -252,16 +240,13 @@ command /wheel [<text>]:
         if {-wheel gui::%player%} is set:
             startWheelSpin(player)
 
-
 on inventory click:
     if player's current inventory is {-wheel gui::%player%}:
         cancel event
 
-
 on inventory drag:
     if player's current inventory is {-wheel gui::%player%}:
         cancel event
-
 
 on inventory close:
     if event-inventory is {-wheel gui::%player%}:
@@ -270,13 +255,11 @@ on inventory close:
         else:
             forceCleanupWheel(player)
 
-
 on quit:
     if {-wheel spinning::%player%} is true:
         finishWheelEarly(player)
     else:
         forceCleanupWheel(player)
-
 
 on right click:
     set {_voucher} to data tag "enchantment_voucher" of event-item
@@ -294,6 +277,7 @@ on right click:
 
     else if {_voucher} is 99:
         loop indexes of {-ce::*}:
+            {-ce::%loop-value%::ultimate} isn't set
             set {_max} to {-ce::%loop-value%::max}
             {_max} > 1
 
@@ -310,13 +294,13 @@ on right click:
         give player 1 of {_item}
         broadcast formatted "%player% rolled %name of {_item}%&f!"
 
-
 on any inventory click:
     {choosing custom enchantment::%player%} is set
     event-inventory is {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
 
     set {_enchantment} to data tag "custom_enchantment" of event-item
     {_enchantment} is set
+    {-ce::%{_enchantment}%::ultimate} isn't set
 
     if {choosing custom enchantment::%player%} is "level 1":
         set {_level} to 1
@@ -329,7 +313,6 @@ on any inventory click:
     delete {choosing custom enchantment::%player%}
     close player's inventory
     send formatted "You chose %name of {_item}%&f!"
-
 
 on join:
     if {choosing custom enchantment::%player%} is set:
