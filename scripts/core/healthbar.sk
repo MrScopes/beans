@@ -133,17 +133,22 @@ function updateNametag(entity: entity):
     set text of {-nametag::%{_entity}%} to {_display} ? "&7%{_name}%"
 
 function updateVisibility(entity: entity):
-    if any:
-        {_entity} is sneaking
-        potion level of invisibility potion effect of {_entity} > 0
-    then:
-        set color of {-nametag::%{_entity}%} to rgb(0, 0, 0, 0)
-        set text opacity of {-nametag::%{_entity}%} to 0
-        set text opacity of {-healthbar::%{_entity}%} to 0
-    else:
+    if bound at {_entity} contains bound with id "spawn":
         reset color of {-nametag::%{_entity}%}
         set text opacity of {-nametag::%{_entity}%} to 255
-        set text opacity of {-healthbar::%{_entity}%} to 255
+        set text opacity of {-healthbar::%{_entity}%} to 0
+    else:
+        if any:
+            {_entity} is sneaking
+            potion level of invisibility potion effect of {_entity} > 0
+        then:
+            set color of {-nametag::%{_entity}%} to rgb(0, 0, 0, 0)
+            set text opacity of {-nametag::%{_entity}%} to 0
+            set text opacity of {-healthbar::%{_entity}%} to 0
+        else:
+            reset color of {-nametag::%{_entity}%}
+            set text opacity of {-nametag::%{_entity}%} to 255
+            set text opacity of {-healthbar::%{_entity}%} to 255
 
 on load:
     resetBars()
@@ -182,6 +187,14 @@ function damageIndicator(entity: entity, damage: number = {_}, healing: number =
     kill {_display}
 
 # events
+
+on bound exit with id "spawn":
+    wait 1 tick
+    updateVisibility(entity)
+
+on bound enter with id "spawn":
+    wait 1 tick
+    updateVisibility(entity)
 
 on damage:
     wait 1 tick

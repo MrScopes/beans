@@ -15,7 +15,7 @@ command /vanish:
         else:
             set {-vanish::%player%} to now
             set {-no bar::%player%} to true
-            bar(player)
+            deleteBar(player)
             send "You are now vanished."
             set player's flight mode to true
 
