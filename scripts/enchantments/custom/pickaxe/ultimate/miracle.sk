@@ -6,7 +6,7 @@ on load:
     setting("miracle", "max", value: 5)
     setting("miracle", "priority", value: 0)
     setting("miracle", "type", value: "pickaxe")
-    setting("miracle", "item", value: nether star)
+    setting("miracle", "item", value: end crystal (item))
 
     setting("miracle", "cooldown", l1: 3 minutes, l2: 2 minutes and 30 seconds, l3: 2 minutes, l4: 1 minute and 30 seconds, l5: 1 minute)
 
