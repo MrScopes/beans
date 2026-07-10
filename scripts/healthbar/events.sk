@@ -1,0 +1,60 @@
+on bound exit with id "spawn":
+    wait 1 tick
+    updateVisibility(entity)
+
+on bound enter with id "spawn":
+    wait 1 tick
+    updateVisibility(entity)
+
+on damage:
+    wait 1 tick
+    {-healthbar::%victim%} is set
+    updateHealthbar(victim)
+    final damage > 0
+    damageIndicator(victim, damage: final damage)
+
+on heal:
+    wait 1 tick
+    {-healthbar::%entity%} is set
+    updateHealthbar(entity)
+    damageIndicator(entity, healing: heal amount)
+
+on respawn:
+    wait 3 ticks
+    bar(player)
+
+on teleport:
+    wait 1 tick
+    {-healthbar::%entity%} is set
+    make {-healthbar::%entity%} ride entity
+
+on join:
+    wait 1 tick
+    bar(player)
+
+on spawn:
+    wait 1 tick
+    bar(entity)
+
+on death:
+    deleteBar(victim)
+
+on quit:
+    deleteBar(player)
+
+on entity remove:
+    deleteBar(entity)
+
+on entity potion effect:
+    wait 1 tick
+    updateHealthbar(entity)
+    updateVisibility(entity)
+
+on sneak toggle:
+    wait 1 tick
+    updateVisibility(player)
+
+on command:
+    player is set
+    wait 2 ticks
+    updateNametag(player)
