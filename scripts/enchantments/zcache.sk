@@ -24,8 +24,13 @@ function cache_specific_enchantment(enchantment: string, broadcast: boolean = tr
     set {_now} to current ns
     
     set {_type} to {-ce::%{_enchantment}%::type}
+    set {_ultimate} to {-ce::%{_enchantment}%::ultimate}
 
-    set {_script} to script named "enchantments/%{_type}%/%{_enchantment}%"
+    if {_ultimate} is true:
+        set {_script} to script named "enchantments/custom/%{_type}%/ultimate/%{_enchantment}%"
+    else:
+        set {_script} to script named "enchantments/custom/%{_type}%/%{_enchantment}%" 
+
     loop "onbreak", "onattack", "onattacked", "ondeath", "onoffhand", "onapply", "onunapply", "onshoot", "onhit", "onrightclick", "onleftclick", "getDescription":
         set {-ce::%{_enchantment}%::%loop-value%} to function named loop-value from {_script}
 
