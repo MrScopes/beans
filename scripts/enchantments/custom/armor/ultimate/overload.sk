@@ -23,9 +23,7 @@ local function onapply(armor: item, level: integer, player: player = {_}):
         slot: head_slot_group
         amount: {_amount} * 2
         operation: add number
-    
+
 local function onunapply(armor: item, level: integer, player: player = {_}):
-    broadcast "y"
-    broadcast "%{_level}% &ddd"
     remove attribute modifier with key "skript:overload_enchantment" from item within {_armor}
     
