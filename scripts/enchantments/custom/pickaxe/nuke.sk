@@ -8,7 +8,7 @@ on load:
 
     setting("nuke", "priority", value: 0)
     setting("nuke", "type", value: "pickaxe")
-    setting("nuke", "item", value: end crystal (item))
+    setting("nuke", "item", value: dragon head)
 
     setting("nuke", "xp cost", l2: 50_000, l3: 200_000, l4: 400_000, l5: 1_000_000)
     setting("nuke", "money cost", l2: 60_000, l3: 275_000, l4: 500_000, l5: 1_250_000)
