@@ -1,6 +1,3 @@
-on load:
-    broadcast "test"
-
 import:
     io.papermc.paper.datacomponent.item.ResolvableProfile
 
