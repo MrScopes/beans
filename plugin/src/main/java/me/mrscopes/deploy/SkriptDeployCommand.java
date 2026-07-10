@@ -2,8 +2,7 @@ package me.mrscopes.deploy;
 
 import io.papermc.paper.command.brigadier.Commands;
 import me.mrscopes.MrScopes;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -23,9 +22,11 @@ import static me.mrscopes.Utilities.hasPermission;
 
 public class SkriptDeployCommand {
     private final MrScopes plugin;
+    private final MiniMessage miniMessage;
 
     public SkriptDeployCommand(Commands commands) {
         this.plugin = MrScopes.getInstance();
+        this.miniMessage = MrScopes.getInstance().getMiniMessage();
 
         commands.register(
                 Commands.literal("skriptdeploy")
@@ -39,7 +40,7 @@ public class SkriptDeployCommand {
     }
 
     private void deploy(CommandSender sender) {
-        sender.sendMessage(Component.text("Pulling Skript scripts from Git...", NamedTextColor.YELLOW));
+        sender.sendMessage(miniMessage.deserialize("<yellow>Pulling scripts from repo...</yellow>"));
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
@@ -47,7 +48,7 @@ public class SkriptDeployCommand {
 
                 Bukkit.getScheduler().runTask(plugin, () -> reloadChangedScripts(sender, result));
             } catch (Exception exception) {
-                sender.sendMessage(Component.text("Skript deploy failed: " + exception.getMessage(), NamedTextColor.RED));
+                sender.sendMessage(miniMessage.deserialize("<red>Skript deploy failed: " + exception.getMessage() + "</red>"));
                 plugin.getLogger().severe("Skript deploy failed");
                 exception.printStackTrace();
             }
@@ -141,28 +142,28 @@ public class SkriptDeployCommand {
 
     private void reloadChangedScripts(CommandSender sender, DeployResult result) {
         if (result.noChanges()) {
-            sender.sendMessage(Component.text("No Git changes found. Nothing to reload.", NamedTextColor.GRAY));
+            sender.sendMessage(miniMessage.deserialize("<gray>No Git changes found. Nothing to reload.</gray>"));
             return;
         }
 
         if (result.needsFullReload()) {
-            sender.sendMessage(Component.text("Deleted or missing script detected. Reloading all scripts...", NamedTextColor.YELLOW));
+            sender.sendMessage(miniMessage.deserialize("<yellow>Deleted or missing script detected. Reloading all scripts...</yellow>"));
             Bukkit.dispatchCommand(sender, "skript reload scripts");
-            sender.sendMessage(Component.text("Skript deploy complete with full reload.", NamedTextColor.GREEN));
+            sender.sendMessage(miniMessage.deserialize("<green>Skript deploy complete with full reload.</green>"));
             return;
         }
 
         if (result.scriptsToReload().isEmpty()) {
-            sender.sendMessage(Component.text("Git pulled successfully, but no .sk files changed.", NamedTextColor.GRAY));
+            sender.sendMessage(miniMessage.deserialize("<gray>Git pulled successfully, but no .sk files changed.</gray>"));
             return;
         }
 
         for (String script : result.scriptsToReload()) {
-            sender.sendMessage(Component.text("Reloading " + script + "...", NamedTextColor.YELLOW));
+            sender.sendMessage(miniMessage.deserialize("<yellow>Reloading " + script + "...</yellow>"));
             Bukkit.dispatchCommand(sender, "skript reload " + script);
         }
 
-        sender.sendMessage(Component.text("Skript deploy complete. Reloaded " + result.scriptsToReload().size() + " changed script(s).", NamedTextColor.GREEN));
+        sender.sendMessage(miniMessage.deserialize("<green>Skript deploy complete. Reloaded " + result.scriptsToReload().size() + " changed script(s).</green>"));
     }
 
     private void backupCurrentScripts(Path skriptScriptsFolder, Path backupsFolder) throws IOException {
@@ -215,7 +216,7 @@ public class SkriptDeployCommand {
     private void sendLines(CommandSender sender, String prefix, List<String> lines) {
         for (String line : lines) {
             Bukkit.getScheduler().runTask(plugin, () ->
-                    sender.sendMessage(Component.text("[" + prefix + "] " + line, NamedTextColor.GRAY))
+                    sender.sendMessage(miniMessage.deserialize("<gray>[" + prefix + "] " + line + "</gray>"))
             );
         }
     }
