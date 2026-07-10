@@ -1,2 +1,0 @@
-on load:
-  broadcast "this is a test"
