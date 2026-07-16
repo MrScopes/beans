@@ -187,7 +187,7 @@ function startWheelSpin(p: player):
                     play sound "minecraft:block.note_block.pling" with volume 0.8 and pitch 1.2 to {_p}
 
         set {_duration} to wheelStepTicks({_step})
-        wait ("%{_duration}% ticks" parsed as timespan)
+        wait {_duration} * 1 ticks
 
     if {-wheel cancelled::%{_p}%} is true:
         stop

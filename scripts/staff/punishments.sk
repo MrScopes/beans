@@ -11,17 +11,17 @@ function duration(input: string) :: object:
         if loop-value matches "^\d+$":
             set {_num} to loop-value parsed as number
         else if loop-value is "y":
-            add ("%{_num}% years" parsed as timespan) to {_total}
+            add {_num} * 1 years to {_total}
         else if loop-value is "mo":
-            add ("%{_num}% months" parsed as timespan) to {_total}
+            add {_num} * 1 months to {_total}
         else if loop-value is "d":
-            add ("%{_num}% days" parsed as timespan) to {_total}
+            add {_num} * 1 days to {_total}
         else if loop-value is "h":
-            add ("%{_num}% hours" parsed as timespan) to {_total}
+            add {_num} * 1 hours to {_total}
         else if loop-value is "m":
-            add ("%{_num}% minutes" parsed as timespan) to {_total}
+            add {_num} * 1 minutes to {_total}
         else if loop-value is "s":
-            add ("%{_num}% seconds" parsed as timespan) to {_total}
+            add {_num} * 1 seconds to {_total}
         else:
             stop
 
