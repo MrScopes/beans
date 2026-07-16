@@ -8,7 +8,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
 
-public class Enchantments {
+public class CustomEnchantments {
     public static NamespacedKey enchantmentNamespace = new NamespacedKey("beans", "enchantments");
 
     public static HashMap<String, Long> getEnchantments(ItemStack item) {
@@ -23,7 +23,7 @@ public class Enchantments {
 
         for (NamespacedKey enchantment : enchantmentContainer.getKeys()) {
             Long level = enchantmentContainer.get(enchantment, PersistentDataType.LONG);
-            enchantments.put(enchantment.toString(), level);
+            enchantments.put(enchantment.getKey(), level);
         }
 
         return enchantments;

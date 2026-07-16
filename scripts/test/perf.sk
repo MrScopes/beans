@@ -88,12 +88,13 @@ local function getEnchantmentsNEW(item: item stack) :: objects:
         set {_enchantments::%{_key}.getKey()%} to {_enchant container}.get({_key}, PersistentDataType.LONG)
     return {_enchantments::*}
 
+import:
+    me.mrscopes.enchantments.CustomEnchantments
+
 command /pdc:
     trigger:
         set {_item} to new ItemStack(Material.DIAMOND_SWORD)
-        set data tag "x" of {_item} to 1
-        send data tag "x" of {_item}
+        CustomEnchantments.setEnchantmentLevel({_item}, "custom_enchant_1", 1)
 
-expression data container %string% of %itemstack%:
-    get:
-        return expr-2.getItemMeta().getPersistentDataContainer().get(new NamespacedKey("skript", expr-1), PersistentDataType.TAG_CONTAINER)
+        for {_level}, {_enchantment} in ...CustomEnchantments.getEnchantments({_item}).entrySet():
+            send "Enchantment: %{_enchantment}.getKey()% Level: %{_level}%"
