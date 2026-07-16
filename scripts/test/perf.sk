@@ -1,0 +1,75 @@
+import:
+    org.bukkit.NamespacedKey
+    org.bukkit.persistence.PersistentDataType
+    org.bukkit.persistence.PersistentDataContainer
+    org.bukkit.inventory.ItemStack
+    org.bukkit.Material
+
+on load:
+    set {-enchant namespace} to new NamespacedKey("skript", "custom_enchantments")
+
+command /perf:
+    trigger:
+        send "reflect"
+        set {_item} to new ItemStack(Material.DIAMOND_SWORD)
+        set {_now} to current ns
+
+        set {_item} to enchantItemNEW({_item}, "custom_enchant_1", 1)
+        set {_item} to enchantItemNEW({_item}, "custom_enchant_2", 5)
+        set {_item} to enchantItemNEW({_item}, "custom_enchant_3", 10)
+
+        set {_elapsed} to (current ns - {_now}) / 1000000
+        send "write: %{_elapsed}% ms"
+
+        set {_now} to current ns
+
+        set {_enchantments::*} to keyed getEnchantmentsNEW({_item})
+        for {_ce}, {_level} in {_enchantments::*}:
+            send "%{_ce}%: %{_level}%"
+
+        set {_elapsed} to (current ns - {_now}) / 1000000
+        send "read: %{_elapsed}% ms"
+
+        send ""
+
+        send "variables"
+        set {_item} to new ItemStack(Material.DIAMOND_SWORD)
+        set data tag "uuid" of {_item} to random uuid
+        set {_now} to current ns
+
+        set {custom enchantments::%{_uuid}%::blast} to 1
+        set {custom enchantments::%{_uuid}%::adrenaline} to 2
+        set {custom enchantments::%{_uuid}%::creeper} to 3
+
+        set {_elapsed} to (current ns - {_now}) / 1000000
+        send "write: %{_elapsed}% ms"
+
+        set {_now} to current ns
+
+        set {_enchantments::*} to keyed getEnchantments({_item})
+        for {_ce}, {_level} in {_enchantments::*}:
+            send "%{_ce}%: %{_level}%"
+
+        set {_elapsed} to (current ns - {_now}) / 1000000
+        send "read: %{_elapsed}% ms"
+
+local function enchantItemNEW(item: item stack, enchantment: string, level: integer) :: item stack:
+    set {_meta} to {_item}.getItemMeta()
+    set {_pdc} to {_meta}.getPersistentDataContainer()
+    if {_pdc}.has({-enchant namespace}, PersistentDataType.TAG_CONTAINER) is false:
+        {_pdc}.set({-enchant namespace}, PersistentDataType.TAG_CONTAINER, {_pdc}.getAdapterContext().newPersistentDataContainer())
+    set {_enchant container} to {_pdc}.get({-enchant namespace}, PersistentDataType.TAG_CONTAINER)
+    {_enchant container}.set(new NamespacedKey("skript", {_enchantment}), PersistentDataType.LONG, {_level})
+    {_pdc}.set({-enchant namespace}, PersistentDataType.TAG_CONTAINER, {_enchant container})
+    {_item}.setItemMeta({_meta})
+    return {_item}
+
+local function getEnchantmentsNEW(item: item stack) :: objects:
+    set {_meta} to {_item}.getItemMeta()
+    set {_pdc} to {_meta}.getPersistentDataContainer()
+    set {_enchant container} to {_pdc}.get({-enchant namespace}, PersistentDataType.TAG_CONTAINER)
+    if {_enchant container} isn't set:
+        return {_}
+    for {_key} in ...{_enchant container}.getKeys():
+        set {_enchantments::%{_key}.getKey()%} to {_enchant container}.get({_key}, PersistentDataType.LONG)
+    return {_enchantments::*}
