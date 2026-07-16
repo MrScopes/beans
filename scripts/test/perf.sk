@@ -8,6 +8,18 @@ import:
 on load:
     set {-enchant namespace} to new NamespacedKey("skript", "custom_enchantments")
 
+###
+> perf
+[00:05:50 INFO]: reflect
+[00:05:50 INFO]: write: 0.15 ms
+[00:05:50 INFO]: custom_enchant_1: 1
+[00:05:50 INFO]: read: 0.13 ms
+[00:05:50 INFO]: 
+[00:05:50 INFO]: variables
+[00:05:50 INFO]: write: 0.03 ms
+[00:05:50 INFO]: blast: 1
+[00:05:50 INFO]: read: 0.02 ms
+###
 command /perf:
     trigger:
         send "reflect"
@@ -15,8 +27,6 @@ command /perf:
         set {_now} to current ns
 
         set {_item} to enchantItemNEW({_item}, "custom_enchant_1", 1)
-        set {_item} to enchantItemNEW({_item}, "custom_enchant_2", 5)
-        set {_item} to enchantItemNEW({_item}, "custom_enchant_3", 10)
 
         set {_elapsed} to (current ns - {_now}) / 1000000
         send "write: %{_elapsed}% ms"
@@ -35,18 +45,17 @@ command /perf:
         send "variables"
         set {_item} to new ItemStack(Material.DIAMOND_SWORD)
         set data tag "uuid" of {_item} to random uuid
+        delete {custom enchantments::%{_uuid}%::*}
         set {_now} to current ns
 
         set {custom enchantments::%{_uuid}%::blast} to 1
-        set {custom enchantments::%{_uuid}%::adrenaline} to 2
-        set {custom enchantments::%{_uuid}%::creeper} to 3
 
         set {_elapsed} to (current ns - {_now}) / 1000000
         send "write: %{_elapsed}% ms"
 
         set {_now} to current ns
 
-        set {_enchantments::*} to keyed getEnchantments({_item})
+        set {_enchantments::*} to keyed {custom enchantments::%{_uuid}%::*}
         for {_ce}, {_level} in {_enchantments::*}:
             send "%{_ce}%: %{_level}%"
 
