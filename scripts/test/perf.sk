@@ -9,15 +9,13 @@ on load:
     set {-enchant namespace} to new NamespacedKey("skript", "custom_enchantments")
 
 ###
-[00:19:41 INFO]: reflect
-[00:19:41 INFO]: write: 0.15 ms
-[00:19:41 INFO]: custom_enchant_1: 1
-[00:19:41 INFO]: read: 0.12 ms
-[00:19:41 INFO]: 
-[00:19:41 INFO]: variables
-[00:19:41 INFO]: write: 0.03 ms
-[00:19:41 INFO]: blast: 1
-[00:19:41 INFO]: read: 0.06 ms
+[00:25:45 INFO]: reflect
+[00:25:45 INFO]: write 1: 0.15 ms
+[00:25:45 INFO]: read 20: 0.17 ms
+[00:25:45 INFO]: 
+[00:25:45 INFO]: variables
+[00:25:45 INFO]: write 1: 0.01 ms
+[00:25:45 INFO]: read 20: 0.06 ms
 ###
 command /perf:
     trigger:
@@ -28,16 +26,19 @@ command /perf:
         set {_item} to enchantItemNEW({_item}, "custom_enchant_1", 1)
 
         set {_elapsed} to (current ns - {_now}) / 1000000
-        send "write: %{_elapsed}% ms"
+        send "write 1: %{_elapsed}% ms"
+
+        loop 20 times:
+            set {_item} to enchantItemNEW({_item}, "custom_enchant_%loop-value%", 1)
 
         set {_now} to current ns
 
         set {_enchantments::*} to keyed getEnchantmentsNEW({_item})
         for {_ce}, {_level} in {_enchantments::*}:
-            send "%{_ce}%: %{_level}%"
+            set {_} to {_}
 
         set {_elapsed} to (current ns - {_now}) / 1000000
-        send "read: %{_elapsed}% ms"
+        send "read %size of {_enchantments::*}%: %{_elapsed}% ms"
 
         send ""
 
@@ -48,20 +49,23 @@ command /perf:
         delete {custom enchantments::%{_uuid}%::*}
         set {_now} to current ns
 
-        set {custom enchantments::%{_uuid}%::blast} to 1
+        set {custom enchantments::%{_uuid}%::custom_enchant_1} to 1
 
         set {_elapsed} to (current ns - {_now}) / 1000000
-        send "write: %{_elapsed}% ms"
+        send "write 1: %{_elapsed}% ms"
+
+        loop 20 times:
+            set {custom enchantments::%{_uuid}%::custom_enchant_%loop-value%} to 1
 
         set {_now} to current ns
 
         set {_uuid} to data tag "uuid" of {_item}
         set {_enchantments::*} to keyed {custom enchantments::%{_uuid}%::*}
         for {_ce}, {_level} in {_enchantments::*}:
-            send "%{_ce}%: %{_level}%"
+            set {_} to {_}
 
         set {_elapsed} to (current ns - {_now}) / 1000000
-        send "read: %{_elapsed}% ms"
+        send "read %size of {_enchantments::*}%: %{_elapsed}% ms"
 
 local function enchantItemNEW(item: item stack, enchantment: string, level: integer) :: item stack:
     set {_meta} to {_item}.getItemMeta()
