@@ -9,16 +9,15 @@ on load:
     set {-enchant namespace} to new NamespacedKey("skript", "custom_enchantments")
 
 ###
-> perf
-[00:05:50 INFO]: reflect
-[00:05:50 INFO]: write: 0.15 ms
-[00:05:50 INFO]: custom_enchant_1: 1
-[00:05:50 INFO]: read: 0.13 ms
-[00:05:50 INFO]: 
-[00:05:50 INFO]: variables
-[00:05:50 INFO]: write: 0.03 ms
-[00:05:50 INFO]: blast: 1
-[00:05:50 INFO]: read: 0.02 ms
+[00:19:41 INFO]: reflect
+[00:19:41 INFO]: write: 0.15 ms
+[00:19:41 INFO]: custom_enchant_1: 1
+[00:19:41 INFO]: read: 0.12 ms
+[00:19:41 INFO]: 
+[00:19:41 INFO]: variables
+[00:19:41 INFO]: write: 0.03 ms
+[00:19:41 INFO]: blast: 1
+[00:19:41 INFO]: read: 0.06 ms
 ###
 command /perf:
     trigger:
@@ -45,6 +44,7 @@ command /perf:
         send "variables"
         set {_item} to new ItemStack(Material.DIAMOND_SWORD)
         set data tag "uuid" of {_item} to random uuid
+        set {_uuid} to data tag "uuid" of {_item}
         delete {custom enchantments::%{_uuid}%::*}
         set {_now} to current ns
 
@@ -55,6 +55,7 @@ command /perf:
 
         set {_now} to current ns
 
+        set {_uuid} to data tag "uuid" of {_item}
         set {_enchantments::*} to keyed {custom enchantments::%{_uuid}%::*}
         for {_ce}, {_level} in {_enchantments::*}:
             send "%{_ce}%: %{_level}%"
@@ -82,3 +83,13 @@ local function getEnchantmentsNEW(item: item stack) :: objects:
     for {_key} in ...{_enchant container}.getKeys():
         set {_enchantments::%{_key}.getKey()%} to {_enchant container}.get({_key}, PersistentDataType.LONG)
     return {_enchantments::*}
+
+command /pdc:
+    trigger:
+        set {_item} to new ItemStack(Material.DIAMOND_SWORD)
+        set data tag "x" of {_item} to 1
+        send data tag "x" of {_item}
+
+expression data container %string% of %itemstack%:
+    get:
+        return expr-2.getItemMeta().getPersistentDataContainer().get(new NamespacedKey("skript", expr-1), PersistentDataType.TAG_CONTAINER)
