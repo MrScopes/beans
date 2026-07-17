@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class CustomEnchantments {
     public static NamespacedKey enchantmentNamespace = new NamespacedKey("beans", "enchantments");
 
-    public static ArrayList<Enchantment> getEnchantments(ItemType itemType) {
-        ArrayList<Enchantment> enchantments = new ArrayList<>();
+    public static ArrayList<CustomEnchantment> getEnchantments(ItemType itemType) {
+        ArrayList<CustomEnchantment> enchantments = new ArrayList<>();
 
         ItemMeta meta = itemType.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
@@ -24,7 +24,7 @@ public class CustomEnchantments {
 
         for (NamespacedKey enchantment : enchantmentContainer.getKeys()) {
             Long level = enchantmentContainer.get(enchantment, PersistentDataType.LONG);
-            enchantments.add(new Enchantment(enchantment.getKey(), level));
+            enchantments.add(new CustomEnchantment(enchantment.getKey(), level));
         }
 
         return enchantments;
@@ -55,5 +55,5 @@ public class CustomEnchantments {
         return enchantmentContainer.get(new NamespacedKey(enchantmentNamespace.namespace(), enchantment), PersistentDataType.LONG);
     }
     
-    public record Enchantment(String enchantment, Long level) {}
+    public record CustomEnchantment(String enchantment, Long level) {}
 }

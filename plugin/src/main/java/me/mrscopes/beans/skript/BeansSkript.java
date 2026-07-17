@@ -1,6 +1,5 @@
 package me.mrscopes.beans.skript;
 
-import me.mrscopes.beans.skript.effects.EffCustomEnchantments;
 import me.mrscopes.beans.skript.expressions.*;
 
 import ch.njol.skript.Skript;
@@ -22,7 +21,7 @@ public class BeansSkript implements AddonModule {
     public void load(SkriptAddon skriptAddon) {
         ExprBeans.register(skriptAddon.syntaxRegistry());
         ExprCustomEnchantment.register(skriptAddon.syntaxRegistry());
-        EffCustomEnchantments.register(skriptAddon.syntaxRegistry());
+        ExprCustomEnchantments.register(skriptAddon.syntaxRegistry());
     }
 
     @Override
