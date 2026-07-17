@@ -2,7 +2,7 @@ using reflection
 
 function miningEnchants(player: player, block: block):
     {_block} is within bound with id "mine"
-    set {_enchantments::*} to custom enchantments of {_player}'s tool #keyed getEnchantments({_player}'s tool)
+    set {_enchantments::*} to custom enchantments of {_player}'s tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:
@@ -40,7 +40,7 @@ on entity shoot bow:
     location of projectile isn't within bound with id "spawn"
     projectile is an arrow
     set {-%projectile%::force} to projectile force
-    set {_enchantments::*} to custom enchantments of shooter's tool #keyed getEnchantments(shooter's tool)
+    set {_enchantments::*} to custom enchantments of shooter's tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:
@@ -81,7 +81,7 @@ on projectile hit with priority highest:
     location of projectile isn't within bound with id "spawn"
     projectile is an arrow
     {-%projectile%::force} is set
-    set {_enchantments::*} to custom enchantments of shooter's tool #keyed getEnchantments(shooter's tool)
+    set {_enchantments::*} to custom enchantments of shooter's tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:
@@ -121,7 +121,7 @@ on damage with priority highest:
 
     #if attack cooldown of attacker is 1:
     if attacker is set:
-        set {_attackerTool::*} to custom enchantments of attacker's tool #keyed getEnchantments(attacker's tool)
+        set {_attackerTool::*} to custom enchantments of attacker's tool
         set {_attackerToolIndices::*} to indices of {_attackerTool::*}
         sort {_attackerToolIndices::*} in descending order by {-ce::%input%::priority}
 
@@ -186,7 +186,7 @@ on damage with priority highest:
                     set {-enchant cooldown::%attacker%::%loop-value%} to now
                 add result of {_onattack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
 
-    set {_victimTool::*} to custom enchantments of victim's tool #keyed getEnchantments(victim's tool)
+    set {_victimTool::*} to custom enchantments of victim's tool
     set {_victimToolIndices::*} to indices of {_victimTool::*}
     sort {_victimToolIndices::*} in descending order by {-ce::%input%::priority}
 
@@ -216,7 +216,7 @@ on damage with priority highest:
             add result of {_onattacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
     
     if attacker's helmet is a leather helmet:
-        set {_enchantments::*} to custom enchantments of attacker's helmet # keyed getEnchantments(attacker's helmet)
+        set {_enchantments::*} to custom enchantments of attacker's helmet
         set {_indices::*} to indices of {_enchantments::*}
         sort {_indices::*} in descending order by {-ce::%input%::priority}
         loop {_indices::*}:
@@ -250,7 +250,7 @@ on damage with priority highest:
 
     if victim's helmet is set:
         set {_attacker} to attacker ? victim
-        set {_enchantments::*} to custom enchantments of victim's helmet # keyed getEnchantments(victim's helmet)
+        set {_enchantments::*} to custom enchantments of victim's helmet
         set {_indices::*} to indices of {_enchantments::*}
         sort {_indices::*} in descending order by {-ce::%input%::priority}
         loop {_indices::*}:
@@ -299,7 +299,7 @@ on armor change:
         stop
         
     if {_new} isn't air:
-        set {_enchantments::*} to custom enchantments of {_new} #keyed getEnchantments({_new})
+        set {_enchantments::*} to custom enchantments of {_new}
         set {_indices::*} to indices of {_enchantments::*}
         loop {_indices::*}:
             set {_level} to {_enchantments::%loop-value%}
@@ -308,7 +308,7 @@ on armor change:
                 run {-ce::%loop-value%::onequip} with arguments (player, {_new}, {_level})
 
     else if {_old} isn't air:
-        set {_enchantments::*} to custom enchantments of {_old} #keyed getEnchantments({_old})
+        set {_enchantments::*} to custom enchantments of {_old}
         set {_indices::*} to indices of {_enchantments::*}
         loop {_indices::*}:
             set {_level} to {_enchantments::%loop-value%}
@@ -319,7 +319,7 @@ on armor change:
 on quit:
     loop player's armor:
         loop-value isn't air
-        set {_enchantments::*} to custom enchantments of loop-value #keyed getEnchantments(loop-value)
+        set {_enchantments::*} to custom enchantments of loop-value
         set {_indices::*} to indices of {_enchantments::*}
         loop {_indices::*}:
             if {-ce::%loop-value-2%::disabled} is true:
@@ -333,7 +333,7 @@ on quit:
 on death:
     loop victim's armor:
         loop-value isn't air
-        set {_enchantments::*} to custom enchantments of loop-value #keyed getEnchantments(loop-value)
+        set {_enchantments::*} to custom enchantments of loop-value
         set {_indices::*} to indices of {_enchantments::*}
         loop {_indices::*}:
             if {-ce::%loop-value-2%::disabled} is true:
@@ -350,7 +350,7 @@ on respawn:
     wait 1 tick
     loop player's armor:
         loop-value isn't air
-        set {_enchantments::*} to custom enchantments of loop-value #keyed getEnchantments(loop-value)
+        set {_enchantments::*} to custom enchantments of loop-value
         set {_indices::*} to indices of {_enchantments::*}
         loop {_indices::*}:
             if {-ce::%loop-value-2%::disabled} is true:
@@ -367,7 +367,7 @@ on respawn:
 
 on swap items:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool #keyed getEnchantments(player's tool)
+    set {_enchantments::*} to custom enchantments of player's tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:
@@ -397,7 +397,7 @@ on swap items:
 
 on right click with priority monitor:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool #keyed getEnchantments(player's tool)
+    set {_enchantments::*} to custom enchantments of player's tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:
@@ -425,7 +425,7 @@ on right click with priority monitor:
 
 on left click with priority monitor:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool #keyed getEnchantments(player's tool)
+    set {_enchantments::*} to custom enchantments of player's tool
     set {_indices::*} to indices of {_enchantments::*}
     sort {_indices::*} in descending order by {-ce::%input%::priority}
     loop {_indices::*}:

@@ -65,7 +65,7 @@ function openUpgradeGui(player: player):
                     stop loop
             set slot loop-value of {-upgrade gui::%{_player}%} to red stained glass pane named "&cLocked Slot" with lore "&7Unlocks at Tier &f%{_unlock tier}%"
 
-    set {_enchantments::*} to custom enchantments of {_player}'s tool #keyed getEnchantments({_player}'s tool)
+    set {_enchantments::*} to custom enchantments of {_player}'s tool
     if {_player}'s tool is tagged with paper tag "helmets":
         if {_enchantments::armor} isn't set:
             set {_enchantments::armor} to 0

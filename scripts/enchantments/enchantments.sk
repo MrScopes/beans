@@ -1,9 +1,5 @@
 using reflection
 
-function getEnchantments(item: item) :: objects:
-    set {_uuid} to data tag "uuid" of {_item}
-    return keyed {custom enchantments::%{_uuid}%::*}
-
 function enchantItem(item: item, enchantment: string, level: integer, player: player = {_}) :: item:
     #set {_uuid} to data tag "uuid" of {_item}
     #if {_uuid} isn't set:
@@ -122,7 +118,7 @@ function updateLore(tool: item, showDescriptions: boolean = true) :: item:
             continue
         add loop-value to {_cleanOld::*}
 
-    set {_enchantments::*} to custom enchantments of {_tool} # keyed getEnchantments({_tool})
+    set {_enchantments::*} to custom enchantments of {_tool}
     if size of {_enchantments::*} >= 10:
         set {_showDescriptions} to false
 
