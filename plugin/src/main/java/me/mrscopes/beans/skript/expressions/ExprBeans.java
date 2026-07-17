@@ -25,7 +25,7 @@ public class ExprBeans extends SimpleExpression<String> {
     }
 
     @Override
-    protected String @Nullable [] get(Event event) {
+    protected @Nullable String[] get(Event event) {
         Beans beans = Beans.getInstance();
         return new String[]{beans.getPluginMeta().getVersion()};
     }
