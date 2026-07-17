@@ -2,13 +2,12 @@ command /ce <text> <integer> [<text>] [<text>]:
     trigger:
         if {-ce::%arg 1%::max} isn't set:
             send "Unknown enchantment." to player
-
         else:
             if arg 3 is "item":
                 give createStoredCustomBook(arg 1, arg 2, arg 4) to player
             else:
                 if arg 4 is set:
-                    set {custom enchantments::%{_uuid}%::%{_enchantment}%::special} to arg 4
+                    set data tag "special_%arg 1%" of (player's tool) to arg 4
                 set player's tool to enchantItem(player's tool, arg 1, arg 2, player)
 
 command /reloadenchantment [<text>]:
@@ -45,7 +44,7 @@ command /upgrade:
             player's tool is tagged with paper tag "helmets"
             player's tool is tagged with paper tag "bows"
         then:
-            data tag "stored_custom_enchantment" of player's tool isn't set
+            data tag "stored_custom_enchantment" of (player's tool) isn't set
             openUpgradeGui(player)
 
 on tab complete of "/ce":

@@ -46,7 +46,6 @@ function openUpgradeGui(player: player):
     set {_slot index} to 1
 
     set {_tool} to {_player}'s tool
-    set {_uuid} to data tag "uuid" of {_tool}
     set {_max enchantments} to getMaxEnchantments({_tool})
     set {_type} to enchantmentTypeFromItem({_tool})
     set {_max ever enchantments} to 0
@@ -65,19 +64,15 @@ function openUpgradeGui(player: player):
                     stop loop
             set slot loop-value of {-upgrade gui::%{_player}%} to red stained glass pane named "&cLocked Slot" with lore "&7Unlocks at Tier &f%{_unlock tier}%"
 
-    set {_enchantments::*} to custom enchantments of {_player}'s tool
-    if {_player}'s tool is tagged with paper tag "helmets":
-        if {_enchantments::armor} isn't set:
-            set {_enchantments::armor} to 0
-
-    loop indices of {_enchantments::*}:
-        set {_enchantment} to loop-value
-        set {_level} to {_enchantments::%{_enchantment}%}
-        {_level} is set
-
-        set {_guiItem} to createCustomEnchantGuiItem({_player}, {_tool}, {_enchantment}, {_level}, {_uuid})
+    for {_enchantment}, {_level} in custom enchantments of {_tool}:
+        set {_guiItem} to createCustomEnchantGuiItem({_player}, {_tool}, {_enchantment}, {_level})
         set slot {_custom slots::%{_slot index}%} of {-upgrade gui::%{_player}%} to {_guiItem}
         add 1 to {_slot index}
+
+    if {_tool} is tagged with paper tag "helmets":
+        if customEnchantLevel({_tool}, "armor") isn't set:
+            set {_guiItem} to createCustomEnchantGuiItem({_player}, {_tool}, "armor", 0)
+            set slot {_custom slots::%{_slot index}%} of {-upgrade gui::%{_player}%} to {_guiItem}
 
     open {-upgrade gui::%{_player}%} to {_player}
 
@@ -106,10 +101,18 @@ function createVanillaEnchantGuiItem(player: player, enchantment: object) :: ite
     return {_book}
 
 
+# Gets the level of a custom enchantment from an item.
+# Returns nothing when the item does not have that enchantment.
+function customEnchantLevel(item: item, enchantment: string) :: integer:
+    for {_current enchantment}, {_level} in custom enchantments of {_item}:
+        if {_current enchantment} is {_enchantment}:
+            return {_level}
+
+
 # Builds the GUI item for a single custom enchantment slot
-function createCustomEnchantGuiItem(player: player, tool: item, enchantment: string, level: integer, uuid: string) :: item:
+function createCustomEnchantGuiItem(player: player, tool: item, enchantment: string, level: integer) :: item:
     set {_display} to {-ce::%{_enchantment}%::display} ? "&7%{_enchantment}%"
-    set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+    set {_special} to data tag "special" of {_tool}
 
     if {_special} is set:
         set {_specialDisplay} to " &f<sprite:particles:glint> &e%{_special}%"
@@ -118,7 +121,6 @@ function createCustomEnchantGuiItem(player: player, tool: item, enchantment: str
 
     set {_item} to {-ce::%{_enchantment}%::item} with all item flags
     set data tag "custom_enchantment" of {_item} to "%{_enchantment}%"
-    set data tag "tool_uuid" of {_item} to "%{_uuid}%"
 
     if {_level} >= {-ce::%{_enchantment}%::max}:
         if {_level} > 0:
@@ -221,8 +223,7 @@ on inventory click:
 
 function handleCustomEnchantClick(player: player, guiItem: item, click: click type):
     set {_enchantment} to data tag "custom_enchantment" of {_guiItem}
-    set {_uuid} to data tag "tool_uuid" of {_guiItem}
-    set {_level} to {custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0
+    set {_level} to customEnchantLevel({_player}'s tool, {_enchantment}) ? 0
 
     if {_click} is left mouse button:
         {_level} < {-ce::%{_enchantment}%::max}
@@ -240,7 +241,7 @@ function handleCustomEnchantClick(player: player, guiItem: item, click: click ty
 
     else if {_click} is right mouse button:
         {_level} > 0
-        set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+        set {_special} to data tag "special_%{_enchantment}%" of ({_player}'s tool)
         give createStoredCustomBook({_enchantment}, {_level}, {_special}) to {_player}
         set {_player}'s tool to enchantItem({_player}'s tool, {_enchantment}, 0, {_player})
         openUpgradeGui({_player})

@@ -1,30 +1,30 @@
 on load:
-    setting("arrow rain", "display", value: "&f<sprite:items:item/spectral_arrow> &6Arrow Rain")
-    setting("arrow rain", "max", value: 5)
-    setting("arrow rain", "priority", value: 0)
-    setting("arrow rain", "type", value: "bow")
-    setting("arrow rain", "item", value: spectral arrow)
+    setting("arrow_rain", "display", value: "&f<sprite:items:item/spectral_arrow> &6Arrow Rain")
+    setting("arrow_rain", "max", value: 5)
+    setting("arrow_rain", "priority", value: 0)
+    setting("arrow_rain", "type", value: "bow")
+    setting("arrow_rain", "item", value: spectral arrow)
 
-    setting("arrow rain", "cooldown", l1: 15 seconds, l2: 14 seconds, l3: 13 seconds, l4: 12 seconds, l5: 10 seconds)
-    setting("arrow rain", "threshold", l1: 1, l2: 1, l3: 1, l4: 1, l5: 1)
+    setting("arrow_rain", "cooldown", l1: 15 seconds, l2: 14 seconds, l3: 13 seconds, l4: 12 seconds, l5: 10 seconds)
+    setting("arrow_rain", "threshold", l1: 1, l2: 1, l3: 1, l4: 1, l5: 1)
 
-    setting("arrow rain", "amount", l1: 10, l2: 14, l3: 18, l4: 20, l5: 25)
-    setting("arrow rain", "damage", l1: 0.35, l2: 0.5, l3: 0.65, l4: 0.8, l5: 1.0)
-    setting("arrow rain", "duration", l1: 3 seconds, l2: 4 seconds, l3: 5 seconds, l4: 6 seconds, l5: 7 seconds)
+    setting("arrow_rain", "amount", l1: 10, l2: 14, l3: 18, l4: 20, l5: 25)
+    setting("arrow_rain", "damage", l1: 0.35, l2: 0.5, l3: 0.65, l4: 0.8, l5: 1.0)
+    setting("arrow_rain", "duration", l1: 3 seconds, l2: 4 seconds, l3: 5 seconds, l4: 6 seconds, l5: 7 seconds)
 
-    setting("arrow rain", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
-    setting("arrow rain", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+    setting("arrow_rain", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
+    setting("arrow_rain", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
 
 local function getDescription(level: integer) :: string:
-    set {_amount} to get_setting("arrow rain", "amount", {_level})
-    set {_damage} to get_setting("arrow rain", "damage", {_level})
-    set {_duration} to get_setting("arrow rain", "duration", {_level})
+    set {_amount} to get_setting("arrow_rain", "amount", {_level})
+    set {_damage} to get_setting("arrow_rain", "damage", {_level})
+    set {_duration} to get_setting("arrow_rain", "duration", {_level})
     return "on land&8, &7rain &f%{_amount}% &7arrows for &f%time_format({_duration})% &7dealing &c%{_damage}%&4<sprite:gui:hud/heart/full>&7 each"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
-    set {_amount} to get_setting("arrow rain", "amount", {_level})
-    set {_damage} to get_setting("arrow rain", "damage", {_level})
-    set {_duration} to get_setting("arrow rain", "duration", {_level})
+    set {_amount} to get_setting("arrow_rain", "amount", {_level})
+    set {_damage} to get_setting("arrow_rain", "damage", {_level})
+    set {_duration} to get_setting("arrow_rain", "duration", {_level})
 
     set {_location} to location of {_projectile} ~ vector(0, 10, 0)
     set yaw of {_location} to 90

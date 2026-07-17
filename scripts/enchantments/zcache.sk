@@ -22,21 +22,24 @@ on load:
 
 function cache_specific_enchantment(enchantment: string, broadcast: boolean = true):
     set {_now} to current ns
-    
+
     set {_type} to {-ce::%{_enchantment}%::type}
     set {_ultimate} to {-ce::%{_enchantment}%::ultimate}
 
+    set {_script name} to {_enchantment}
+    replace all "_" in {_script name} with " "
+
     if {_ultimate} is true:
-        set {_script} to script named "enchantments/custom/%{_type}%/ultimate/%{_enchantment}%"
+        set {_script} to script named "enchantments/custom/%{_type}%/ultimate/%{_script name}%"
     else:
-        set {_script} to script named "enchantments/custom/%{_type}%/%{_enchantment}%" 
+        set {_script} to script named "enchantments/custom/%{_type}%/%{_script name}%"
 
     loop "onbreak", "onattack", "onattacked", "ondeath", "onoffhand", "onapply", "onunapply", "onshoot", "onhit", "onrightclick", "onleftclick", "getDescription":
         set {-ce::%{_enchantment}%::%loop-value%} to function named loop-value from {_script}
 
     loop "getDescription", "max", "display", "type", "priority", "item":
         if {-ce::%{_enchantment}%::%loop-value%} is not set:
-            broadcast "Enchantment %{_enchantment}% is missing %loop-value%"
+            broadcast "Enchantment %{_enchantment}% is missing %loop-value%!"
 
     if {-ce::%{_enchantment}%::item} is set:
         apply tooltip display component to {-ce::%{_enchantment}%::item}:
@@ -44,15 +47,17 @@ function cache_specific_enchantment(enchantment: string, broadcast: boolean = tr
 
     loop integers between 1 and {-ce::%{_enchantment}%::max}:
         if {-ce::%{_enchantment}%::getDescription} is set:
-            set {-ce::%{_enchantment}%::description::%loop-value%} to (result of {-ce::%{_enchantment}%::getDescription} with arguments loop-value)
+            set {-ce::%{_enchantment}%::description::%loop-value%} to result of {-ce::%{_enchantment}%::getDescription} with arguments loop-value
 
         if {-ce::%{_enchantment}%::description::%loop-value%} is not set:
             broadcast "Enchantment %{_enchantment}% is missing a description for level %loop-value%!"
+
         if loop-value > 1:
             if {-ce::%{_enchantment}%::xp cost::%loop-value%} is not set:
                 broadcast "Enchantment %{_enchantment}% level %loop-value% is missing an XP cost!"
+
             if {-ce::%{_enchantment}%::money cost::%loop-value%} is not set:
                 broadcast "Enchantment %{_enchantment}% level %loop-value% is missing a money cost!"
-        
+
     if {_broadcast} is true:
         broadcast "Cached %{_enchantment}% enchantment in %((current ns - {_now}) / 1_000_000)% ms."

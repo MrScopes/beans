@@ -337,7 +337,10 @@ command /rules:
 
 on drop:
     if any:
-        data tag "uuid" of event-item is set
+        {_item} is tagged with paper tag "swords"
+        {_item} is tagged with paper tag "bows"
+        {_item} is tagged with paper tag "pickaxes"
+        {_item} is tagged with paper tag "helmets"
         data tag "stored_level" of event-item is set
     then:
         if {level::%player%} < 25:
@@ -403,7 +406,6 @@ function updateInventory(inventory: inventory):
             wait 1 tick
         set {_amount} to item amount of loop-item
 
-        set {_uuid} to data tag "uuid" of loop-item
         set {_level} to data tag "stored_level" of loop-item
         set {_vanilla enchantment} to data tag "stored_vanilla_enchantment" of loop-item
         set {_custom enchantment} to data tag "stored_custom_enchantment" of loop-item
@@ -415,7 +417,12 @@ function updateInventory(inventory: inventory):
             set loop-item to {_amount} of createStoredVanillaBook({_vanilla enchantment}, {_level})
 
         else:
-            if {_uuid} is set:
+            if any:
+                loop-item is tagged with paper tag "swords"
+                loop-item is tagged with paper tag "bows"
+                loop-item is tagged with paper tag "pickaxes"
+                loop-item is tagged with paper tag "helmets"
+            then:
                 set loop-item to {_amount} of updateLore(loop-item, true)
 
 command /bounty [<text=%player's name%>] [<text>]:

@@ -5,7 +5,12 @@ function canBeAuctioned(item: item) :: boolean:
     if {_item} is a beacon:
         return true
     
-    if data tag "uuid" of {_item} is set:
+    if any:
+        {_item} is tagged with paper tag "swords"
+        {_item} is tagged with paper tag "bows"
+        {_item} is tagged with paper tag "pickaxes"
+        {_item} is tagged with paper tag "helmets"
+    then:
         return true
 
     if data tag "stored_level" of {_item} is set:

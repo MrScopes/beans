@@ -73,7 +73,7 @@ on inventory click:
             give {_amount} of type of event-item to player
 
 on right click with xp bottle:
-    data tag "stored_levels" of player's tool isn't set
+    data tag "stored_levels" of (player's tool) isn't set
     player is sneaking
     cancel event
     loop item amount of player's tool times:

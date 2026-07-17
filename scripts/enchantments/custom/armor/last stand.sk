@@ -1,33 +1,33 @@
 on load:
-    setting("last stand", "display", value: "&f<sprite:items:item/iron_chestplate> &eLast Stand")
-    setting("last stand", "max", value: 5)
-    setting("last stand", "priority", value: 0)
-    setting("last stand", "type", value: "armor")
-    setting("last stand", "item", value: iron chestplate)
+    setting("last_stand", "display", value: "&f<sprite:items:item/iron_chestplate> &eLast Stand")
+    setting("last_stand", "max", value: 5)
+    setting("last_stand", "priority", value: 0)
+    setting("last_stand", "type", value: "armor")
+    setting("last_stand", "item", value: iron chestplate)
 
-    setting("last stand", "speed", l1: potion effect of speed 1 for 1 second, l2: potion effect of speed 1 for 1 second, l3: potion effect of speed 2 for 1 second, l4: potion effect of speed 2 for 1 second, l5: potion effect of speed 3 for 1 second)
-    setting("last stand", "strength", l1: potion effect of strength 1 for 1 second, l2: potion effect of strength 1 for 1 second, l3: potion effect of strength 1 for 1 second, l4: potion effect of strength 1 for 1 second, l5: potion effect of strength 2 for 1 second)
-    setting("last stand", "resistance", l1: potion effect of resistance 1 for 1 second, l2: potion effect of resistance 1 for 1 second, l3: potion effect of resistance 1 for 1 second, l4: potion effect of resistance 1 for 1 second, l5: potion effect of resistance 1 for 1 second)
-    setting("last stand", "health threshold", l1: 2, l2: 2.4, l3: 2.9, l4: 3.2, l5: 3.6)
+    setting("last_stand", "speed", l1: potion effect of speed 1 for 1 second, l2: potion effect of speed 1 for 1 second, l3: potion effect of speed 2 for 1 second, l4: potion effect of speed 2 for 1 second, l5: potion effect of speed 3 for 1 second)
+    setting("last_stand", "strength", l1: potion effect of strength 1 for 1 second, l2: potion effect of strength 1 for 1 second, l3: potion effect of strength 1 for 1 second, l4: potion effect of strength 1 for 1 second, l5: potion effect of strength 2 for 1 second)
+    setting("last_stand", "resistance", l1: potion effect of resistance 1 for 1 second, l2: potion effect of resistance 1 for 1 second, l3: potion effect of resistance 1 for 1 second, l4: potion effect of resistance 1 for 1 second, l5: potion effect of resistance 1 for 1 second)
+    setting("last_stand", "health threshold", l1: 2, l2: 2.4, l3: 2.9, l4: 3.2, l5: 3.6)
 
-    setting("last stand", "xp cost", l2: 40_000, l3: 150_000, l4: 400_000, l5: 1_000_000)
-    setting("last stand", "money cost", l2: 60_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
+    setting("last_stand", "xp cost", l2: 40_000, l3: 150_000, l4: 400_000, l5: 1_000_000)
+    setting("last_stand", "money cost", l2: 60_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
 
 local function getDescription(level: integer) :: string:
-    set {_speed} to get_setting("last stand", "speed", {_level})
-    set {_strength} to get_setting("last stand", "strength", {_level})
-    set {_resistance} to get_setting("last stand", "resistance", {_level})
-    set {_health threshold} to get_setting("last stand", "health threshold", {_level})
+    set {_speed} to get_setting("last_stand", "speed", {_level})
+    set {_strength} to get_setting("last_stand", "strength", {_level})
+    set {_resistance} to get_setting("last_stand", "resistance", {_level})
+    set {_health threshold} to get_setting("last_stand", "health threshold", {_level})
 
     return "when below &f%{_health threshold}%<sprite:gui:hud/heart/full>&8, &7gain &f%effectDisplay({_speed})%&8, &f%effectDisplay({_strength})%&8, &f%effectDisplay({_resistance})%"
     
 local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     wait 1 tick
-    set {_health threshold} to get_setting("last stand", "health threshold", {_level})
+    set {_health threshold} to get_setting("last_stand", "health threshold", {_level})
     if {_victim}'s health < {_health threshold}:
-        set {_speed} to get_setting("last stand", "speed", {_level})
-        set {_strength} to get_setting("last stand", "strength", {_level})
-        set {_resistance} to get_setting("last stand", "resistance", {_level})
+        set {_speed} to get_setting("last_stand", "speed", {_level})
+        set {_strength} to get_setting("last_stand", "strength", {_level})
+        set {_resistance} to get_setting("last_stand", "resistance", {_level})
         while {_victim}'s health < {_health threshold}:
             add {_speed} to {_victim}'s potion effects
             add {_strength} to {_victim}'s potion effects

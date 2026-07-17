@@ -40,11 +40,11 @@ function createStoredVanillaBook(enchantment: string, level: integer, special: s
 # ============================================================
 
 function clearApplyResult(player: player):
-    delete {-apply result::%uuid of {_player}%::*}
+    delete {-apply result::%{_player}%::*}
 
 function setApplyResult(player: player, status: text, item: item):
-    set {-apply result::%uuid of {_player}%::status} to {_status}
-    set {-apply result::%uuid of {_player}%::item} to {_item}
+    set {-apply result::%{_player}%::status} to {_status}
+    set {-apply result::%{_player}%::item} to {_item}
 
 
 # ============================================================
@@ -68,7 +68,6 @@ function tryApplyStoredCustomBook(player: player, book: item, target: item):
     set {_stored enchantment} to data tag "stored_custom_enchantment" of {_book}
     set {_level} to data tag "stored_level" of {_book}
     set {_special} to data tag "special" of {_book}
-    set {_uuid} to data tag "uuid" of {_target}
 
     if any:
         {_stored enchantment} is not set
@@ -122,13 +121,13 @@ function tryApplyStoredCustomBook(player: player, book: item, target: item):
             setApplyResult({_player}, "none", {_target})
             stop
         else if {_new level} > {_current}:
-            set {custom enchantments::%{_uuid}%::%{_stored enchantment}%::special} to {_special}
+            set data tag "special_%{_stored enchantment}%" of {_target} to {_special}
             setApplyResult({_player}, "upgrade", enchantItem({_target}, {_stored enchantment}, {_new level}, {_player}))
         else:
             send "&cYou already have this enchantment." to {_player}
             setApplyResult({_player}, "none", {_target})
     else:
-        set {custom enchantments::%{_uuid}%::%{_stored enchantment}%::special} to {_special}
+        set data tag "special_%{_stored enchantment}%" of {_target} to {_special}
         setApplyResult({_player}, "applied", enchantItem({_target}, {_stored enchantment}, {_level}, {_player}))
 
 function tryApplyStoredVanillaBook(player: player, book: item, target: item):
