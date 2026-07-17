@@ -79,5 +79,5 @@ local function cleave(victim: entity, attacker: entity, level: integer):
         wait {_interval}
         if {_victim} is alive:
             damage {_victim} by customDamage({_victim}, {_bleed per hit})
-            show 4 red dust particle at {_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1)
+            show 4 red dust particle at ({_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1))
             reset no damage time of {_victim}
