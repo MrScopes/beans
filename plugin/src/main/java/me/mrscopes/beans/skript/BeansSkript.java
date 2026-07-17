@@ -21,6 +21,7 @@ public class BeansSkript implements AddonModule {
     @Override
     public void load(SkriptAddon skriptAddon) {
         ExprBeans.register(skriptAddon.syntaxRegistry());
+        ExprCustomEnchantment.register(skriptAddon.syntaxRegistry());
         EffCustomEnchantments.register(skriptAddon.syntaxRegistry());
     }
 

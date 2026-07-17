@@ -1,8 +1,7 @@
 package me.mrscopes.beans.enchantments;
 
-import io.papermc.paper.persistence.PersistentDataContainerView;
+import ch.njol.skript.aliases.ItemType;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -13,10 +12,10 @@ import java.util.ArrayList;
 public class CustomEnchantments {
     public static NamespacedKey enchantmentNamespace = new NamespacedKey("beans", "enchantments");
 
-    public static ArrayList<Enchantment> getEnchantments(ItemStack item) {
+    public static ArrayList<Enchantment> getEnchantments(ItemType itemType) {
         ArrayList<Enchantment> enchantments = new ArrayList<>();
 
-        ItemMeta meta = item.getItemMeta();
+        ItemMeta meta = itemType.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         PersistentDataContainer enchantmentContainer = pdc.get(enchantmentNamespace, PersistentDataType.TAG_CONTAINER);
 
@@ -31,7 +30,7 @@ public class CustomEnchantments {
         return enchantments;
     }
 
-    public static void setEnchantmentLevel(ItemStack item, String enchantment, Long level) {
+    public static void setEnchantmentLevel(ItemType item, String enchantment, Long level) {
         ItemMeta meta = item.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
@@ -46,8 +45,9 @@ public class CustomEnchantments {
         item.setItemMeta(meta);
     }
 
-    public static @Nullable Long getEnchantmentLevel(ItemStack item, String enchantment) {
-        PersistentDataContainerView pdc = item.getPersistentDataContainer();
+    public static @Nullable Long getEnchantmentLevel(ItemType item, String enchantment) {
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
         PersistentDataContainer enchantmentContainer = pdc.get(enchantmentNamespace, PersistentDataType.TAG_CONTAINER);
         if (enchantmentContainer == null)
             return null;
