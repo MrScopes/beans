@@ -36,7 +36,11 @@ public class CustomEnchantments {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
         PersistentDataContainer enchantmentContainer = pdc.getOrDefault(enchantmentNamespace, PersistentDataType.TAG_CONTAINER, pdc.getAdapterContext().newPersistentDataContainer());
-        enchantmentContainer.set(new NamespacedKey(enchantmentNamespace.namespace(), enchantment), PersistentDataType.LONG, level);
+        if (level == 0) {
+            enchantmentContainer.remove(new NamespacedKey(enchantmentNamespace.namespace(), enchantment));
+        } else {
+            enchantmentContainer.set(new NamespacedKey(enchantmentNamespace.namespace(), enchantment), PersistentDataType.LONG, level);
+        }
         pdc.set(enchantmentNamespace, PersistentDataType.TAG_CONTAINER, enchantmentContainer);
 
         item.setItemMeta(meta);
