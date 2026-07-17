@@ -20,7 +20,7 @@ local function getDescription(level: integer) :: string:
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.evoker.cast_spell" with volume 0.5 and pitch 1 at location of {_player}
-    set {_enchantments::*} to keyed getEnchantments({_tool})
+    set {_enchantments::*} to custom enchantments of {_tool} # keyed getEnchantments({_tool})
     set {_indices::*} to indices of {_enchantments::*}
     set {_indices::*} to shuffled {_indices::*}
     remove "chaos", "reroll", "lucky" from {_indices::*}

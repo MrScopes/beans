@@ -5,11 +5,11 @@ function getEnchantments(item: item) :: objects:
     return keyed {custom enchantments::%{_uuid}%::*}
 
 function enchantItem(item: item, enchantment: string, level: integer, player: player = {_}) :: item:
-    set {_uuid} to data tag "uuid" of {_item}
-    if {_uuid} isn't set:
-        return {_item}
-    
-    set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
+    #set {_uuid} to data tag "uuid" of {_item}
+    #if {_uuid} isn't set:
+    #    return {_item}
+    #
+    #set {_special} to {custom enchantments::%{_uuid}%::%{_enchantment}%::special}
 
     if all:
         {_special} isn't set
@@ -21,9 +21,11 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
     if {_level} is 0:
         if {-ce::%{_enchantment}%::onunapply} is set:
             run {-ce::%{_enchantment}%::onunapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
-        delete {custom enchantments::%{_uuid}%::%{_enchantment}%}
+        #delete {custom enchantments::%{_uuid}%::%{_enchantment}%}
+        set level of custom enchantment {_enchantment} of {_item} to 0
     else:
-        set {custom enchantments::%{_uuid}%::%{_enchantment}%} to {_level}
+        #set {custom enchantments::%{_uuid}%::%{_enchantment}%} to {_level}
+        set level of custom enchantment {_enchantment} of {_item} to {_level}
         if {-ce::%{_enchantment}%::onapply} is set:
             run {-ce::%{_enchantment}%::onapply} with arguments ({_item}, {_level}, {_player})
     set {_item} to updateLore({_item})
@@ -120,7 +122,7 @@ function updateLore(tool: item, showDescriptions: boolean = true) :: item:
             continue
         add loop-value to {_cleanOld::*}
 
-    set {_enchantments::*} to keyed getEnchantments({_tool})
+    set {_enchantments::*} to custom enchantments of {_tool} # keyed getEnchantments({_tool})
     if size of {_enchantments::*} >= 10:
         set {_showDescriptions} to false
 

@@ -92,7 +92,7 @@ function tryApplyStoredCustomBook(player: player, book: item, target: item):
         setApplyResult({_player}, "none", {_target})
         stop
 
-    set {_enchantments::*} to keyed getEnchantments({_target})
+    set {_enchantments::*} to custom enchantments of {_target} #keyed getEnchantments({_target})
 
     if size of {_enchantments::*} + 1 > getMaxEnchantments({_target}):
         send "&cUpgrade your item tier for more slots." to {_player}
