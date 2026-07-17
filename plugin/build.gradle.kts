@@ -10,12 +10,16 @@ repositories {
     maven("https://repo.codemc.io/repository/maven-releases/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.skriptlang.org/releases")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0")
     compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
+    compileOnly("com.github.SkriptLang:Skript:2.16.0") {
+        isTransitive = false
+    }
     paperweight.paperDevBundle("26.1.2.build.+")
 }
 

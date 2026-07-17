@@ -1,4 +1,4 @@
-package me.mrscopes.mine;
+package me.mrscopes.beans.mine;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -8,7 +8,7 @@ import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.world.block.BlockTypes;
-import me.mrscopes.MrScopes;
+import me.mrscopes.beans.Beans;
 import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +40,7 @@ public class MineManager {
     private static final int MINE_COUNT = 100;
     private static final int BEACON_COUNT = 25;
 
-    private final MrScopes plugin;
+    private final Beans plugin;
     private final Random random = new Random();
     private final List<SavedMine> mines = new ArrayList<>();
     private final Set<Location> activeBeacons = new HashSet<>();
@@ -52,7 +52,7 @@ public class MineManager {
     private BukkitTask beaconSoundTask;
     private boolean generatingSnapshots = false;
 
-    public MineManager(MrScopes plugin) {
+    public MineManager(Beans plugin) {
         this.plugin = plugin;
 
         World world = Bukkit.getWorld("world");

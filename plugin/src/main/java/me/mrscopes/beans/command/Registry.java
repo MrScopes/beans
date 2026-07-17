@@ -1,9 +1,9 @@
-package me.mrscopes.command;
+package me.mrscopes.beans.command;
 
 import io.papermc.paper.command.brigadier.Commands;
-import me.mrscopes.command.commands.TestCommand;
-import me.mrscopes.map.MapCommand;
-import me.mrscopes.mine.MineCommand;
+import me.mrscopes.beans.command.commands.TestCommand;
+import me.mrscopes.beans.map.MapCommand;
+import me.mrscopes.beans.mine.MineCommand;
 
 public class Registry {
     public Registry(Commands registrar) {

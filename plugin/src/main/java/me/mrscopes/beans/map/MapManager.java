@@ -1,4 +1,4 @@
-package me.mrscopes.map;
+package me.mrscopes.beans.map;
 
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -14,7 +14,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import me.mrscopes.MrScopes;
+import me.mrscopes.beans.Beans;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -33,11 +33,11 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 public class MapManager {
-    private final MrScopes plugin;
+    private final Beans plugin;
     private final File mapsFolder;
     private final Map<String, SavedMap> savedMaps = new HashMap<>();
 
-    public MapManager(MrScopes plugin) {
+    public MapManager(Beans plugin) {
         this.plugin = plugin;
         this.mapsFolder = new File(plugin.getDataFolder(), "maps");
 

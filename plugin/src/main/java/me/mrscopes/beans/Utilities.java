@@ -1,4 +1,4 @@
-package me.mrscopes;
+package me.mrscopes.beans;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 

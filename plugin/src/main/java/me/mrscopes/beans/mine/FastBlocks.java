@@ -1,4 +1,4 @@
-package me.mrscopes.mine;
+package me.mrscopes.beans.mine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

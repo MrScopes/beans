@@ -1,18 +1,18 @@
-package me.mrscopes.command.commands;
+package me.mrscopes.beans.command.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.papermc.paper.command.brigadier.Commands;
-import me.mrscopes.MrScopes;
+import me.mrscopes.beans.Beans;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import static me.mrscopes.Utilities.hasPermission;
+import static me.mrscopes.beans.Utilities.hasPermission;
 
 public class TestCommand {
     public TestCommand(Commands commands) {
-        MiniMessage miniMessage = MrScopes.getInstance().getMiniMessage();
+        MiniMessage miniMessage = Beans.getInstance().getMiniMessage();
 
         commands.register(
             Commands.literal("testcmd")

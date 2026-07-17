@@ -1,7 +1,7 @@
 name: beans
 version: '${version}'
 
-main: me.mrscopes.MrScopes
+main: me.mrscopes.beans.Beans
 api-version: '26.1.2'
 load: POSTWORLD
 

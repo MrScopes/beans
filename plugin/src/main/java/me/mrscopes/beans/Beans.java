@@ -1,45 +1,48 @@
-package me.mrscopes;
+package me.mrscopes.beans;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import me.mrscopes.command.Registry;
-import me.mrscopes.map.MapManager;
-import me.mrscopes.mine.FastBlocks;
-import me.mrscopes.mine.MineManager;
+import me.mrscopes.beans.command.Registry;
+import me.mrscopes.beans.map.MapManager;
+import me.mrscopes.beans.mine.FastBlocks;
+import me.mrscopes.beans.mine.MineManager;
+import me.mrscopes.beans.skript.BeansSkript;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class MrScopes extends JavaPlugin {
-    private static MrScopes instance;
-
-    public static MrScopes getInstance() {
+public final class Beans extends JavaPlugin {
+    private static Beans instance;
+    public static Beans getInstance() {
         return instance;
     }
 
     private MiniMessage miniMessage;
-
     public MiniMessage getMiniMessage() {
         return miniMessage;
     }
 
     private MapManager mapManager;
-
     public MapManager getMapManager() {
         return mapManager;
     }
 
     private MineManager mineManager;
-
     public MineManager getMineManager() {
         return mineManager;
+    }
+
+    private BeansSkript skript;
+    public  BeansSkript getSkript() {
+        return skript;
     }
 
     @Override
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        skript = new BeansSkript();
         miniMessage = MiniMessage.miniMessage();
 
         mapManager = new MapManager(this);

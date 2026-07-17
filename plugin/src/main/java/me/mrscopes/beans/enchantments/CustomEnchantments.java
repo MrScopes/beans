@@ -1,4 +1,4 @@
-package me.mrscopes.enchantments;
+package me.mrscopes.beans.enchantments;
 
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;

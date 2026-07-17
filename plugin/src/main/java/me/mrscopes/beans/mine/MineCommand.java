@@ -1,17 +1,17 @@
-package me.mrscopes.mine;
+package me.mrscopes.beans.mine;
 
 import io.papermc.paper.command.brigadier.Commands;
-import me.mrscopes.MrScopes;
+import me.mrscopes.beans.Beans;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 
-import static me.mrscopes.Utilities.hasPermission;
+import static me.mrscopes.beans.Utilities.hasPermission;
 
 public class MineCommand {
     public MineCommand(Commands commands) {
-        MineManager mineManager = MrScopes.getInstance().getMineManager();
-        MiniMessage miniMessage = MrScopes.getInstance().getMiniMessage();
+        MineManager mineManager = Beans.getInstance().getMineManager();
+        MiniMessage miniMessage = Beans.getInstance().getMiniMessage();
 
         commands.register(
                 Commands.literal("mine")

@@ -1,18 +1,18 @@
-package me.mrscopes.map;
+package me.mrscopes.beans.map;
 
 import io.papermc.paper.command.brigadier.Commands;
-import me.mrscopes.MrScopes;
+import me.mrscopes.beans.Beans;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import static me.mrscopes.Utilities.hasPermission;
+import static me.mrscopes.beans.Utilities.hasPermission;
 
 public class MapCommand {
     public MapCommand(Commands commands) {
-        MiniMessage miniMessage = MrScopes.getInstance().getMiniMessage();
-        MapManager mapManager = MrScopes.getInstance().getMapManager();
+        MiniMessage miniMessage = Beans.getInstance().getMiniMessage();
+        MapManager mapManager = Beans.getInstance().getMapManager();
 
         Location corner1 = new Location(
                 Bukkit.getWorld("world"),
