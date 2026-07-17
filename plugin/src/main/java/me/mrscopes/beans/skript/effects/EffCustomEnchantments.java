@@ -53,13 +53,6 @@ public class EffCustomEnchantments extends Effect {
 
         String variablePrefix = variableName.substring(0, variableName.length() - 1);
 
-        Variables.setVariable(
-                variableName,
-                null,
-                event,
-                variableStorage.isLocal()
-        );
-
         for (CustomEnchantments.Enchantment enchantment : CustomEnchantments.getEnchantments(item)) {
             Variables.setVariable(
                     variablePrefix + enchantment.enchantment(),
@@ -72,6 +65,6 @@ public class EffCustomEnchantments extends Effect {
 
     @Override
     public String toString(@Nullable Event event, boolean b) {
-        return "get custom enchantments of " + itemstack.toString(event, b) + " and store them in " + variableStorage.toString(event, b);
+        return "store custom enchantments of " + itemstack.toString(event, b) + " in " + variableStorage.toString(event, b);
     }
 }
