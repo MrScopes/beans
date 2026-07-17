@@ -59,17 +59,6 @@ on break with priority highest:
 function xpYield(block: block) :: number:
     return random integer between {-xp::%type of {_block}%::min} and {-xp::%type of {_block}%::max}
 
-function sell(player: player) :: number:
-    loop {_player}'s inventory:
-        # set {_type} to "%type of loop-value%"
-        lore of loop-value isn't set
-        set {_value} to {-sell::%type of loop-value%}
-        if {_value} is set:
-            add ({_value} * item amount of loop-value) to {_total}
-            remove loop-value from {_player}'s inventory   
-    add {_total} to {money::%{_player}%}
-    return {_total}
-
 function blockReward(player: player, tool: item, block: block, reason: text):
     if type of {_block} isn't air:
         add 1 to {blocks::%{_player}%}
