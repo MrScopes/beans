@@ -104,10 +104,6 @@ public final class FastBlocks {
         return result;
     }
 
-    public static void warmupRadius(double radius) {
-        sphereOffsets(radius);
-    }
-
     private static SphereOffsets sphereOffsets(double radius) {
         int key = (int) Math.round(radius * 10);
 

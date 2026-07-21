@@ -34,7 +34,7 @@ public final class Beans extends JavaPlugin {
     }
 
     private BeansSkript skript;
-    public  BeansSkript getSkript() {
+    public BeansSkript getSkript() {
         return skript;
     }
 
@@ -52,8 +52,6 @@ public final class Beans extends JavaPlugin {
             new Registry(commands.registrar());
         });
 
-        FastBlocks.warmupRadius(20);
-
         Bukkit.getScheduler().runTask(this, () -> {
             mineManager.generateMineSnapshots(() -> {
                 getLogger().info("Mines loaded: " + mineManager.getMineCount());
@@ -61,16 +59,6 @@ public final class Beans extends JavaPlugin {
                 getLogger().info("Restored a random mine.");
             });
         });
-
-        // Optional warmup for FastBlocks JIT/cache. This runs in a harmless location only if world exists.
-        // Remove this if you do not want startup world edits.
-        World world = Bukkit.getWorld("world");
-        if (world != null) {
-            Location warmupLocation = new Location(world, 0, 15, 0);
-            for (int i = 0; i < 10; i++) {
-                FastBlocks.nuke(warmupLocation, 20);
-            }
-        }
     }
 
     @Override
