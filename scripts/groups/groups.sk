@@ -1,0 +1,6 @@
+function createGroup(name: string, prefix: string, inherits: string, permissions: strings):
+    set {-groups::%{_name}%::%{_prefix}%} to {_prefix}
+    set {-groups::%{_name}%::permissions::*} to "beans.%{_name}%", {-groups::%{_inherits}%::permissions::*}, and {_permissions::*}
+
+on load:
+    createGroup("default", "&7", {_}, ("bukkit.command.tps", "-minecraft.command.me"))
