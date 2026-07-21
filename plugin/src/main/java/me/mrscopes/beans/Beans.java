@@ -41,7 +41,7 @@ public final class Beans extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        saveDefaultConfig();
+        
         skript = new BeansSkript();
         miniMessage = MiniMessage.miniMessage();
 
