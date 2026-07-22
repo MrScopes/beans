@@ -57,7 +57,7 @@ on load:
 
 condition create group named %string%:
     check:
-        set {-current group} to expr-1
+        set {-current group::%event%} to expr-1
         return true
 
 expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:permissions) [of %-string%]:
@@ -65,14 +65,14 @@ expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:
         set {_key} to first element out of parse tags
         continue
     get:
-        set {_group} to expr-1 ? {-current group}
+        set {_group} to expr-1 ? {-current group::%event%}
 
         if size of {-groups::%{_group}%::%{_key}%::*} > 0:
             return {-groups::%{_group}%::%{_key}%::*}
 
         return {-groups::%{_group}%::%{_key}%}
     set:
-        set {_group} to expr-1 ? {-current group}
+        set {_group} to expr-1 ? {-current group::%event%}
 
         if size of change values > 1:
             set {-groups::%{_group}%::%{_key}%::*} to change values
@@ -110,26 +110,26 @@ expression groups of %player%:
         return {_groups::*}
     set:
         set {groups::%expr-1%::*} to change values
-        update top group of expr-1
-        sync permissions of expr-1
+        sync expr-1
     add:
         add change value to {groups::%expr-1%::*}
-        update top group of expr-1
-        sync permissions of expr-1
+        sync expr-1
     remove:
         remove change value from {groups::%expr-1%::*}
-        update top group of expr-1
-        sync permissions of expr-1
+        sync expr-1
     reset:
         delete {groups::%expr-1%::*}
         delete {group::%expr-1%}
         sync permissions of expr-1
 
+effect sync %player%:
+    trigger:
+        update top group of expr-1
+        sync permissions of expr-1
+
 on load:
     for {_player} in all players:
-        update top group of {_player}
-        sync permissions of {_player}
+        sync {_player}
 
 on join:
-    update top group of player
-    sync permissions of player
+    sync player
