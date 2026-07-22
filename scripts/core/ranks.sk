@@ -1,66 +1,36 @@
 on load:
-    set {-prefix::admin} to "&4&lAdmin &f"
-    set {-group weight::admin} to 1000
-    set {-chatcolor::admin} to white
-
-    set {-prefix::sr-mod} to "&6&lSr. Mod &f"
-    set {-group weight::sr-mod} to 900
-    set {-chatcolor::sr-mod} to white
-
-    set {-prefix::mod} to "&e&lMod &f"
-    set {-group weight::mod} to 800
-    set {-chatcolor::mod} to white
-
-    set {-prefix::patron} to "&9&lPatron &9"
-    set {-group weight::patron} to 700
-    set {-chatcolor::patron} to white
     set {-vault amount::patron} to 10
     set {-daily beacons::patron} to 13
     set {-onetime beacons::patron} to 20
     set {-afk rewards multi::patron} to 2
 
-    set {-prefix::gamer} to "&3&lGamer &3"
-    set {-group weight::gamer} to 600
-    set {-chatcolor::gamer} to white
     set {-vault amount::gamer} to 8
     set {-daily beacons::gamer} to 9
     set {-onetime beacons::gamer} to 10
     set {-afk rewards multi::gamer} to 1.75
 
-    set {-prefix::legend} to "&5&lLegend &5"
-    set {-group weight::legend} to 500
-    set {-chatcolor::legend} to white
     set {-vault amount::legend} to 6
     set {-daily beacons::legend} to 7
     set {-onetime beacons::legend} to 7
     set {-afk rewards multi::legend} to 1.5
 
-    set {-prefix::premium} to "&b&lPremium &b"
-    set {-group weight::premium} to 400
-    set {-chatcolor::premium} to white
     set {-vault amount::premium} to 4
     set {-daily beacons::premium} to 6
     set {-onetime beacons::premium} to 5
     set {-afk rewards multi::premium} to 1.25
     
-    set {-prefix::vip} to "&a&lVIP &a"
-    set {-group weight::vip} to 300
-    set {-chatcolor::vip} to white
     set {-vault amount::vip} to 2
     set {-daily beacons::vip} to 5
     set {-onetime beacons::vip} to 4
     set {-afk rewards multi::vip} to 1.15
 
-    set {-prefix::default} to "&7"
-    set {-group weight::default} to 0
-    set {-chatcolor::default} to light gray
     set {-vault amount::default} to 1
     set {-daily beacons::default} to 3
 
 command /prefixes:
     trigger:
         loop "admin", "sr-mod", "mod", "patron", "gamer", "legend", "premium", "vip", "default":
-            send formatted "%{-prefix::%loop-value%}%%player%&8: <%{-chatcolor::%loop-value%}%>%player%" to player
+            send formatted "%group prefix of loop-value%%player%&8: <%group chat color of loop-value%>%player%" to player
 
 function updatePlayerTabName(player: player):
     set tablist name of {_player} to player_display({_player}, "[level] [prefix][player] [trophies]")
@@ -145,8 +115,8 @@ command /purchase <offline player> <text> <text>:
                 send "UNKNOWN RANK: %{_rank}%" to console
                 send "You purchased a rank but it's unknown. report this asap. '%{_rank}%'" to arg 1
             else:
-                addGroup(arg 1, arg 3)
-                set {_prefix::*} to split {-prefix::%{_rank}%} at " "
+                add arg 3 to groups of arg 1
+                set {_prefix::*} to split (group prefix of {_rank}) at " "
                 delete {_prefix::%size of {_prefix::*}%}
                 set {_prefix} to join {_prefix::*} with " "
                 broadcast "", formatted " &7%player_display(arg 1)% &7has purchased %{_prefix}%&8!", " &7Access the beans store with /buy&8.", ""
@@ -177,11 +147,11 @@ command /buy [<text>]:
 
         else if arg 1 is "ranks":
             set {-ranks gui::%player%} to hopper inventory named "All purchases are appreciated!"
-            set slot 0 of {-ranks gui::%player%} to coal named {-prefix::vip} with lore "&7Cost: &b$4.99", "&7Includes:", "&7- &b%{-onetime beacons::vip}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::vip}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::vip}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::vip}%x&7." 
-            set slot 1 of {-ranks gui::%player%} to iron ingot named {-prefix::premium} with lore "&7Cost: &b$11.99", "&7Includes:", "&7- &b%{-onetime beacons::premium}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::premium}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::premium}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::premium}%x&7."
-            set slot 2 of {-ranks gui::%player%} to diamond named {-prefix::legend} with lore "&7Cost: &b$24.99", "&7Includes:", "&7- &b%{-onetime beacons::legend}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::legend}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::legend}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::legend}%x&7."
-            set slot 3 of {-ranks gui::%player%} to emerald named {-prefix::gamer} with lore "&7Cost: &b$39.99", "&7Includes:", "&7- &b%{-onetime beacons::gamer}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::gamer}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::gamer}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::gamer}%x&7."
-            set slot 4 of {-ranks gui::%player%} to bedrock named {-prefix::patron} with lore "&7Cost: &b$59.99", "&7Includes:", "&7- &b%{-onetime beacons::patron}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::patron}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::patron}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::patron}%x&7."
+            set slot 0 of {-ranks gui::%player%} to coal named group prefix of "vip" with lore "&7Cost: &b$4.99", "&7Includes:", "&7- &b%{-onetime beacons::vip}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::vip}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::vip}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::vip}%x&7." 
+            set slot 1 of {-ranks gui::%player%} to iron ingot named group prefix of "premium" with lore "&7Cost: &b$11.99", "&7Includes:", "&7- &b%{-onetime beacons::premium}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::premium}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::premium}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::premium}%x&7."
+            set slot 2 of {-ranks gui::%player%} to diamond named group prefix of "legend" with lore "&7Cost: &b$24.99", "&7Includes:", "&7- &b%{-onetime beacons::legend}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::legend}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::legend}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::legend}%x&7."
+            set slot 3 of {-ranks gui::%player%} to emerald named group prefix of "gamer" with lore "&7Cost: &b$39.99", "&7Includes:", "&7- &b%{-onetime beacons::gamer}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::gamer}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::gamer}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::gamer}%x&7."
+            set slot 4 of {-ranks gui::%player%} to bedrock named group prefix of "patron" with lore "&7Cost: &b$59.99", "&7Includes:", "&7- &b%{-onetime beacons::patron}% &lBEACONS&7 (one-time)", "&7- &b%{-daily beacons::patron}% &lBEACONS&7 (/daily)", "&7- &fWhite &7chat. ", "&7- No anti-spam.", "&7- &a%{-vault amount::patron}% &7total vaults.", "&7- AFK rewards boosted by &d%{-afk rewards multi::patron}%x&7."
             open {-ranks gui::%player%} to player
 
         else if arg 1 is "beacons":

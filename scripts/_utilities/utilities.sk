@@ -102,4 +102,4 @@ function time_format(time: timespan) :: string:
 ###
 
 function scramble(text: text) :: text:
-    return join (shuffled ({_t} split at ""))
+    return join (shuffled ({_text} split at ""))

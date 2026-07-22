@@ -1,6 +1,133 @@
-function createGroup(name: string, prefix: string, inherits: string, permissions: strings):
-    set {-groups::%{_name}%::%{_prefix}%} to {_prefix}
-    set {-groups::%{_name}%::permissions::*} to "beans.%{_name}%", {-groups::%{_inherits}%::permissions::*}, and {_permissions::*}
+on load:
+    delete all groups
+
+    create group named "default":
+        set group prefix to "&7"
+        set group weight to 0
+        set group chat color to light gray
+        set group permissions to ("bukkit.command.tps" and "-minecraft.command.me")
+
+    create group named "vip":
+        set group prefix to "&a&lVIP &a"
+        set group weight to 100
+        set group chat color to white
+        set group permissions to group permissions of "default"
+
+    create group named "premium":
+        set group prefix to "&b&lPremium &b"
+        set group weight to 200
+        set group chat color to white
+        set group permissions to group permissions of "vip"
+
+    create group named "legend":
+        set group prefix to "&5&lLegend &5"
+        set group weight to 300
+        set group chat color to white
+        set group permissions to group permissions of "premium"
+    
+    create group named "gamer":
+        set group prefix to "&3&lGamer &3"
+        set group weight to 400
+        set group chat color to white
+        set group permissions to group permissions of "legend"
+
+    create group named "patron":
+        set group prefix to "&9&lPatron &9"
+        set group weight to 500
+        set group chat color to white
+        set group permissions to group permissions of "gamer"
+
+    create group named "mod":
+        set group prefix to "&e&lMod &f"
+        set group weight to 600
+        set group chat color to white
+        set group permissions to group permissions of "default"
+
+    create group named "sr-mod":
+        set group prefix to "&6&lSr. Mod &f"
+        set group weight to 700
+        set group chat color to white
+        set group permissions to group permissions of "mod"
+
+    create group named "admin":
+        set group prefix to "&4&lAdmin &f"
+        set group weight to 800
+        set group chat color to white
+        set group permissions to group permissions of "sr-mod"
+
+condition create group named %string%:
+    check:
+        set {-current group} to expr-1
+        return true
+
+expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:permissions) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_group} to expr-1 ? {-current group}
+
+        if size of {-groups::%{_group}%::%{_key}%::*} > 0:
+            return {-groups::%{_group}%::%{_key}%::*}
+
+        return {-groups::%{_group}%::%{_key}%}
+    set:
+        set {_group} to expr-1 ? {-current group}
+
+        if size of change values > 1:
+            set {-groups::%{_group}%::%{_key}%::*} to change values
+        else:
+            set {-groups::%{_group}%::%{_key}%} to change value
+
+expression all groups:
+    delete:
+        delete {-groups::*}
+    get:
+        return indexes of {-groups::*}
+
+expression group of %player%:
+    get:
+        return {group::%expr-1%} ? "default"
+    set:
+        set {group::%expr-1%} to change value
+        update permissions of expr-1
+    reset:
+        delete {group::%expr-1%}
+        update permissions of expr-1
+
+effect update top group of %player%:
+    trigger:
+        set {_groups::*} to {groups::%expr-1%::*} ? "default"
+        sort {_groups::*} in descending order by (group weight of input ? 0)
+        set {group::%expr-1%} to {_groups::1}
+
+expression groups of %player%:
+    get:
+        set {_groups::*} to {groups::%expr-1%::*} ? "default"
+        sort {_groups::*} in descending order by (group weight of input ? 0)
+        return {_groups::*}
+    set:
+        set {groups::%expr-1%::*} to change values
+        update top group of expr-1
+        update permissions of expr-1
+    add:
+        add change value to {groups::%expr-1%::*}
+        update top group of expr-1
+        update permissions of expr-1
+    remove:
+        remove change value from {groups::%expr-1%::*}
+        update top group of expr-1
+        update permissions of expr-1
+    reset:
+        delete {groups::%expr-1%::*}
+        delete {group::%expr-1%}
+        update permissions of expr-1
 
 on load:
-    createGroup("default", "&7", {_}, ("bukkit.command.tps", "-minecraft.command.me"))
+    for {_player} in all players:
+        update top group of {_player}
+        update permissions of {_player}
+
+on join:
+    update top group of player
+    update permissions of player

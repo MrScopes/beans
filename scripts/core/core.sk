@@ -16,7 +16,7 @@ function player_display(player: offline player, show: text = "[level] [prefix][p
 
     if {_show} contains "[prefix]":
         set {_group} to {group::%{_player}%} ? "default"
-        set {_prefix} to {-prefix::%{_group}%}
+        set {_prefix} to group prefix of {_group}
         replace all "[prefix]" with {_prefix} in {_show}
 
     if {_show} contains "[player]":
