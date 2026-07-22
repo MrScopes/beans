@@ -116,7 +116,7 @@ command /purchase <offline player> <text> <text>:
                 send "You purchased a rank but it's unknown. report this asap. '%{_rank}%'" to arg 1
             else:
                 add arg 3 to groups of arg 1
-                set {_prefix::*} to split (group prefix of {_rank}) at " "
+                set {_prefix::*} to split (group prefix of "%{_rank}%") at " "
                 delete {_prefix::%size of {_prefix::*}%}
                 set {_prefix} to join {_prefix::*} with " "
                 broadcast "", formatted " &7%player_display(arg 1)% &7has purchased %{_prefix}%&8!", " &7Access the beans store with /buy&8.", ""
