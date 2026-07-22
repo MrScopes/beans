@@ -2,7 +2,7 @@ import:
     org.bukkit.Bukkit
     org.bukkit.permissions.PermissionAttachment
 
-effect update permissions of %players%:
+effect sync permissions of %players%:
     trigger:
         for {_player} in exprs-1:
             set {_group} to {group::%{_player}%} ? "default"
@@ -13,7 +13,7 @@ effect update permissions of %players%:
 
             set {_attachment} to {_player}.addAttachment(instance of plugin "Skript")
 
-            for {_permission} in group permissions of {_group} and {permissions::%{_player}%::*}:
+            for {_permission} in (group permissions of {_group}) and (custom permissions of {_player}):
                 if {_permission} starts with "-":
                     replace first "-" with "" in {_permission}
                     {_attachment}.setPermission({_permission}, false)
@@ -30,10 +30,10 @@ expression custom permissions of %player%:
         return {permissions::%expr-1%::*}
     add:
         add change value to {permissions::%expr-1%::*}
-        update permissions of expr-1
+        update all permissions of expr-1
     remove:
         remove change value from {permissions::%expr-1%::*}
-        update permissions of expr-1
+        update all permissions of expr-1
     delete:
         delete {permissions::%expr-1%::*}
-        update permissions of expr-1
+        update all permissions of expr-1

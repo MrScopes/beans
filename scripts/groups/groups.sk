@@ -89,11 +89,13 @@ expression group of %player%:
     get:
         return {group::%expr-1%} ? "default"
     set:
+        set {groups::%expr-1%::*} to change value
         set {group::%expr-1%} to change value
-        update permissions of expr-1
+        sync permissions of expr-1
     reset:
-        delete {group::%expr-1%}
-        update permissions of expr-1
+        delete {groups::%expr-1%::*}
+        delete {group::%expr-1%::*}
+        sync permissions of expr-1
 
 effect update top group of %player%:
     trigger:
@@ -109,25 +111,25 @@ expression groups of %player%:
     set:
         set {groups::%expr-1%::*} to change values
         update top group of expr-1
-        update permissions of expr-1
+        sync permissions of expr-1
     add:
         add change value to {groups::%expr-1%::*}
         update top group of expr-1
-        update permissions of expr-1
+        sync permissions of expr-1
     remove:
         remove change value from {groups::%expr-1%::*}
         update top group of expr-1
-        update permissions of expr-1
+        sync permissions of expr-1
     reset:
         delete {groups::%expr-1%::*}
-        delete {group::%expr-1%}
-        update permissions of expr-1
+        delete {group::%expr-1%::*}
+        sync permissions of expr-1
 
 on load:
     for {_player} in all players:
         update top group of {_player}
-        update permissions of {_player}
+        sync permissions of {_player}
 
 on join:
     update top group of player
-    update permissions of player
+    sync permissions of player
