@@ -79,7 +79,7 @@ on async chat:
 	#set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover] [clan]")%&8: "
 	set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
 	set {_m::2} to async chat message
-	set color format of {_m::2} to group chat color of "%{_rank}%"
+	set color format of {_m::2} to group chat color of {_rank}
 
 	if "%{_m::2}%" contains "[item]":
 		set {_name} to (name of tool ? "&7%translate component of tool%")

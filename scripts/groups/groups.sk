@@ -122,7 +122,7 @@ expression groups of %player%:
         sync permissions of expr-1
     reset:
         delete {groups::%expr-1%::*}
-        delete {group::%expr-1%::*}
+        delete {group::%expr-1%}
         sync permissions of expr-1
 
 on load:

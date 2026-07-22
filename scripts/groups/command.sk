@@ -21,10 +21,10 @@ on tab complete of "/group":
     set tab completions for position 1 to all players
     set tab completions for position 2 to "set", "add", "remove"
     if tab arg 2 is "set":
-        set tab completions for position 3 to indexes of {-permissions::*}
+        set tab completions for position 3 to indexes of {-groups::*}
     else:
         set {_player} to offlineplayer(tab arg 1, false)
         if tab arg 2 is "add":
-            set tab completions for position 3 to (indexes of {-permissions::*}) where [{groups::%{_player}%::*} doesn't contain input]
+            set tab completions for position 3 to (indexes of {-groups::*}) where [{groups::%{_player}%::*} doesn't contain input]
         else if tab arg 2 is "remove":
             set tab completions for position 3 to {groups::%{_player}%::*} where [input isn't "default"]
