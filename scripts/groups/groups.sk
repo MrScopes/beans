@@ -91,11 +91,11 @@ expression group of %player%:
     set:
         set {groups::%expr-1%::*} to change value
         set {group::%expr-1%} to change value
-        sync permissions of expr-1
+        sync expr-1
     reset:
         delete {groups::%expr-1%::*}
         delete {group::%expr-1%::*}
-        sync permissions of expr-1
+        sync expr-1
 
 effect update top group of %player%:
     trigger:
