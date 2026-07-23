@@ -31,11 +31,6 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
     set {_damage} to clamp({_distance} * get_setting("meteor", "damage per block", {_level}), 0, get_setting("meteor", "max damage"))
     set {_aoe} to clamp({_distance} * get_setting("meteor", "aoe per block", {_level}), 0, get_setting("meteor", "max aoe"))
     {_damage} > 0
-    set {_source} to a custom damage source:
-        set the damage type to arrow
-        set the causing entity to {_shooter}
-        set the direct entity to {_projectile}
-        set the damage location to location of {_projectile}
     play sound "entity.generic.explode" with volume 1 and pitch 1 at location of {_victim}
     loop all blocks in radius {_aoe} around {_victim}:
         show explosion particle at loop-block
@@ -44,4 +39,4 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         loop-block isn't bedrock
         set loop-block to air
     loop all living entities in radius {_aoe} around {_victim}:
-        damage loop-value by customDamage({_shooter}, {_damage}) using {_source}
+        damage(loop-value, {_shooter}, {_damage})

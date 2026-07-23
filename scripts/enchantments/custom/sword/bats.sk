@@ -36,11 +36,6 @@ local function onrightclick(player: player, item: item, level: integer):
     set {_healing} to get_setting("bats", "healing", {_level})
     set {_poison} to get_setting("bats", "poison", {_level})
 
-    set {_source} to a custom damage source:
-        set the causing entity to {_player}
-        set the direct entity to {_player}
-        set the damage location to location of {_player}
-
     loop {_amount} times:
         summon bat at {_origin} ~ vector(random number between 1 and -1, random number between 1 and -1, random number between 1 and -1):
             add bat to {_bats::*}
@@ -66,6 +61,6 @@ local function onrightclick(player: player, item: item, level: integer):
                 loop-entity isn't a bat
                 difference between {_affected::%loop-entity%} and now isn't less than 0.25 seconds
                 set {_affected::%loop-entity%} to now
-                damage loop-entity by customDamage(loop-entity, {_damage}) using {_source}
+                damage(loop-entity, {_player}, {_damage})
                 heal({_player}, {_healing})
                 apply {_poison} to loop-entity

@@ -65,8 +65,7 @@ local function cleave(victim: entity, attacker: entity, level: integer):
     set {_bleed} to get_setting("cleave", "bleed", {_level})
     set {_bleed duration} to get_setting("cleave", "bleed duration")
 
-    damage {_victim} by customDamage({_victim}, {_damage})
-    reset no damage time of {_victim}
+    damage({_victim}, {_attacker}, {_damage})
 
     set {_interval} to 5 ticks
     set {_hits} to floor((ticks of {_bleed duration}) / 5)
@@ -78,6 +77,5 @@ local function cleave(victim: entity, attacker: entity, level: integer):
     loop {_hits} times:
         wait {_interval}
         if {_victim} is alive:
-            damage {_victim} by customDamage({_victim}, {_bleed per hit})
+            damage({_victim}, {_attacker}, {_bleed per hit})
             show 4 red dust particle at ({_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1))
-            reset no damage time of {_victim}

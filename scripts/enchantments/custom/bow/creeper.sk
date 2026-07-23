@@ -36,9 +36,9 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
             set movement speed attribute of creeper to 0.3
             set scale attribute of creeper to 0.3
             creeper.setMaxFuseTicks(get_setting("creeper", "fuse", {_level}))
-            set {-creeper %creeper%::damage} to get_setting("creeper", "damage", {_level})
-            set {-creeper %creeper%::radius} to get_setting("creeper", "radius", {_level})
-            set {-creeper %creeper%::owner} to {_shooter}
+            set {-%creeper%::damage} to get_setting("creeper", "damage", {_level})
+            set {-%creeper%::radius} to get_setting("creeper", "radius", {_level})
+            set {-%creeper%::owner} to {_shooter}
             set {_creeper} to creeper
         while {_creeper} is alive:
             wait 12 ticks
@@ -46,21 +46,19 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
             reset no damage time of {_creeper}
 
 on explode:
-    {-creeper %event-entity%::damage} is set
+    {-%event-entity%::damage} is set
     cancel event
     play sound "entity.generic.explode" with volume 1 and pitch 1 at location of event-entity
-    draw ({-creeper %event-entity%::radius} * 20) explosion particle at (location of event-entity)
+    draw ({-%event-entity%::radius} * 20) explosion particle at (location of event-entity)
 
 on damage:
-    {-creeper %attacker%::damage} is set
+    {-%attacker%::damage} is set
     cancel event
-    loop living entities in radius {-creeper %attacker%::radius} around location of victim:
-        {-creeper %attacker%::owner} isn't loop-entity
-        damage loop-entity by customDamage(loop-entity, {-creeper %attacker%::damage})
-    wait 1 tick
-    delete {-creeper %attacker%::*}
+    loop living entities in radius {-%attacker%::radius} around location of victim:
+        {-%attacker%::owner} isn't loop-entity
+        damage(loop-entity, attacker, {-%attacker%::damage})
 
 on target:
-    {-creeper %entity%::owner} is set
-    target is {-creeper %entity%::owner}
+    {-%entity%::owner} is set
+    target is {-%entity%::owner}
     cancel event

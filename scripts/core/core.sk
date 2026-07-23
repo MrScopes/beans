@@ -380,18 +380,6 @@ on projectile hit with priority monitor:
     delete projectile
     delete {-%projectile%::*}
 
-function customDamage(victim: entity, damage: number, attacker: entity = {_}) :: number:
-    set {_strength} to 0
-    if {_attacker} is set:
-        set {_strength} to (potion level of strength effect of {_attacker}) ? 0
-    set {_armor} to (sum(modifier amount of armor attribute modifiers of {_victim}'s helmet)) ? 0
-    set {_resistance} to (potion level of {_victim}'s resistance effect) ? 0
-
-    set {_damage} to {_damage} * (1 + ({_strength} * 0.2))
-    set {_damage} to {_damage} * (1 - ({_resistance} * 0.2))
-    set {_damage} to {_damage} * (1 - ({_armor} * 0.02))
-    return {_damage}
-
 on join:
     updateInventory(player's inventory)
 
@@ -481,3 +469,44 @@ async every second:
         y coordinate of loop-player > 25
         heal loop-player
         set loop-player's food level to 10
+
+function customDamage(victim: entity, damage: number, attacker: entity = {_}) :: number:
+    set {_strength} to 0
+    if {_attacker} is set:
+        set {_strength} to (potion level of strength effect of {_attacker}) ? 0
+    set {_armor} to (sum(modifier amount of armor attribute modifiers of {_victim}'s helmet)) ? 0
+    set {_resistance} to (potion level of {_victim}'s resistance effect) ? 0
+
+    set {_damage} to {_damage} * (1 + ({_strength} * 0.2))
+    set {_damage} to {_damage} * (1 - ({_resistance} * 0.2))
+    set {_damage} to {_damage} * (1 - ({_armor} * 0.02))
+    return {_damage}
+
+function damage(victim: entity, attacker: entity, damage: number, customDamage: boolean = true, calculateWithEffects: boolean = false) :: number:
+    set {-last attacker::%{_victim}%} to {_attacker}
+    if {_customDamage} is true:
+        if {_calculateWithEffects} is false:
+            set {_damage} to customDamage({_victim}, {_damage})
+        else:
+            set {_damage} to customDamage({_victim}, {_damage}, {_attacker})
+    reset {_victim}'s no damage time
+    damage {_victim} by {_damage}
+    reset {_victim}'s no damage time
+
+on damage of player:
+    if attacker is a player:
+        set {-last attacker::%victim%} to attacker
+    else if attacker is a mob:
+        set {-last attacker::%victim%} to {-owner::%attacker%}
+
+on death of player:
+    set {_attacker} to {-last attacker::%victim%} ? attacker
+    add 1 to {deaths::%victim%}
+    if {_attacker} isn't set:
+        set death message to "%player_display(victim)% &7has died&7."
+    else:
+        set death message to "%player_display({_attacker})% &7killed %player_display(victim)%&7."
+        add 1 to {kills::%attacker%}
+        set {_money reward} to {money::%victim%} * 0.02
+        add {_money reward} to {money::%attacker%}
+        remove {_money reward} from {money::%victim%}

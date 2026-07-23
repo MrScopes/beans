@@ -23,7 +23,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         add 1 minute to freeze time of {_victim}
         run 0 ticks later:
             loop seconds of get_setting("frostbite", "duration", {_level}) times:
-                damage {_victim} by customDamage({_victim}, get_setting("frostbite", "damage", {_level}))
+                damage({_victim}, {_shooter}, get_setting("frostbite", "damage", {_level}))
                 if {_victim} is dead:
                     stop loop
                 wait 1 second

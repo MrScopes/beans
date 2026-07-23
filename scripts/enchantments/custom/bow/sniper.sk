@@ -19,7 +19,7 @@ local function onshoot(shooter: entity, tool: item, projectile: projectile, leve
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     {_victim} is a living entity
     set {_distance} to distance between location of {_projectile} and {-%{_projectile}%::starting}
-    set {_damage} to customDamage({_victim}, {_distance} * get_setting("sniper", "scale", {_level}))
+    set {_damage} to get_setting("sniper", "scale", {_level})
     send action bar "&lSNIPER: &f%{_damage}%&f<sprite:gui:hud/heart/full> &7, &lDISTANCE: &f%{_distance}%" to {_shooter}
-    damage {_victim} by {_damage}
+    damage({_victim}, {_shooter}, {_damage})
     delete {-%{_projectile}%::starting}

@@ -35,15 +35,15 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
             set {_loc} to {_location} ~ vector(random number between -3 and 3, 0, random number between -3 and 3)
             shoot arrow from {_loc} at speed 0
             set velocity of last shot arrow to vector(0, -0.5, 0)
-            set {-arrow rain::%last shot arrow%::damage} to {_damage}
-            set {-arrow rain::%last shot arrow%::shooter} to {_shooter}
+            set {-%last shot arrow%::damage} to {_damage}
+            set {-%last shot arrow%::shooter} to {_shooter}
         wait 1 second
 
 on damage with priority monitor:
     projectile is set
     set {_projectile} to projectile
-    set {_damage} to {-arrow rain::%{_projectile}%::damage}
-    set {_shooter} to {-arrow rain::%{_projectile}%::shooter}
+    set {_damage} to {-%{_projectile}%::damage}
+    set {_shooter} to {-%{_projectile}%::shooter}
     cancel event
     set {_source} to a custom damage source:
         set the damage type to arrow

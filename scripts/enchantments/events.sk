@@ -370,3 +370,14 @@ on left click with priority monitor:
             if {_cooldown} is set:
                 set {-enchant cooldown::%player%::%loop-value%} to now
             run {_onleftclick} with arguments (player, player's tool, {_level})
+
+### summon related events
+
+on entity removed from world:
+    {-%entity%::*} is set
+    delete {-%entity%::*}
+
+on target:
+    {-%entity%::owner} is set
+    target is {-%entity%::owner}
+    cancel event
