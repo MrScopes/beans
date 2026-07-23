@@ -61,3 +61,4 @@ on bound enter with id "spawn":
     while bounds at player contains bound with id "spawn":
         wait 1 tick
         push player towards location(55, 3, 55, world "world") at speed 0.25
+        add 5 ticks to item cooldown of elytra for player
