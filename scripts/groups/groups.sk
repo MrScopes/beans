@@ -77,7 +77,10 @@ expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:
     set:
         set {_group} to expr-1 ? {-current group::%event%}
 
-        if {_key} is "permissions":
+        if any:
+            {_key} is "permissions"
+            size of {-groups::%{_group}%::%{_key}%::*} > 0
+        then:
             set {-groups::%{_group}%::%{_key}%::*} to change values
         else:
             set {-groups::%{_group}%::%{_key}%} to change value

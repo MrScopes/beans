@@ -48,3 +48,29 @@ command /man:
                 shoot arrow from {_mannequin} at speed 2.8
                 set {_arrow} to last shot projectile
                 set shooter of {_arrow} to {_mannequin}
+
+expression:
+    patterns:
+        ominous (level|amplifier) of %itemtypes/itemstacks/slots%
+        %itemtypes/itemstacks/slots%'s ominous (level|amplifier)
+    get:
+        if expr-1.getItem() is an ominous bottle:
+
+            set {_meta} to expr-1.getItem().getItemMeta()
+            if {_meta}.hasAmplifier() is false:
+                set {_amplifier} to 0
+            else:
+                set {_amplifier} to {_meta}.getAmplifier()
+
+            if {_amplifier} is set:
+                add 1 to {_amplifier}
+
+        return {_amplifier}
+    set:
+        expr-1.getItem() is an ominous bottle
+
+        set {_delta} to clamp(change value - 1, 0, 4)
+
+        set {_meta} to expr-1.getItem().getItemMeta()
+        {_meta}.setAmplifier({_delta})
+        expr-1.getItem().setItemMeta({_meta})
