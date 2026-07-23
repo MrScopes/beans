@@ -97,7 +97,6 @@ public class MineManager {
 
         generateMineBlocks();
 
-        // Let WorldEdit / chunk changes settle before copying the chunk sections.
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             try {
                 SavedMine snapshot = snapshotCurrentMine();
@@ -116,6 +115,7 @@ public class MineManager {
             if (!generatingSnapshots) {
                 generateMineSnapshots();
             }
+
             plugin.getLogger().warning("Mines were empty, generating snapshots now. Try reset again after generation finishes.");
             return;
         }
@@ -224,22 +224,28 @@ public class MineManager {
             CraftPlayer craftPlayer = (CraftPlayer) player;
 
             for (SavedMineChunk savedChunk : chunks) {
-                LevelChunk nmsChunk = getNmsChunk(world.getChunkAt(savedChunk.x, savedChunk.z));
                 ChunkPos pos = new ChunkPos(savedChunk.x, savedChunk.z);
 
                 craftPlayer.getHandle().connection.send(
                         new ClientboundForgetLevelChunkPacket(pos)
                 );
-
-                craftPlayer.getHandle().connection.send(
-                        new ClientboundLevelChunkWithLightPacket(
-                                nmsChunk,
-                                level.getLightEngine(),
-                                null,
-                                null
-                        )
-                );
             }
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (!player.isOnline() || player.getWorld() != world) {
+                    return;
+                }
+
+                CraftPlayer currentCraftPlayer = (CraftPlayer) player;
+
+                for (SavedMineChunk savedChunk : chunks) {
+                    LevelChunk nmsChunk = getNmsChunk(world.getChunkAt(savedChunk.x, savedChunk.z));
+
+                    currentCraftPlayer.getHandle().connection.send(
+                            new ClientboundLevelChunkWithLightPacket(nmsChunk, level.getLightEngine(), null, null)
+                    );
+                }
+            }, 2L);
         }
     }
 
