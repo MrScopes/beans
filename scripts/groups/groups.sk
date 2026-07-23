@@ -94,7 +94,10 @@ expression all groups:
     get:
         return indexes of {-groups::*}
 
-expression group of %player%:
+expression:
+    patterns:
+        group of %offlineplayer%
+        %offlineplayer%'s group
     get:
         return {group::%expr-1%} ? "default"
     set:
@@ -106,13 +109,13 @@ expression group of %player%:
         delete {group::%expr-1%::*}
         sync expr-1
 
-effect update top group of %player%:
+effect update top group of %offlineplayer%:
     trigger:
         set {_groups::*} to {groups::%expr-1%::*} ? "default"
         sort {_groups::*} in descending order by (group weight of input ? 0)
         set {group::%expr-1%} to {_groups::1}
 
-expression groups of %player%:
+expression groups of %offlineplayer%:
     get:
         set {_groups::*} to {groups::%expr-1%::*} ? "default"
         sort {_groups::*} in descending order by (group weight of input ? 0)
@@ -131,7 +134,7 @@ expression groups of %player%:
         delete {group::%expr-1%}
         sync permissions of expr-1
 
-effect sync %player%:
+effect sync %offlineplayer%:
     trigger:
         update top group of expr-1
         sync permissions of expr-1

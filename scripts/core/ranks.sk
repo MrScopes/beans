@@ -42,7 +42,7 @@ async every second:
     loop all players:
         updatePlayerTabName(loop-player)
 
-        set {_group weight} to {-group weight::%{group::%uuid of loop-player%}%} * 1_000_000
+        set {_group weight} to group weight of loop-player's group * 1_000_000
         set {_level weight} to ({level::%loop-player%} ? 0) * 250
         set {_trophy weight} to ({trophies::%loop-player's uuid%} ? 0) * 1
         set {_order} to {_group weight} + {_level weight} + {_trophy weight}
