@@ -11,56 +11,56 @@ on load:
         set group prefix to "&a&lVIP &a"
         set group weight to 100
         set group chat color to white
-        set group permissions to group permissions of "default"
+        set group parent to "default"
 
     create group named "premium":
         set group prefix to "&b&lPremium &b"
         set group weight to 200
         set group chat color to white
-        set group permissions to group permissions of "vip"
+        set group parent to "vip"
 
     create group named "legend":
         set group prefix to "&5&lLegend &5"
         set group weight to 300
         set group chat color to white
-        set group permissions to group permissions of "premium"
+        set group parent to "premium"
     
     create group named "gamer":
         set group prefix to "&3&lGamer &3"
         set group weight to 400
         set group chat color to white
-        set group permissions to group permissions of "legend"
+        set group parent to "legend"
 
     create group named "patron":
         set group prefix to "&9&lPatron &9"
         set group weight to 500
         set group chat color to white
-        set group permissions to group permissions of "gamer"
+        set group parent to "gamer"
 
     create group named "mod":
         set group prefix to "&e&lMod &f"
         set group weight to 600
         set group chat color to white
-        set group permissions to group permissions of "default"
+        set group parent to "default"
 
     create group named "sr-mod":
         set group prefix to "&6&lSr. Mod &f"
         set group weight to 700
         set group chat color to white
-        set group permissions to group permissions of "mod"
+        set group parent to "mod"
 
     create group named "admin":
         set group prefix to "&4&lAdmin &f"
         set group weight to 800
         set group chat color to white
-        set group permissions to group permissions of "sr-mod"
+        set group parent to "sr-mod"
 
 condition create group named %string%:
     check:
         set {-current group::%event%} to expr-1
         return true
 
-expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:permissions) [of %-string%]:
+expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:permissions|parent:parent) [of %-string%]:
     parse:
         set {_key} to first element out of parse tags
         continue
@@ -68,16 +68,22 @@ expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:
         set {_group} to expr-1 ? {-current group::%event%}
 
         if size of {-groups::%{_group}%::%{_key}%::*} > 0:
-            return {-groups::%{_group}%::%{_key}%::*}
+            if {_key} is "permissions":
+                return {-groups::%{_group}%::%{_key}%::*} and "beans.%{_group}%"
+            else:
+                return {-groups::%{_group}%::%{_key}%::*}
 
         return {-groups::%{_group}%::%{_key}%}
     set:
         set {_group} to expr-1 ? {-current group::%event%}
 
-        if size of change values > 1:
+        if {_key} is "permissions":
             set {-groups::%{_group}%::%{_key}%::*} to change values
         else:
             set {-groups::%{_group}%::%{_key}%} to change value
+
+        if {_key} is "parent":
+            add (group permissions of change value) to {-groups::%{_group}%::permissions::*}
 
 expression all groups:
     delete:
