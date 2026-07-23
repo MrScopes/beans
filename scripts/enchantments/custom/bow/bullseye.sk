@@ -32,10 +32,12 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "deals %"damage" of {_level} for "bullseye"%&f<sprite:gui:hud/heart/full> &7with headshots"
+    set {_damage} to "damage" of {_level} for "bullseye"
+    return "deals &f%{_damage}% &7with headshots"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
         if distance between location of {_projectile} and eye of {_victim} < 0.5:
+            set {_damage} to "damage" of {_level} for "bullseye"
             play sound "entity.arrow.hit_player" at volume 1 and pitch 0.1 at {_shooter}
-            damage({_victim}, {_attacker}, "damage" of {_level} for "bullseye")
+            damage({_victim}, {_attacker}, {_damage})

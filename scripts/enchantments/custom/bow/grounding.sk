@@ -38,13 +38,15 @@ on load:
             set level 5 to 1_200_000
 
 local function getDescription(level: integer) :: string:
-    return "Ground a player, disabling their elytra for %time_format("duration" of {_level} for "grounding")%"
+    set {_duration} to "duration" of {_level} for "grounding"
+    return "Ground a player, disabling their elytra for %time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
+        set {_duration} to "duration" of {_level} for "grounding"
         play sound "entity.shulker.hurt" to {_shooter} and {_victim}
         set gliding of {_victim} to false
-        set cooldown of elytra for {_victim} to "duration" of {_level} for "grounding"
+        set cooldown of elytra for {_victim} to {_duration}
 
 on gliding state change:
     if gliding state of player is false:

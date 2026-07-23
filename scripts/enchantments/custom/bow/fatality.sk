@@ -32,9 +32,13 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "when the victim is below %"health threshold" of {_level} for "fatality" * 100%%% health, increases dmg by %"multiplier" of {_level} for "fatality" * 100%%%"
+    set {_health threshold} to "health threshold" of {_level} for "fatality"
+    set {_multiplier} to "multiplier" of {_level} for "fatality"
+    return "when the victim is below %{_health threshold} * 100%%% health, increases dmg by %{_multiplier} * 100%%%"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number = {_}) :: number:
-    if {_victim}'s health / {_victim}'s max health <= "health threshold" of {_level} for "fatality":
+    set {_health threshold} to "health threshold" of {_level} for "fatality"
+    if {_victim}'s health / {_victim}'s max health <= {_health threshold}:
+        set {_multiplier} to "multiplier" of {_level} for "fatality"
         play sound "entity.player.attack.strong" with volume 1 and pitch 0.1 at {_victim}
-        return {_damage} * "multiplier" of {_level} for "fatality"
+        return {_damage} * {_multiplier}

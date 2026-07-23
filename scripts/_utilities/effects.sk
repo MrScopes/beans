@@ -37,10 +37,13 @@ function smallNumber(number: number) :: text:
     replace all "0" with "⁰" in {_text}
     return {_text}
 
-function effectDisplay(effect: potion effect, force: boolean = false) :: text:
-    if {_force} is true:
-        return "%{-effect::%type of {_effect}%::display}%%smallNumber(amplifier of {_effect})% &f%time_format(duration of {_effect})%&"
-    if amplifier of {_effect} > 1:
-        return "%{-effect::%type of {_effect}%::display}%%smallNumber(amplifier of {_effect})% &f%time_format(duration of {_effect})%"
-    else:
-        return "%{-effect::%type of {_effect}%::display}% &f%time_format(duration of {_effect})%"
+function effectDisplay(effect: potion effect, showAmplifier: boolean = true, showDuration: boolean = true) :: text:
+    set {_display} to "%{-effect::%type of {_effect}%::display}%"
+
+    if {_showAmplifier} is true:
+        add smallNumber(amplifier of {_effect}) to {_display}
+
+    if {_showDuration} is true:
+        add " &f%time_format(duration of {_effect})%" to {_display}
+
+    return {_display}

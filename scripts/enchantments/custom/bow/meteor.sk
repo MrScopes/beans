@@ -67,7 +67,9 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "create an explosion when shot from above, %"damage per block" of {_level} for "meteor"%&f<sprite:gui:hud/heart/full>&7/block, %"aoe per block" of {_level} for "meteor"%m/block"
+    set {_damage per block} to "damage per block" of {_level} for "meteor"
+    set {_aoe per block} to "aoe per block" of {_level} for "meteor"
+    return "create an explosion when shot from above, %{_damage per block}%&f<sprite:gui:hud/heart/full>&7/block, %{_aoe per block}%/m/block"
 
 local function onshoot(shooter: entity, tool: item, projectile: entity, level: integer, force: number):
     wait 3 ticks

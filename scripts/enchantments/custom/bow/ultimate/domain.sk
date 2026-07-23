@@ -39,17 +39,21 @@ on load:
             set level 5 to 5_550_000
 
 local function getDescription(level: integer) :: string:
-    return "on hit&8, &7create an inescapable &f%"radius" of {_level} for "domain"%m &7domain for &f%time_format("duration" of {_level} for "domain")%"
+    set {_duration} to "duration" of {_level} for "domain"
+    set {_radius} to "radius" of {_level} for "domain"
+    return "on hit&8, &7create an inescapable &f%{_radius}%m &7domain for &f%time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
+        set {_duration} to "duration" of {_level} for "domain"
+        set {_radius} to "radius" of {_level} for "domain"
         play sound "entity.enderman.death" with volume 1 and pitch 1 at {_victim}
         send "%{_victim}% was trapped in a domain!" to {_shooter}
         set worldborder of {_victim} to a virtual worldborder:
-            set worldborder radius of event-worldborder to "radius" of {_level} for "domain"
+            set worldborder radius of event-worldborder to {_radius}
             set worldborder center of event-worldborder to location of {_victim}
             set worldborder damage amount of event-worldborder to 5
         set {_border} to worldborder of {_victim}
-        wait "duration" of {_level} for "domain"
+        wait {_duration}
         {_border} is worldborder of {_victim}
         reset worldborder of {_victim}

@@ -39,14 +39,18 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "mark the victim, increasing dmg taken by %"multiplier" of {_level} for "mark" * 100%%% for %time_format("duration" of {_level} for "mark")%"
+    set {_multiplier} to "multiplier" of {_level} for "mark"
+    set {_duration} to "duration" of {_level} for "mark"
+    return "mark the victim, increasing dmg taken by %{_multiplier} * 100%%% for %time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
+        set {_multiplier} to "multiplier" of {_level} for "mark"
+        set {_duration} to "duration" of {_level} for "mark"
         set {-marked::%{_victim}%} to now
         set {-marked level::%{_victim}%} to {_level}
-        set {-marked multiplier::%{_victim}%} to "multiplier" of {_level} for "mark"
-        add potion effect of glowing for ("duration" of {_level} for "mark") to {_victim}'s potion effects
+        set {-marked multiplier::%{_victim}%} to {_multiplier}
+        add potion effect of glowing for {_duration} to {_victim}'s potion effects
         play sound "entity.glow_squid.squirt" with volume 1 and pitch 1 at {_victim}
 
 on damage with priority monitor:

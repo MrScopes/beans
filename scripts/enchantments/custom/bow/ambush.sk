@@ -12,6 +12,13 @@ on load:
             set level 4 to 0.25
             set level 5 to 0.3
 
+        level values for "time threshold":
+            set level 1 to 20 seconds
+            set level 2 to 20 seconds
+            set level 3 to 20 seconds
+            set level 4 to 20 seconds
+            set level 5 to 20 seconds
+
         level values for "xp cost":
             set level 2 to 20_000
             set level 3 to 100_000
@@ -25,12 +32,16 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "when the victim hasn't taken damage within &f20s&8, &7increase dmg by &f%"multiplier" of {_level} for "ambush" * 100%%%"
+    set {_multiplier} to "multiplier" of {_level} for "ambush"
+    set {_time} to "time threshold" of {_level} for "ambush"
+    return "when the victim hasn't taken damage within &f%time_format({_time})%&8, &7increase dmg by &f%{_multiplier} * 100%%%" 
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
-    if (difference between now and {-last damaged::%{_victim}%}) > 20 seconds:
+    set {_time} to "time threshold" of {_level} for "ambush"
+    if (difference between now and {-last damaged::%{_victim}%}) > {_time}:
+        set {_multiplier} to "multiplier" of {_level} for "ambush"
         play sound "entity.player.attack.crit" with volume 1 and pitch 0.1 at {_victim}
-        return {_damage} * "multiplier" of {_level} for "ambush"
+        return {_damage} * {_multiplier}
 
 on damage of player with priority monitor:
     event isn't canceled

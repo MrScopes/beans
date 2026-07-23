@@ -74,7 +74,10 @@ on load:
             set level 5 to 1_200_000
 
 local function getDescription(level: integer) :: string:
-    return "Spawn creeper on arrow. %"fuse" of {_level} for "creeper" / 20%s fuse, %"damage" of {_level} for "creeper"%&f<sprite:gui:hud/heart/full>&7, %"radius" of {_level} for "creeper"%m"
+    set {_fuse} to "fuse" of {_level} for "creeper"
+    set {_damage} to "damage" of {_level} for "creeper"
+    set {_radius} to "radius" of {_level} for "creeper"
+    return "Spawn creeper on arrow. %{_fuse} / 20%s fuse, %{_damage}%&f<sprite:gui:hud/heart/full>&7, %{_radius}%m"
 
 local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     set {-%{_projectile}%::spawn creeper} to true
@@ -86,13 +89,16 @@ local function onshoot(shooter: entity, tool: item, projectile: projectile, leve
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {-%{_projectile}%::spawn creeper} is set:
         delete {-%{_projectile}%::spawn creeper}
+        set {_fuse} to "fuse" of {_level} for "creeper"
+        set {_damage} to "damage" of {_level} for "creeper"
+        set {_radius} to "radius" of {_level} for "creeper"
         spawn creeper at {_projectile}:
             set max health of creeper to 1
             set movement speed attribute of creeper to 0.3
             set scale attribute of creeper to 0.3
-            creeper.setMaxFuseTicks("fuse" of {_level} for "creeper")
-            set {-%creeper%::damage} to "damage" of {_level} for "creeper"
-            set {-%creeper%::radius} to "radius" of {_level} for "creeper"
+            creeper.setMaxFuseTicks({_fuse})
+            set {-%creeper%::damage} to {_damage}
+            set {-%creeper%::radius} to {_radius}
             set {-%creeper%::owner} to {_shooter}
             set {_creeper} to creeper
         while {_creeper} is alive:

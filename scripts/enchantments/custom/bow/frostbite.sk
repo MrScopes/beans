@@ -46,17 +46,21 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "freeze victim for %time_format("duration" of {_level} for "frostbite")% and do %"damage" of {_level} for "frostbite"%&f<sprite:gui:hud/heart/full>&7/s"
+    set {_duration} to "duration" of {_level} for "frostbite"
+    set {_damage} to "damage" of {_level} for "frostbite"
+    return "freeze victim for %time_format({_duration})% and do %{_damage}%&f<sprite:gui:hud/heart/full>&7/s"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
+        set {_duration} to "duration" of {_level} for "frostbite"
+        set {_damage} to "damage" of {_level} for "frostbite"
         play sound "block.powder_snow.break" at volume 1 and pitch 0.1 at {_shooter}
         add 1 minute to freeze time of {_victim}
         run 0 ticks later:
-            loop seconds of "duration" of {_level} for "frostbite" times:
-                damage({_victim}, {_shooter}, "damage" of {_level} for "frostbite")
+            loop seconds of {_duration} times:
+                damage({_victim}, {_shooter}, {_damage})
                 if {_victim} is dead:
                     stop loop
                 wait 1 second
-        wait "duration" of {_level} for "frostbite"
+        wait {_duration}
         remove 1 minute from freeze time of {_victim}

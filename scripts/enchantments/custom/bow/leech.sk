@@ -32,11 +32,13 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "heals for %"heal percentage" of {_level} for "leech" * 100%%% dmg over 3 seconds"
+    set {_heal percentage} to "heal percentage" of {_level} for "leech"
+    return "heals for %{_heal percentage} * 100%%% of damage over 3 seconds"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
+    set {_heal percentage} to "heal percentage" of {_level} for "leech"
     loop 3 times:
         wait 1 second
-        heal({_shooter}, ("heal percentage" of {_level} for "leech" * {_damage}) / 3)
+        heal({_shooter}, ({_heal percentage} * {_damage}) / 3)
         play sound "entity.witch.drink" at volume 1 and pitch 1 at {_shooter}
         show 5 heart particles at {_shooter}'s head
