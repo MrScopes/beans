@@ -1,28 +1,53 @@
 on load:
-    setting("lucky", "display", value: "&f<sprite:items:item/trial_key> &fLucky")
-    setting("lucky", "max level", value: 5)
-    setting("lucky", "priority", value: 1000)
-    setting("lucky", "type", value: "pickaxe")
-    setting("lucky", "item", value: trial key)
+    create pickaxe enchantment named "lucky":
+        set enchantment display to "&f<sprite:items:item/trial_key> &fLucky"
+        set enchantment max level to 5
+        set enchantment priority to 1000
+        set enchantment item to trial key
 
-    setting("lucky", "chance", l1: 1, l2: 1.25, l3: 1.75, l4: 2, l5: 3)
+        level values for "chance":
+            set level 1 to 1
+            set level 2 to 1.25
+            set level 3 to 1.75
+            set level 4 to 2
+            set level 5 to 3
 
-    setting("lucky", "boost", l1: 0.2, l2: 0.225, l3: 0.25, l4: 0.27, l5: 0.3)
-    setting("lucky", "duration", l1: 5 seconds, l2: 5.5 seconds, l3: 6 seconds, l4: 6.5 seconds, l5: 7 seconds)
+        level values for "boost":
+            set level 1 to 0.2
+            set level 2 to 0.225
+            set level 3 to 0.25
+            set level 4 to 0.27
+            set level 5 to 0.3
 
-    setting("lucky", "xp cost", l2: 40_000, l3: 200_000, l4: 550_000, l5: 1_200_000)
-    setting("lucky", "money cost", l2: 50_000, l3: 250_000, l4: 750_000, l5: 1_500_000)
+        level values for "duration":
+            set level 1 to 5 seconds
+            set level 2 to 5.5 seconds
+            set level 3 to 6 seconds
+            set level 4 to 6.5 seconds
+            set level 5 to 7 seconds
+
+        level values for "xp cost":
+            set level 2 to 40_000
+            set level 3 to 200_000
+            set level 4 to 550_000
+            set level 5 to 1_200_000
+
+        level values for "money cost":
+            set level 2 to 50_000
+            set level 3 to 250_000
+            set level 4 to 750_000
+            set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_boost} to get_setting("lucky", "boost", {_level})
-    set {_duration} to get_setting("lucky", "duration", {_level})
+    set {_boost} to "boost" of {_level} for "lucky"
+    set {_duration} to "duration" of {_level} for "lucky"
     return "gain %{_boost} * 100%%% luck for %time_format({_duration})%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-mining luck boost::%{_player}%} isn't set
     set {-mining luck boost::%{_player}%} to true
-    add get_setting("lucky", "boost", {_level}) to {-mining luck::%{_player}%}
+    add "boost" of {_level} for "lucky" to {-mining luck::%{_player}%}
     play sound "minecraft:block.amethyst_block.resonate" with volume 1 and pitch 1 at location of {_player}
-    wait get_setting("lucky", "duration", {_level})
+    wait "duration" of {_level} for "lucky"
     delete {-mining luck boost::%{_player}%}
-    remove get_setting("lucky", "boost", {_level}) from {-mining luck::%{_player}%}
+    remove "boost" of {_level} for "lucky" from {-mining luck::%{_player}%}

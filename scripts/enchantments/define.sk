@@ -1,11 +1,16 @@
-condition create (pickaxe:pickaxe|sword:sword|armor:armor) enchantment named %string%:
+condition create [disabled:disabled] [ultimate:ultimate] (pickaxe:pickaxe|sword:sword|armor:armor|bow:bow) enchantment named %string%:
     parse:
-        set {_type} to first element out of parse tags
+        set {_type} to first element out of parse tags where [input isn't "ultimate" or "disabled"]
         continue
     check:
+        delete {-ce::%expr-1%::*}
         set {-current ce::%event%::name} to expr-1
         set {-current ce::%event%::type} to {_type}
         set {-ce::%expr-1%::type} to {_type}
+        if parse tags contains "ultimate":
+            set {-ce::%expr-1%::ultimate} to true
+        if parse tags contains "disabled":
+            set {-ce::%expr-1%::disabled} to true
         return true
 
 condition level values for %string%:
@@ -13,7 +18,7 @@ condition level values for %string%:
         set {-current ce::%event%::level value key} to expr-1
         return true
 
-expression enchantment (display:display|max level:max level|priority:priority|item:item) [of %-string%]:
+expression enchantment (display:display|max level:max level|priority:priority|item:item|disabled:disabled|ultimate:ultimate) [of %-string%]:
     parse:
         set {_key} to first element out of parse tags
         continue
@@ -33,9 +38,6 @@ expression level %integer% [%-string% of %-string%]:
         set {_current enchantment} to {-current ce::%event%::name}
         set {_current level value key} to {-current ce::%event%::level value key}
         set {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%} to change value
-
-import:
-    ch.njol.skript.lang.parser.ParserInstance
 
 expression %string% of %integer% for %string%:
     get:
@@ -61,26 +63,3 @@ expression %string% of %integer% for %string%:
                             set {_ratio} to {_previousValue} / {_maxValue}
                             set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
         return {_value}
-
-# test
-
-on load:
-    create pickaxe enchantment named "testench":
-        set enchantment display to "Test Enchantment"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to tnt
-
-        level values for "money cost":
-            set level 1 to 10_000
-            set level 2 to 20_000
-            set level 3 to 30_000
-            set level 4 to 40_000
-            set level 5 to 50_000
-
-        level values for "xp cost":
-            set level 1 to 10_000
-            set level 2 to 20_000
-            set level 3 to 30_000
-            set level 4 to 40_000
-            set level 5 to 50_000

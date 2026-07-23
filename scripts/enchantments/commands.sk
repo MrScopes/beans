@@ -66,8 +66,6 @@ on load:
     set slot 6 of {-all enchantments gui} to diamond chestplate named "&7Armor Enchantments" with lore "&7Armor enchantments."
     set slot 8 of {-all enchantments gui} to bow named "&eBow Enchantments" with lore "&7Bow enchantments."
 
-    refreshEnchantmentGui()
-
 function refreshEnchantmentGui():
     for {_enchantment type} in "pickaxe", "sword", "armor", "bow":
         set {-enchantments gui::%{_enchantment type}%} to chest inventory named "%capitalizeFirst({_enchantment type})% Enchantments"

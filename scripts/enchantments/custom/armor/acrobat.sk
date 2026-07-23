@@ -1,20 +1,34 @@
 on load:
-    setting("acrobat", "display", value: "&f<sprite:items:item/feather> &eAcrobat")
-    setting("acrobat", "max level", value: 5)
-    setting("acrobat", "priority", value: 1)
-    setting("acrobat", "type", value: "armor")
-    setting("acrobat", "item", value: leather boots)
+    create armor enchantment named "acrobat":
+        set enchantment display to "&f<sprite:items:item/feather> &eAcrobat"
+        set enchantment max level to 5
+        set enchantment priority to 1
+        set enchantment item to leather boots
 
-    setting("acrobat", "damage reduction", l1: 0.20, l2: 0.35, l3: 0.50, l4: 0.60, l5: 0.80)
-    
-    setting("acrobat", "xp cost", l2: 40_000, l3: 150_000, l4: 400_000, l5: 1_000_000)
-    setting("acrobat", "money cost", l2: 60_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
+        level values for "damage reduction":
+            set level 1 to 0.20
+            set level 2 to 0.35
+            set level 3 to 0.50
+            set level 4 to 0.60
+            set level 5 to 0.80
+
+        level values for "xp cost":
+            set level 2 to 40_000
+            set level 3 to 150_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 60_000
+            set level 3 to 200_000
+            set level 4 to 500_000
+            set level 5 to 1_200_000
 
 local function getDescription(level: integer) :: string:
-    set {_reduction} to get_setting("acrobat", "damage reduction", {_level})
+    set {_reduction} to "damage reduction" of {_level} for "acrobat"
     return "reduces gravity damage by &f%{_reduction} * 100%%%"
-    
+
 local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     if {_damage cause} is fall (damage cause) or flying into a wall:
-        set {_reduction} to get_setting("acrobat", "damage reduction", {_level})
+        set {_reduction} to "damage reduction" of {_level} for "acrobat"
         return ({_damage} * {_reduction}) * -1

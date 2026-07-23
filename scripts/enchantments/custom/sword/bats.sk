@@ -1,40 +1,89 @@
 on load:
-    setting("bats", "display", value: "&f<sprite:items:item/bat_spawn_egg> &5Bats")
-    setting("bats", "max level", value: 5)
-    setting("bats", "priority", value: 0)
-    setting("bats", "type", value: "sword")
-    setting("bats", "item", value: bat spawn egg)
+    create sword enchantment named "bats":
+        set enchantment display to "&f<sprite:items:item/bat_spawn_egg> &5Bats"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to bat spawn egg
 
-    setting("bats", "cooldown", l1: 20 seconds, l2: 18 seconds, l3: 15 seconds, l4: 12 seconds, l5: 10 seconds)
-    
-    setting("bats", "amount", l1: 8, l2: 10, l3: 12, l4: 14, l5: 18)
-    setting("bats", "distance", l1: 12, l2: 14, l3: 16, l4: 18, l5: 22)
-    setting("bats", "damage", l1: 1, l2: 1.5, l3: 2, l4: 2.5, l5: 3)
-    setting("bats", "healing", l1: 0.5, l2: 0.6, l3: 0.7, l4: 0.8, l5: 1)
-    setting("bats", "poison", l1: potion effect of poison 1 for 3.5 seconds, l2: potion effect of poison 1 for 3.5 seconds, l3: potion effect of  poison 1 for 3.5 seconds, l4: potion effect of poison 1 for 3.25 seconds, l5: potion effect of poison 1 for 5 seconds)
-    setting("bats", "aoe", l1: 1, l2: 1.2, l3: 1.4, l4: 1.6, l5: 2)
+        level values for "cooldown":
+            set level 1 to 20 seconds
+            set level 2 to 18 seconds
+            set level 3 to 15 seconds
+            set level 4 to 12 seconds
+            set level 5 to 10 seconds
 
-    setting("bats", "xp cost", l2: 60_000, l3: 200_000, l4: 750_000, l5: 1_000_000)
-    setting("bats", "money cost", l2: 100_000, l3: 300_000 , l4: 900_000, l5: 1_250_000)
+        level values for "amount":
+            set level 1 to 8
+            set level 2 to 10
+            set level 3 to 12
+            set level 4 to 14
+            set level 5 to 18
+
+        level values for "distance":
+            set level 1 to 12
+            set level 2 to 14
+            set level 3 to 16
+            set level 4 to 18
+            set level 5 to 22
+
+        level values for "damage":
+            set level 1 to 1
+            set level 2 to 1.5
+            set level 3 to 2
+            set level 4 to 2.5
+            set level 5 to 3
+
+        level values for "healing":
+            set level 1 to 0.5
+            set level 2 to 0.6
+            set level 3 to 0.7
+            set level 4 to 0.8
+            set level 5 to 1
+
+        level values for "poison":
+            set level 1 to potion effect of poison 1 for 3.5 seconds
+            set level 2 to potion effect of poison 1 for 3.5 seconds
+            set level 3 to potion effect of  poison 1 for 3.5 seconds
+            set level 4 to potion effect of poison 1 for 3.25 seconds
+            set level 5 to potion effect of poison 1 for 5 seconds
+
+        level values for "aoe":
+            set level 1 to 1
+            set level 2 to 1.2
+            set level 3 to 1.4
+            set level 4 to 1.6
+            set level 5 to 2
+
+        level values for "xp cost":
+            set level 2 to 60_000
+            set level 3 to 200_000
+            set level 4 to 750_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 100_000
+            set level 3 to 300_000
+            set level 4 to 900_000
+            set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_distance} to get_setting("bats", "distance", {_level})
-    set {_amount} to get_setting("bats", "amount", {_level})
-    set {_damage} to get_setting("bats", "damage", {_level})
-    set {_healing} to get_setting("bats", "healing", {_level})
-    set {_poison} to get_setting("bats", "poison", {_level})
-    set {_aoe} to get_setting("bats", "aoe", {_level})
+    set {_distance} to "distance" of {_level} for "bats"
+    set {_amount} to "amount" of {_level} for "bats"
+    set {_damage} to "damage" of {_level} for "bats"
+    set {_healing} to "healing" of {_level} for "bats"
+    set {_poison} to "poison" of {_level} for "bats"
+    set {_aoe} to "aoe" of {_level} for "bats"
 
     return "&e[RMB] &7summon &f%{_amount}% bats &7that travel &f%{_distance}%m &8(&7AOE: &f%{_aoe}%m&8, &7Enemy: &c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &f%effectDisplay({_poison})%&8, &7You: &a%{_healing}%&f<sprite:gui:hud/heart/full>&8)"
 
 local function onrightclick(player: player, item: item, level: integer):
     set {_origin} to location of {_player}'s head
 
-    set {_distance} to get_setting("bats", "distance", {_level})
-    set {_amount} to get_setting("bats", "amount", {_level})
-    set {_damage} to get_setting("bats", "damage", {_level})
-    set {_healing} to get_setting("bats", "healing", {_level})
-    set {_poison} to get_setting("bats", "poison", {_level})
+    set {_distance} to "distance" of {_level} for "bats"
+    set {_amount} to "amount" of {_level} for "bats"
+    set {_damage} to "damage" of {_level} for "bats"
+    set {_healing} to "healing" of {_level} for "bats"
+    set {_poison} to "poison" of {_level} for "bats"
 
     loop {_amount} times:
         summon bat at {_origin} ~ vector(random number between 1 and -1, random number between 1 and -1, random number between 1 and -1):

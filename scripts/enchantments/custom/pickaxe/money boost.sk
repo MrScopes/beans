@@ -1,20 +1,60 @@
 on load:
-    setting("money_boost", "display", value: "&f<sprite:items:item/emerald> &2Money Boost")
-    setting("money_boost", "max level", value: 10)
-    setting("money_boost", "priority", value: 0)
-    setting("money_boost", "type", value: "pickaxe")
-    setting("money_boost", "item", value: emerald)
+    create pickaxe enchantment named "money_boost":
+        set enchantment display to "&f<sprite:items:item/emerald> &2Money Boost"
+        set enchantment max level to 10
+        set enchantment priority to 0
+        set enchantment item to emerald
 
-    setting("money_boost", "chance", l1: 10, l2: 15, l3: 20, l4: 25, l5: 30, l6: 35, l7: 40, l8: 45, l9: 50, l10: 70)
-    setting("money_boost", "reward", l1: 20, l2: 25, l3: 30, l4: 35, l5: 40, l6: 45, l7: 50, l8: 55, l9: 60, l10: 70)
+        level values for "chance":
+            set level 1 to 10
+            set level 2 to 15
+            set level 3 to 20
+            set level 4 to 25
+            set level 5 to 30
+            set level 6 to 35
+            set level 7 to 40
+            set level 8 to 45
+            set level 9 to 50
+            set level 10 to 70
 
-    setting("money_boost", "xp cost", l2: 4_000, l3: 16_000, l4: 64_000, l5: 256_000, l6: 500_000, l7: 750_000, l8: 1_000_000, l9: 1_500_000, l10: 2_000_000)
-    setting("money_boost", "money cost", l2: 6_000, l3: 24_000, l4: 96_000, l5: 384_000, l6: 768_000, l7: 1_000_000, l8: 1_500_000, l9: 2_000_000, l10: 2_500_000)
+        level values for "reward":
+            set level 1 to 20
+            set level 2 to 25
+            set level 3 to 30
+            set level 4 to 35
+            set level 5 to 40
+            set level 6 to 45
+            set level 7 to 50
+            set level 8 to 55
+            set level 9 to 60
+            set level 10 to 70
+
+        level values for "xp cost":
+            set level 2 to 4_000
+            set level 3 to 16_000
+            set level 4 to 64_000
+            set level 5 to 256_000
+            set level 6 to 500_000
+            set level 7 to 750_000
+            set level 8 to 1_000_000
+            set level 9 to 1_500_000
+            set level 10 to 2_000_000
+
+        level values for "money cost":
+            set level 2 to 6_000
+            set level 3 to 24_000
+            set level 4 to 96_000
+            set level 5 to 384_000
+            set level 6 to 768_000
+            set level 7 to 1_000_000
+            set level 8 to 1_500_000
+            set level 9 to 2_000_000
+            set level 10 to 2_500_000
 
 local function getDescription(level: integer) :: string:
-    return "gain $%get_setting("money_boost", "reward", {_level})%"
+    return "gain $%"reward" of {_level} for "money_boost"%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.villager.celebrate" with volume 0.1 and pitch 1 at location of {_player}
-    add get_setting("money_boost", "reward", {_level}) to {money::%{_player}%}
-    add get_setting("money_boost", "reward", {_level}) to {money source::%{_player}%::money enchantment}
+    add "reward" of {_level} for "money_boost" to {money::%{_player}%}
+    add "reward" of {_level} for "money_boost" to {money source::%{_player}%::money enchantment}

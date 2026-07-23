@@ -1,22 +1,41 @@
 on load:
-    setting("bullseye", "display", value: "&f<head:entity/player/wide/steve> &eBullseye")
-    setting("bullseye", "max level", value: 5)
-    setting("bullseye", "priority", value: 10)
-    setting("bullseye", "type", value: "bow")
-    setting("bullseye", "item", value: player head)
+    create bow enchantment named "bullseye":
+        set enchantment display to "&f<head:entity/player/wide/steve> &eBullseye"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to player head
 
-    setting("bullseye", "threshold", l1: 0.75, l2: 0.75, l3: 0.75, l4: 0.75, l5: 0.75)
+        level values for "threshold":
+            set level 1 to 0.75
+            set level 2 to 0.75
+            set level 3 to 0.75
+            set level 4 to 0.75
+            set level 5 to 0.75
 
-    setting("bullseye", "damage", l1: 0.5, l2: 0.75, l3: 1, l4: 1.25, l5: 1.75)
+        level values for "damage":
+            set level 1 to 0.5
+            set level 2 to 0.75
+            set level 3 to 1
+            set level 4 to 1.25
+            set level 5 to 1.75
 
-    setting("bullseye", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
-    setting("bullseye", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+        level values for "xp cost":
+            set level 2 to 20_000
+            set level 3 to 100_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 25_000
+            set level 3 to 150_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "deals %get_setting("bullseye", "damage", {_level})%&f<sprite:gui:hud/heart/full> &7with headshots"
+    return "deals %"damage" of {_level} for "bullseye"%&f<sprite:gui:hud/heart/full> &7with headshots"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
         if distance between location of {_projectile} and eye of {_victim} < 0.5:
             play sound "entity.arrow.hit_player" at volume 1 and pitch 0.1 at {_shooter}
-            damage({_victim}, {_attacker}, get_setting("bullseye", "damage", {_level}))
+            damage({_victim}, {_attacker}, "damage" of {_level} for "bullseye")

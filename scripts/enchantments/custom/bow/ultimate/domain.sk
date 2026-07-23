@@ -1,31 +1,55 @@
 on load:
-    setting("domain", "ultimate", value: true)
-    setting("domain", "display", value: "&f<sprite:items:item/barrier> <rainbow><bold>Domain")
-    setting("domain", "max level", value: 5)
-    setting("domain", "priority", value: 10)
-    setting("domain", "type", value: "bow")
-    setting("domain", "item", value: barrier)
+    create ultimate bow enchantment named "domain":
+        set enchantment display to "&f<sprite:items:item/barrier> <rainbow><bold>Domain"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to barrier
 
-    setting("domain", "cooldown", l1: 1 minute, l2: 1 minute, l3: 1 minute, l4: 1 minute, l5: 1 minute)
+        level values for "cooldown":
+            set level 1 to 1 minute
+            set level 2 to 1 minute
+            set level 3 to 1 minute
+            set level 4 to 1 minute
+            set level 5 to 1 minute
 
-    setting("domain", "radius", l1: 20, l2: 18, l3: 16, l4: 14, l5: 12)
-    setting("domain", "duration", l1: 10 seconds, l2: 11 seconds, l3: 12 seconds, l4: 13 seconds, l5: 15 seconds)
+        level values for "radius":
+            set level 1 to 20
+            set level 2 to 18
+            set level 3 to 16
+            set level 4 to 14
+            set level 5 to 12
 
-    setting("domain", "xp cost", l2: 200_000, l3: 1_000_000, l4: 2_000_000, l5: 5_000_000)
-    setting("domain", "money cost", l2: 250_000, l3: 1_250_000, l4: 2_500_000, l5: 5_550_000)
+        level values for "duration":
+            set level 1 to 10 seconds
+            set level 2 to 11 seconds
+            set level 3 to 12 seconds
+            set level 4 to 13 seconds
+            set level 5 to 15 seconds
+
+        level values for "xp cost":
+            set level 2 to 200_000
+            set level 3 to 1_000_000
+            set level 4 to 2_000_000
+            set level 5 to 5_000_000
+
+        level values for "money cost":
+            set level 2 to 250_000
+            set level 3 to 1_250_000
+            set level 4 to 2_500_000
+            set level 5 to 5_550_000
 
 local function getDescription(level: integer) :: string:
-    return "on hit&8, &7create an inescapable &f%get_setting("domain", "radius", {_level})%m &7domain for &f%time_format(get_setting("domain", "duration", {_level}))%"
+    return "on hit&8, &7create an inescapable &f%"radius" of {_level} for "domain"%m &7domain for &f%time_format("duration" of {_level} for "domain")%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
         play sound "entity.enderman.death" with volume 1 and pitch 1 at {_victim}
         send "%{_victim}% was trapped in a domain!" to {_shooter}
         set worldborder of {_victim} to a virtual worldborder:
-            set worldborder radius of event-worldborder to get_setting("domain", "radius", {_level})
+            set worldborder radius of event-worldborder to "radius" of {_level} for "domain"
             set worldborder center of event-worldborder to location of {_victim}
             set worldborder damage amount of event-worldborder to 5
         set {_border} to worldborder of {_victim}
-        wait get_setting("domain", "duration", {_level})
+        wait "duration" of {_level} for "domain"
         {_border} is worldborder of {_victim}
         reset worldborder of {_victim}

@@ -1,28 +1,59 @@
 on load:
-    setting("adrenaline", "display", value: "&f<sprite:items:item/sugar> &aAdrenaline")
-    setting("adrenaline", "max level", value: 5)
-    setting("adrenaline", "priority", value: 10)
-    setting("adrenaline", "type", value: "bow")
-    setting("adrenaline", "item", value: sugar (item))
+    create bow enchantment named "adrenaline":
+        set enchantment display to "&f<sprite:items:item/sugar> &aAdrenaline"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to sugar (item)
 
-    setting("adrenaline", "chance", l1: 40, l2: 40, l3: 40, l4: 40, l5: 40)
-    setting("adrenaline", "cooldown", l1: 15 seconds, l2: 14 seconds, l3: 13 seconds, l4: 12 seconds, l5: 10 seconds)
+        level values for "chance":
+            set level 1 to 40
+            set level 2 to 40
+            set level 3 to 40
+            set level 4 to 40
+            set level 5 to 40
 
-    setting("adrenaline", "speed", l1: potion effect of speed 1 for 3 seconds, l2: potion effect of speed 1 for 4 seconds, l3: potion effect of speed 2 for 4 seconds, l4: potion effect of speed 2 for 5 seconds, l5: potion effect of speed 3 for 6 seconds)
-    setting("adrenaline", "resistance", l1: potion effect of resistance 1 for 2 seconds, l2: potion effect of resistance 1 for 3 seconds, l3: potion effect of resistance 2 for 3 seconds, l4: potion effect of resistance 2 for 4 seconds, l5: potion effect of resistance 3 for 4 seconds)
+        level values for "cooldown":
+            set level 1 to 15 seconds
+            set level 2 to 14 seconds
+            set level 3 to 13 seconds
+            set level 4 to 12 seconds
+            set level 5 to 10 seconds
 
-    setting("adrenaline", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
-    setting("adrenaline", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+        level values for "speed":
+            set level 1 to potion effect of speed 1 for 3 seconds
+            set level 2 to potion effect of speed 1 for 4 seconds
+            set level 3 to potion effect of speed 2 for 4 seconds
+            set level 4 to potion effect of speed 2 for 5 seconds
+            set level 5 to potion effect of speed 3 for 6 seconds
+
+        level values for "resistance":
+            set level 1 to potion effect of resistance 1 for 2 seconds
+            set level 2 to potion effect of resistance 1 for 3 seconds
+            set level 3 to potion effect of resistance 2 for 3 seconds
+            set level 4 to potion effect of resistance 2 for 4 seconds
+            set level 5 to potion effect of resistance 3 for 4 seconds
+
+        level values for "xp cost":
+            set level 2 to 20_000
+            set level 3 to 100_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 25_000
+            set level 3 to 150_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_speed} to get_setting("adrenaline", "speed", {_level})
-    set {_resistance} to get_setting("adrenaline", "resistance", {_level})
+    set {_speed} to "speed" of {_level} for "adrenaline"
+    set {_resistance} to "resistance" of {_level} for "adrenaline"
     return "on hit&8, &7apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_resistance})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
-        set {_speed} to get_setting("adrenaline", "speed", {_level})
-        set {_resistance} to get_setting("adrenaline", "resistance", {_level})
+        set {_speed} to "speed" of {_level} for "adrenaline"
+        set {_resistance} to "resistance" of {_level} for "adrenaline"
         set duration of {_speed} to duration of {_speed} * {_force}
         set duration of {_resistance} to duration of {_resistance} * {_force}
         apply {_speed} to {_shooter}

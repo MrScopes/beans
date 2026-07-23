@@ -1,22 +1,61 @@
 on load:
-    setting("xp_boost", "display", value: "&f<sprite:blocks:block/enchanting_table_top> &bXP Boost")
-    setting("xp_boost", "max level", value: 10)
-    setting("xp_boost", "priority", value: 9999)
-    setting("xp_boost", "type", value: "pickaxe")
-    setting("xp_boost", "item", value: enchanting table)
+    create pickaxe enchantment named "xp_boost":
+        set enchantment display to "&f<sprite:blocks:block/enchanting_table_top> &bXP Boost"
+        set enchantment max level to 10
+        set enchantment priority to 9999
+        set enchantment item to enchanting table
 
-    setting("xp_boost", "chance", l1: 20, l2: 25, l3: 30, l4: 35, l5: 40, l6: 45, l7: 50, l8: 55, l9: 60, l10: 75)
+        level values for "chance":
+            set level 1 to 20
+            set level 2 to 25
+            set level 3 to 30
+            set level 4 to 35
+            set level 5 to 40
+            set level 6 to 45
+            set level 7 to 50
+            set level 8 to 55
+            set level 9 to 60
+            set level 10 to 75
 
-    setting("xp_boost", "multiplier", l1: 5, l2: 5.5, l3: 6, l4: 6.5, l5: 7, l6: 7.5, l7: 8, l8: 8.5, l9: 9, l10: 10)
+        level values for "multiplier":
+            set level 1 to 5
+            set level 2 to 5.5
+            set level 3 to 6
+            set level 4 to 6.5
+            set level 5 to 7
+            set level 6 to 7.5
+            set level 7 to 8
+            set level 8 to 8.5
+            set level 9 to 9
+            set level 10 to 10
 
-    setting("xp_boost", "xp cost", l2: 1_000, l3: 4_000, l4: 16_000, l5: 64_000, l6: 256_000, l7: 1_000_000, l8: 2_000_000, l9: 3_000_000, l10: 4_000_000)
-    setting("xp_boost", "money cost", l2: 1_500, l3: 6_000, l4: 24_000, l5: 96_000, l6: 384_000, l7: 1_250_000, l8: 2_500_000, l9: 3_500_000, l10: 4_500_000)
+        level values for "xp cost":
+            set level 2 to 1_000
+            set level 3 to 4_000
+            set level 4 to 16_000
+            set level 5 to 64_000
+            set level 6 to 256_000
+            set level 7 to 1_000_000
+            set level 8 to 2_000_000
+            set level 9 to 3_000_000
+            set level 10 to 4_000_000
+
+        level values for "money cost":
+            set level 2 to 1_500
+            set level 3 to 6_000
+            set level 4 to 24_000
+            set level 5 to 96_000
+            set level 6 to 384_000
+            set level 7 to 1_250_000
+            set level 8 to 2_500_000
+            set level 9 to 3_500_000
+            set level 10 to 4_500_000
 
 local function getDescription(level: integer) :: string:
-    return "boost xp gain by %get_setting("xp_boost", "multiplier", {_level})%x"
+    return "boost xp gain by %"multiplier" of {_level} for "xp_boost"%x"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.experience_orb.pickup" with volume 0.5 and pitch 1 at location of {_player}
-    set {_xp} to get_setting("xp_boost", "multiplier", {_level}) * xpYield({_block})
+    set {_xp} to "multiplier" of {_level} for "xp_boost" * xpYield({_block})
     add {_xp} to {_player}'s experience
     wait 1 tick

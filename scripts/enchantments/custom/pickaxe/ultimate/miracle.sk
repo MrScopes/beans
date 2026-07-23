@@ -1,17 +1,30 @@
 using reflection
 
 on load:
-    setting("miracle", "ultimate", value: true)
-    setting("miracle", "display", value: "&f<sprite:gui:icon/link> <rainbow><bold>Miracle")
-    setting("miracle", "max level", value: 5)
-    setting("miracle", "priority", value: 0)
-    setting("miracle", "type", value: "pickaxe")
-    setting("miracle", "item", value: end crystal (item))
+    create ultimate pickaxe enchantment named "miracle":
+        set enchantment display to "&f<sprite:gui:icon/link> <rainbow><bold>Miracle"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to end crystal (item)
 
-    setting("miracle", "cooldown", l1: 3 minutes, l2: 2 minutes and 30 seconds, l3: 2 minutes, l4: 1 minute and 30 seconds, l5: 1 minute)
+        level values for "cooldown":
+            set level 1 to 3 minutes
+            set level 2 to 2 minutes and 30 seconds
+            set level 3 to 2 minutes
+            set level 4 to 1 minute and 30 seconds
+            set level 5 to 1 minute
 
-    setting("miracle", "xp cost", l2: 300_000, l3: 800_000, l4: 1_750_000, l5: 3_500_000)
-    setting("miracle", "money cost", l2: 400_000, l3: 1_000_000, l4: 2_000_000, l5: 4_000_000)
+        level values for "xp cost":
+            set level 2 to 300_000
+            set level 3 to 800_000
+            set level 4 to 1_750_000
+            set level 5 to 3_500_000
+
+        level values for "money cost":
+            set level 2 to 400_000
+            set level 3 to 1_000_000
+            set level 4 to 2_000_000
+            set level 5 to 4_000_000
 
 local function getDescription(level: integer) :: string:
     return "activate most enchantments, bypassing chance and cooldown"

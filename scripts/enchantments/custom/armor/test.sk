@@ -1,10 +1,9 @@
 on load:
-    setting("test", "display", value: "&fTest")
-    setting("test", "max level", value: 1)
-    setting("test", "priority", value: 0)
-    setting("test", "type", value: "armor")
-    setting("test", "item", value: barrier)
-    setting("test", "disabled", value: true)
+    create disabled armor enchantment named "test":
+        set enchantment display to "&fTest"
+        set enchantment max level to 1
+        set enchantment priority to 0
+        set enchantment item to barrier
 
 local function getDescription(level: integer) :: string:
     return "Test"

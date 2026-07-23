@@ -1,21 +1,40 @@
 on load:
-    setting("feeding", "display", value: "&f<sprite:items:item/cooked_beef> &fFeeding")
-    setting("feeding", "max level", value: 5)
-    setting("feeding", "priority", value: 0)
-    setting("feeding", "type", value: "pickaxe")
-    setting("feeding", "item", value: cooked beef)
-    
-    setting("feeding", "chance", l1: 5, l2: 10, l3: 15, l4: 20, l5: 25)
+    create pickaxe enchantment named "feeding":
+        set enchantment display to "&f<sprite:items:item/cooked_beef> &fFeeding"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to cooked beef
 
-    setting("feeding", "feed", l1: 1, l2: 2, l3: 3, l4: 4, l5: 5)
+        level values for "chance":
+            set level 1 to 5
+            set level 2 to 10
+            set level 3 to 15
+            set level 4 to 20
+            set level 5 to 25
 
-    setting("feeding", "xp cost", l2: 40_000, l3: 100_000, l4: 250_000, l5: 500_000)
-    setting("feeding", "money cost", l2: 60_000, l3: 125_000, l4: 300_000, l5: 600_000)
+        level values for "feed":
+            set level 1 to 1
+            set level 2 to 2
+            set level 3 to 3
+            set level 4 to 4
+            set level 5 to 5
+
+        level values for "xp cost":
+            set level 2 to 40_000
+            set level 3 to 100_000
+            set level 4 to 250_000
+            set level 5 to 500_000
+
+        level values for "money cost":
+            set level 2 to 60_000
+            set level 3 to 125_000
+            set level 4 to 300_000
+            set level 5 to 600_000
 
 local function getDescription(level: integer) :: string:
-    return "feed you by %get_setting("feeding", "feed", {_level})% food"
+    return "feed you by %"feed" of {_level} for "feeding"% food"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
-    set {_player}'s food level to clamp({_player}'s food level + get_setting("feeding", "feed", {_level}), 0, 15)
+    set {_player}'s food level to clamp({_player}'s food level + "feed" of {_level} for "feeding", 0, 15)

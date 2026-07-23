@@ -1,22 +1,38 @@
 on load:
-    setting("overload", "ultimate", value: true)
-    setting("overload", "display", value: "&f<sprite:gui:mob_effect/instant_health> <rainbow><bold>Overload")
-    setting("overload", "max level", value: 5)
-    setting("overload", "priority", value: 1)
-    setting("overload", "type", value: "armor")
-    setting("overload", "item", value: health potion)
+    create ultimate armor enchantment named "overload":
+        set enchantment ultimate to true
+        set enchantment display to "&f<sprite:gui:mob_effect/instant_health> <rainbow><bold>Overload"
+        set enchantment max level to 5
+        set enchantment priority to 1
+        set enchantment item to health potion
 
-    setting("overload", "health", l1: 2, l2: 4, l3: 6, l4: 8, l5: 10)
+        level values for "health":
+            set level 1 to 2
+            set level 2 to 4
+            set level 3 to 6
+            set level 4 to 8
+            set level 5 to 10
 
-    setting("overload", "xp cost", l1: 400_000, l2: 1_500_000, l3: 2_500_000, l4: 4_000_000, l5: 6_000_000)
-    setting("overload", "money cost", l1: 500_000, l2: 2_000_000, l3: 3_000_000, l4: 5_000_000, l5: 7_500_000)
+        level values for "xp cost":
+            set level 1 to 400_000
+            set level 2 to 1_500_000
+            set level 3 to 2_500_000
+            set level 4 to 4_000_000
+            set level 5 to 6_000_000
+
+        level values for "money cost":
+            set level 1 to 500_000
+            set level 2 to 2_000_000
+            set level 3 to 3_000_000
+            set level 4 to 5_000_000
+            set level 5 to 7_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_health} to get_setting("overload", "health", {_level})
+    set {_health} to "health" of {_level} for "overload"
     return "increases max health by &f%{_health}%&f<sprite:gui:hud/heart/full>"
-    
+
 local function onapply(armor: item, level: integer, player: player = {_}):
-    set {_amount} to get_setting("overload", "health", {_level})
+    set {_amount} to "health" of {_level} for "overload"
     apply attribute modifier to (item within {_armor}):
         attribute: max health
         id: "skript:overload_enchantment"

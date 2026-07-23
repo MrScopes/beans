@@ -1,32 +1,58 @@
 on load:
-    setting("beam", "display", value: "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam")
-    setting("beam", "max level", value: 5)
-    setting("beam", "priority", value: 10)
-    setting("beam", "type", value: "pickaxe")
-    setting("beam", "item", value: blaze rod)
+    create pickaxe enchantment named "beam":
+        set enchantment display to "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to blaze rod
 
-    setting("beam", "chance", l1: 5, l2: 7, l3: 9, l4: 11, l5: 13)
-    setting("beam", "radius", l1: 1.25, l2: 1.35, l3: 1.5, l4: 1.65, l5: 1.75)
-    setting("beam", "distance", l1: 30, l2: 35, l3: 40, l4: 45, l5: 50)
+        level values for "chance":
+            set level 1 to 5
+            set level 2 to 7
+            set level 3 to 9
+            set level 4 to 11
+            set level 5 to 13
 
-    setting("beam", "xp cost", l2: 40_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
-    setting("beam", "money cost", l2: 60_000, l3: 200_000, l4: 600_000, l5: 1_500_000)
+        level values for "radius":
+            set level 1 to 1.25
+            set level 2 to 1.35
+            set level 3 to 1.5
+            set level 4 to 1.65
+            set level 5 to 1.75
+
+        level values for "distance":
+            set level 1 to 30
+            set level 2 to 35
+            set level 3 to 40
+            set level 4 to 45
+            set level 5 to 50
+
+        level values for "xp cost":
+            set level 2 to 40_000
+            set level 3 to 150_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
+
+        level values for "money cost":
+            set level 2 to 60_000
+            set level 3 to 200_000
+            set level 4 to 600_000
+            set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "break blocks in a %get_setting("beam", "radius", {_level})%m beam"
+    return "break blocks in a %"radius" of {_level} for "beam"%m beam"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.ender_dragon.flap" with volume 0.5 and pitch 1 at {_player}
     set {_origin} to location of {_player}'s head
     set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
 
-    loop get_setting("beam", "distance", {_level}) times:
+    loop "distance" of {_level} for "beam" times:
         set vector length of {_vector} to loop-value / 4
         set {_bullet} to {_origin} ~ {_vector}
         
         draw 4 red dust particle at {_bullet}
 
-        loop all blocks in radius get_setting("beam", "radius", {_level}) around {_bullet}:
+        loop all blocks in radius "radius" of {_level} for "beam" around {_bullet}:
             loop-block isn't air
             loop-block isn't bedrock, beacon, obsidian, or packed ice
             loop-block is within bound with id "mine"

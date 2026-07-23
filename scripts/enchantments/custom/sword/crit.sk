@@ -1,20 +1,39 @@
 on load:
-    setting("crit", "display", value: "&f<sprite:items:item/diamond_sword> &cCrit")
-    setting("crit", "max level", value: 5)
-    setting("crit", "priority", value: 10)
-    setting("crit", "type", value: "sword")
-    setting("crit", "item", value: diamond sword)
+    create sword enchantment named "crit":
+        set enchantment display to "&f<sprite:items:item/diamond_sword> &cCrit"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to diamond sword
 
-    setting("crit", "chance", l1: 10, l2: 15, l3: 20, l4: 25, l5: 30)
+        level values for "chance":
+            set level 1 to 10
+            set level 2 to 15
+            set level 3 to 20
+            set level 4 to 25
+            set level 5 to 30
 
-    setting("crit", "increase", l1: 0.1, l2: 0.15, l3: 0.20, l4: 0.25, l5: 0.35)
+        level values for "increase":
+            set level 1 to 0.1
+            set level 2 to 0.15
+            set level 3 to 0.20
+            set level 4 to 0.25
+            set level 5 to 0.35
 
-    setting("crit", "xp cost", l2: 6_000, l3: 24_000, l4: 100_000, l5: 400_000)
-    setting("crit", "money cost", l2: 10_000, l3: 30_000, l4: 140_000, l5: 550_000)
+        level values for "xp cost":
+            set level 2 to 6_000
+            set level 3 to 24_000
+            set level 4 to 100_000
+            set level 5 to 400_000
+
+        level values for "money cost":
+            set level 2 to 10_000
+            set level 3 to 30_000
+            set level 4 to 140_000
+            set level 5 to 550_000
 
 local function getDescription(level: integer) :: string:
-    return "increase final damage by %get_setting("crit", "increase", {_level}) * 100%%%"
+    return "increase final damage by %"increase" of {_level} for "crit" * 100%%%"
 
 local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     play sound "minecraft:entity.bat.hurt" with volume 1 and pitch 1 to {_attacker}
-    return {_damage} * (1 + get_setting("crit", "increase", {_level}))
+    return {_damage} * (1 + "increase" of {_level} for "crit")

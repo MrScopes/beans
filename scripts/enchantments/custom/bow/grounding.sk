@@ -1,26 +1,50 @@
 on load:
-    setting("grounding", "display", value: "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding")
-    setting("grounding", "max level", value: 5)
-    setting("grounding", "priority", value: 0)
-    setting("grounding", "type", value: "bow")
-    setting("grounding", "item", value: glow squid spawn egg)
-    
-    setting("grounding", "chance", l1: 30, l2: 40, l3: 50, l4: 60)
-    setting("grounding", "threshold", l1: 0.5, l2: 0.5, l3: 0.5, l4: 0.5, l5: 0.5)
+    create bow enchantment named "grounding":
+        set enchantment display to "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to glow squid spawn egg
 
-    setting("grounding", "duration", l1: 10 seconds, l2: 11 seconds, l3: 12 seconds, l4: 13 seconds, l5: 15 seconds)
-    
-    setting("grounding", "xp cost", l2: 16_000, l3: 120_000, l4: 400_000, l5: 1_000_000)
-    setting("grounding", "money cost", l2: 24_000, l3: 200_000, l4: 500_000, l5: 1_200_000)
+        level values for "chance":
+            set level 1 to 30
+            set level 2 to 40
+            set level 3 to 50
+            set level 4 to 60
+
+        level values for "threshold":
+            set level 1 to 0.5
+            set level 2 to 0.5
+            set level 3 to 0.5
+            set level 4 to 0.5
+            set level 5 to 0.5
+
+        level values for "duration":
+            set level 1 to 10 seconds
+            set level 2 to 11 seconds
+            set level 3 to 12 seconds
+            set level 4 to 13 seconds
+            set level 5 to 15 seconds
+
+        level values for "xp cost":
+            set level 2 to 16_000
+            set level 3 to 120_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 24_000
+            set level 3 to 200_000
+            set level 4 to 500_000
+            set level 5 to 1_200_000
 
 local function getDescription(level: integer) :: string:
-    return "Ground a player, disabling their elytra for %time_format(get_setting("grounding", "duration", {_level}))%"
+    return "Ground a player, disabling their elytra for %time_format("duration" of {_level} for "grounding")%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
         play sound "entity.shulker.hurt" to {_shooter} and {_victim}
         set gliding of {_victim} to false
-        set cooldown of elytra for {_victim} to get_setting("grounding", "duration", {_level})
+        set cooldown of elytra for {_victim} to "duration" of {_level} for "grounding"
 
 on gliding state change:
     if gliding state of player is false:

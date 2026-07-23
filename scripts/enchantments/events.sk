@@ -10,9 +10,9 @@ function miningEnchants(player: player, block: block):
             if {_player} isn't op:
                 continue
         set {_level} to {_enchantments::%loop-value%}
-        set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        set {_chance} to get_setting(loop-value, "chance", {_level})
-        if {-ce::%loop-value%::manual chance::onbreak::%{_level}%} is set:
+        set {_cooldown} to "cooldown" of {_level} for loop-value
+        set {_chance} to "chance" of {_level} for loop-value
+        if "manual chance" of {_level} for loop-value is set:
             delete {_chance}
         set {_onbreak} to {-ce::%loop-value%::onbreak}
 

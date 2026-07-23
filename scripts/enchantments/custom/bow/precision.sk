@@ -1,25 +1,45 @@
 on load:
-    setting("precision", "display", value: "&f<sprite:blocks:block/target_side> &ePrecision")
-    setting("precision", "max level", value: 5)
-    setting("precision", "priority", value: 0)
-    setting("precision", "type", value: "bow")
-    setting("precision", "item", value: target item)
+    create bow enchantment named "precision":
+        set enchantment display to "&f<sprite:blocks:block/target_side> &ePrecision"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to target item
 
-    setting("precision", "multiplier", l1: 0.1, l2: 0.15, l3: 0.2, l4: 0.25, l5: 0.3)
-    setting("precision", "max multiplier", value: 1)
+        level values for "multiplier":
+            set level 1 to 0.1
+            set level 2 to 0.15
+            set level 3 to 0.2
+            set level 4 to 0.25
+            set level 5 to 0.3
 
-    setting("precision", "xp cost", l2: 20_000, l3: 100_000, l4: 400_000, l5: 1_000_000)
-    setting("precision", "money cost", l2: 25_000, l3: 150_000, l4: 500_000, l5: 1_250_000)
+        level values for "max multiplier":
+            set level 1 to 1
+            set level 2 to 1
+            set level 3 to 1
+            set level 4 to 1
+            set level 5 to 1
+
+        level values for "xp cost":
+            set level 2 to 20_000
+            set level 3 to 100_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
+
+        level values for "money cost":
+            set level 2 to 25_000
+            set level 3 to 150_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "hitting a shot increases arrow damage by %get_setting("precision", "multiplier", {_level}) * 100%%%. missing a shot resets the multiplier"
+    return "hitting a shot increases arrow damage by %"multiplier" of {_level} for "precision" * 100%%%. missing a shot resets the multiplier"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     {_shooter} isn't {_victim}
     if {-shots hit in a row::%{_shooter}%} > 1:
         play sound "entity.arrow.hit" at volume 1 and pitch 1.5 at {_victim}
-        play sound "block.note_block.pling" at volume 1 and pitch 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * (get_setting("precision", "multiplier", {_level}) * 1.5), 0, 1.5)) at {_shooter}
-        return {_damage} * (clamp({-shots hit in a row::%{_shooter}%} * get_setting("precision", "multiplier", {_level}), 0, get_setting("precision", "max multiplier")))
+        play sound "block.note_block.pling" at volume 1 and pitch 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * ("multiplier" of {_level} for "precision" * 1.5), 0, 1.5)) at {_shooter}
+        return {_damage} * (clamp({-shots hit in a row::%{_shooter}%} * "multiplier" of {_level} for "precision", 0, "max multiplier" of {_level} for "precision"))
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} isn't a living entity:

@@ -1,18 +1,38 @@
 on load:
-    setting("grinder", "display", value: "&f<sprite:blocks:block/grindstone_side> &cGrinder")
-    setting("grinder", "max level", value: 5)
-    setting("grinder", "priority", value: 10)
-    setting("grinder", "type", value: "pickaxe")
-    setting("grinder", "item", value: grindstone)
-    
-    setting("grinder", "requirement", l1: 100, l2: 90, l3: 85, l4: 80, l5: 75)
-    setting("grinder", "boost", l1: 0.001, l2: 0.0015, l3: 0.002, l4: 0.0025, l5: 0.003)
+    create pickaxe enchantment named "grinder":
+        set enchantment display to "&f<sprite:blocks:block/grindstone_side> &cGrinder"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to grindstone
 
-    setting("grinder", "xp cost", l2: 60_000, l3: 160_000, l4: 500_000, l5: 1_250_000)
-    setting("grinder", "money cost", l2: 100_000, l3: 225_000, l4: 750_000, l5: 1_500_000)
+        level values for "requirement":
+            set level 1 to 100
+            set level 2 to 90
+            set level 3 to 85
+            set level 4 to 80
+            set level 5 to 75
+
+        level values for "boost":
+            set level 1 to 0.001
+            set level 2 to 0.0015
+            set level 3 to 0.002
+            set level 4 to 0.0025
+            set level 5 to 0.003
+
+        level values for "xp cost":
+            set level 2 to 60_000
+            set level 3 to 160_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
+
+        level values for "money cost":
+            set level 2 to 100_000
+            set level 3 to 225_000
+            set level 4 to 750_000
+            set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "boost luck by %formatNumber(get_setting("grinder", "boost", {_level}), "#.#####")%x every %get_setting("grinder", "requirement", {_level})% blocks"
+    return "boost luck by %formatNumber("boost" of {_level} for "grinder", "#.#####")%x every %"requirement" of {_level} for "grinder"% blocks"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_player} is within bound with id "mine flight"
@@ -22,11 +42,11 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
 
     add 1 to {-grinder blocks::%{_player}%}
 
-    if {-grinder blocks::%{_player}%} >= get_setting("grinder", "requirement", {_level}):
-        remove get_setting("grinder", "requirement", {_level}) from {-grinder blocks::%{_player}%}
+    if {-grinder blocks::%{_player}%} >= "requirement" of {_level} for "grinder":
+        remove "requirement" of {_level} for "grinder" from {-grinder blocks::%{_player}%}
         if {-grinder mining luck::%{_player}%} isn't greater than or equal to 0.5:
-            add get_setting("grinder", "boost", {_level}) to {-grinder mining luck::%{_player}%}
-            add get_setting("grinder", "boost", {_level}) to {-mining luck::%{_player}%}
+            add "boost" of {_level} for "grinder" to {-grinder mining luck::%{_player}%}
+            add "boost" of {_level} for "grinder" to {-mining luck::%{_player}%}
         send action bar "Grinder boost: +%formatNumber({-grinder mining luck::%{_player}%}, "#.#####")%x | Total proc rate: %formatNumber(1 + {-mining luck::%{_player}%}, "#.#####")%x" to {_player}
 
 local function startGrinderWatcher(player: player):

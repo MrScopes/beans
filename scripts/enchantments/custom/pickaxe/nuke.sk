@@ -1,24 +1,42 @@
 on load:
-    setting("nuke", "display", value: "&f<sprite:items:item/end_crystal> &4Nuke")
-    setting("nuke", "max level", value: 5)
+    create pickaxe enchantment named "nuke":
+        set enchantment display to "&f<sprite:items:item/end_crystal> &4Nuke"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to dragon head
 
-    setting("nuke", "chance", l1: 0.05, l2: 0.075, l3: 0.1, l4: 0.125, l5: 0.175)
+        level values for "chance":
+            set level 1 to 0.05
+            set level 2 to 0.075
+            set level 3 to 0.1
+            set level 4 to 0.125
+            set level 5 to 0.175
 
-    setting("nuke", "radius", l1: 8, l2: 9, l3: 10, l4: 11, l5: 13)
+        level values for "radius":
+            set level 1 to 8
+            set level 2 to 9
+            set level 3 to 10
+            set level 4 to 11
+            set level 5 to 13
 
-    setting("nuke", "priority", value: 0)
-    setting("nuke", "type", value: "pickaxe")
-    setting("nuke", "item", value: dragon head)
+        level values for "xp cost":
+            set level 2 to 50_000
+            set level 3 to 200_000
+            set level 4 to 400_000
+            set level 5 to 1_000_000
 
-    setting("nuke", "xp cost", l2: 50_000, l3: 200_000, l4: 400_000, l5: 1_000_000)
-    setting("nuke", "money cost", l2: 60_000, l3: 275_000, l4: 500_000, l5: 1_250_000)
+        level values for "money cost":
+            set level 2 to 60_000
+            set level 3 to 275_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "nuke blocks within %get_setting("nuke", "radius", {_level})%m"
+    return "nuke blocks within %"radius" of {_level} for "nuke"%m"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.creeper.primed" with volume 1 and pitch 1 at location of {_player}
     wait 1 second
     play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
-    set {_radius} to get_setting("nuke", "radius", {_level})
+    set {_radius} to "radius" of {_level} for "nuke"
     fastRadiusClear({_player}, location of {_block}, {_radius})

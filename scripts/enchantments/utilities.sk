@@ -84,7 +84,7 @@ function inlineDiff(string1: text, string2: text, color: text = "&6", colorAfter
 
     return {_out}
 
-
+###
 function setting(enchantment: text, key: text, value: object = {_}, l1: object = {_}, l2: object = {_}, l3: object = {_}, l4: object = {_}, l5: object = {_}, l6: object = {_}, l7: object = {_}, l8: object = {_}, l9: object = {_}, l10: object = {_}):
     if {_value} is set:
         set {-ce::%{_enchantment}%::%{_key}%} to {_value}
@@ -121,6 +121,7 @@ function get_setting(enchantment: text, key: text, level: object = {_}) :: objec
         return {_value}
 
     return {-ce::%{_enchantment}%::%{_key}%}
+###
 
 import:
     me.mrscopes.beans.mine.FastBlocks

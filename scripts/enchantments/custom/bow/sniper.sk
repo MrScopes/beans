@@ -1,17 +1,31 @@
 on load:
-    setting("sniper", "display", value: "&f<sprite:items:item/spyglass> &9Sniper")
-    setting("sniper", "max level", value: 5)
-    setting("sniper", "priority", value: 0)
-    setting("sniper", "type", value: "bow")
-    setting("sniper", "item", value: spyglass)
+    create bow enchantment named "sniper":
+        set enchantment display to "&f<sprite:items:item/spyglass> &9Sniper"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to spyglass
 
-    setting("sniper", "scale", l1: 0.05, l2: 0.06, l3: 0.07, l4: 0.08, l5: 0.1)
+        level values for "scale":
+            set level 1 to 0.05
+            set level 2 to 0.06
+            set level 3 to 0.07
+            set level 4 to 0.08
+            set level 5 to 0.1
 
-    setting("sniper", "xp cost", l2: 25_000, l3: 125_000, l4: 500_000, l5: 1_250_000)
-    setting("sniper", "money cost", l2: 30_000, l3: 175_000, l4: 600_000, l5: 1_500_000)
+        level values for "xp cost":
+            set level 2 to 25_000
+            set level 3 to 125_000
+            set level 4 to 500_000
+            set level 5 to 1_250_000
+
+        level values for "money cost":
+            set level 2 to 30_000
+            set level 3 to 175_000
+            set level 4 to 600_000
+            set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "deals %get_setting("sniper", "scale", {_level})%&f<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
+    return "deals %"scale" of {_level} for "sniper"%&f<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
 
 local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     set {-%{_projectile}%::starting} to location of {_projectile}
@@ -19,7 +33,7 @@ local function onshoot(shooter: entity, tool: item, projectile: projectile, leve
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     {_victim} is a living entity
     set {_distance} to distance between location of {_projectile} and {-%{_projectile}%::starting}
-    set {_damage} to get_setting("sniper", "scale", {_level})
+    set {_damage} to "scale" of {_level} for "sniper"
     send action bar "&lSNIPER: &f%{_damage}%&f<sprite:gui:hud/heart/full> &7, &lDISTANCE: &f%{_distance}%" to {_shooter}
     damage({_victim}, {_shooter}, {_damage})
     delete {-%{_projectile}%::starting}
