@@ -17,7 +17,7 @@ public class MapCommand {
         Location corner1 = new Location(
                 Bukkit.getWorld("world"),
                 -102,
-                -4,
+                -60,
                 -102
         );
 
