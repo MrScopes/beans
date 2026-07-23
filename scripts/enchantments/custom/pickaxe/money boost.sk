@@ -1,6 +1,6 @@
 on load:
     setting("money_boost", "display", value: "&f<sprite:items:item/emerald> &2Money Boost")
-    setting("money_boost", "max", value: 10)
+    setting("money_boost", "max level", value: 10)
     setting("money_boost", "priority", value: 0)
     setting("money_boost", "type", value: "pickaxe")
     setting("money_boost", "item", value: emerald)

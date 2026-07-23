@@ -278,7 +278,7 @@ on right click:
     else if {_voucher} is 99:
         loop indexes of {-ce::*}:
             {-ce::%loop-value%::ultimate} isn't set
-            set {_max} to {-ce::%loop-value%::max}
+            set {_max} to {-ce::%loop-value%::max level}
             {_max} > 1
 
             if {_max} >= 5:
@@ -305,7 +305,7 @@ on any inventory click:
     if {choosing custom enchantment::%player%} is "level 1":
         set {_level} to 1
     else if {choosing custom enchantment::%player%} is "max":
-        set {_level} to {-ce::%{_enchantment}%::max}
+        set {_level} to {-ce::%{_enchantment}%::max level}
 
     set {_item} to createStoredCustomBook({_enchantment}, {_level})
     give player 1 of {_item}

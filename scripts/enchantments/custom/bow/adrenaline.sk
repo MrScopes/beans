@@ -1,6 +1,6 @@
 on load:
     setting("adrenaline", "display", value: "&f<sprite:items:item/sugar> &aAdrenaline")
-    setting("adrenaline", "max", value: 5)
+    setting("adrenaline", "max level", value: 5)
     setting("adrenaline", "priority", value: 10)
     setting("adrenaline", "type", value: "bow")
     setting("adrenaline", "item", value: sugar (item))

@@ -1,6 +1,6 @@
 on load:
     setting("wither", "display", value: "&f<sprite:items:item/wither_spawn_egg> &7Wither")
-    setting("wither", "max", value: 5)
+    setting("wither", "max level", value: 5)
     setting("wither", "priority", value: 10)
     setting("wither", "type", value: "bow")
     setting("wither", "item", value: wither skeleton skull)

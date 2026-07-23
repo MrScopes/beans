@@ -1,6 +1,6 @@
 on load:
     setting("starve", "display", value: "&f<sprite:gui:hud/food_full> &6Starve")
-    setting("starve", "max", value: 5)
+    setting("starve", "max level", value: 5)
     setting("starve", "priority", value: 10)
     setting("starve", "type", value: "bow")
     setting("starve", "item", value: rotten flesh)

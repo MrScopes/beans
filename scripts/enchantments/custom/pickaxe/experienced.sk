@@ -1,6 +1,6 @@
 on load:
     setting("experienced", "display", value: "&f<sprite:items:item/experience_bottle> &aExperienced")
-    setting("experienced", "max", value: 5)
+    setting("experienced", "max level", value: 5)
     setting("experienced", "priority", value: 100)
     setting("experienced", "type", value: "pickaxe")
     setting("experienced", "item", value: experience bottle)

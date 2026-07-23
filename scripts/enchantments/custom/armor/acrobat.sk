@@ -1,6 +1,6 @@
 on load:
     setting("acrobat", "display", value: "&f<sprite:items:item/feather> &eAcrobat")
-    setting("acrobat", "max", value: 5)
+    setting("acrobat", "max level", value: 5)
     setting("acrobat", "priority", value: 1)
     setting("acrobat", "type", value: "armor")
     setting("acrobat", "item", value: leather boots)

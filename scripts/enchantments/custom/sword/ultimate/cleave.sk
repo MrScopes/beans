@@ -1,7 +1,7 @@
 on load:
     setting("cleave", "ultimate", value: true)
     setting("cleave", "display", value: "&f<sprite:particles:damage> <rainbow><bold>Cleave")
-    setting("cleave", "max", value: 5)
+    setting("cleave", "max level", value: 5)
     setting("cleave", "priority", value: 0)
     setting("cleave", "type", value: "sword")
     setting("cleave", "item", value: netherite spear)

@@ -7,7 +7,7 @@ on load:
         cache_specific_enchantment(loop-value, false)
 
     loop indexes of {-vanilla enchantment::*}:
-        loop "max", "display":
+        loop "max level", "display":
             if {-vanilla enchantment::%loop-value-1%::%loop-value-2%} is not set:
                 broadcast "Vanilla enchantment %loop-value-1% is missing %loop-value-2%!"
 
@@ -37,7 +37,7 @@ function cache_specific_enchantment(enchantment: string, broadcast: boolean = tr
     loop "onbreak", "onattack", "onattacked", "ondeath", "onoffhand", "onapply", "onunapply", "onshoot", "onhit", "onrightclick", "onleftclick", "getDescription":
         set {-ce::%{_enchantment}%::%loop-value%} to function named loop-value from {_script}
 
-    loop "getDescription", "max", "display", "type", "priority", "item":
+    loop "getDescription", "max level", "display", "type", "priority", "item":
         if {-ce::%{_enchantment}%::%loop-value%} is not set:
             broadcast "Enchantment %{_enchantment}% is missing %loop-value%!"
 
@@ -45,7 +45,7 @@ function cache_specific_enchantment(enchantment: string, broadcast: boolean = tr
         apply tooltip display component to {-ce::%{_enchantment}%::item}:
             hidden_components: minecraft:potion_contents, minecraft:ominous_bottle_amplifier
 
-    loop integers between 1 and {-ce::%{_enchantment}%::max}:
+    loop integers between 1 and {-ce::%{_enchantment}%::max level}:
         if {-ce::%{_enchantment}%::getDescription} is set:
             set {-ce::%{_enchantment}%::description::%loop-value%} to result of {-ce::%{_enchantment}%::getDescription} with arguments loop-value
 

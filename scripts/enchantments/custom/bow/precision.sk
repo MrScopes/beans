@@ -1,6 +1,6 @@
 on load:
     setting("precision", "display", value: "&f<sprite:blocks:block/target_side> &ePrecision")
-    setting("precision", "max", value: 5)
+    setting("precision", "max level", value: 5)
     setting("precision", "priority", value: 0)
     setting("precision", "type", value: "bow")
     setting("precision", "item", value: target item)

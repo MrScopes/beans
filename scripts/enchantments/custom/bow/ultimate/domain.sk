@@ -1,7 +1,7 @@
 on load:
     setting("domain", "ultimate", value: true)
     setting("domain", "display", value: "&f<sprite:items:item/barrier> <rainbow><bold>Domain")
-    setting("domain", "max", value: 5)
+    setting("domain", "max level", value: 5)
     setting("domain", "priority", value: 10)
     setting("domain", "type", value: "bow")
     setting("domain", "item", value: barrier)

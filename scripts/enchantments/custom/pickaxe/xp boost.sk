@@ -1,6 +1,6 @@
 on load:
     setting("xp_boost", "display", value: "&f<sprite:blocks:block/enchanting_table_top> &bXP Boost")
-    setting("xp_boost", "max", value: 10)
+    setting("xp_boost", "max level", value: 10)
     setting("xp_boost", "priority", value: 9999)
     setting("xp_boost", "type", value: "pickaxe")
     setting("xp_boost", "item", value: enchanting table)

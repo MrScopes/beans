@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::knockback::display} to "Knockback"
     
-    set {-vanilla enchantment::knockback::max} to 3
+    set {-vanilla enchantment::knockback::max level} to 3
 
     set {-vanilla enchantment::knockback::xp cost::1} to 4000
     set {-vanilla enchantment::knockback::xp cost::2} to 75000

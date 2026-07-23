@@ -1,6 +1,6 @@
 on load:
     setting("crit", "display", value: "&f<sprite:items:item/diamond_sword> &cCrit")
-    setting("crit", "max", value: 5)
+    setting("crit", "max level", value: 5)
     setting("crit", "priority", value: 10)
     setting("crit", "type", value: "sword")
     setting("crit", "item", value: diamond sword)

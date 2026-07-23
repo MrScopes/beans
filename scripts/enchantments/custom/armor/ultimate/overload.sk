@@ -1,7 +1,7 @@
 on load:
     setting("overload", "ultimate", value: true)
     setting("overload", "display", value: "&f<sprite:gui:mob_effect/instant_health> <rainbow><bold>Overload")
-    setting("overload", "max", value: 5)
+    setting("overload", "max level", value: 5)
     setting("overload", "priority", value: 1)
     setting("overload", "type", value: "armor")
     setting("overload", "item", value: health potion)

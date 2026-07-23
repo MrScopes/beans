@@ -1,6 +1,6 @@
 on load:
     setting("arrow_rain", "display", value: "&f<sprite:items:item/spectral_arrow> &6Arrow Rain")
-    setting("arrow_rain", "max", value: 5)
+    setting("arrow_rain", "max level", value: 5)
     setting("arrow_rain", "priority", value: 0)
     setting("arrow_rain", "type", value: "bow")
     setting("arrow_rain", "item", value: spectral arrow)

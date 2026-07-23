@@ -1,6 +1,6 @@
 on load:
     setting("reroll", "display", value: "&f<sprite:items:item/axolotl_spawn_egg> &1Reroll")
-    setting("reroll", "max", value: 5)
+    setting("reroll", "max level", value: 5)
     setting("reroll", "priority", value: 0)
     setting("reroll", "type", value: "pickaxe")
     setting("reroll", "item", value: axolotl spawn egg)

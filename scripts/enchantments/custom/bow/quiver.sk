@@ -1,6 +1,6 @@
 on load:
     setting("quiver", "display", value: "&f<sprite:items:item/arrow> &6Quiver")
-    setting("quiver", "max", value: 5)
+    setting("quiver", "max level", value: 5)
     setting("quiver", "priority", value: 0)
     setting("quiver", "type", value: "bow")
     setting("quiver", "item", value: arrow item)

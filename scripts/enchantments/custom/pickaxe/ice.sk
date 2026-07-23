@@ -1,6 +1,6 @@
 on load:
     setting("ice", "display", value: "&f<sprite:""minecraft:blocks"":block/ice> &bIce")
-    setting("ice", "max", value: 5)
+    setting("ice", "max level", value: 5)
     setting("ice", "priority", value: 10)
     setting("ice", "type", value: "pickaxe")
     setting("ice", "item", value: packed ice)

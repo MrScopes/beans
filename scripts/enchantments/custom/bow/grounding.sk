@@ -1,6 +1,6 @@
 on load:
     setting("grounding", "display", value: "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding")
-    setting("grounding", "max", value: 5)
+    setting("grounding", "max level", value: 5)
     setting("grounding", "priority", value: 0)
     setting("grounding", "type", value: "bow")
     setting("grounding", "item", value: glow squid spawn egg)

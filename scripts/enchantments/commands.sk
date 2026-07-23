@@ -1,6 +1,6 @@
 command /ce <text> <integer> [<text>] [<text>]:
     trigger:
-        if {-ce::%arg 1%::max} isn't set:
+        if {-ce::%arg 1%::max level} isn't set:
             send "Unknown enchantment." to player
         else:
             if arg 3 is "item":
@@ -49,8 +49,8 @@ command /upgrade:
 
 on tab complete of "/ce":
     set tab completions for position 1 to indexes of {-ce::*}
-    if {-ce::%tab arg 1%::max} is set:
-        set tab completions for position 2 to all integers between 0 and {-ce::%tab arg 1%::max}
+    if {-ce::%tab arg 1%::max level} is set:
+        set tab completions for position 2 to all integers between 0 and {-ce::%tab arg 1%::max level}
     set tab completions for position 3 to "item"
 
 on right click:
@@ -87,7 +87,7 @@ function refreshEnchantmentGui():
             enchant {_item} with unbreaking 10
             set name of {_item} to formatted "&f%{-ce::%{_enchantment}%::display}%"
             set data tag "custom_enchantment" of {_item} to {_enchantment}
-            for {_level} in integers between 1 and {-ce::%{_enchantment}%::max}:
+            for {_level} in integers between 1 and {-ce::%{_enchantment}%::max level}:
                 add formatted getDescription({_enchantment}, {_level}) + " &b(Upgrade Cost: &a$%kNumber({-ce::%{_enchantment}%::money cost::%{_level}%})%&b, &d%kNumber({-ce::%{_enchantment}%::xp cost::%{_level}%})% XP&b)" to lore of {_item}
             add {_item} to {-enchantments gui::%{_enchantment type}%}
 

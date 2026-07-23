@@ -101,7 +101,7 @@ function get_setting(enchantment: text, key: text, level: object = {_}) :: objec
         set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
 
         if {_value} isn't set:
-            set {_max} to {-ce::%{_enchantment}%::max}
+            set {_max} to {-ce::%{_enchantment}%::max level}
 
             if {_max} is set:
                 set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}

@@ -1,6 +1,6 @@
 on load:
     setting("armor", "display", value: "&f<sprite:gui:hud/armor_full> &dArmor")
-    setting("armor", "max", value: 5)
+    setting("armor", "max level", value: 5)
     setting("armor", "priority", value: 1)
     setting("armor", "type", value: "armor")
     setting("armor", "item", value: netherite chestplate)

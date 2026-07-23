@@ -1,6 +1,6 @@
 on load:
     setting("feeding", "display", value: "&f<sprite:items:item/cooked_beef> &fFeeding")
-    setting("feeding", "max", value: 5)
+    setting("feeding", "max level", value: 5)
     setting("feeding", "priority", value: 0)
     setting("feeding", "type", value: "pickaxe")
     setting("feeding", "item", value: cooked beef)

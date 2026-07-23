@@ -1,6 +1,6 @@
 on load:
     setting("lightning", "display", value: "&f<sprite:items:item/trident> &9Lightning")
-    setting("lightning", "max", value: 5)
+    setting("lightning", "max level", value: 5)
     setting("lightning", "priority", value: 10)
     setting("lightning", "type", value: "pickaxe")
     setting("lightning", "item", value: 1 of trident)

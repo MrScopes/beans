@@ -1,6 +1,6 @@
 on load:
     setting("leech", "display", value: "&f<sprite:gui:hud/heart/full> &2Leech")
-    setting("leech", "max", value: 5)
+    setting("leech", "max level", value: 5)
     setting("leech", "priority", value: 10)
     setting("leech", "type", value: "bow")
     setting("leech", "item", value: regeneration potion item)

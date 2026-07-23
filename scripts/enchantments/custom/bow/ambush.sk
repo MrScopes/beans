@@ -1,6 +1,6 @@
 on load:
     setting("ambush", "display", value: "&f<sprite:items:item/black_dye> &eAmbush")
-    setting("ambush", "max", value: 5)
+    setting("ambush", "max level", value: 5)
     setting("ambush", "priority", value: 0)
     setting("ambush", "type", value: "bow")
     setting("ambush", "item", value: black dye)

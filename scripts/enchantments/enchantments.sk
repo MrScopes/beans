@@ -5,10 +5,10 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
 
     if all:
         {_special} isn't set
-        {_level} > {-ce::%{_enchantment}%::max}
+        {_level} > {-ce::%{_enchantment}%::max level}
     then:
         send "&bOVER MAX LEVEL" to ops and console
-        send "%{_player}%, %{_enchantment}% %{_level}%. max: %{-ce::%{_enchantment}%::max}%" to ops and console
+        send "%{_player}%, %{_enchantment}% %{_level}%. max: %{-ce::%{_enchantment}%::max level}%" to ops and console
 
     if {_level} is 0:
         if {-ce::%{_enchantment}%::onunapply} is set:
@@ -52,7 +52,7 @@ function getDescription(enchantment: string, level: integer) :: text:
     then:
         add text component of "&f<sprite:items:item/bow_pulling_2><#E8C1BA>%{_threshold}%%% " to {_line::*}
 
-    if {_level} > {-ce::%{_enchantment}%::max}:
+    if {_level} > {-ce::%{_enchantment}%::max level}:
         set {_description} to result of {-ce::%{_enchantment}%::getDescription} with arguments ({_level})
     else:
         set {_description} to {-ce::%{_enchantment}%::description::%{_level}%}
@@ -95,7 +95,7 @@ function enchantmentDisplay(enchantment: text, level: integer, special: string =
             set {_name} to "&a%{_name}%"
     else:
         set {_name} to {-ce::%{_enchantment}%::display}
-        if {-ce::%{_enchantment}%::max} > 1:
+        if {-ce::%{_enchantment}%::max level} > 1:
             set {_name} to "&7%{_name}% %romanNumeral({_level})%"
         else:
             set {_name} to "&7%{_name}%"
@@ -119,7 +119,7 @@ function updateLore(tool: item, showDescriptions: boolean = true) :: item:
         
     loop {_enchantments::*}:
         if {-ce::%loop-index%::display} isn't set:
-            if {-ce::%loop-index%::max} isn't set:
+            if {-ce::%loop-index%::max level} isn't set:
                 if {-ce::%loop-index%::type} isn't set:
                     # shouldn't exist. let's remove it and retry
                     send "enchantment %loop-index% for %{_tool}% is missing data, removing..." to console

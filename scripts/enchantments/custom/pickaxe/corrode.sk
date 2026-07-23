@@ -1,6 +1,6 @@
 on load:
     setting("corrode", "display", value: "&f<sprite:items:item/fermented_spider_eye> &8Corrode")
-    setting("corrode", "max", value: 5)
+    setting("corrode", "max level", value: 5)
     setting("corrode", "priority", value: 10)
     setting("corrode", "type", value: "pickaxe")
     setting("corrode", "item", value: fermented spider eye)

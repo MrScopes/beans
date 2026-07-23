@@ -1,6 +1,6 @@
 on load:
     setting("flamethrower", "display", value: "&f<sprite:items:item/blaze_powder> &6Flamethrower")
-    setting("flamethrower", "max", value: 5)
+    setting("flamethrower", "max level", value: 5)
     setting("flamethrower", "priority", value: 0)
     setting("flamethrower", "type", value: "sword")
     setting("flamethrower", "item", value: blaze powder)

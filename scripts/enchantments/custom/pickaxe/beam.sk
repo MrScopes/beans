@@ -1,6 +1,6 @@
 on load:
     setting("beam", "display", value: "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam")
-    setting("beam", "max", value: 5)
+    setting("beam", "max level", value: 5)
     setting("beam", "priority", value: 10)
     setting("beam", "type", value: "pickaxe")
     setting("beam", "item", value: blaze rod)

@@ -46,9 +46,9 @@ command /max:
         loop indexes of {-ce::*}:
             {-ce::%loop-value%::disabled} isn't true
             if {-ce::%loop-value%::type} is {_type}:
-                set player's tool to enchantItem(player's tool, loop-value, {-ce::%loop-value%::max}, player)
+                set player's tool to enchantItem(player's tool, loop-value, {-ce::%loop-value%::max level}, player)
         loop {_vanilla enchantments::*}:
-            set {_enchantment} to ("%loop-value% %{-vanilla enchantment::%loop-value%::max}%" parsed as enchantment type)
+            set {_enchantment} to ("%loop-value% %{-vanilla enchantment::%loop-value%::max level}%" parsed as enchantment type)
             enchant player's tool with {_enchantment}
 
 command /reset:

@@ -1,6 +1,6 @@
 on load:
     setting("concuss", "display", value: "&f<sprite:blocks:block/cobweb> &fConcuss")
-    setting("concuss", "max", value: 5)
+    setting("concuss", "max level", value: 5)
     setting("concuss", "priority", value: 10)
     setting("concuss", "type", value: "bow")
     setting("concuss", "item", value: cobweb)

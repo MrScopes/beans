@@ -1,6 +1,6 @@
 on load:
     setting("grinder", "display", value: "&f<sprite:blocks:block/grindstone_side> &cGrinder")
-    setting("grinder", "max", value: 5)
+    setting("grinder", "max level", value: 5)
     setting("grinder", "priority", value: 10)
     setting("grinder", "type", value: "pickaxe")
     setting("grinder", "item", value: grindstone)

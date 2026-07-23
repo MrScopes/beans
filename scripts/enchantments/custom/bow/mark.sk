@@ -1,6 +1,6 @@
 on load:
     setting("mark", "display", value: "&f<sprite:items:item/bone> &dMark")
-    setting("mark", "max", value: 5)
+    setting("mark", "max level", value: 5)
     setting("mark", "priority", value: -1)
     setting("mark", "type", value: "bow")
     setting("mark", "item", value: bone)

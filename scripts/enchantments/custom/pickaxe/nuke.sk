@@ -1,6 +1,6 @@
 on load:
     setting("nuke", "display", value: "&f<sprite:items:item/end_crystal> &4Nuke")
-    setting("nuke", "max", value: 5)
+    setting("nuke", "max level", value: 5)
 
     setting("nuke", "chance", l1: 0.05, l2: 0.075, l3: 0.1, l4: 0.125, l5: 0.175)
 

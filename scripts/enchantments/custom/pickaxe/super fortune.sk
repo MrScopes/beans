@@ -1,6 +1,6 @@
 on load:
     setting("super_fortune", "display", value: "&f<sprite:items:item/torchflower_seeds> &3Super Fortune")
-    setting("super_fortune", "max", value: 5)
+    setting("super_fortune", "max level", value: 5)
     setting("super_fortune", "priority", value: 1000)
     setting("super_fortune", "type", value: "pickaxe")
     setting("super_fortune", "item", value: torchflower seeds)

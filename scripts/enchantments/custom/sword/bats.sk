@@ -1,6 +1,6 @@
 on load:
     setting("bats", "display", value: "&f<sprite:items:item/bat_spawn_egg> &5Bats")
-    setting("bats", "max", value: 5)
+    setting("bats", "max level", value: 5)
     setting("bats", "priority", value: 0)
     setting("bats", "type", value: "sword")
     setting("bats", "item", value: bat spawn egg)

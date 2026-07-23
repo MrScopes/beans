@@ -3,7 +3,7 @@ using reflection
 on load:
     setting("miracle", "ultimate", value: true)
     setting("miracle", "display", value: "&f<sprite:gui:icon/link> <rainbow><bold>Miracle")
-    setting("miracle", "max", value: 5)
+    setting("miracle", "max level", value: 5)
     setting("miracle", "priority", value: 0)
     setting("miracle", "type", value: "pickaxe")
     setting("miracle", "item", value: end crystal (item))

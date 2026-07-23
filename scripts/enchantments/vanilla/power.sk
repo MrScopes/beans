@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::power::display} to "Power"
     
-    set {-vanilla enchantment::power::max} to 5
+    set {-vanilla enchantment::power::max level} to 5
 
     set {-vanilla enchantment::power::xp cost::1} to 4000
     set {-vanilla enchantment::power::xp cost::2} to 60_000

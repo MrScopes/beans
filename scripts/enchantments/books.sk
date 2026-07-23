@@ -99,10 +99,10 @@ function tryApplyStoredCustomBook(player: player, book: item, target: item):
         stop
 
     if all:
-        {_level} > {-ce::%{_stored enchantment}%::max}
+        {_level} > {-ce::%{_stored enchantment}%::max level}
         {_special} isn't set
     then:
-        send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max}%." to {_player}
+        send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max level}%." to {_player}
         setApplyResult({_player}, "none", {_target})
         stop
 
@@ -114,10 +114,10 @@ function tryApplyStoredCustomBook(player: player, book: item, target: item):
             add 1 to {_new level}
 
         if all:
-            {_new level} > {-ce::%{_stored enchantment}%::max}
+            {_new level} > {-ce::%{_stored enchantment}%::max level}
             {_special} isn't set
         then:
-            send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max}%." to {_player}
+            send "&cThe max level for that enchantment is %{-ce::%{_stored enchantment}%::max level}%." to {_player}
             setApplyResult({_player}, "none", {_target})
             stop
         else if {_new level} > {_current}:
@@ -211,23 +211,23 @@ function enchantment_type_sprite(type: string) :: text:
     return ""
 
 function moneySaleValue(enchantment: string, level: integer) :: number:
-    if {-ce::%{_enchantment}%::max} is 1:
+    if {-ce::%{_enchantment}%::max level} is 1:
         return 100_000
     if {_level} is 1:
         return round({-ce::%{_enchantment}%::money cost::%{_level} + 1%} / 4)
-    if {_level} > {-ce::%{_enchantment}%::max}:
-        set {_max value} to round({-ce::%{_enchantment}%::money cost::%{-ce::%{_enchantment}%::max}%} / 2)
-        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max})
+    if {_level} > {-ce::%{_enchantment}%::max level}:
+        set {_max value} to round({-ce::%{_enchantment}%::money cost::%{-ce::%{_enchantment}%::max level}%} / 2)
+        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max level})
     return round({-ce::%{_enchantment}%::money cost::%{_level}%} / 2)
 
 function xpSaleValue(enchantment: string, level: integer) :: number:
-    if {-ce::%{_enchantment}%::max} is 1:
+    if {-ce::%{_enchantment}%::max level} is 1:
         return 100_000
     if {_level} is 1:
         return round({-ce::%{_enchantment}%::xp cost::%{_level} + 1%} / 4)
-    if {_level} > {-ce::%{_enchantment}%::max}:
-        set {_max value} to round({-ce::%{_enchantment}%::xp cost::%{-ce::%{_enchantment}%::max}%} / 2)
-        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max})
+    if {_level} > {-ce::%{_enchantment}%::max level}:
+        set {_max value} to round({-ce::%{_enchantment}%::xp cost::%{-ce::%{_enchantment}%::max level}%} / 2)
+        return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max level})
     return round({-ce::%{_enchantment}%::xp cost::%{_level}%} / 2)
 
 

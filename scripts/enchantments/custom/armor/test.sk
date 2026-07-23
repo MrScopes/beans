@@ -1,6 +1,6 @@
 on load:
     setting("test", "display", value: "&fTest")
-    setting("test", "max", value: 1)
+    setting("test", "max level", value: 1)
     setting("test", "priority", value: 0)
     setting("test", "type", value: "armor")
     setting("test", "item", value: barrier)

@@ -1,6 +1,6 @@
 on load:
     setting("substitution", "display", value: "&f<sprite:blocks:block/oak_log> Substitution")
-    setting("substitution", "max", value: 5)
+    setting("substitution", "max level", value: 5)
     setting("substitution", "priority", value: 0)
     setting("substitution", "type", value: "sword")
     setting("substitution", "item", value: oak log)

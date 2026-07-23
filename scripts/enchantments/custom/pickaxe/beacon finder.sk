@@ -1,6 +1,6 @@
 on load:
     setting("beacon_finder", "display", value: "&f<sprite:blocks:block/beacon> &b&lBEACON &bFinder")
-    setting("beacon_finder", "max", value: 5)
+    setting("beacon_finder", "max level", value: 5)
     setting("beacon_finder", "priority", value: 10)
     setting("beacon_finder", "type", value: "pickaxe")
     setting("beacon_finder", "item", value: beacon)

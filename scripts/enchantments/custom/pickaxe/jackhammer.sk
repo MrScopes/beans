@@ -2,7 +2,7 @@ using reflection
 
 on load:
     setting("jackhammer", "display", value: "&f<sprite:items:item/netherite_pickaxe> &eJackhammer")
-    setting("jackhammer", "max", value: 5)
+    setting("jackhammer", "max level", value: 5)
     setting("jackhammer", "priority", value: 10)
     setting("jackhammer", "type", value: "pickaxe")
     setting("jackhammer", "item", value: netherite pickaxe)

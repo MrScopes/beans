@@ -1,6 +1,6 @@
 on load:
     setting("sniper", "display", value: "&f<sprite:items:item/spyglass> &9Sniper")
-    setting("sniper", "max", value: 5)
+    setting("sniper", "max level", value: 5)
     setting("sniper", "priority", value: 0)
     setting("sniper", "type", value: "bow")
     setting("sniper", "item", value: spyglass)

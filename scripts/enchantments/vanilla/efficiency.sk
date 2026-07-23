@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::efficiency::display} to "Efficiency"
     
-    set {-vanilla enchantment::efficiency::max} to 10
+    set {-vanilla enchantment::efficiency::max level} to 10
 
     set {-vanilla enchantment::efficiency::xp cost::1} to 1000
     set {-vanilla enchantment::efficiency::xp cost::2} to 4000

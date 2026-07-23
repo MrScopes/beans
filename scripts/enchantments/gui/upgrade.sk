@@ -122,7 +122,7 @@ function createCustomEnchantGuiItem(player: player, tool: item, enchantment: str
     set {_item} to {-ce::%{_enchantment}%::item} with all item flags
     set data tag "custom_enchantment" of {_item} to "%{_enchantment}%"
 
-    if {_level} >= {-ce::%{_enchantment}%::max}:
+    if {_level} >= {-ce::%{_enchantment}%::max level}:
         if {_level} > 0:
             set {_label} to "&c%{_display}% %romanNumeral({_level})%"
         else:
@@ -136,7 +136,7 @@ function createCustomEnchantGuiItem(player: player, tool: item, enchantment: str
         set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
         set {_lore1} to "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)"
         set {_lore2} to "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)"
-        set {_lore3} to "&fMax: %{-ce::%{_enchantment}%::max}%"
+        set {_lore3} to "&fMax: %{-ce::%{_enchantment}%::max level}%"
         if {_level} is 0:
             set {_item} to {_item} named formatted "&a%{_display}%%{_specialDisplay}%" with lore {_lore1}, {_lore2}, {_lore3}, "", formatted getDescription({_enchantment}, 1), ""
         else:
@@ -226,7 +226,7 @@ function handleCustomEnchantClick(player: player, guiItem: item, click: click ty
     set {_level} to customEnchantLevel({_player}'s tool, {_enchantment}) ? 0
 
     if {_click} is left mouse button:
-        {_level} < {-ce::%{_enchantment}%::max}
+        {_level} < {-ce::%{_enchantment}%::max level}
         set {_xp cost} to {-ce::%{_enchantment}%::xp cost::%{_level} + 1%}
         set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
         if {_player}'s experience < {_xp cost}:

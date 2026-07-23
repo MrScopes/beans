@@ -1,6 +1,6 @@
 on load:
     setting("meteor", "display", value: "&f<sprite:items:item/fire_charge> &cMeteor")
-    setting("meteor", "max", value: 5)
+    setting("meteor", "max level", value: 5)
     setting("meteor", "priority", value: 100)
     setting("meteor", "type", value: "bow")
     setting("meteor", "item", value: fire charge)

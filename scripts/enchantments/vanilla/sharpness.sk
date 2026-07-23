@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::sharpness::display} to "Sharpness"
     
-    set {-vanilla enchantment::sharpness::max} to 5
+    set {-vanilla enchantment::sharpness::max level} to 5
 
     set {-vanilla enchantment::sharpness::xp cost::1} to 2000
     set {-vanilla enchantment::sharpness::xp cost::2} to 24000

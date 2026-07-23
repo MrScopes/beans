@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::fortune::display} to "Fortune"
     
-    set {-vanilla enchantment::fortune::max} to 10
+    set {-vanilla enchantment::fortune::max level} to 10
 
     set {-vanilla enchantment::fortune::xp cost::1} to 1000
     set {-vanilla enchantment::fortune::xp cost::2} to 8000

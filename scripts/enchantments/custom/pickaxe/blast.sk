@@ -1,21 +1,41 @@
 on load:
-    setting("blast", "display", value: "&f<sprite:blocks:block/tnt_side> &cBlast")
-    setting("blast", "max", value: 5)
-    setting("blast", "priority", value: 10)
-    setting("blast", "type", value: "pickaxe")
-    setting("blast", "item", value: tnt)
+    create pickaxe enchantment named "blast":
+        set enchantment display to "&f<sprite:blocks:block/tnt_side> &cBlast"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to tnt
 
-    setting("blast", "chance", l1: 12, l2: 14, l3: 16, l4: 18, l5: 22)
-    setting("blast", "radius", l1: 1.75, l2: 1.85, l3: 2, l4: 2.15, l5: 2.4)
+        level values for "chance":
+            set level 1 to 12
+            set level 2 to 14
+            set level 3 to 16
+            set level 4 to 18
+            set level 5 to 22
 
-    setting("blast", "xp cost", l2: 35_000, l3: 130_000, l4: 400_000, l5: 800_000)
-    setting("blast", "money cost", l2: 50_000, l3: 160_000, l4: 500_000, l5: 900_000)
+        level values for "radius":
+            set level 1 to 1.75
+            set level 2 to 1.85
+            set level 3 to 2
+            set level 4 to 2.15
+            set level 5 to 2.4
+
+        level values for "money cost":
+            set level 2 to 160_000
+            set level 3 to 500_000
+            set level 4 to 900_000
+            set level 5 to 1_200_000
+
+        level values for "xp cost":
+            set level 2 to 35_000
+            set level 3 to 130_000
+            set level 4 to 400_000
+            set level 5 to 800_000
 
 local function getDescription(level: integer) :: string:
-    set {_radius} to get_setting("blast", "radius", {_level})
+    set {_radius} to "radius" of {_level} for "blast"
     return "break blocks within %{_radius}%m"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
-    set {_radius} to get_setting("blast", "radius", {_level})
+    set {_radius} to "radius" of {_level} for "blast"
     fastRadiusClear({_player}, location of {_block}, {_radius})

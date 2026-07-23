@@ -1,6 +1,6 @@
 on load:
     setting("haste", "display", value: "&f<sprite:items:item/sugar> &6Haste")
-    setting("haste", "max", value: 4)
+    setting("haste", "max level", value: 4)
     setting("haste", "priority", value: 0)
     setting("haste", "type", value: "pickaxe")
     setting("haste", "item", value: sugar)

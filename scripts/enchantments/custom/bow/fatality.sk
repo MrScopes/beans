@@ -1,6 +1,6 @@
 on load:
     setting("fatality", "display", value: "&f<sprite:items:item/netherite_axe> &4Fatality")
-    setting("fatality", "max", value: 5)
+    setting("fatality", "max level", value: 5)
     setting("fatality", "priority", value: 0)
     setting("fatality", "type", value: "bow")
     setting("fatality", "item", value: netherite axe)

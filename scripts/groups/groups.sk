@@ -145,3 +145,4 @@ on load:
 
 on join:
     sync player
+    

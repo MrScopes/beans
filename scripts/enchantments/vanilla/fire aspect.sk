@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::fire aspect::display} to "Fire Aspect"
     
-    set {-vanilla enchantment::fire aspect::max} to 5
+    set {-vanilla enchantment::fire aspect::max level} to 5
 
     set {-vanilla enchantment::fire aspect::xp cost::1} to 8000
     set {-vanilla enchantment::fire aspect::xp cost::2} to 24000

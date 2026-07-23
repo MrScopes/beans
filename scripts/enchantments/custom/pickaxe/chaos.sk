@@ -2,7 +2,7 @@ using reflection
 
 on load:
     setting("chaos", "display", value: "&f<sprite:items:item/echo_shard> &5Chaos")
-    setting("chaos", "max", value: 5)
+    setting("chaos", "max level", value: 5)
     setting("chaos", "priority", value: 0)
     setting("chaos", "type", value: "pickaxe")
     setting("chaos", "item", value: echo shard)

@@ -1,7 +1,7 @@
 on load:
     set {-vanilla enchantment::flame::display} to "Flame"
     
-    set {-vanilla enchantment::flame::max} to 5
+    set {-vanilla enchantment::flame::max level} to 5
 
     set {-vanilla enchantment::flame::xp cost::1} to 12000
     set {-vanilla enchantment::flame::xp cost::2} to 24000

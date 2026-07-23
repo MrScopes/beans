@@ -1,6 +1,6 @@
 on load:
     setting("jackpot", "display", value: "&f<sprite:items:item/gold_ingot> &6Jackpot")
-    setting("jackpot", "max", value: 3)
+    setting("jackpot", "max level", value: 3)
     setting("jackpot", "priority", value: 0)
     setting("jackpot", "type", value: "pickaxe")
     setting("jackpot", "item", value: gold ingot)

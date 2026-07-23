@@ -95,7 +95,7 @@ on inventory click:
                 add loop-value to {_applicableEnchantments::*}
 
         set {_enchantment} to random element out of {_applicableEnchantments::*}
-        set {_max} to {-ce::%{_enchantment}%::max}
+        set {_max} to {-ce::%{_enchantment}%::max level}
 
         remove 1 from item amount of player's tool
 
@@ -137,7 +137,7 @@ on inventory click:
             set {_insanelyChance} to 0
 
             loop {_applicableEnchantments::*}:
-                set {_loopMax} to {-ce::%loop-value%::max}
+                set {_loopMax} to {-ce::%loop-value%::max level}
 
                 if {_loopMax} is {_level}:
                     add (1 / size of {_applicableEnchantments::*}) * {_chance} to {_insanelyChance}

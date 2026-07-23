@@ -1,6 +1,6 @@
 on load:
     setting("dodge", "display", value: "&f<sprite:items:item/rabbit_foot> Dodge")
-    setting("dodge", "max", value: 5)
+    setting("dodge", "max level", value: 5)
     setting("dodge", "priority", value: 0)
     setting("dodge", "type", value: "armor")
     setting("dodge", "item", value: rabbit foot)

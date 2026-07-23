@@ -1,6 +1,6 @@
 on load:
     setting("last_stand", "display", value: "&f<sprite:items:item/iron_chestplate> &eLast Stand")
-    setting("last_stand", "max", value: 5)
+    setting("last_stand", "max level", value: 5)
     setting("last_stand", "priority", value: 0)
     setting("last_stand", "type", value: "armor")
     setting("last_stand", "item", value: iron chestplate)

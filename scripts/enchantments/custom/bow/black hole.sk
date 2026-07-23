@@ -1,6 +1,6 @@
 on load:
     setting("black_hole", "display", value: "&f<sprite:blocks:block/obsidian> &5Black Hole")
-    setting("black_hole", "max", value: 5)
+    setting("black_hole", "max level", value: 5)
     setting("black_hole", "priority", value: 0)
     setting("black_hole", "type", value: "bow")
     setting("black_hole", "item", value: obsidian)

@@ -1,6 +1,6 @@
 on load:
     setting("snatch", "display", value: "&f<sprite:items:item/ominous_bottle> &5Snatch")
-    setting("snatch", "max", value: 5)
+    setting("snatch", "max level", value: 5)
     setting("snatch", "priority", value: 0)
     setting("snatch", "type", value: "sword")
     setting("snatch", "item", value: ominous bottle)

@@ -1,6 +1,6 @@
 on load:
     setting("lucky", "display", value: "&f<sprite:items:item/trial_key> &fLucky")
-    setting("lucky", "max", value: 5)
+    setting("lucky", "max level", value: 5)
     setting("lucky", "priority", value: 1000)
     setting("lucky", "type", value: "pickaxe")
     setting("lucky", "item", value: trial key)

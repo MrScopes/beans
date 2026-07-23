@@ -1,6 +1,6 @@
 on load:
     setting("frostbite", "display", value: "&f<sprite:blocks:block/powder_snow> &fFrostbite")
-    setting("frostbite", "max", value: 5)
+    setting("frostbite", "max level", value: 5)
     setting("frostbite", "priority", value: 10)
     setting("frostbite", "type", value: "bow")
     setting("frostbite", "item", value: snow block (item))

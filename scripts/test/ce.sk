@@ -1,0 +1,86 @@
+condition create (pickaxe:pickaxe|sword:sword|armor:armor) enchantment named %string%:
+    parse:
+        set {_type} to first element out of parse tags
+        continue
+    check:
+        set {-current ce::%event%::name} to expr-1
+        set {-current ce::%event%::type} to {_type}
+        set {-ce::%expr-1%::type} to {_type}
+        return true
+
+condition level values for %string%:
+    check:
+        set {-current ce::%event%::level value key} to expr-1
+        return true
+
+expression enchantment (display:display|max level:max level|priority:priority|item:item) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_current enchantment} to expr-1 ? {-current ce::%event%::name}
+        return {-ce::%{_current enchantment}%::%{_key}%}
+    set:
+        set {_current enchantment} to expr-1 ? {-current ce::%event%::name}
+        set {-ce::%{_current enchantment}%::%{_key}%} to change value
+
+expression level %integer% [%-string% of %-string%]:
+    get:
+        set {_current enchantment} to {-current ce::%event%::name}
+        set {_current level value key} to {-current ce::%event%::level value key}
+        return {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%}
+    set:
+        set {_current enchantment} to {-current ce::%event%::name}
+        set {_current level value key} to {-current ce::%event%::level value key}
+        set {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%} to change value
+
+import:
+    ch.njol.skript.lang.parser.ParserInstance
+
+expression %string% of %integer% for %string%:
+    get:
+        set {_key} to expr-1
+        set {_enchantment} to expr-3
+        set {_level} to expr-2
+
+        set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
+        if {_value} isn't set:
+            set {_max} to enchantment max level of {_enchantment}
+            if {_max} is set:
+                set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}
+                set {_previousValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max} - 1%}
+
+                set {_value} to {_maxValue}
+
+                if {_level} > {_max}:
+                    if {_maxValue} and {_previousValue} are set:
+                        if {_maxValue} > {_previousValue}:
+                            set {_difference} to {_maxValue} - {_previousValue}
+                            set {_value} to {_maxValue} + ({_level} - {_max}) * {_difference}
+                        else:
+                            set {_ratio} to {_previousValue} / {_maxValue}
+                            set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
+        return {_value}
+
+# test
+
+on load:
+    create pickaxe enchantment named "testench":
+        set enchantment display to "Test Enchantment"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to tnt
+
+        level values for "money cost":
+            set level 1 to 10_000
+            set level 2 to 20_000
+            set level 3 to 30_000
+            set level 4 to 40_000
+            set level 5 to 50_000
+
+        level values for "xp cost":
+            set level 1 to 10_000
+            set level 2 to 20_000
+            set level 3 to 30_000
+            set level 4 to 40_000
+            set level 5 to 50_000

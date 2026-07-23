@@ -1,6 +1,6 @@
 on load:
     setting("bullseye", "display", value: "&f<head:entity/player/wide/steve> &eBullseye")
-    setting("bullseye", "max", value: 5)
+    setting("bullseye", "max level", value: 5)
     setting("bullseye", "priority", value: 10)
     setting("bullseye", "type", value: "bow")
     setting("bullseye", "item", value: player head)

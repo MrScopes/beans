@@ -1,6 +1,6 @@
 on load:
     setting("creeper", "display", value: "&f<head:creeper> &2Creeper")
-    setting("creeper", "max", value: 5)
+    setting("creeper", "max level", value: 5)
     setting("creeper", "priority", value: 0)
     setting("creeper", "type", value: "bow")
     setting("creeper", "item", value: creeper spawn egg)

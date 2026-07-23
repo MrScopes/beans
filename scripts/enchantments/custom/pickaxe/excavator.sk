@@ -1,6 +1,6 @@
 on load:
     setting("excavator", "display", value: "&f<sprite:items:item/netherite_shovel> &9Excavator")
-    setting("excavator", "max", value: 5)
+    setting("excavator", "max level", value: 5)
     setting("excavator", "priority", value: 10)
     setting("excavator", "type", value: "pickaxe")
     setting("excavator", "item", value: netherite shovel)
