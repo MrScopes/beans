@@ -4,14 +4,7 @@ on load:
     add shopItem(16 cooked beef, "Steak", 250) to {-shop}
     add shopItem(16 golden carrot, "Golden Carrot", 40000) to {-shop}
     add shopItem(16 arrow, "Arrow", 500) to {-shop}
-    add shopItem(starterElytra(), "Elytra", 0) to {-shop}
-    add shopItem(diamond pickaxe, "Diamond Pickaxe", 0) to {-shop}
-    add shopItem(diamond sword, "Diamond Sword", 0) to {-shop}
-    add shopItem(starterHelmet(), "Leather Helmet", 0) to {-shop}
-    add shopItem(xp bottle, "XP Bottle", 1000) to {-shop}
-    add shopItem(1 firework rocket, "Fireworks", 0) to {-shop}
 
-    # colored concretes now
     add shopItem(4 white concrete, "White Concrete", 100) to {-shop}
     add shopItem(4 orange concrete, "Orange Concrete", 100) to {-shop}
     add shopItem(4 magenta concrete, "Magenta Concrete", 100) to {-shop}
@@ -19,7 +12,6 @@ on load:
     add shopItem(4 yellow concrete, "Yellow Concrete", 100) to {-shop}
     add shopItem(4 lime concrete, "Lime Concrete", 100) to {-shop}
     add shopItem(4 pink concrete, "Pink Concrete", 100) to {-shop}
-    add shopItem(4 gray concrete, "Gray Concrete", 100) to {-shop}
     add shopItem(4 light gray concrete, "Light Gray Concrete", 100) to {-shop}
     add shopItem(4 cyan concrete, "Cyan Concrete", 100) to {-shop}
     add shopItem(4 purple concrete, "Purple Concrete", 100) to {-shop}
@@ -27,15 +19,14 @@ on load:
     add shopItem(4 brown concrete, "Brown Concrete", 100) to {-shop}
     add shopItem(4 green concrete, "Green Concrete", 100) to {-shop}
     add shopItem(4 red concrete, "Red Concrete", 100) to {-shop}
-    add shopItem(4 black concrete, "Black Concrete", 100) to {-shop}   
 
 function shopItem(item: item type, display: text, price: integer) :: item:
     set {_amount} to item amount of {_item}
     set {_item} to {_item} named "&7%item amount of {_item}%x %{_display}%"
-    add "&7Left to purchase &a%{_amount}%x &7for &a$%kNumber({_price})%" to lore of {_item}
+    add "&7Left &a%{_amount}%x &7for &a$%kNumber({_price})%" to lore of {_item}
     if {_price} > 0:
-        add "&7Right to purchase &a%{_amount} * 4%x &7for &a$%kNumber({_price} * 4)%" to lore of {_item}
-        add "&7Drop to purchase &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
+        add "&7Right &a%{_amount} * 4%x &7for &a$%kNumber({_price} * 4)%" to lore of {_item}
+        add "&7Drop &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
         #add "&7Ctrl + Q to purchase &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
     set {-shop::%type of {_item}%} to {_price}
     set {_item} to {_item} with all item flags
