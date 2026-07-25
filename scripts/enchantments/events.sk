@@ -30,11 +30,9 @@ function miningEnchants(player: player, block: block):
 
     for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool):
         set {_onbreak} to {-ce::%{_enchantment}%::onbreak}
-        if {_onbreak} isn't set:
-            continue
+        {_onbreak} is set
 
-        if enchantCanRun({_player}, {_enchantment}, {_level}, {-mining luck::%{_player}%} ? 0) is false:
-            continue
+        enchantCanRun({_player}, {_enchantment}, {_level}, {-mining luck::%{_player}%} ? 0) is true
 
         startEnchantCooldown({_player}, {_enchantment}, {_level})
         run {_onbreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
@@ -115,22 +113,18 @@ on damage with priority highest:
     else if damage cause is attack:
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
             set {_onattack} to {-ce::%{_enchantment}%::onattack}
-            if {_onattack} isn't set:
-                continue
+            {_onattack} is set
 
-            if enchantCanRun(attacker, {_enchantment}, {_level}) is false:
-                continue
+            enchantCanRun(attacker, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
             add result of {_onattack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(victim's tool):
         set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
-        if {_onattacked} isn't set:
-            continue
+        {_onattacked} is set
 
-        if enchantCanRun(victim, {_enchantment}, {_level}) is false:
-            continue
+        enchantCanRun(victim, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(victim, {_enchantment}, {_level})
         add result of {_onattacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
@@ -142,11 +136,9 @@ on damage with priority highest:
 
             set {_attacker armor already processed::%{_enchantment}%} to true
             set {_onattack} to {-ce::%{_enchantment}%::onattack}
-            if {_onattack} isn't set:
-                continue
+            {_onattack} is set
 
-            if enchantCanRun(attacker, {_enchantment}, {_level}) is false:
-                continue
+            enchantCanRun(attacker, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
             add result of {_onattack} with arguments (attacker, attacker's helmet, {_level}, victim, damage, damage cause) to damage
@@ -160,11 +152,9 @@ on damage with priority highest:
 
             set {_victim armor already processed::%{_enchantment}%} to true
             set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
-            if {_onattacked} isn't set:
-                continue
+            {_onattacked} is set
 
-            if enchantCanRun(victim, {_enchantment}, {_level}) is false:
-                continue
+            enchantCanRun(victim, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(victim, {_enchantment}, {_level})
             add result of {_onattacked} with arguments (victim, victim's helmet, {_level}, {_attacker}, damage, damage cause) to damage
@@ -177,11 +167,9 @@ on swap items:
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
         set {_onoffhand} to {-ce::%{_enchantment}%::onoffhand}
-        if {_onoffhand} isn't set:
-            continue
+        {_onoffhand} is set
 
-        if enchantCanRun(player, {_enchantment}, {_level}) is false:
-            continue
+        enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
         set {_should cancel} to result of {_onoffhand} with arguments (player, player's tool, {_level})
@@ -194,11 +182,9 @@ on right click with priority monitor:
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
         set {_onrightclick} to {-ce::%{_enchantment}%::onrightclick}
-        if {_onrightclick} isn't set:
-            continue
+        {_onrightclick} is set
 
-        if enchantCanRun(player, {_enchantment}, {_level}) is false:
-            continue
+        enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
         run {_onrightclick} with arguments (player, player's tool, {_level})
@@ -208,11 +194,9 @@ on left click with priority monitor:
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
         set {_onleftclick} to {-ce::%{_enchantment}%::onleftclick}
-        if {_onleftclick} isn't set:
-            continue
+        {_onleftclick} is set
 
-        if enchantCanRun(player, {_enchantment}, {_level}) is false:
-            continue
+        enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
         run {_onleftclick} with arguments (player, player's tool, {_level})
