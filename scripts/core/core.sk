@@ -177,14 +177,7 @@ function reset(player: player):
     delete {unlocked vaults::%{_player}%}
     set {_player}'s play time to 0 seconds
 
-    give {_player} diamond sword
-    give {_player} diamond pickaxe
-    give {_player} bow
-    give {_player} starterHelmet()
-    give {_player} starterElytra()
-    give {_player} firework
-    give {_player} 16 golden carrot
-    give {_player} 64 arrows
+    kit({_player}, true)
 
     wait 1 second
 
@@ -198,6 +191,17 @@ function reset(player: player):
     wait 10 seconds
     send "&7You are protected from PVP." to {_player}
     send "&7Disable permanently with /protection." to {_player}
+
+function kit(player: player, consumables: boolean):
+    give {_player} diamond sword
+    give {_player} diamond pickaxe
+    give {_player} bow
+    give {_player} starterHelmet()
+    give {_player} starterElytra()
+    give {_player} firework
+    if {_consumables} is true:
+        give {_player} 64 arrows
+        give {_player} 16 golden carrot
 
 function starterHelmet() :: item:
     set {_helmet} to leather helmet
@@ -514,3 +518,8 @@ on death of player:
 command /trash:
     trigger:
         open chest inventory with 6 rows named "&8Facto" to player
+
+command /kit:
+    cooldown: 1 minute
+    trigger:
+        kit(player, false)
