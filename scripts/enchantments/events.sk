@@ -1,35 +1,43 @@
 using reflection
 
+function enchantCanRun(player: player, enchantment: string, level: integer, luck: number = 0) :: boolean:
+    if {-ce::%{_enchantment}%::disabled} is true:
+        if {_player} isn't op:
+            return false
+
+    if "manual chance" of {_level} for {_enchantment} isn't set:
+        set {_chance} to "chance" of {_level} for {_enchantment}
+        {_chance} is set
+        set {_chance} to {_chance} * (1 + {_luck})
+        chance of (100 - {_chance})%:
+            return false
+
+    if "manual cooldown" of {_level} for {_enchantment} isn't set:
+        set {_cooldown} to "cooldown" of {_level} for {_enchantment}
+        {_cooldown} is set
+        if difference between now and {-enchant cooldown::%{_player}%::%{_enchantment}%} < {_cooldown}:
+            return false
+
+    return true
+
+function startEnchantCooldown(player: player, enchantment: string, level: integer):
+    set {_cooldown} to "cooldown" of {_level} for {_enchantment}
+    if {_cooldown} is set:
+        set {-enchant cooldown::%{_player}%::%{_enchantment}%} to now
+
 function miningEnchants(player: player, block: block):
     {_block} is within bound with id "mine"
-    set {_enchantments::*} to custom enchantments of {_player}'s tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if {_player} isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        set {_cooldown} to "cooldown" of {_level} for loop-value
-        set {_chance} to "chance" of {_level} for loop-value
-        if "manual chance" of {_level} for loop-value is set:
-            delete {_chance}
-        set {_onbreak} to {-ce::%loop-value%::onbreak}
 
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            set {_chance} to {_chance} * (1 + ({-mining luck::%{_player}%} ? 0))
-            chance of (100 - {_chance})%:
-                continue
-        
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%{_player}%::%loop-value%} < {_cooldown}:
-                continue
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool):
+        set {_onbreak} to {-ce::%{_enchantment}%::onbreak}
+        if {_onbreak} isn't set:
+            continue
 
-        if {_onbreak} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%{_player}%::%loop-value%} to now
-            run {_onbreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
+        if enchantCanRun({_player}, {_enchantment}, {_level}, {-mining luck::%{_player}%} ? 0) is false:
+            continue
+
+        startEnchantCooldown({_player}, {_enchantment}, {_level})
+        run {_onbreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
 
 on break with priority high:
     event isn't canceled
@@ -39,41 +47,24 @@ on entity shoot bow:
     location of shooter isn't within bound with id "spawn"
     location of projectile isn't within bound with id "spawn"
     projectile is an arrow
+
     set {-%projectile%::force} to projectile force
-    set {_enchantments::*} to custom enchantments of shooter's tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if all:
-            {-ce::%loop-value%::threshold::%{_level}%} is set
-            projectile force < {-ce::%loop-value%::threshold::%{_level}%}
-        then:
+
+    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
+        set {_onshoot} to {-ce::%{_enchantment}%::onshoot}
+        if {_onshoot} isn't set:
             continue
 
-        if {-ce::%loop-value%::disabled} is true:
-            if shooter isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        if {-ce::%loop-value%::manual cooldown::onshoot::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {-ce::%loop-value%::manual chance::onshoot::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-        set {_onshoot} to {-ce::%loop-value%::onshoot}
-        
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
+        set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
+        if {_threshold} is set:
+            if projectile force < {_threshold}:
                 continue
 
-        if {_cooldown} is set:
-            set {_dif} to difference between now and {-enchant cooldown::%shooter%::%loop-value%}
-            if {_dif} < {_cooldown}:
-                continue    
+        if enchantCanRun(shooter, {_enchantment}, {_level}) is false:
+            continue
 
-        if {_onshoot} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%shooter%::%loop-value%} to now
-            run {_onshoot} with arguments (shooter, shooter's tool, projectile, {_level}, projectile force)
+        startEnchantCooldown(shooter, {_enchantment}, {_level})
+        run {_onshoot} with arguments (shooter, shooter's tool, projectile, {_level}, projectile force)
 
 on projectile hit with priority highest:
     event isn't canceled
@@ -81,295 +72,150 @@ on projectile hit with priority highest:
     location of projectile isn't within bound with id "spawn"
     projectile is an arrow
     {-%projectile%::force} is set
-    set {_enchantments::*} to custom enchantments of shooter's tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if shooter isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        if {-ce::%loop-value%::manual cooldown::onhit::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {-ce::%loop-value%::manual chance::onhit::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-        set {_threshold} to {-ce::%loop-value%::threshold::%{_level}%}
-        set {_onhit} to {-ce::%loop-value%::onhit}
 
+    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
+        set {_onhit} to {-ce::%{_enchantment}%::onhit}
+        if {_onhit} isn't set:
+            continue
+
+        set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
         if {_threshold} is set:
             if {-%projectile%::force} < {_threshold}:
                 continue
-                
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
-                continue
 
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%shooter%::%loop-value%} < {_cooldown}:
-                continue
+        if enchantCanRun(shooter, {_enchantment}, {_level}) is false:
+            continue
 
-        if {_onhit} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%shooter%::%loop-value%} to now
-            run {_onhit} with arguments (shooter, shooter's tool, projectile, {_level}, {-%projectile%::force}, (victim ? block))
+        startEnchantCooldown(shooter, {_enchantment}, {_level})
+        run {_onhit} with arguments (shooter, shooter's tool, projectile, {_level}, {-%projectile%::force}, (victim ? block))
 
 on damage with priority highest:
-    event isn't cancelled 
-
+    event isn't cancelled
     final damage > 0
-
-    #if attack cooldown of attacker is 1:
-    if attacker is set:
-        set {_attackerTool::*} to custom enchantments of attacker's tool
-        set {_attackerToolIndices::*} to indices of {_attackerTool::*}
-        sort {_attackerToolIndices::*} in descending order by {-ce::%input%::priority}
 
     if damage cause is projectile:
         attacker is holding a bow
-        loop {_attackerToolIndices::*}:
-            set {_type} to {-ce::%loop-value%::type}
-            set {_level} to {_attackerTool::%loop-value%}
-            set {_threshold} to {-ce::%loop-value%::threshold::%{_level}%}
 
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
+            set {_onattack} to {-ce::%{_enchantment}%::onattack}
+            if {_onattack} isn't set:
+                continue
+
+            set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
             if {_threshold} is set:
                 if {-%projectile%::force} < {_threshold}:
                     continue
 
-            if {-ce::%loop-value%::manual chance::onattack::%{_level}%} isn't set:
-                set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-            if {-ce::%loop-value%::manual cooldown::onattack::%{_level}%} isn't set:
-                set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
+            if enchantCanRun(attacker, {_enchantment}, {_level}) is false:
+                continue
 
-            set {_onattack} to {-ce::%loop-value%::onattack}
-
-            if {_chance} is set:
-                # if chance doesn't succeed, skip the enchantment
-                chance of (100 - {_chance})%:
-                    continue
-
-            if {_cooldown} is set:
-                if difference between now and {-enchant cooldown::%attacker%::%loop-value%} < {_cooldown}:
-                    continue
-
-            if {_onattack} is set:
-                if {_cooldown} is set:
-                    set {-enchant cooldown::%attacker%::%loop-value%} to now
-                add result of {_onattack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
+            startEnchantCooldown(attacker, {_enchantment}, {_level})
+            add result of {_onattack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
 
     else if damage cause is attack:
-        loop {_attackerToolIndices::*}:
-
-            if {-ce::%loop-value%::disabled} is true:
-                if attacker isn't op:
-                    continue
-            set {_level} to {_attackerTool::%loop-value%}
-            set {_type} to {-ce::%loop-value%::type}
-            if {-ce::%loop-value%::manual chance::onattack::%{_level}%} isn't set:
-                set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-            if {-ce::%loop-value%::manual cooldown::onattack::%{_level}%} isn't set:
-                set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-
-            set {_onattack} to {-ce::%loop-value%::onattack}
-
-            if {_chance} is set:
-                # if chance doesn't succeed, skip the enchantment
-                chance of (100 - {_chance})%:
-                    continue
-
-            if {_cooldown} is set:
-                if difference between now and {-enchant cooldown::%attacker%::%loop-value%} < {_cooldown}:
-                    continue
-
-            if {_onattack} is set:
-                if {_cooldown} is set:
-                    set {-enchant cooldown::%attacker%::%loop-value%} to now
-                add result of {_onattack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
-
-    set {_victimTool::*} to custom enchantments of victim's tool
-    set {_victimToolIndices::*} to indices of {_victimTool::*}
-    sort {_victimToolIndices::*} in descending order by {-ce::%input%::priority}
-
-    loop {_victimToolIndices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if victim isn't op:
-                continue
-        set {_level} to {_victimTool::%loop-value%}
-        set {_onattacked} to {-ce::%loop-value%::onattacked}
-        if {-ce::%loop-value%::manual cooldown::onattacked::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {-ce::%loop-value%::manual chance::onattacked::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
+            set {_onattack} to {-ce::%{_enchantment}%::onattack}
+            if {_onattack} isn't set:
                 continue
 
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%victim%::%loop-value%} < {_cooldown}:
+            if enchantCanRun(attacker, {_enchantment}, {_level}) is false:
                 continue
 
-        if {_onattacked} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%victim%::%loop-value%} to now
-            add result of {_onattacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
-    
+            startEnchantCooldown(attacker, {_enchantment}, {_level})
+            add result of {_onattack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
+
+    for {_enchantment}, {_level} in keyed sortedEnchantments(victim's tool):
+        set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
+        if {_onattacked} isn't set:
+            continue
+
+        if enchantCanRun(victim, {_enchantment}, {_level}) is false:
+            continue
+
+        startEnchantCooldown(victim, {_enchantment}, {_level})
+        add result of {_onattacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
+
     if attacker's helmet is a leather helmet:
-        set {_enchantments::*} to custom enchantments of attacker's helmet
-        set {_indices::*} to indices of {_enchantments::*}
-        sort {_indices::*} in descending order by {-ce::%input%::priority}
-        loop {_indices::*}:
-            if {-ce::%loop-value%::disabled} is true:
-                if attacker isn't op:
-                    continue
-            if {_attacker armor already processed::%loop-value%} is not set:
-                set {_attacker armor already processed::%loop-value%} to true
-                set {_level} to {_enchantments::%loop-value%}
-                set {_onattack} to {-ce::%loop-value%::onattack}
-                if {-ce::%loop-value%::manual cooldown::onattack::%{_level}%} isn't set:
-                    set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-                if {-ce::%loop-value%::manual chance::onattack::%{_level}%} isn't set:
-                    set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-                if {-ce::%loop-value%::manual chance::onattack::%{_level}%} is set:
-                    delete {_chance}
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's helmet):
+            if {_attacker armor already processed::%{_enchantment}%} is set:
+                continue
 
-                if {_chance} is set:
-                    # if chance doesn't succeed, skip the enchantment
-                    chance of (100 - {_chance})%:
-                        continue
+            set {_attacker armor already processed::%{_enchantment}%} to true
+            set {_onattack} to {-ce::%{_enchantment}%::onattack}
+            if {_onattack} isn't set:
+                continue
 
-                if {_cooldown} is set:
-                    if difference between now and {-enchant cooldown::%attacker%::%loop-value%} < {_cooldown}:
-                        continue
+            if enchantCanRun(attacker, {_enchantment}, {_level}) is false:
+                continue
 
-                if {_onattack} is set:
-                    if {_cooldown} is set:
-                        set {-enchant cooldown::%attacker%::%loop-value%} to now
-                    add result of {_onattack} with arguments (attacker, attacker's helmet, {_level}, victim, damage, damage cause) to damage
+            startEnchantCooldown(attacker, {_enchantment}, {_level})
+            add result of {_onattack} with arguments (attacker, attacker's helmet, {_level}, victim, damage, damage cause) to damage
 
     if victim's helmet is set:
         set {_attacker} to attacker ? victim
-        set {_enchantments::*} to custom enchantments of victim's helmet
-        set {_indices::*} to indices of {_enchantments::*}
-        sort {_indices::*} in descending order by {-ce::%input%::priority}
-        loop {_indices::*}:
-            if {-ce::%loop-value%::disabled} is true:
-                if victim isn't op:
-                    continue
-            if {_victim armor already processed::%loop-value%} is not set:
-                set {_victim armor already processed::%loop-value%} to true
-                set {_level} to {_enchantments::%loop-value%}
-                set {_onattacked} to {-ce::%loop-value%::onattacked}
-                if {-ce::%loop-value%::manual cooldown::onattacked::%{_level}%} isn't set:
-                    set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-                if {-ce::%loop-value%::manual chance::onattacked::%{_level}%} isn't set:
-                    set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-                if {-ce::%loop-value%::manual chance::onattacked::%{_level}%} is set:
-                    delete {_chance}
 
-                if {_chance} is set:
-                    # if chance doesn't succeed, skip the enchantment
-                    chance of (100 - {_chance})%:
-                        continue
+        for {_enchantment}, {_level} in keyed sortedEnchantments(victim's helmet):
+            if {_victim armor already processed::%{_enchantment}%} is set:
+                continue
 
-                if {_cooldown} is set:
-                    if difference between now and {-enchant cooldown::%victim%::%loop-value%} < {_cooldown}:
-                        continue
-                
-                if {_onattacked} is set:
-                    if {_cooldown} is set:
-                        set {-enchant cooldown::%victim%::%loop-value%} to now
-                    add result of {_onattacked} with arguments (victim, victim's helmet, {_level}, {_attacker}, damage, damage cause) to damage
+            set {_victim armor already processed::%{_enchantment}%} to true
+            set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
+            if {_onattacked} isn't set:
+                continue
+
+            if enchantCanRun(victim, {_enchantment}, {_level}) is false:
+                continue
+
+            startEnchantCooldown(victim, {_enchantment}, {_level})
+            add result of {_onattacked} with arguments (victim, victim's helmet, {_level}, {_attacker}, damage, damage cause) to damage
 
     if damage < 0:
         cancel event
 
 on swap items:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if player isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        set {_type} to {-ce::%loop-value%::type}
-        if {-ce::%loop-value%::manual chance::onoffhand::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-        if {-ce::%loop-value%::manual cooldown::onoffhand::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
-                continue
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%player%::%loop-value%} < {_cooldown}:
-                continue
-        set {_onoffhand} to {-ce::%loop-value%::onoffhand}
-        if {_onoffhand} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%player%::%loop-value%} to now
-            set {_should cancel} to result of {_onoffhand} with arguments (player, player's tool, {_level})
-            if {_should cancel} is true:
-                cancel event
+
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+        set {_onoffhand} to {-ce::%{_enchantment}%::onoffhand}
+        if {_onoffhand} isn't set:
+            continue
+
+        if enchantCanRun(player, {_enchantment}, {_level}) is false:
+            continue
+
+        startEnchantCooldown(player, {_enchantment}, {_level})
+        set {_should cancel} to result of {_onoffhand} with arguments (player, player's tool, {_level})
+
+        if {_should cancel} is true:
+            cancel event
 
 on right click with priority monitor:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if player isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        set {_type} to {-ce::%loop-value%::type}
-        if {-ce::%loop-value%::manual chance::onrightclick::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-        if {-ce::%loop-value%::manual cooldown::onrightclick::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
-                continue
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%player%::%loop-value%} < {_cooldown}:
-                continue
-        set {_onrightclick} to {-ce::%loop-value%::onrightclick}
-        if {_onrightclick} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%player%::%loop-value%} to now
-            run {_onrightclick} with arguments (player, player's tool, {_level})
+
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+        set {_onrightclick} to {-ce::%{_enchantment}%::onrightclick}
+        if {_onrightclick} isn't set:
+            continue
+
+        if enchantCanRun(player, {_enchantment}, {_level}) is false:
+            continue
+
+        startEnchantCooldown(player, {_enchantment}, {_level})
+        run {_onrightclick} with arguments (player, player's tool, {_level})
 
 on left click with priority monitor:
     bounds at player does not contain bound with id "spawn"
-    set {_enchantments::*} to custom enchantments of player's tool
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
-    loop {_indices::*}:
-        if {-ce::%loop-value%::disabled} is true:
-            if player isn't op:
-                continue
-        set {_level} to {_enchantments::%loop-value%}
-        set {_type} to {-ce::%loop-value%::type}
-        if {-ce::%loop-value%::manual chance::onleftclick::%{_level}%} isn't set:
-            set {_chance} to {-ce::%loop-value%::chance::%{_level}%}
-        if {-ce::%loop-value%::manual cooldown::onleftclick::%{_level}%} isn't set:
-            set {_cooldown} to {-ce::%loop-value%::cooldown::%{_level}%}
-        if {_chance} is set:
-            # if chance doesn't succeed, skip the enchantment
-            chance of (100 - {_chance})%:
-                continue
-        if {_cooldown} is set:
-            if difference between now and {-enchant cooldown::%player%::%loop-value%} < {_cooldown}:
-                continue
-        set {_onleftclick} to {-ce::%loop-value%::onleftclick}
-        if {_onleftclick} is set:
-            if {_cooldown} is set:
-                set {-enchant cooldown::%player%::%loop-value%} to now
-            run {_onleftclick} with arguments (player, player's tool, {_level})
+
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+        set {_onleftclick} to {-ce::%{_enchantment}%::onleftclick}
+        if {_onleftclick} isn't set:
+            continue
+
+        if enchantCanRun(player, {_enchantment}, {_level}) is false:
+            continue
+
+        startEnchantCooldown(player, {_enchantment}, {_level})
+        run {_onleftclick} with arguments (player, player's tool, {_level})
 
 ### summon related events
 

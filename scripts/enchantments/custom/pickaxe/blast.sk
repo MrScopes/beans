@@ -35,7 +35,7 @@ local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of {_level} for "blast"
     return "break blocks within %{_radius}%m"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
     set {_radius} to "radius" of {_level} for "blast"
     fastRadiusClear({_player}, location of {_block}, {_radius})

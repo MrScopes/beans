@@ -84,45 +84,6 @@ function inlineDiff(string1: text, string2: text, color: text = "&6", colorAfter
 
     return {_out}
 
-###
-function setting(enchantment: text, key: text, value: object = {_}, l1: object = {_}, l2: object = {_}, l3: object = {_}, l4: object = {_}, l5: object = {_}, l6: object = {_}, l7: object = {_}, l8: object = {_}, l9: object = {_}, l10: object = {_}):
-    if {_value} is set:
-        set {-ce::%{_enchantment}%::%{_key}%} to {_value}
-    else:
-        delete {-ce::%{_enchantment}%::%{_key}%::*}
-        loop 10 times:
-            set {-ce::%{_enchantment}%::%{_key}%::%loop-number%} to {_l%loop-number%}
-
-function get_setting(enchantment: text, key: text, level: object = {_}) :: object:
-    if {_level} is set:
-        if {_level} > 100_000:
-            set {_level} to 100_000
-
-        set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
-
-        if {_value} isn't set:
-            set {_max} to {-ce::%{_enchantment}%::max level}
-
-            if {_max} is set:
-                set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}
-                set {_previousValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max} - 1%}
-
-                set {_value} to {_maxValue}
-
-                if {_level} > {_max}:
-                    if {_maxValue} and {_previousValue} are set:
-                        if {_maxValue} > {_previousValue}:
-                            set {_difference} to {_maxValue} - {_previousValue}
-                            set {_value} to {_maxValue} + ({_level} - {_max}) * {_difference}
-                        else:
-                            set {_ratio} to {_previousValue} / {_maxValue}
-                            set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
-
-        return {_value}
-
-    return {-ce::%{_enchantment}%::%{_key}%}
-###
-
 import:
     me.mrscopes.beans.mine.FastBlocks
 
@@ -149,3 +110,13 @@ function fastRadiusClear(player: player, location: location, radius: number):
         add {_total money} to {money::%{_player}%}
         add {_total xp} to {_player}'s experience
         
+function sortedEnchantments(item: item) :: objects:
+    set {_enchantments::*} to custom enchantments of {_item}
+    set {_indices::*} to indices of {_enchantments::*}
+    sort {_indices::*} in descending order by {-ce::%input%::priority}
+
+    loop {_indices::*}:
+        set {_enchantment} to loop-value
+        set {_sorted::%{_enchantment}%} to {_enchantments::%{_enchantment}%}
+
+    return {_sorted::*}
