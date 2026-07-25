@@ -510,3 +510,7 @@ on death of player:
         set {_money reward} to {money::%victim%} * 0.02
         add {_money reward} to {money::%attacker%}
         remove {_money reward} from {money::%victim%}
+
+command /trash:
+    trigger:
+        open chest inventory with 6 rows named "&8Facto" to player
