@@ -45,9 +45,11 @@ local function getDescription(level: integer) :: string:
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-mining luck boost::%{_player}%} isn't set
+    set {_boost} to "boost" of {_level} for "lucky"
+    set {_duration} to "duration" of {_level} for "lucky"
     set {-mining luck boost::%{_player}%} to true
-    add "boost" of {_level} for "lucky" to {-mining luck::%{_player}%}
+    add {_boost} to {-mining luck::%{_player}%}
     play sound "minecraft:block.amethyst_block.resonate" with volume 1 and pitch 1 at location of {_player}
-    wait "duration" of {_level} for "lucky"
+    wait {_duration}
     delete {-mining luck boost::%{_player}%}
-    remove "boost" of {_level} for "lucky" from {-mining luck::%{_player}%}
+    remove {_boost} from {-mining luck::%{_player}%}

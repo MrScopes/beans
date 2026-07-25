@@ -39,20 +39,23 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "break blocks in a %"radius" of {_level} for "beam"%m beam"
+    set {_radius} to "radius" of {_level} for "beam"
+    return "break blocks in a %{_radius}%m beam"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_distance} to "distance" of {_level} for "beam"
+    set {_radius} to "radius" of {_level} for "beam"
     play sound "minecraft:entity.ender_dragon.flap" with volume 0.5 and pitch 1 at {_player}
     set {_origin} to location of {_player}'s head
     set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
 
-    loop "distance" of {_level} for "beam" times:
+    loop {_distance} times:
         set vector length of {_vector} to loop-value / 4
         set {_bullet} to {_origin} ~ {_vector}
         
         draw 4 red dust particle at {_bullet}
 
-        loop all blocks in radius "radius" of {_level} for "beam" around {_bullet}:
+        loop all blocks in radius {_radius} around {_bullet}:
             loop-block isn't air
             loop-block isn't bedrock, beacon, obsidian, or packed ice
             loop-block is within bound with id "mine"

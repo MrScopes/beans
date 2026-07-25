@@ -41,22 +41,26 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "spin %"enchantments" of {_level} for "chaos"% random enchantments with %"luck boost" of {_level} for "chaos" * 100%%% luck boost"
+    set {_enchantments} to "enchantments" of {_level} for "chaos"
+    set {_luck boost} to "luck boost" of {_level} for "chaos"
+    return "spin %{_enchantments}% random enchantments with %{_luck boost} * 100%%% luck boost"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_enchantments} to "enchantments" of {_level} for "chaos"
+    set {_luck boost} to "luck boost" of {_level} for "chaos"
     play sound "minecraft:entity.evoker.cast_spell" with volume 0.5 and pitch 1 at location of {_player}
     set {_enchantments::*} to custom enchantments of {_tool}
     set {_indices::*} to indices of {_enchantments::*}
     set {_indices::*} to shuffled {_indices::*}
     remove "chaos", "reroll", "lucky" from {_indices::*}
     loop {_indices::*}:
-        if loop-iteration > "enchantments" of {_level} for "chaos":
+        if loop-iteration > {_enchantments}:
             stop
         set {_chance} to {-ce::%loop-value%::chance::%{_enchantments::%loop-value%}%}
         if {-ce::%loop-value%::onbreak} is set:
             if {_chance} is set:
                 # if chance doesn't succeed, skip the enchantment
-                set {_chance} to {_chance} * (1 + ({-mining luck::%{_player}%} ? 0) + ("luck boost" of {_level} for "chaos" ? 0))
+                set {_chance} to {_chance} * (1 + ({-mining luck::%{_player}%} ? 0) + ({_luck boost} ? 0))
                 chance of (100 - {_chance})%:
                     continue
 

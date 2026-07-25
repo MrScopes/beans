@@ -32,14 +32,16 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "give %"multiplier" of {_level} for "super_fortune"%x more drops"
+    set {_multiplier} to "multiplier" of {_level} for "super_fortune"
+    return "give %{_multiplier}%x more drops"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_multiplier} to "multiplier" of {_level} for "super_fortune"
     set {_drops::*} to drops of {_block type} using {_player}'s tool
     if type of {_block} is packed ice:
         add ((level of fortune on {_tool} + 1) of packed ice) to {_drops::*}
     loop {_drops::*}:
-        set item amount of loop-value to item amount of loop-value * "multiplier" of {_level} for "super_fortune"
+        set item amount of loop-value to item amount of loop-value * {_multiplier}
         add {-sell::%type of loop-value%} * item amount of loop-value to {_value}
     
     if {_value} isn't set:

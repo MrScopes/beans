@@ -38,11 +38,13 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of {_level} for "haste"
     set {_haste} to "haste" of {_level} for "haste"
-    return "apply Speed %amplifier of {_speed}% for %time_format(duration of {_speed})% and Haste %amplifier of {_haste}% for %time_format(duration of {_haste})%"
+    return "apply %effectDisplay({_speed})% and %effectDisplay({_haste})%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
+    set {_haste} to "haste" of {_level} for "haste"
+    set {_speed} to "speed" of {_level} for "haste"
     play sound "minecraft:entity.generic.drink" with volume 0.5 and pitch 1 at location of {_player}
-    add "haste" of {_level} for "haste" to {_player}'s potion effects
-    add "speed" of {_level} for "haste" to {_player}'s potion effects
+    add {_haste} to {_player}'s potion effects
+    add {_speed} to {_player}'s potion effects

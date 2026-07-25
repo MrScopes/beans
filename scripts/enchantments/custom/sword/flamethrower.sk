@@ -65,7 +65,8 @@ local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of {_level} for "flamethrower"
     set {_iterations} to "iterations" of {_level} for "flamethrower"
     set {_angle} to "angle" of {_level} for "flamethrower"
-    set {_range} to "base range" of {_level} for "flamethrower" + "addrange" of {_level} for "flamethrower"
+    set {_addrange} to "addrange" of {_level} for "flamethrower"
+    set {_range} to "base range" of {_level} for "flamethrower" + {_addrange}
     return "&e[LMB] &7shoots a cone of fire &8(&f%{_angle}%°&8, &f%{_range}%m&8) &7dealing &8(&f%{_damage}% &8- &f%{_damage} * {_iterations}%&f<sprite:gui:hud/heart/full>&8)"
 
 local function onleftclick(player: player, item: item, level: integer):
@@ -81,7 +82,7 @@ local function onleftclick(player: player, item: item, level: integer):
             loop-entity isn't {_player}
             if coneHit({_player}, loop-entity, {_range}, {_angle} * 1.25, 10) is true:
                 ignite loop-entity for 2 seconds
-                damage(loop-entity, {_shooter}, {_damage})
+                damage(loop-entity, {_player}, {_damage})
 
         add {_addrange} to {_range}
 

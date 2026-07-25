@@ -32,9 +32,11 @@ on load:
             set level 5 to 600_000
 
 local function getDescription(level: integer) :: string:
-    return "feed you by %"feed" of {_level} for "feeding"% food"
+    set {_feed} to "feed" of {_level} for "feeding"
+    return "feed you by %{_feed}% food"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
-    set {_player}'s food level to clamp({_player}'s food level + "feed" of {_level} for "feeding", 0, 15)
+    set {_feed} to "feed" of {_level} for "feeding"
+    set {_player}'s food level to clamp({_player}'s food level + {_feed}, 0, 15)

@@ -41,20 +41,21 @@ on load:
             set level 5 to 1_300_000
 
 local function getDescription(level: integer) :: string:
-    return "mine %"width" of {_level} for "jackhammer"%x%"width" of {_level} for "jackhammer"%x%"height" of {_level} for "jackhammer"% area"
+    set {_width} to "width" of {_level} for "jackhammer"
+    set {_height} to "height" of {_level} for "jackhammer"
+    return "mine %{_width}%x%{_width}%x%{_height}% area"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    play sound "minecraft:block.anvil.land" with volume 0.5 and pitch 1 at location of {_block}
-
     {_block} is within bound with id "mine"
+    set {_width} to "width" of {_level} for "jackhammer"
+    set {_height} to "height" of {_level} for "jackhammer"
+
+    play sound "minecraft:block.anvil.land" with volume 0.5 and pitch 1 at location of {_block}
 
     set {_centerX} to x-coordinate of {_block}
     set {_centerY} to y-coordinate of {_block}
     set {_centerZ} to z-coordinate of {_block}
     set {_world} to world of {_block}
-
-    set {_width} to "width" of {_level} for "jackhammer"
-    set {_height} to "height" of {_level} for "jackhammer"
 
     set {_left} to floor(({_width} - 1) / 2)
     set {_right} to ceil(({_width} - 1) / 2)

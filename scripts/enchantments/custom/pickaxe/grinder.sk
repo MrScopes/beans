@@ -32,21 +32,25 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    return "boost luck by %formatNumber("boost" of {_level} for "grinder", "#.#####")%x every %"requirement" of {_level} for "grinder"% blocks"
+    set {_boost} to "boost" of {_level} for "grinder"
+    set {_requirement} to "requirement" of {_level} for "grinder"
+    return "boost luck by %formatNumber({_boost}, "#.#####")%x every %{_requirement}% blocks"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_player} is within bound with id "mine flight"
+    set {_boost} to "boost" of {_level} for "grinder"
+    set {_requirement} to "requirement" of {_level} for "grinder"
 
     startGrinderWatcher({_player})
     
 
     add 1 to {-grinder blocks::%{_player}%}
 
-    if {-grinder blocks::%{_player}%} >= "requirement" of {_level} for "grinder":
-        remove "requirement" of {_level} for "grinder" from {-grinder blocks::%{_player}%}
+    if {-grinder blocks::%{_player}%} >= {_requirement}:
+        remove {_requirement} from {-grinder blocks::%{_player}%}
         if {-grinder mining luck::%{_player}%} isn't greater than or equal to 0.5:
-            add "boost" of {_level} for "grinder" to {-grinder mining luck::%{_player}%}
-            add "boost" of {_level} for "grinder" to {-mining luck::%{_player}%}
+            add {_boost} to {-grinder mining luck::%{_player}%}
+            add {_boost} to {-mining luck::%{_player}%}
         send action bar "Grinder boost: +%formatNumber({-grinder mining luck::%{_player}%}, "#.#####")%x | Total proc rate: %formatNumber(1 + {-mining luck::%{_player}%}, "#.#####")%x" to {_player}
 
 local function startGrinderWatcher(player: player):

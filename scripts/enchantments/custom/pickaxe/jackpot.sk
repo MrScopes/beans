@@ -31,9 +31,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     set {_money} to {-jackpot money}
 
     add {_xp} to {_player}'s experience
-    add {_xp} to {xp source::%{_player}%::jackpot enchantment}
     add {_money} to {money::%{_player}%}
-    add {_money} to {money source::%{_player}%::jackpot enchantment}
 
     play sound "minecraft:ui.toast.challenge_complete" with volume 1 and pitch 1 at location of {_player}
     send "&6&lJACKPOT!" to {_player}

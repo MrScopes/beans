@@ -32,9 +32,10 @@ on load:
             set level 5 to 1_000_000
 
 local function getDescription(level: integer) :: string:
-    return "gain %"xp" of {_level} for "experienced"% experience"
+    set {_xp} to "xp" of {_level} for "experienced"
+    return "gain %{_xp}% experience"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_xp} to "xp" of {_level} for "experienced"
     play sound "minecraft:entity.experience_orb.pickup" with volume 0.5 and pitch 1 at location of {_player}
-    add "xp" of {_level} for "experienced" to {_player}'s experience
-    add "xp" of {_level} for "experienced" to {xp source::%{_player}%::experienced enchantment}
+    add {_xp} to {_player}'s experience

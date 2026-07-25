@@ -39,7 +39,9 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "&e[LMB] &7projectile that pulls in entities within %"distance" of {_level} for "snatch"%m. disables their elytra for %time_format("disable duration" of {_level} for "snatch")%."
+    set {_distance} to "distance" of {_level} for "snatch"
+    set {_disable duration} to "disable duration" of {_level} for "snatch"
+    return "&e[LMB] &7projectile that pulls in entities within %{_distance}%m. disables their elytra for %time_format({_disable duration}%)%."
 
 local function onleftclick(player: player, item: item, level: integer):
     set {_origin} to location of {_player}'s head

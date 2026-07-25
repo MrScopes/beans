@@ -32,11 +32,12 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    return "nuke blocks within %"radius" of {_level} for "nuke"%m"
+    set {_radius} to "radius" of {_level} for "nuke"
+    return "nuke blocks within %{_radius}%m"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_radius} to "radius" of {_level} for "nuke"
     play sound "minecraft:entity.creeper.primed" with volume 1 and pitch 1 at location of {_player}
     wait 1 second
     play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
-    set {_radius} to "radius" of {_level} for "nuke"
     fastRadiusClear({_player}, location of {_block}, {_radius})
