@@ -110,26 +110,7 @@ on step on purple glazed terracotta:
 
 command /spawn:
     trigger:
-        if all:
-            player's gamemode isn't creative
-            {-vanish::%player%} isn't set
-        then:
-            set {_seconds} to 3
-            set {_starting location} to player's location
-            while {_seconds} > 0:
-                send "&7Teleporting to spawn in &b%{_seconds}%s&7... Don't move." to player
-                wait 1 second
-                subtract 1 from {_seconds}
-
-                if distance between player's location and {_starting location} > 2:
-                    send "&cCanceled teleportation due to movement."
-                    delete {_seconds}
-                    stop loop
-
-                if {_seconds} is 0:
-                    teleport player to {spawn}
-        else:
-            teleport player to {spawn}
+        timedTP(player, {spawn})
 
 on join:
     if {-vanish::%player%} is set:

@@ -103,3 +103,27 @@ function time_format(time: timespan) :: string:
 
 function scramble(text: text) :: text:
     return join (shuffled ({_text} split at ""))
+
+##
+
+function timedTP(player: player, location: location):
+    if all:
+        {_player}'s gamemode isn't creative
+        {-vanish::%{_player}%} isn't set
+    then:
+        set {_seconds} to 3
+        set {_starting location} to {_player}'s location
+        while {_seconds} > 0:
+            send "&7Teleporting in &b%{_seconds}%s&7... Don't move." to {_player}
+            wait 1 second
+            subtract 1 from {_seconds}
+
+            if distance between {_player}'s location and {_starting location} > 2:
+                send "&cCanceled teleportation due to movement." to {_player}
+                delete {_seconds}
+                stop loop
+
+            if {_seconds} is 0:
+                teleport {_player} to {_location}
+    else:
+        teleport {_player} to {_location}

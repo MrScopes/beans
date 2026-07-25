@@ -55,6 +55,7 @@ command /settings:
         simpleToggleSetting(player, compass, "chat pinging", "Chat Pinging", "players pinging you in chat", true)
         simpleToggleSetting(player, music disc far, "instant wheel", "Instant Wheel Spin", "instant wheel spin", false)
         multiOptionSetting(player, beacon, "beacon announcements", "Beacon Announcements", "Show other player's beacon rewards", ("All", "Ultra Rare Only", "Ultimate Only", "None"))
+        multiOptionSetting(player, ender pearl, "tpa requests", "TPA Requests", "Manage incoming TPA requests", ("All", "Clan Only", "None"))
 
         open {-settings gui::%player%} to player
 
