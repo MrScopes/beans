@@ -1,0 +1,32 @@
+on join:
+    updateInventory(player's inventory)
+
+command /update:
+    cooldown: 10 seconds
+    trigger:
+        updateInventory(player's inventory)
+
+function updateInventory(inventory: inventory):
+    loop items in {_inventory}:
+        if mod(loop-iteration, 10) is 0:
+            wait 1 tick
+        set {_amount} to item amount of loop-item
+
+        set {_level} to data tag "stored_level" of loop-item
+        set {_vanilla enchantment} to data tag "stored_vanilla_enchantment" of loop-item
+        set {_custom enchantment} to data tag "stored_custom_enchantment" of loop-item
+
+        if {_custom enchantment} is set:
+            set loop-item to {_amount} of createStoredCustomBook({_custom enchantment}, {_level})
+
+        else if {_vanilla enchantment} is set:
+            set loop-item to {_amount} of createStoredVanillaBook({_vanilla enchantment}, {_level})
+
+        else:
+            if any:
+                loop-item is tagged with paper tag "swords"
+                loop-item is tagged with paper tag "bows"
+                loop-item is tagged with paper tag "pickaxes"
+                loop-item is tagged with paper tag "helmets"
+            then:
+                set loop-item to {_amount} of updateLore(loop-item, true)

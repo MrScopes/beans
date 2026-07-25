@@ -1,0 +1,17 @@
+on load:
+    set {-broadcast::1} to "broadcast 1"
+    set {-broadcast::2} to "broadcast 2"
+    set {-broadcast::3} to "broadcast 3"
+
+async every 4 minutes and 25 seconds:
+    add 1 to {-broadcast}
+    if {-broadcast::%{-broadcast}%} is set:
+        send formatted {-broadcast::%{-broadcast}%} to all players
+    
+    if {-broadcast::%{-broadcast} + 1%} isn't set:
+        set {-broadcast} to 0
+
+command /broadcast <text>:
+    permission: beans.mod
+    trigger:
+        broadcast formatted ("", "&8| &b&lBEANS &8| &f%arg 1%", "")

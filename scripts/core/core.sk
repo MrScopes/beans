@@ -108,7 +108,6 @@ on step on purple glazed terracotta:
     else:
         teleport player to {casino spawn tp}
 
-
 command /spawn:
     trigger:
         if all:
@@ -197,7 +196,7 @@ function kit(player: player, consumables: boolean):
     give {_player} diamond pickaxe
     give {_player} bow
     give {_player} starterHelmet()
-    give {_player} starterElytra()
+    give {_player} elytra
     give {_player} firework
     if {_consumables} is true:
         give {_player} 64 arrows
@@ -214,45 +213,10 @@ function starterHelmet() :: item:
         operation: add number
     return {_helmet}
 
-function starterElytra() :: item:
-    set {_elytra} to elytra
-    set {_elytra} to unbreakable {_elytra}
-    return {_elytra}
-
-command /protection:
-    trigger:
-        if difference between {-pvp protection confirm::%player%} and now < 10 seconds:
-            delete {pvp protection::%player%}
-            delete {-pvp protection confirm::%player%}
-            send ""
-            send " &bPVP protection disabled." to player
-            send ""
-        else:
-            if {pvp protection::%player%} is set:
-                send ""
-                send " &bYou have PVP protection enabled."
-                send " &bTo disable it, Run the command again within 10s to confirm."
-                send ""
-                set {-pvp protection confirm::%player%} to 10 seconds from now
-
-on damage with priority low:
-    event isn't canceled
-    attacker is a player
-    victim is a player
-
-    if {pvp protection::%attacker%} is set:
-        cancel event
-        send "&7You can't attack players while you have PVP protection." to attacker
-        send "&7Disable with /protection." to attacker
-
-    else if {pvp protection::%victim%} is set:
-        cancel event
-        send "&7That player has starter PVP protection on." to attacker
-
 on respawn:
     set respawn location to {spawn}
 
-    wait 1 tick
+    wait 2 ticks
     set {_night vision} to potion effect of night vision for eternity:
         hide the effect's icons
         hide the effect's particles
@@ -362,92 +326,14 @@ on drop:
                 if difference between {-drop confirm::%event-item%} and now < 10 seconds:
                     delete {-drop confirm::%event-item%}
 
-on craft:
-    cancel event
-    
-on load:
-    set {-broadcast::1} to "broadcast 1"
-    set {-broadcast::2} to "broadcast 2"
-    set {-broadcast::3} to "broadcast 3"
-
-async every 4 minutes and 25 seconds:
-    add 1 to {-broadcast}
-    if {-broadcast::%{-broadcast}%} is set:
-        send formatted {-broadcast::%{-broadcast}%} to all players
-    
-    if {-broadcast::%{-broadcast} + 1%} isn't set:
-        set {-broadcast} to 0
-
 on projectile hit with priority monitor:
     projectile is an arrow
     wait 2 ticks
-    delete projectile
     delete {-%projectile%::*}
+    delete projectile
 
-on join:
-    updateInventory(player's inventory)
-
-command /update:
-    cooldown: 10 seconds
-    trigger:
-        updateInventory(player's inventory)
-
-function updateInventory(inventory: inventory):
-    loop items in {_inventory}:
-        if mod(loop-iteration, 10) is 0:
-            wait 1 tick
-        set {_amount} to item amount of loop-item
-
-        set {_level} to data tag "stored_level" of loop-item
-        set {_vanilla enchantment} to data tag "stored_vanilla_enchantment" of loop-item
-        set {_custom enchantment} to data tag "stored_custom_enchantment" of loop-item
-
-        if {_custom enchantment} is set:
-            set loop-item to {_amount} of createStoredCustomBook({_custom enchantment}, {_level})
-
-        else if {_vanilla enchantment} is set:
-            set loop-item to {_amount} of createStoredVanillaBook({_vanilla enchantment}, {_level})
-
-        else:
-            if any:
-                loop-item is tagged with paper tag "swords"
-                loop-item is tagged with paper tag "bows"
-                loop-item is tagged with paper tag "pickaxes"
-                loop-item is tagged with paper tag "helmets"
-            then:
-                set loop-item to {_amount} of updateLore(loop-item, true)
-
-command /bounty [<text=%player's name%>] [<text>]:
-    trigger:
-        set {_player} to offlineplayer(arg 1, false)
-        set {_money} to unformatted number arg 2
-
-        if {_player} isn't set:
-            send "&cPlayer not found."
-        else:
-            if {_money} < 1:
-                send formatted "&7%player_display({_player})%&7's bounty is &b$%kNumber({bounty::%{_player}%})%&7."
-            else:
-                if {money::%player%} < {_money}:
-                    send formatted "&cYou don't have enough money." to player
-                else:
-                    remove {_money} from {money::%player%}
-                    add {_money} to {bounty::%{_player}%}
-                    broadcast formatted "%player_display(player)% &7added a bounty of &b$%kNumber({_money})%&7 to %player_display({_player})%&7!"
-                    broadcast formatted "Current Bounty: &b$%kNumber({bounty::%{_player}%})%"
-                
-on death of player:
-    attacker is a player
-    attacker isn't victim
-    {bounty::%victim%} is set
-    set {_bounty} to {bounty::%victim%}
-    delete {bounty::%victim%}
-    add {_bounty} to {money::%attacker%}
-    broadcast formatted "%player_display(attacker)% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %player_display(victim)%&7!"
-
-on tab complete of "/bounty":
-    set tab completions for position 1 to all players
-    set tab completions for position 2 to "<amount>"
+on craft:
+    cancel event
 
 on item damage:
     cancel event
@@ -473,47 +359,6 @@ async every second:
         y coordinate of loop-player > 25
         heal loop-player
         set loop-player's food level to 10
-
-function customDamage(victim: entity, damage: number, attacker: entity = {_}) :: number:
-    set {_strength} to 0
-    if {_attacker} is set:
-        set {_strength} to (potion level of strength effect of {_attacker}) ? 0
-    set {_armor} to (sum(modifier amount of armor attribute modifiers of {_victim}'s helmet)) ? 0
-    set {_resistance} to (potion level of {_victim}'s resistance effect) ? 0
-
-    set {_damage} to {_damage} * (1 + ({_strength} * 0.2))
-    set {_damage} to {_damage} * (1 - ({_resistance} * 0.2))
-    set {_damage} to {_damage} * (1 - ({_armor} * 0.02))
-    return {_damage}
-
-function damage(victim: entity, attacker: entity, damage: number, customDamage: boolean = true, calculateWithEffects: boolean = false) :: number:
-    set {-last attacker::%{_victim}%} to {_attacker}
-    if {_customDamage} is true:
-        if {_calculateWithEffects} is false:
-            set {_damage} to customDamage({_victim}, {_damage})
-        else:
-            set {_damage} to customDamage({_victim}, {_damage}, {_attacker})
-    reset {_victim}'s no damage time
-    damage {_victim} by {_damage}
-    reset {_victim}'s no damage time
-
-on damage of player:
-    if attacker is a player:
-        set {-last attacker::%victim%} to attacker
-    else if attacker is a mob:
-        set {-last attacker::%victim%} to {-owner::%attacker%}
-
-on death of player:
-    set {_attacker} to {-last attacker::%victim%} ? attacker
-    add 1 to {deaths::%victim%}
-    if {_attacker} isn't set:
-        set death message to "%player_display(victim)% &7has died&7."
-    else:
-        set death message to "%player_display({_attacker})% &7killed %player_display(victim)%&7."
-        add 1 to {kills::%attacker%}
-        set {_money reward} to {money::%victim%} * 0.02
-        add {_money reward} to {money::%attacker%}
-        remove {_money reward} from {money::%victim%}
 
 command /trash:
     trigger:
