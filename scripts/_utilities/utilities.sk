@@ -108,7 +108,7 @@ function scramble(text: text) :: text:
 
 function timedTP(player: player, location: location):
     if all:
-        {_player}'s gamemode isn't creative
+        {_player}'s gamemode isn't creative or spectator
         {-vanish::%{_player}%} isn't set
     then:
         set {_seconds} to 3
