@@ -66,7 +66,7 @@ local function getDescription(level: integer) :: string:
     set {_iterations} to "iterations" of {_level} for "flamethrower"
     set {_angle} to "angle" of {_level} for "flamethrower"
     set {_addrange} to "addrange" of {_level} for "flamethrower"
-    set {_range} to "base range" of {_level} for "flamethrower" + {_addrange}
+    set {_range} to ("base range" of {_level} for "flamethrower") + {_addrange}
     return "&e[LMB] &7shoots a cone of fire &8(&f%{_angle}%°&8, &f%{_range}%m&8) &7dealing &8(&f%{_damage}% &8- &f%{_damage} * {_iterations}%&f<sprite:gui:hud/heart/full>&8)"
 
 local function onleftclick(player: player, item: item, level: integer):
@@ -75,16 +75,44 @@ local function onleftclick(player: player, item: item, level: integer):
     set {_angle} to "angle" of {_level} for "flamethrower"
     set {_damage} to "damage" of {_level} for "flamethrower"
     set {_iterations} to "iterations" of {_level} for "flamethrower"
+
+    loop 6 times:
+        set {_markers::%loop-number%} to marker({_player}'s eye, {_player}, "flamethrower")
+
     loop {_iterations} times:
         wait 1 tick
-        drawConeFilled({_player}'s eye ~ vector(0, -0.35, 0), {_range}, {_angle}, 16)
-        loop all living entities in radius ({_range}) * 2 around {_player}:
-            loop-entity isn't {_player}
-            if coneHit({_player}, loop-entity, {_range}, {_angle} * 1.25, 10) is true:
-                ignite loop-entity for 2 seconds
-                damage(loop-entity, {_player}, {_damage})
+
+        for {_marker} in {_markers::*}:
+            if {_marker} isn't alive:
+                delete entities within {_markers::*}
+                set {_stop} to true
+
+        if {_stop} is true:
+            stop loop
+
+        set {_starting location} to {_player}'s eye ~ vector(0, -0.35, 0)
+        set {_direction} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
+
+        for {_marker} in {_markers::*}:
+            set {_marker direction} to {_direction}
+            set {_index} to loop-index parsed as number
+            set {_distance} to {_range} * {_index} / size of {_markers::*}
+            set vector length of {_marker direction} to {_distance}
+
+            set {_marker location} to {_starting location} ~ {_marker direction}
+            teleport {_marker} to {_marker location}
+
+        drawConeFilled({_starting location}, {_range}, {_angle}, 16)
+
+        for {_entity} in all living entities in radius ({_range} * 2) around {_player}:
+            {_entity} is not player or an armor stand
+            if coneHit({_player}, {_entity}, {_range}, {_angle} * 1.25, 10) is true:
+                ignite {_entity} for 2 seconds
+                damage({_entity}, {_player}, {_damage})
 
         add {_addrange} to {_range}
+
+    delete entities within {_markers::*}
 
 local function drawConeFilled(origin: location, range: number, coneAngle: number, spokes: number):
     set {_half} to {_coneAngle} / 2

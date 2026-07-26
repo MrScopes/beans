@@ -1,0 +1,70 @@
+function marker(location: location, player: player, abiltity: text) :: entity:
+    spawn armor stand at {_location}:
+        set {_marker} to spawned entity
+        make spawned entity invisible
+        make spawned entity not persistent
+        spawned entity.setMarker(true)
+    set {-%{_marker}%::player} to {_player}
+    set {-%{_marker}%::ability} to {_ability}
+    return {_marker}
+
+command /proj:
+    trigger:
+        set {_origin} to location of player's head
+        set {_direction} to vector from yaw player's yaw and pitch player's pitch
+        set {_distance} to 20
+        set {_steps} to {_distance} * 4
+
+        set {_marker} to marker({_origin}, player, "test")
+
+        loop {_steps} times:
+            if {_marker} isn't alive:
+                stop loop
+
+            if mod(loop-iteration, 4) is 0:
+                wait 1 tick
+
+            set {_vector} to {_direction}
+            set vector length of {_vector} to loop-value / 4
+            set {_bullet location} to {_origin} ~ {_vector}
+            teleport {_marker} to {_bullet location}
+
+            draw 2 blue dust particle at {_bullet location}
+
+            for {_entity} in all living entities in radius 2 around {_bullet location}:
+                {_entity} is not player or an armor stand
+                set cooldown of elytra for loop-entity to 3 seconds
+                while distance between {_entity} and player > 2.5:
+                    wait 1 tick
+                    add 1 to {_ticks}
+                    if {_ticks} > 60:
+                        delete entity within {_marker}
+                        stop loop
+                    push {_entity} towards player with speed 0.25
+        delete entity within {_marker}
+
+command /absorb:
+    trigger:
+        if {-absorb} is set:
+            delete {-absorb}
+            send "killing"
+        else:
+            set {-absorb} to marker(location of player's head, player, "absorb")
+            send "spawning"
+
+            set {_sphere} to sphere with radius 3
+            set particle of {_sphere} to green dust particle
+            set particle density of {_sphere} to 2
+
+            while {-absorb} is alive:
+                wait 1 tick
+                draw shape {_sphere} at {-absorb}
+                for {_entity} in all entities in radius 3 around {-absorb}:
+                    {_entity} isn't player or {-absorb}
+                    if {_entity} is a projectile:
+                        delete entity within {_entity}
+                    else if {_entity} is a armor stand:
+                        delete entity within {_entity}
+                    else if {_entity} is a living entity:
+                        damage {_entity} by 0.1
+                        reset {_entity}'s no damage time
