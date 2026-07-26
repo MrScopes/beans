@@ -18,6 +18,19 @@ function bar(entity: entity):
         apply drop shadow to text display
         set data tag "bar" of text display to true
 
+    # health number
+    spawn text display at {_entity}:
+        set {-health number::%{_entity}%} to text display
+        make text display not persistent
+        make text display ride {_entity}
+        set billboard of text display to center
+        set transformation translation of text display to vector(0, 0.45 + {-bar height modifier::%{_entity}%}, 0)
+        set transformation scale of text display to vector(0.6, 0.6, 0.6)
+        set line width of text display to 400
+        set view range of text display to 0.5
+        apply drop shadow to text display
+        set data tag "bar" of text display to true
+
     # nametag
     spawn text display at {_entity}:
         set {-nametag::%{_entity}%} to text display
@@ -44,20 +57,32 @@ function canBeBarred(entity: entity) :: boolean:
 
 function deleteBar(entity: entity):
     delete {-no bar::%{_entity}%}
-    kill {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}
+    kill {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-last health::%{_entity}%}
     delete {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-last health::%{_entity}%}
 
 function updateHealthbar(entity: entity):
-    set {_lastHealth} to {-lasthealth::%{_entity}%} ? {_entity}'s health
     set {_currentHealth} to {_entity}'s health
-    set {_healthPercentage} to ({_currentHealth} / {_entity}'s max health)
-    set {_filledGreen} to round({_healthPercentage} * 50)
-    set {_deltaHealth} to round((({_currentHealth} - {_lastHealth}) / {_entity}'s max health) * 50)
+    set {_maxHealth} to {_entity}'s max health
+    set {_absorption} to {_entity}'s absorption amount / 2
+    set {_totalCapacity} to {_maxHealth} + {_absorption}
 
-    if {_filledGreen} > 50:
-        set {_filledGreen} to 50
-    if {_filledGreen} < 0:
-        set {_filledGreen} to 0
+    {_totalCapacity} > 0
+
+    set {_totalPercentage} to (({_currentHealth} + {_absorption}) / {_totalCapacity}) * 100
+    set text of {-health number::%{_entity}%} to "%round({_totalPercentage})%"
+
+    set {_lastHealth} to {-lasthealth::%{_entity}%} ? {_currentHealth}
+
+    set {_filledGreen} to round(({_currentHealth} / {_totalCapacity}) * 50)
+    set {_filledGold} to round(({_absorption} / {_totalCapacity}) * 50)
+
+    set {_filledGreen} to clamp({_filledGreen}, 0, 50)
+    set {_filledGold} to clamp({_filledGold}, 0, 50)
+
+    set {_remainingSpace} to 50 - {_filledGreen}
+    set {_filledGold} to clamp({_filledGold}, 0, {_remainingSpace})
+
+    set {_deltaHealth} to round((({_currentHealth} - {_lastHealth}) / {_totalCapacity}) * 50)
 
     set {_healthColor} to "&a"
     if {_filledGreen} <= 10:
@@ -65,54 +90,52 @@ function updateHealthbar(entity: entity):
     else if {_filledGreen} <= 24:
         set {_healthColor} to "&e"
 
-    set {_filledGold} to round(({_entity}'s absorption amount / 2) / {_entity}'s max health * 50)
-
-    if {_filledGold} > 50:
-        set {_filledGold} to 50
-    if {_filledGold} < 0:
-        set {_filledGold} to 0
-
-    set {_visibleGreen} to {_filledGreen}
-    if {_visibleGreen} > (50 - {_filledGold}):
-        set {_visibleGreen} to (50 - {_filledGold})
-    if {_visibleGreen} < 0:
-        set {_visibleGreen} to 0
-
     if {_deltaHealth} != 0:
         if {_deltaHealth} < 0:
-            loop {_visibleGreen} times:
+            set {_damageSegments} to 0 - {_deltaHealth}
+            set {_damageSegments} to clamp({_damageSegments}, 0, {_filledGreen})
+
+            set {_normalSegments} to {_filledGreen} - {_damageSegments}
+
+            loop {_normalSegments} times:
                 add "%{_healthColor}%&m " to {_flashBar::*}
 
-            loop (0 - {_deltaHealth}) times:
+            loop {_damageSegments} times:
                 add "&4&m " to {_flashBar::*}
 
-            loop {_filledGold} times:
-                add "&6&m " to {_flashBar::*}
         else:
-            loop {_visibleGreen} - {_deltaHealth} times:
+            set {_healSegments} to clamp({_deltaHealth}, 0, {_filledGreen})
+            set {_normalSegments} to {_filledGreen} - {_healSegments}
+
+            loop {_normalSegments} times:
                 add "%{_healthColor}%&m " to {_flashBar::*}
 
-            loop {_deltaHealth} times:
+            loop {_healSegments} times:
                 add "&2&m " to {_flashBar::*}
 
-            loop {_filledGold} times:
-                add "&6&m " to {_flashBar::*}
+        loop {_filledGold} times:
+            add "&6&m " to {_flashBar::*}
 
         set {_remaining} to 50 - size of {_flashBar::*}
+        set {_remaining} to clamp({_remaining}, 0, 50)
+
         loop {_remaining} times:
             add "&8&m " to {_flashBar::*}
 
         set text of {-healthbar::%{_entity}%} to join {_flashBar::*} with ""
-        wait 1 ticks
+
+        wait 1 tick
         delete {_flashBar::*}
 
-    loop {_visibleGreen} times:
+    loop {_filledGreen} times:
         add "%{_healthColor}%&m " to {_bar::*}
 
     loop {_filledGold} times:
         add "&6&m " to {_bar::*}
 
-    set {_remainingEmpty} to 50 - ({_visibleGreen} + {_filledGold})
+    set {_remainingEmpty} to 50 - ({_filledGreen} + {_filledGold})
+    set {_remainingEmpty} to clamp({_remainingEmpty}, 0, 50)
+
     loop {_remainingEmpty} times:
         add "&8&m " to {_bar::*}
 
@@ -133,22 +156,33 @@ function updateNametag(entity: entity):
     set text of {-nametag::%{_entity}%} to {_display} ? "&7%{_name}%"
 
 function updateVisibility(entity: entity):
+    set color of {-healthbar::%{_entity}%} to rgb(0, 0, 0, 0)
+
     if bound at {_entity} contains bound with id "spawn":
         reset color of {-nametag::%{_entity}%}
         set text opacity of {-nametag::%{_entity}%} to 255
+
+        set color of {-health number::%{_entity}%} to rgb(0, 0, 0, 0)
         set text opacity of {-healthbar::%{_entity}%} to 0
+        set text opacity of {-health number::%{_entity}%} to 0
     else:
         if any:
             {_entity} is sneaking
             potion level of invisibility potion effect of {_entity} > 0
         then:
             set color of {-nametag::%{_entity}%} to rgb(0, 0, 0, 0)
+            set color of {-health number::%{_entity}%} to rgb(0, 0, 0, 0)
+
             set text opacity of {-nametag::%{_entity}%} to 0
             set text opacity of {-healthbar::%{_entity}%} to 0
+            set text opacity of {-health number::%{_entity}%} to 0
         else:
             reset color of {-nametag::%{_entity}%}
+            reset color of {-health number::%{_entity}%}
+
             set text opacity of {-nametag::%{_entity}%} to 255
             set text opacity of {-healthbar::%{_entity}%} to 255
+            set text opacity of {-health number::%{_entity}%} to 255
 
 on load:
     resetBars()

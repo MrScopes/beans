@@ -58,3 +58,7 @@ on command:
     player is set
     wait 2 ticks
     updateNametag(player)
+
+on armor change:
+    wait 1 tick
+    updateHealthbar(player)
