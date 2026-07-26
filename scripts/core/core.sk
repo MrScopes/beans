@@ -310,7 +310,6 @@ on drop:
 on projectile hit with priority monitor:
     projectile is an arrow
     wait 2 ticks
-    delete {-%projectile%::*}
     delete projectile
 
 on craft:
