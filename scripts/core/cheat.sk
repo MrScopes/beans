@@ -38,7 +38,7 @@ command /max:
             set {_vanilla enchantments::*} to sharpness, fire aspect
         else if player's tool is a leather helmet:
             set {_type} to "armor"
-            # set {_vanilla enchantments::*} to protection
+            set {_vanilla enchantments::*} to protection
         else if player's tool is a bow:
             set {_type} to "bow"
             set {_vanilla enchantments::*} to power, punch, flame

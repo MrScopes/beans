@@ -32,8 +32,8 @@ function openUpgradeGui(player: player):
         set {_vanilla::*} to efficiency, fortune
     else if {_player}'s tool is tagged with minecraft tag "swords":
         set {_vanilla::*} to sharpness, fire aspect, knockback
-    #else if {_player}'s tool is tagged with paper tag "helmets":
-    #    set {_vanilla::*} to protection
+    else if {_player}'s tool is tagged with paper tag "helmets":
+        set {_vanilla::*} to protection
     else if {_player}'s tool is tagged with paper tag "bows":
         set {_vanilla::*} to power, punch, flame
 
@@ -82,7 +82,7 @@ function createVanillaEnchantGuiItem(player: player, enchantment: object) :: ite
     set {_display} to {-vanilla enchantment::%{_enchantment}%::display} ? "&7%{_enchantment}%"
     set {_level} to level of {_enchantment} on {_player}'s tool ? 0
 
-    if {_level} >= {-vanilla enchantment::%{_enchantment}%::max}:
+    if {_level} >= {-vanilla enchantment::%{_enchantment}%::max level}:
         if {_level} > 0:
             set {_label} to "&c%{_display}% %romanNumeral({_level})%"
         else:
@@ -95,7 +95,7 @@ function createVanillaEnchantGuiItem(player: player, enchantment: object) :: ite
             set {_label} to "&a%{_display}% %romanNumeral({_level})%"
         else:
             set {_label} to "&a%{_display}%"
-        set {_book} to enchanted book named formatted {_label} with lore "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)", "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)", "&fMax: %{-vanilla enchantment::%{_enchantment}%::max}%" with all item flags
+        set {_book} to enchanted book named formatted {_label} with lore "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)", "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)", "&fMax: %{-vanilla enchantment::%{_enchantment}%::max level}%" with all item flags
 
     set data tag "vanilla_enchantment" of {_book} to "%{_enchantment}%"
     return {_book}
@@ -253,8 +253,8 @@ function handleVanillaEnchantClick(player: player, guiItem: item, click: click t
     set {_level} to level of {_parsed} on {_player}'s tool ? 0
 
     if {_click} is left mouse button:
-        if {_level} >= {-vanilla enchantment::%{_enchantment}%::max}:
-            send "The max level for that enchantment is %{-vanilla enchantment::%{_enchantment}%::max}%." to {_player}
+        if {_level} >= {-vanilla enchantment::%{_enchantment}%::max level}:
+            send "The max level for that enchantment is %{-vanilla enchantment::%{_enchantment}%::max level}%." to {_player}
             stop
         set {_xp cost} to {-vanilla enchantment::%{_enchantment}%::xp cost::%{_level} + 1%}
         set {_money cost} to {-vanilla enchantment::%{_enchantment}%::money cost::%{_level} + 1%}
