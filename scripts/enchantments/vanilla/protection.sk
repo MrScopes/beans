@@ -1,0 +1,16 @@
+on load:
+    set {-vanilla enchantment::protection::display} to "Protection"
+    
+    set {-vanilla enchantment::protection::max level} to 5
+
+    set {-vanilla enchantment::protection::xp cost::1} to 1000
+    set {-vanilla enchantment::protection::xp cost::2} to 4000
+    set {-vanilla enchantment::protection::xp cost::3} to 12000
+    set {-vanilla enchantment::protection::xp cost::4} to 26000
+    set {-vanilla enchantment::protection::xp cost::5} to 65000
+
+    set {-vanilla enchantment::protection::money cost::1} to 1500
+    set {-vanilla enchantment::protection::money cost::2} to 5000
+    set {-vanilla enchantment::protection::money cost::3} to 15000
+    set {-vanilla enchantment::protection::money cost::4} to 30000
+    set {-vanilla enchantment::protection::money cost::5} to 75000
