@@ -57,30 +57,27 @@ function canBeBarred(entity: entity) :: boolean:
 
 function deleteBar(entity: entity):
     delete {-no bar::%{_entity}%}
-    kill {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-last health::%{_entity}%}
-    delete {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-last health::%{_entity}%}
+    kill {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-health number::%{_entity}%}
+    delete {-healthbar::%{_entity}%}, {-nametag::%{_entity}%}, {-health number::%{_entity}%}, {-lasthealth::%{_entity}%}
 
 function updateHealthbar(entity: entity):
     set {_currentHealth} to {_entity}'s health
     set {_maxHealth} to {_entity}'s max health
     set {_absorption} to {_entity}'s absorption amount / 2
-    set {_totalCapacity} to {_maxHealth} + {_absorption}
 
-    {_totalCapacity} > 0
+    {_maxHealth} > 0
 
-    set {_totalPercentage} to (({_currentHealth} + {_absorption}) / {_totalCapacity}) * 100
+    set {_totalPercentage} to (({_currentHealth} + {_absorption}) / {_maxHealth}) * 100
     set text of {-health number::%{_entity}%} to "%round({_totalPercentage})%"
 
+    set {_totalCapacity} to {_maxHealth} + {_absorption}
     set {_lastHealth} to {-lasthealth::%{_entity}%} ? {_currentHealth}
 
     set {_filledGreen} to round(({_currentHealth} / {_totalCapacity}) * 50)
     set {_filledGold} to round(({_absorption} / {_totalCapacity}) * 50)
 
     set {_filledGreen} to clamp({_filledGreen}, 0, 50)
-    set {_filledGold} to clamp({_filledGold}, 0, 50)
-
-    set {_remainingSpace} to 50 - {_filledGreen}
-    set {_filledGold} to clamp({_filledGold}, 0, {_remainingSpace})
+    set {_filledGold} to clamp({_filledGold}, 0, 50 - {_filledGreen})
 
     set {_deltaHealth} to round((({_currentHealth} - {_lastHealth}) / {_totalCapacity}) * 50)
 
@@ -94,50 +91,36 @@ function updateHealthbar(entity: entity):
         if {_deltaHealth} < 0:
             set {_damageSegments} to 0 - {_deltaHealth}
             set {_damageSegments} to clamp({_damageSegments}, 0, {_filledGreen})
-
             set {_normalSegments} to {_filledGreen} - {_damageSegments}
 
-            loop {_normalSegments} times:
-                add "%{_healthColor}%&m " to {_flashBar::*}
-
-            loop {_damageSegments} times:
-                add "&4&m " to {_flashBar::*}
-
+            add "%{_healthColor}%&m " repeated {_normalSegments} times to {_flashBar::*}
+            add "&4&m " repeated {_damageSegments} times to {_flashBar::*}
         else:
             set {_healSegments} to clamp({_deltaHealth}, 0, {_filledGreen})
             set {_normalSegments} to {_filledGreen} - {_healSegments}
 
-            loop {_normalSegments} times:
-                add "%{_healthColor}%&m " to {_flashBar::*}
+            add "%{_healthColor}%&m " repeated {_normalSegments} times to {_flashBar::*}
+            add "&2&m " repeated {_healSegments} times to {_flashBar::*}
 
-            loop {_healSegments} times:
-                add "&2&m " to {_flashBar::*}
-
-        loop {_filledGold} times:
-            add "&6&m " to {_flashBar::*}
+        add "&6&m " repeated {_filledGold} times to {_flashBar::*}
 
         set {_remaining} to 50 - size of {_flashBar::*}
         set {_remaining} to clamp({_remaining}, 0, 50)
 
-        loop {_remaining} times:
-            add "&8&m " to {_flashBar::*}
+        add "&8&m " repeated {_remaining} times to {_flashBar::*}
 
         set text of {-healthbar::%{_entity}%} to join {_flashBar::*} with ""
 
         wait 1 tick
         delete {_flashBar::*}
 
-    loop {_filledGreen} times:
-        add "%{_healthColor}%&m " to {_bar::*}
-
-    loop {_filledGold} times:
-        add "&6&m " to {_bar::*}
+    add "%{_healthColor}%&m " repeated {_filledGreen} times to {_bar::*}
+    add "&6&m " repeated {_filledGold} times to {_bar::*}
 
     set {_remainingEmpty} to 50 - ({_filledGreen} + {_filledGold})
     set {_remainingEmpty} to clamp({_remainingEmpty}, 0, 50)
 
-    loop {_remainingEmpty} times:
-        add "&8&m " to {_bar::*}
+    add "&8&m " repeated {_remainingEmpty} times to {_bar::*}
 
     set text of {-healthbar::%{_entity}%} to join {_bar::*} with ""
     set {-lasthealth::%{_entity}%} to {_currentHealth}
