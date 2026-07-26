@@ -2,7 +2,7 @@ function duration(input: string) :: object:
 	if {_input} is "forever" or "permanent":
 		return "forever"
 	if {_input} doesn't match "^(\d+(y|mo|d|h|m|s))+$":
-		stop
+		return {_input} parsed as timespan
 	set {_parts::*} to regex split {_input} at "(?<=\D)(?=\d)|(?<=\d)(?=\D)"
 	loop {_parts::*}:
 		if loop-value matches "^\d+$":
@@ -19,12 +19,7 @@ function duration(input: string) :: object:
 			add {_num} * 1 minutes to {_total}
 		else if loop-value is "s":
 			add {_num} * 1 seconds to {_total}
-		else:
-			stop
-	if {_total} is set:
-		return {_total}
-	else:
-		return {_input} parsed as timespan
+	return {_total}
 
 function durationDisplay(duration: object) :: text:
 	if {_duration} is "forever":
