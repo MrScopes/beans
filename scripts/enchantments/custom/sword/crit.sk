@@ -7,17 +7,17 @@ on load:
 
         level values for "chance":
             set level 1 to 10
-            set level 2 to 15
-            set level 3 to 20
-            set level 4 to 25
-            set level 5 to 30
+            set level 2 to 12
+            set level 3 to 14
+            set level 4 to 16
+            set level 5 to 20
 
-        level values for "increase":
+        level values for "multiplier":
             set level 1 to 0.1
-            set level 2 to 0.15
-            set level 3 to 0.20
-            set level 4 to 0.25
-            set level 5 to 0.35
+            set level 2 to 0.12
+            set level 3 to 0.14
+            set level 4 to 0.16
+            set level 5 to 0.20
 
         level values for "xp cost":
             set level 2 to 6_000
@@ -32,8 +32,10 @@ on load:
             set level 5 to 550_000
 
 local function getDescription(level: integer) :: string:
-    return "increase final damage by %"increase" of {_level} for "crit" * 100%%%"
+    set {_multiplier} to "multiplier" of {_level} for "crit"
+    return "increase final damage by &f%{_multiplier} * 100%%%"
 
 local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
+    set {_multiplier} to "multiplier" of {_level} for "crit"
     play sound "minecraft:entity.bat.hurt" with volume 1 and pitch 1 to {_attacker}
-    return {_damage} * (1 + "increase" of {_level} for "crit")
+    return {_damage} * (1 + {_multiplier})
