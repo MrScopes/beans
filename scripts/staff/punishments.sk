@@ -21,7 +21,10 @@ function duration(input: string) :: object:
 			add {_num} * 1 seconds to {_total}
 		else:
 			stop
-	return {_total}
+	if {_total} is set:
+		return {_total}
+	else:
+		return {_input} parsed as timespan
 
 function durationDisplay(duration: object) :: text:
 	if {_duration} is "forever":
