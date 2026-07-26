@@ -1,5 +1,5 @@
 function duration(input: string) :: object:
-	if {_input} is "forever":
+	if {_input} is "forever" or "permanent":
 		return "forever"
 	if {_input} doesn't match "^(\d+(y|mo|d|h|m|s))+$":
 		stop
@@ -249,7 +249,7 @@ command /punish <offline player>:
 				add text input:
 					key: "duration"
 					label: "&fDuration"
-					initial: "1d"
+					initial: "1 day"
 					max_length: 32
 					width: 250
 				add text input:
