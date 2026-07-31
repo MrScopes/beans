@@ -78,6 +78,8 @@ public class ExprCustomEnchantment extends SimpleExpression<Long> {
             case DELETE:
                 CustomEnchantments.setEnchantmentLevel(itemType, enchantmentExpression.getSingle(event), 0L);
                 break;
+            default:
+                break;
         }
     }
 

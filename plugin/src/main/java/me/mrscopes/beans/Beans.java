@@ -3,13 +3,10 @@ package me.mrscopes.beans;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import me.mrscopes.beans.command.Registry;
 import me.mrscopes.beans.map.MapManager;
-import me.mrscopes.beans.mine.FastBlocks;
 import me.mrscopes.beans.mine.MineManager;
 import me.mrscopes.beans.skript.BeansSkript;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Beans extends JavaPlugin {
