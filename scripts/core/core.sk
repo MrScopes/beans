@@ -74,10 +74,13 @@ command /daily:
         if {_dif} < 24 hours:
             send "&7You must wait &b%time_format(24 hours - {_dif})% &7for your daily reward&7."        
         else:
-            set {_beacons} to daily_beacons_player(player) ? 1
-            giveBeacons(player, {_beacons})
+            set {_spins} to daily_wheel_spins_player(player)
+            add {_spins} to {wheel spins::%player%}
+            #set {_beacons} to daily_beacons_player(player) ? 1
+           # giveBeacons(player, {_beacons})
             send "&bYou received your daily reward."
-            send "&b&l+%{_beacons}% BEACONS"
+            send "&a+%{_spins}% wheel spins"
+            #send "&b&l+%{_beacons}% BEACONS"
             set {daily::%player%} to now
 
 on join:
