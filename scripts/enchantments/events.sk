@@ -13,17 +13,13 @@ function enchantCanRun(player: player, enchantment: string, level: integer, luck
             return false
 
     if "manual cooldown" of {_level} for {_enchantment} isn't set:
-        set {_cooldown} to "cooldown" of {_level} for {_enchantment}
-        {_cooldown} is set
-        if difference between now and {-enchant cooldown::%{_player}%::%{_enchantment}%} < {_cooldown}:
-            return false
+        set {_expires} to {-enchant cooldown::%{_player}%::%{_enchantment}%}
+
+        if {_expires} is set:
+            if {_expires} is in the future:
+                return false
 
     return true
-
-function startEnchantCooldown(player: player, enchantment: string, level: integer):
-    set {_cooldown} to "cooldown" of {_level} for {_enchantment}
-    if {_cooldown} is set:
-        set {-enchant cooldown::%{_player}%::%{_enchantment}%} to now
 
 function miningEnchants(player: player, block: block):
     {_block} is within bound with id "mine"

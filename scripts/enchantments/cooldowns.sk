@@ -1,0 +1,45 @@
+function startEnchantCooldown(player: player, enchantment: string, level: integer):
+    set {_cooldown} to "cooldown" of {_level} for {_enchantment}
+    if {_cooldown} is set:
+        set {-enchant cooldown::%{_player}%::%{_enchantment}%} to now + {_cooldown}
+        set {-enchant cooldown::%{_player}%::%{_enchantment}%::level} to {_level}
+
+function resetEnchantCooldown(player: player, enchantment: string = {_}):
+    if {_enchantment} isn't set:
+        delete {-enchant cooldown::%{_player}%::*}
+    else:
+        delete {-enchant cooldown::%{_player}%::%{_enchantment}%}
+
+function getRemainingEnchantCooldown(player: player, enchantment: string) :: timespan:
+    set {_expires} to {-enchant cooldown::%{_player}%::%{_enchantment}%}
+
+    if {_expires} is set:
+        return time remaining until {_expires}
+
+    return 0 seconds
+
+function reduceCooldown(player: player, flat: timespan = 0 seconds, percent: number = 0, enchantment: string = {_}):
+    if {_enchantment} isn't set:
+        loop indexes of {-enchant cooldown::%{_player}%::*}:
+            if loop-value does not contain "::":
+                reduceCooldown({_player}, flat: {_flat}, percent: {_percent}, enchantment: loop-value)
+    else:
+        set {_expires} to {-enchant cooldown::%{_player}%::%{_enchantment}%}
+
+        if {_expires} is set:
+            set {_remaining} to time remaining until {_expires}
+
+            if {_remaining} <= 0 seconds:
+                resetEnchantCooldown({_player}, {_enchantment})
+                stop
+
+            set {_percent} to max(0, min(100, {_percent}))
+            set {_percent decimal} to {_percent} / 100
+
+            set {_percent reduction} to {_remaining} * {_percent decimal}
+            set {_total reduction} to {_flat} + {_percent reduction}
+
+            if {_total reduction} >= {_remaining}:
+                resetEnchantCooldown({_player}, {_enchantment})
+            else:
+                set {-enchant cooldown::%{_player}%::%{_enchantment}%} to {_expires} - {_total reduction}
