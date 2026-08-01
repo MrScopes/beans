@@ -201,6 +201,32 @@ on left click with priority monitor:
         startEnchantCooldown(player, {_enchantment}, {_level})
         run {_onleftclick} with arguments (player, player's tool, {_level})
 
+on death with priority monitor:
+    bounds at victim does not contain bound with id "spawn"
+
+    for {_item} in victim's tool and victim's armor:
+        {_item} isn't air
+        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
+            set {_ondeath} to {-ce::%{_enchantment}%::ondeath}
+            {_ondeath} is set
+
+            enchantCanRun(victim, {_enchantment}, {_level}) is true
+
+            startEnchantCooldown(victim, {_enchantment}, {_level})
+            run {_ondeath} with arguments (victim, {_item}, {_level}, attacker)
+
+    for {_item} in attacker's tool and attacker's armor:
+        {_item} isn't air
+        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
+            set {_onkill} to {-ce::%{_enchantment}%::onkill}
+            {_onkill} is set
+
+            enchantCanRun(attacker, {_enchantment}, {_level}) is true
+
+            startEnchantCooldown(attacker, {_enchantment}, {_level})
+            run {_onkill} with arguments (attacker, {_item}, {_level}, victim)
+
+
 ### summon related events
 
 on entity removed from world:

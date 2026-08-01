@@ -28,3 +28,9 @@ local function onapply(armor: item, level: integer, player: player = {_}):
 
 local function onunapply(armor: item, old level: integer, player: player = {_}):
     send "Unapplied enchantment at level %{_old level}%." to {_player}
+
+local function onkill(attacker: entity, armor: item, level: integer, victim: entity):
+    send "(%{_armor}%) You killed %{_victim}% at level %{_level}%." to {_attacker}
+
+local function ondeath(victim: entity, armor: item, level: integer, killer: entity = {_}):
+    send "(%{_armor}%) You died at level %{_level}%." to {_victim}

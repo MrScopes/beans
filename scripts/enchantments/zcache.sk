@@ -37,7 +37,7 @@ function cache_specific_enchantment(enchantment: string, broadcast: boolean = tr
     else:
         set {_script} to script named "enchantments/custom/%{_type}%/%{_script name}%"
 
-    loop "onbreak", "onattack", "onattacked", "ondeath", "onoffhand", "onapply", "onunapply", "onshoot", "onhit", "onrightclick", "onleftclick", "getDescription":
+    loop "onbreak", "onattack", "onattacked", "ondeath", "onoffhand", "onapply", "onunapply", "onshoot", "onhit", "onrightclick", "onleftclick", "onkill", "ondeath", "getDescription":
         set {-ce::%{_enchantment}%::%loop-value%} to function named loop-value from {_script}
 
     loop "getDescription", "max level", "display", "type", "priority", "item":
