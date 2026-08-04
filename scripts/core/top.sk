@@ -1,3 +1,5 @@
+using reflection
+
 on load:
     set {-top command::money} to "money"
     set {-top command::money::display} to "&a$value"
@@ -16,7 +18,7 @@ on load:
     set {-top command::trophies::title} to "Top Trophies"
 
     set {-top command::level} to "level"
-    set {-top command::level::display} to "&dvalue"
+    set {-top command::level::display variable} to "-level display"
     set {-top command::level::title} to "Highest Level"
 
     set {-top command::playtime} to "cached playtime"
@@ -27,37 +29,59 @@ on load:
     set {-top command::xp::display} to "&3value XP"
     set {-top command::xp::title} to "Top XP"
 
-    calculateTops()
+    set {-top command::kills} to "kills"
+    set {-top command::kills::display} to "&fvalue kills"
+    set {-top command::kills::title} to "Top Kills"
 
-async every 5 minutes:
-    calculateTops()
+    set {-top command::deaths} to "deaths"
+    set {-top command::deaths::display} to "&fvalue deaths"
+    set {-top command::deaths::title} to "Top Deaths"
+
+    set {-top command::kdr} to "cached kdr"
+    set {-top command::kdr::display function} to function named "kdrDisplay"
+    set {-top command::kdr::title} to "Top KDR (more than 20 kills)"
 
 function calculateTops():
-    async run 0 ticks later:
-        for {_stat} in indexes of {-top command::*}:
-            set {_variable} to {-top command::%{_stat}%}
-            delete {-sorted::%{_variable}%::*}
+    for {_stat} in indexes of {-top command::*}:
+        set {_variable} to {-top command::%{_stat}%}
+        delete {-sorted::%{_variable}%::*}
 
-            for {_player} in sorted indices of {%{_variable}%::*} in descending order:
-                set {-sorted::%{_variable}%::%loop-iteration-3%::player} to {_player}
-                set {-sorted::%{_variable}%::%loop-iteration-3%::value} to {%{_variable}%::%{_player}%}
-                set {-sorted::%{_variable}%::%{_player}%} to loop-iteration-3
+        for {_player} in sorted indices of {%{_variable}%::*} in descending order:
+            set {-sorted::%{_variable}%::%loop-iteration-2%::player} to {_player}
+            set {-sorted::%{_variable}%::%loop-iteration-2%::value} to {%{_variable}%::%{_player}%}
+            set {-sorted::%{_variable}%::%{_player}%} to loop-iteration-2
 
 function topEntryDisplay(player: offline player, stat: text) :: text:
     set {_variable} to {-top command::%{_stat}%}
-    set {_stat display} to {-top command::%{_stat}%::display}
 
     set {_index} to {-sorted::%{_variable}%::%{_player}%}
-    set {_value} to {-sorted::%{_variable}%::%{_index}%::value}
+    set {_raw value} to {-sorted::%{_variable}%::%{_index}%::value}
 
-    if {_value} is a number:
-        set {_value} to formatNumber({_value})
-    else if {_value} is a timespan:
-        set {_value} to time_format({_value})
+    if {-top command::%{_stat}%::display function} is set:
+        set {_function} to {-top command::%{_stat}%::display function}
+        set {_stat display} to result of {_function} with arguments {_raw value}
 
-    replace all "value" in {_stat display} with {_value}
+    else:
+        set {_stat display} to {-top command::%{_stat}%::display}
+        set {_value} to {_raw value}
 
-    return "&b#%{_index}% &7%player_display({_player}, "[level] [prefix][player] [trophies] [tag] [clan]")%&8: &f%{_stat display}%"
+        if {-top command::%{_stat}%::display variable} is set:
+            set {_display variable} to {-top command::%{_stat}%::display variable}
+            set {_display value} to {%{_display variable}%::%{_raw value}%}
+
+            if {_display value} is not set:
+                set {_display value} to {_raw value}
+
+            replace all "variable" in {_stat display} with "%{_display value}%"
+
+        if {_value} is a number:
+            set {_value} to formatNumber({_value})
+        else if {_value} is a timespan:
+            set {_value} to time_format({_value})
+
+        replace all "value" in {_stat display} with "%{_value}%"
+
+    return "&b#%{_index}% &f<head:%{_player}%> &7%player_display({_player}, "[level] [prefix][player]")%&8: &f%{_stat display}%"
 
 command /top [<text>]:
     trigger:
@@ -85,7 +109,23 @@ command /top [<text>]:
 on tab complete of "/top":
     set tab completions for position 1 to indexes of {-top command::*}
 
-async every minute:
+function cache_stats():
     loop all players:
         set {cached xp::%loop-player%} to experience of loop-player
         set {cached playtime::%loop-player%} to playtime of loop-player
+
+        if {kills::%loop-player%} > 20:
+            set {_deaths} to max(1, {deaths::%loop-player%})
+            set {_kdr} to {kills::%loop-player%} / {_deaths}
+            set {cached kdr::%loop-player%} to {_kdr}
+
+async every 5 minutes:
+    calculateTops()
+
+async every minute:
+    cache_stats()
+
+on load:
+    async run 0 ticks later:
+        cache_stats()
+        calculateTops()
