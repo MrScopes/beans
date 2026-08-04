@@ -21,6 +21,8 @@ on load:
     set {-effect::blindness::display} to "<sprite:gui:mob_effect/blindness>"
     set {-effect::glowing::display} to "<sprite:gui:mob_effect/glowing>"
     set {-effect::hunger::display} to "<sprite:gui:mob_effect/hunger>"
+    set {-effect::health boost::display} to "<sprite:gui:mob_effect/health_boost>"
+    set {-effect::saturation::display} to "<sprite:gui:mob_effect/saturation>"
     set {-effect::armor::display} to "<sprite:gui:hud/armor_full>"
 
 function smallNumber(number: number) :: text:
