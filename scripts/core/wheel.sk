@@ -207,6 +207,7 @@ command /wheel [<text>]:
         if {wheel spins::%player%} isn't greater than 0:
             send "&cYou don't have any wheel spins available."
         else:
+            remove 1 from {wheel spins::%player%}
             setupWheelRewards()
 
             if arg-1 is "reset":
