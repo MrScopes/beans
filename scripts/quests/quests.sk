@@ -100,7 +100,7 @@ on load:
     set {-quests::blocks::20::reward::beacon} to 10
 
     set {-quests::blocks::21::blocks} to 10_000_000
-    set {-quests::blocks::21::reward::dust}     to 12500
+    set {-quests::blocks::21::reward::dust}     to 20_000
     set {-quests::blocks::21::reward::money}  to 2_500_000
     set {-quests::blocks::21::reward::beacon} to 20
 

@@ -5,8 +5,8 @@ command /quests [<text>]:
             set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-blocks quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
 
             # Repeatable quests header items
-            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::1::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::1::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::1::reward::money})%", "" to {-blocks quest gui::%player%}
-            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::2::blocks})% more blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::repeatable::2::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::repeatable::2::reward::money})%", "&bBeacons: %formatNumber({-quests::blocks::repeatable::2::reward::beacon})%", "" to {-blocks quest gui::%player%}
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::1::blocks})% more blocks.", "", "&aReward:", formatted "&f%{-dust sprite}%%formatNumber({-quests::blocks::repeatable::1::reward::dust})%", "&7$%formatNumber({-quests::blocks::repeatable::1::reward::money})%", "" to {-blocks quest gui::%player%}
+            add yellow stained glass pane named "&e&lRepeatable Quest" with lore "&7Mine %formatNumber(difference between {blocks::%player%} and {-quests::blocks::repeatable::2::blocks})% more blocks.", "", "&aReward:", formatted "&f%{-dust sprite}%%formatNumber({-quests::blocks::repeatable::2::reward::dust})%", "&7$%formatNumber({-quests::blocks::repeatable::2::reward::money})%", "&bBeacons: %formatNumber({-quests::blocks::repeatable::2::reward::beacon})%", "" to {-blocks quest gui::%player%}
 
             # One-time block quests
             loop 21 times:
@@ -16,19 +16,19 @@ command /quests [<text>]:
                         if {-quests::blocks::%loop-number%::reward::item} is set:
                             set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
                             set {_item} to gray stained glass pane named "&a&lQuest"
-                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", ""
+                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", ""
                         else:
                             set {_item} to gray stained glass pane named "&a&lQuest"
-                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
                     else:
                         # Not yet completed
                         if {-quests::blocks::%loop-number%::reward::item} is set:
                             set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
                             set {_item} to {-quests::blocks::%loop-number%::reward::item}
-                            add "", "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", "" to lore of {_item}
+                            add formatted "", "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", "" to lore of {_item}
                         else:
                             set {_item} to green stained glass pane named "&c&lQuest"
-                            set lore of {_item} to "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&7%formatNumber({-quests::blocks::%loop-number%::reward::xp})% XP", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
                     add {_item} to {-blocks quest gui::%player%}
 
             open {-blocks quest gui::%player%} to player
@@ -50,7 +50,7 @@ command /quests [<text>]:
                     add "" to lore of {_item}
 
                     add "&aReward:" to lore of {_item}
-                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to lore of {_item}
+                    add formatted "&f%{-dust sprite}%%formatNumber({-quests::level::%{_needed level}%::reward::dust})%" to lore of {_item}
                     add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to lore of {_item}
 
                     if {-quests::level::%{_needed level}%::reward::beacon} is set:
@@ -73,7 +73,7 @@ command /quests [<text>]:
                     add "" to {_lore::*}
 
                     add "&aReward:" to {_lore::*}
-                    add "&7%formatNumber({-quests::level::%{_needed level}%::reward::xp})% XP" to {_lore::*}
+                    add "&f%{-dust sprite}%%formatNumber({-quests::level::%{_needed level}%::reward::dust})%" to {_lore::*}
                     add "&7$%formatNumber({-quests::level::%{_needed level}%::reward::money})%" to {_lore::*}
 
                     if {-quests::level::%{_needed level}%::reward::beacon} is set:
@@ -84,7 +84,7 @@ command /quests [<text>]:
 
                     add "" to {_lore::*}
 
-                    set lore of {_item} to {_lore::*}
+                    set lore of {_item} to formatted {_lore::*}
                 add {_item} to {-level quest gui::%player%}
             open {-level quest gui::%player%} to player
 
@@ -115,7 +115,7 @@ command /quests [<text>]:
                 add "" to {_lore::*}
 
                 add "&aReward:" to {_lore::*}
-                add "&7%formatNumber({-quests::playtime::%loop-number%::reward::xp})% XP" to {_lore::*}
+                add "&f%{-dust sprite}%%formatNumber({-quests::playtime::%loop-number%::reward::dust})%" to {_lore::*}
                 add "&7$%formatNumber({-quests::playtime::%loop-number%::reward::money})%" to {_lore::*}
 
                 if {-quests::playtime::%loop-number%::reward::beacon} is set:
@@ -125,11 +125,11 @@ command /quests [<text>]:
                     add "&e%{-quests::playtime::%loop-number%::reward::text}%" to {_lore::*}
 
                 if {-quests::playtime::%loop-number%::reward::item} is set:
-                    add formatted "%{_name}%" to {_lore::*}
+                    add "%{_name}%" to {_lore::*}
 
                 add "" to {_lore::*}
 
-                set lore of {_item} to {_lore::*}
+                set lore of {_item} to formatted {_lore::*}
 
                 add {_item} to {-playtime quest gui::%player%}
 
