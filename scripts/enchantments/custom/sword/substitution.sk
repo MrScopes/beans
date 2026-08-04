@@ -43,7 +43,7 @@ local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of "substitution" at {_level}
     return "&e[RMB] &7parry an attack, resetting cooldown and dashing back. &8(&f%time_format({_window})% &7window&8, &f%effectDisplay({_speed})%&8)"
 
-local function onrightclick(player: player, item: item, level: integer):
+local function onRightClick(player: player, item: item, level: integer):
     set {-parry::%{_player}%} to now
     set {-parry level::%{_player}%} to {_level}
     playEnchantmentSound("combat", "item.armor.equip_iron", 0.6, 1.3, location of {_player}, all players)

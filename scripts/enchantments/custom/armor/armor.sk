@@ -30,7 +30,7 @@ local function getDescription(level: integer) :: string:
     set {_armor} to "armor" of "armor" at {_level}
     return "increases armor by &f%{_armor}%"
 
-local function onapply(armor: item, level: integer, player: player = {_}):
+local function onApply(armor: item, level: integer, player: player = {_}):
     set {_amount} to "armor" of "armor" at {_level}
     apply attribute modifier to (item within {_armor}):
         attribute: armor
@@ -39,6 +39,6 @@ local function onapply(armor: item, level: integer, player: player = {_}):
         amount: {_amount}
         operation: add number
 
-local function onunapply(armor: item, level: integer, player: player = {_}):
+local function onUnapply(armor: item, level: integer, player: player = {_}):
     remove attribute modifier with key "skript:armor_enchantment" from item within {_armor}
     

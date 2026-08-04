@@ -35,7 +35,7 @@ local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "precision" at {_level}
     return "hitting a shot increases arrow damage by &f%{_multiplier} * 100%%%&8. &7missing a shot resets the multiplier"
 
-local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
+local function onAttack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     {_shooter} isn't {_victim}
     if {-shots hit in a row::%{_shooter}%} > 1:
         set {_multiplier} to "multiplier" of "precision" at {_level}
@@ -44,7 +44,7 @@ local function onattack(shooter: entity, victim: entity, projectile: entity, lev
         playEnchantmentSound("combat", "block.note_block.pling", 1, 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * ({_multiplier} * 1.5), 0, 1.5)), location of {_shooter}, all players)
         return {_damage} * (clamp({-shots hit in a row::%{_shooter}%} * {_multiplier}, 0, {_max multiplier}))
 
-local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} isn't a living entity:
         delete {-shots hit in a row::%{_shooter}%}
     else:

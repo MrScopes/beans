@@ -26,6 +26,6 @@ on load:
 local function getDescription(level: integer) :: string:
     return "return your shot arrow"
 
-local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
+local function onShoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     wait 1 tick
     give {_shooter} 1 arrow

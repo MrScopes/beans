@@ -37,7 +37,7 @@ local function getDescription(level: integer) :: string:
     set {_duration} to time_format(duration of {_effect})
     return "applies &f%effectDisplay({_effect})% &7and &f%effectDisplay("firework disable", customDuration: duration of {_effect}, showAmplifier: false)%"
 
-local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
         set {_effect} to "effect" of "concuss" at {_level}
         add {_effect} to {_victim}'s potion effects

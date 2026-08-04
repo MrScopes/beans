@@ -5,7 +5,7 @@ on load:
         set enchantment priority to 100
         set enchantment item to fire charge
 
-        level values for "manual cooldown::onhit":
+        level values for "manual cooldown::onHit":
             set level 1 to true
             set level 2 to true
             set level 3 to true
@@ -71,12 +71,12 @@ local function getDescription(level: integer) :: string:
     set {_aoe per block} to "aoe per block" of "meteor" at {_level}
     return "create an explosion when shot from above&8, &f%{_damage per block}%<sprite:gui:hud/heart/full>&8/&7block&8, &7AOE &f%{_aoe per block}%m&8/&7block"
 
-local function onshoot(shooter: entity, tool: item, projectile: entity, level: integer, force: number):
+local function onShoot(shooter: entity, tool: item, projectile: entity, level: integer, force: number):
     wait 3 ticks
     if y coordinate of {_projectile} < y coordinate of {_shooter}:
         set {-%{_projectile}%::meteor} to location of {_projectile}
 
-local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     {-%{_projectile}%::meteor} is set
     set {_distance} to distance between {-%{_projectile}%::meteor} and location of {_victim}
     set {_damage} to clamp({_distance} * "damage per block" of "meteor" at {_level}, 0, "max damage" of "meteor" at {_level})

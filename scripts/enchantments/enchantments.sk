@@ -11,14 +11,14 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
         send "%{_player}%, %{_enchantment}% %{_level}%. max: %{-ce::%{_enchantment}%::max level}%" to ops and console
 
     if {_level} is 0:
-        if {-ce::%{_enchantment}%::onunapply} is set:
-            run {-ce::%{_enchantment}%::onunapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
+        if {-ce::%{_enchantment}%::onUnapply} is set:
+            run {-ce::%{_enchantment}%::onUnapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
         set level of custom enchantment {_enchantment} of {_item} to 0
         delete data tag "special_%{_enchantment}%" of {_item}
     else:
         set level of custom enchantment {_enchantment} of {_item} to {_level}
-        if {-ce::%{_enchantment}%::onapply} is set:
-            run {-ce::%{_enchantment}%::onapply} with arguments ({_item}, {_level}, {_player})
+        if {-ce::%{_enchantment}%::onApply} is set:
+            run {-ce::%{_enchantment}%::onApply} with arguments ({_item}, {_level}, {_player})
     set {_item} to updateLore({_item})
 
     return {_item}

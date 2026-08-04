@@ -53,7 +53,7 @@ local function getDescription(level: integer) :: string:
 
     return "when below &f%{_health threshold}%<sprite:gui:hud/heart/full>&8, &7gain &f%effectDisplay({_speed})%&8, &f%effectDisplay({_strength})%&8, &f%effectDisplay({_resistance})%"
 
-local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+local function onAttacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     wait 1 tick
     set {_health threshold} to "health threshold" of "last_stand" at {_level}
     if {_victim}'s health < {_health threshold}:

@@ -36,7 +36,7 @@ local function getDescription(level: integer) :: string:
     set {_time} to "time threshold" of "ambush" at {_level}
     return "when the victim hasn't taken damage within &f%time_format({_time})%&8, &7increase dmg by &f%{_multiplier} * 100%%%" 
 
-local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
+local function onAttack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     set {_time} to "time threshold" of "ambush" at {_level}
     if (difference between now and {-last damaged::%{_victim}%}) > {_time}:
         set {_multiplier} to "multiplier" of "ambush" at {_level}

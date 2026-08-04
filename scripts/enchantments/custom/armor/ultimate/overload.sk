@@ -63,7 +63,7 @@ local function getDescription(level: integer) :: string:
     set {_absorption} to "absorption" of "overload" at {_level}
     return "on kill&8, &7feed you by &f%{-effect::saturation::display}%%{_feed}%&8, &7and grant &f%effectDisplay({_regeneration})%&8, &f%effectDisplay({_speed})%&8, &f%effectDisplay({_health boost})%&8, &7and &f%effectDisplay({_absorption})%"
 
-local function onkill(attacker: entity, armor: item, level: integer, victim: entity):
+local function onKill(attacker: entity, armor: item, level: integer, victim: entity):
     {_victim} is a player
     set {_feed} to "feed" of "overload" at {_level}
     set {_regeneration} to "regeneration" of "overload" at {_level}

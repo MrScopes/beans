@@ -45,8 +45,8 @@ on entity shoot bow:
     set {-%projectile%::force} to projectile force
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
-        set {_onshoot} to {-ce::%{_enchantment}%::onshoot}
-        if {_onshoot} isn't set:
+        set {_onShoot} to {-ce::%{_enchantment}%::onShoot}
+        if {_onShoot} isn't set:
             continue
 
         set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
@@ -58,7 +58,7 @@ on entity shoot bow:
             continue
 
         startEnchantCooldown(shooter, {_enchantment}, {_level})
-        run {_onshoot} with arguments (shooter, shooter's tool, projectile, {_level}, projectile force)
+        run {_onShoot} with arguments (shooter, shooter's tool, projectile, {_level}, projectile force)
 
 on projectile hit with priority highest:
     event isn't canceled
@@ -68,8 +68,8 @@ on projectile hit with priority highest:
     {-%projectile%::force} is set
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
-        set {_onhit} to {-ce::%{_enchantment}%::onhit}
-        if {_onhit} isn't set:
+        set {_onHit} to {-ce::%{_enchantment}%::onHit}
+        if {_onHit} isn't set:
             continue
 
         set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
@@ -81,7 +81,7 @@ on projectile hit with priority highest:
             continue
 
         startEnchantCooldown(shooter, {_enchantment}, {_level})
-        run {_onhit} with arguments (shooter, shooter's tool, projectile, {_level}, {-%projectile%::force}, (victim ? block))
+        run {_onHit} with arguments (shooter, shooter's tool, projectile, {_level}, {-%projectile%::force}, (victim ? block))
 
 on damage with priority highest:
     event isn't cancelled
@@ -91,8 +91,8 @@ on damage with priority highest:
         attacker is holding a bow
 
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
-            set {_onattack} to {-ce::%{_enchantment}%::onattack}
-            if {_onattack} isn't set:
+            set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
+            if {_onAttack} isn't set:
                 continue
 
             set {_threshold} to {-ce::%{_enchantment}%::threshold::%{_level}%}
@@ -104,26 +104,26 @@ on damage with priority highest:
                 continue
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
-            add result of {_onattack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
+            add result of {_onAttack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
 
     else if damage cause is attack:
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
-            set {_onattack} to {-ce::%{_enchantment}%::onattack}
-            {_onattack} is set
+            set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
+            {_onAttack} is set
 
             enchantCanRun(attacker, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
-            add result of {_onattack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
+            add result of {_onAttack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(victim's tool):
-        set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
-        {_onattacked} is set
+        set {_onAttacked} to {-ce::%{_enchantment}%::onAttacked}
+        {_onAttacked} is set
 
         enchantCanRun(victim, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(victim, {_enchantment}, {_level})
-        add result of {_onattacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
+        add result of {_onAttacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
 
     if attacker's helmet is a leather helmet:
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's helmet):
@@ -131,13 +131,13 @@ on damage with priority highest:
                 continue
 
             set {_attacker armor already processed::%{_enchantment}%} to true
-            set {_onattack} to {-ce::%{_enchantment}%::onattack}
-            {_onattack} is set
+            set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
+            {_onAttack} is set
 
             enchantCanRun(attacker, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
-            add result of {_onattack} with arguments (attacker, attacker's helmet, {_level}, victim, damage, damage cause) to damage
+            add result of {_onAttack} with arguments (attacker, attacker's helmet, {_level}, victim, damage, damage cause) to damage
 
     if victim's helmet is set:
         set {_attacker} to attacker ? victim
@@ -147,13 +147,13 @@ on damage with priority highest:
                 continue
 
             set {_victim armor already processed::%{_enchantment}%} to true
-            set {_onattacked} to {-ce::%{_enchantment}%::onattacked}
-            {_onattacked} is set
+            set {_onAttacked} to {-ce::%{_enchantment}%::onAttacked}
+            {_onAttacked} is set
 
             enchantCanRun(victim, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(victim, {_enchantment}, {_level})
-            add result of {_onattacked} with arguments (victim, victim's helmet, {_level}, {_attacker}, damage, damage cause) to damage
+            add result of {_onAttacked} with arguments (victim, victim's helmet, {_level}, {_attacker}, damage, damage cause) to damage
 
     if damage < 0:
         cancel event
@@ -162,13 +162,13 @@ on swap items:
     bounds at player does not contain bound with id "spawn"
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
-        set {_onoffhand} to {-ce::%{_enchantment}%::onoffhand}
-        {_onoffhand} is set
+        set {_onOffHand} to {-ce::%{_enchantment}%::onOffHand}
+        {_onOffHand} is set
 
         enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
-        set {_should cancel} to result of {_onoffhand} with arguments (player, player's tool, {_level})
+        set {_should cancel} to result of {_onOffHand} with arguments (player, player's tool, {_level})
 
         if {_should cancel} is true:
             cancel event
@@ -177,25 +177,25 @@ on right click with priority monitor:
     bounds at player does not contain bound with id "spawn"
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
-        set {_onrightclick} to {-ce::%{_enchantment}%::onrightclick}
-        {_onrightclick} is set
+        set {_onRightClick} to {-ce::%{_enchantment}%::onRightClick}
+        {_onRightClick} is set
 
         enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
-        run {_onrightclick} with arguments (player, player's tool, {_level})
+        run {_onRightClick} with arguments (player, player's tool, {_level})
 
 on left click with priority monitor:
     bounds at player does not contain bound with id "spawn"
 
     for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
-        set {_onleftclick} to {-ce::%{_enchantment}%::onleftclick}
-        {_onleftclick} is set
+        set {_onLeftClick} to {-ce::%{_enchantment}%::onLeftClick}
+        {_onLeftClick} is set
 
         enchantCanRun(player, {_enchantment}, {_level}) is true
 
         startEnchantCooldown(player, {_enchantment}, {_level})
-        run {_onleftclick} with arguments (player, player's tool, {_level})
+        run {_onLeftClick} with arguments (player, player's tool, {_level})
 
 on death with priority monitor:
     bounds at victim does not contain bound with id "spawn"
@@ -203,24 +203,24 @@ on death with priority monitor:
     for {_item} in victim's tool and victim's armor:
         {_item} isn't air
         for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
-            set {_ondeath} to {-ce::%{_enchantment}%::ondeath}
-            {_ondeath} is set
+            set {_onDeath} to {-ce::%{_enchantment}%::onDeath}
+            {_onDeath} is set
 
             enchantCanRun(victim, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(victim, {_enchantment}, {_level})
-            run {_ondeath} with arguments (victim, {_item}, {_level}, attacker)
+            run {_onDeath} with arguments (victim, {_item}, {_level}, attacker)
 
     for {_item} in attacker's tool and attacker's armor:
         {_item} isn't air
         for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
-            set {_onkill} to {-ce::%{_enchantment}%::onkill}
-            {_onkill} is set
+            set {_onKill} to {-ce::%{_enchantment}%::onKill}
+            {_onKill} is set
 
             enchantCanRun(attacker, {_enchantment}, {_level}) is true
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
-            run {_onkill} with arguments (attacker, {_item}, {_level}, victim)
+            run {_onKill} with arguments (attacker, {_item}, {_level}, victim)
 
 
 ### summon related events

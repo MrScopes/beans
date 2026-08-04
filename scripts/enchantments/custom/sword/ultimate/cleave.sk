@@ -70,7 +70,7 @@ local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "cleave" at {_level}
     return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%time_format({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
 
-local function onleftclick(player: player, item: item, level: integer):
+local function onLeftClick(player: player, item: item, level: integer):
     set {_requirement} to "requirement" of "cleave" at {_level}
     if {-cleave::%{_player}%} >= {_requirement}:
         delete {-cleave::%{_player}%}
@@ -99,7 +99,7 @@ local function onleftclick(player: player, item: item, level: integer):
                 add loop-entity to {_affected::*}
                 cleave(loop-entity, {_player}, {_level})
 
-local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
+local function onAttack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     add 1 to {-cleave::%{_attacker}%}
     if {-cleave::%{_attacker}%} >= "requirement" of "cleave" at {_level}:
         send action bar "&4&lCleave &fis ready." to {_attacker}

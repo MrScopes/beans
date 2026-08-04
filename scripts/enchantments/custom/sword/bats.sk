@@ -76,7 +76,7 @@ local function getDescription(level: integer) :: string:
 
     return "&e[RMB] &7summon &f%{_amount}% bats &7that travel &f%{_distance}%m &8(&7AOE: &f%{_aoe}%m&8, &7Enemy: &c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &f%effectDisplay({_poison})%&8, &7You: &a%{_healing}%&f<sprite:gui:hud/heart/full>&8)"
 
-local function onrightclick(player: player, item: item, level: integer):
+local function onRightClick(player: player, item: item, level: integer):
     set {_origin} to location of {_player}'s head
 
     set {_distance} to "distance" of "bats" at {_level}

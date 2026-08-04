@@ -50,7 +50,7 @@ local function getDescription(level: integer) :: string:
     set {_resistance} to "resistance" of "adrenaline" at {_level}
     return "on hit&8, &7apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_resistance})%"
 
-local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
+local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
         set {_speed} to "speed" of "adrenaline" at {_level}
         set {_resistance} to "resistance" of "adrenaline" at {_level}

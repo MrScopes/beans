@@ -8,13 +8,13 @@ on load:
 local function getDescription(level: integer) :: string:
     return "Test"
 
-local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+local function onAttacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     send "(%{_armor}%) You were attacked by %{_attacker}% at level %{_level}% for %{_damage}%." to {_victim}
 
-local function onattack(attacker: entity = {_}, armor: item, level: integer, victim: entity, damage: number, damage cause: damage cause) :: number:
+local function onAttack(attacker: entity = {_}, armor: item, level: integer, victim: entity, damage: number, damage cause: damage cause) :: number:
     send "(%{_armor}%) You attacked %{_victim}% at level %{_level}% for %{_damage}%." to {_attacker}
 
-local function onoffhand(player: player, armor: item, level: integer) :: boolean:
+local function onOffHand(player: player, armor: item, level: integer) :: boolean:
     send "(%{_armor}%) You put armor in your offhand at level %{_level}%." to {_player}
     chance of 50%:
         send "50%% chance, canceled event." to {_player}
@@ -23,14 +23,14 @@ local function onoffhand(player: player, armor: item, level: integer) :: boolean
         send "50%% chance, didn't cancel event." to {_player}
         return false
 
-local function onapply(armor: item, level: integer, player: player = {_}):
+local function onApply(armor: item, level: integer, player: player = {_}):
     send "Applied enchantment at level %{_level}%." to {_player}
 
-local function onunapply(armor: item, old level: integer, player: player = {_}):
+local function onUnapply(armor: item, old level: integer, player: player = {_}):
     send "Unapplied enchantment at level %{_old level}%." to {_player}
 
-local function onkill(attacker: entity, armor: item, level: integer, victim: entity):
+local function onKill(attacker: entity, armor: item, level: integer, victim: entity):
     send "(%{_armor}%) You killed %{_victim}% at level %{_level}%." to {_attacker}
 
-local function ondeath(victim: entity, armor: item, level: integer, killer: entity = {_}):
+local function onDeath(victim: entity, armor: item, level: integer, killer: entity = {_}):
     send "(%{_armor}%) You died at level %{_level}%." to {_victim}

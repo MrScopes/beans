@@ -28,7 +28,7 @@ local function getDescription(level: integer) :: string:
     set {_reduction} to "damage reduction" of "acrobat" at {_level}
     return "reduces gravity damage by &f%{_reduction} * 100%%%"
 
-local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+local function onAttacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     if {_damage cause} is fall (damage cause) or flying into a wall:
         set {_reduction} to "damage reduction" of "acrobat" at {_level}
         return ({_damage} * {_reduction}) * -1

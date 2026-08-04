@@ -35,7 +35,7 @@ local function getDescription(level: integer) :: string:
     set {_effect} to "speed" of "dodge" at {_level}
     return "take no damage&8, &7gain &f%effectDisplay({_effect})%"
 
-local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
+local function onAttacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     set {_effect} to "speed" of "dodge" at {_level}
     apply {_effect} to {_victim}
     playEnchantmentSound("combat", "minecraft:item.totem.use", 0.2, 1, location of {_victim}, all players)
