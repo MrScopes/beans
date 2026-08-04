@@ -27,37 +27,19 @@ on load:
     set {-sell::%("packed ice" parsed as item type)%} to 30
     set {-sell::%("obsidian" parsed as item type)%} to 250
 
-    set {-xp::%("stone" parsed as item type)%::min} to 0
-    set {-xp::%("stone" parsed as item type)%::max} to 1
-
-    set {-xp::%("coal ore" parsed as item type)%::min} to 0
-    set {-xp::%("coal ore" parsed as item type)%::max} to 2
-
-    set {-xp::%("iron ore" parsed as item type)%::min} to 1
-    set {-xp::%("iron ore" parsed as item type)%::max} to 3
-
-    set {-xp::%("diamond ore" parsed as item type)%::min} to 2
-    set {-xp::%("diamond ore" parsed as item type)%::max} to 6
-
-    set {-xp::%("emerald ore" parsed as item type)%::min} to 3
-    set {-xp::%("emerald ore" parsed as item type)%::max} to 7
-
-    set {-xp::%("packed ice" parsed as item type)%::min} to 50
-    set {-xp::%("packed ice" parsed as item type)%::max} to 100
-
-    set {-xp::%("obsidian" parsed as item type)%::min} to 100
-    set {-xp::%("obsidian" parsed as item type)%::max} to 250
-
-    set {-xp::%("beacon" parsed as item type)%::min} to 1000
-    set {-xp::%("beacon" parsed as item type)%::max} to 2500
+    set {-dust::%("stone" parsed as item type)%} to 0.05
+    set {-dust::%("coal ore" parsed as item type)%} to 0.1
+    set {-dust::%("iron ore" parsed as item type)%} to 0.15
+    set {-dust::%("diamond ore" parsed as item type)%} to 0.2
+    set {-dust::%("emerald ore" parsed as item type)%} to 0.25
+    set {-dust::%("packed ice" parsed as item type)%} to 0.15
+    set {-dust::%("obsidian" parsed as item type)%} to 0.5
+    set {-dust::%("beacon" parsed as item type)%} to 10.0
 
 on break with priority highest:
     event isn't canceled
     cancel drops
     blockReward(player, player's tool, block, "mining")
-
-function xpYield(block: block) :: number:
-    return random integer between {-xp::%type of {_block}%::min} and {-xp::%type of {_block}%::max}
 
 function blockReward(player: player, tool: item, block: block, reason: text):
     if type of {_block} isn't air:
@@ -66,8 +48,9 @@ function blockReward(player: player, tool: item, block: block, reason: text):
     add 1 to {level progress::%{_player}%}
     add 1 to {total level progress::%{_player}%}
 
-    set {_xp} to xpYield({_block})
-    add {_xp} to {_player}'s experience
+    set {_fortune} to level of fortune of {_tool}
+    set {_dust} to {-dust::%type of {_block}%} * (1 + ({_fortune} * 0.2))
+    add {_dust} to {dust::%{_player}%}
 
     set {_drops::*} to drops of {_block} using {_tool}
     if type of {_block} is packed ice:

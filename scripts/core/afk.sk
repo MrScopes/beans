@@ -16,9 +16,7 @@ async every second:
             add 1 * afkRewardsMultiPlayer(loop-player) to {total level progress::%loop-player%}
             add 1 * afkRewardsMultiPlayer(loop-player) to {level progress::%loop-player%}
             add 1 * afkRewardsMultiPlayer(loop-player) to {money::%loop-player%}
-            add 1 * afkRewardsMultiPlayer(loop-player) to {money source::%loop-player%::afk}
-            add 1 * afkRewardsMultiPlayer(loop-player) to {xp source::%loop-player%::afk}
-            add 1 * afkRewardsMultiPlayer(loop-player) to loop-player's experience
+            add 0.01 * afkRewardsMultiPlayer(loop-player) to {dust::%loop-player%}
 
         # every 2 hours, give a beacon. the multi might make it a decimal, so wait until it's whole to count it.
         if mod(seconds of {-afk timer::%loop-player%}, 7200) is 0:

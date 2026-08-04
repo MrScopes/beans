@@ -21,6 +21,7 @@ command /reloadenchantment [<text>]:
                 set {_enchantment} to {_string::5}
             else:
                 set {_enchantment} to {_string::4}
+            replace all " " with "_" in {_enchantment}
             wait 1 ticks
             cacheSpecificEnchantment({_enchantment})
             refreshEnchantmentGui()
@@ -86,7 +87,7 @@ function refreshEnchantmentGui():
             set name of {_item} to formatted "&f%{-ce::%{_enchantment}%::display}%"
             set data tag "custom_enchantment" of {_item} to {_enchantment}
             for {_level} in integers between 1 and {-ce::%{_enchantment}%::max level}:
-                add formatted getDescription({_enchantment}, {_level}) + " &b(Upgrade Cost: &a$%kNumber({-ce::%{_enchantment}%::money cost::%{_level}%})%&b, &d%kNumber({-ce::%{_enchantment}%::xp cost::%{_level}%})% XP&b)" to lore of {_item}
+                add formatted getDescription({_enchantment}, {_level}) + " &b(Upgrade Cost: &a$%kNumber({-ce::%{_enchantment}%::money cost::%{_level}%})%&b, &f%{-dust sprite}%%kNumber({-ce::%{_enchantment}%::dust cost::%{_level}%})%)" to lore of {_item}
             add {_item} to {-enchantments gui::%{_enchantment type}%}
 
 command /enchantments [<text>]:

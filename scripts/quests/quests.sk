@@ -3,313 +3,313 @@ on load:
     
     # ---- Block Quests ----
     set {-quests::blocks::2::blocks}  to 1_000
-    set {-quests::blocks::2::reward::xp}     to 10_000
+    set {-quests::blocks::2::reward::dust}     to 50
     set {-quests::blocks::2::reward::money}  to 10_000
     set {-quests::blocks::2::reward::beacon} to 1
     set {-quests::blocks::2::reward::item}   to createStoredCustomBook("blast", 1)
 
     set {-quests::blocks::3::blocks}  to 15_000
-    set {-quests::blocks::3::reward::xp}     to 10_000
+    set {-quests::blocks::3::reward::dust}     to 50
     set {-quests::blocks::3::reward::money}  to 10_000
     set {-quests::blocks::3::reward::beacon} to 1
 
     set {-quests::blocks::4::blocks}  to 20_000
-    set {-quests::blocks::4::reward::xp}     to 10_000
+    set {-quests::blocks::4::reward::dust}     to 50
     set {-quests::blocks::4::reward::money}  to 10_000
     set {-quests::blocks::4::reward::beacon} to 1
 
     set {-quests::blocks::5::blocks}  to 25_000
-    set {-quests::blocks::5::reward::xp}     to 10_000
+    set {-quests::blocks::5::reward::dust}     to 50
     set {-quests::blocks::5::reward::money}  to 10_000
     set {-quests::blocks::5::reward::beacon} to 1
     set {-quests::blocks::5::reward::item}   to createStoredCustomBook("feeding", 1)
 
     set {-quests::blocks::6::blocks}  to 40_000
-    set {-quests::blocks::6::reward::xp}     to 10_000
+    set {-quests::blocks::6::reward::dust}     to 50
     set {-quests::blocks::6::reward::money}  to 10_000
     set {-quests::blocks::6::reward::beacon} to 1
 
     set {-quests::blocks::7::blocks}  to 50_000
-    set {-quests::blocks::7::reward::xp}     to 10_000
+    set {-quests::blocks::7::reward::dust}     to 50
     set {-quests::blocks::7::reward::money}  to 10_000
     set {-quests::blocks::7::reward::beacon} to 1
 
     set {-quests::blocks::8::blocks}  to 60_000
-    set {-quests::blocks::8::reward::xp}     to 10_000
+    set {-quests::blocks::8::reward::dust}     to 50
     set {-quests::blocks::8::reward::money}  to 10_000
     set {-quests::blocks::8::reward::beacon} to 1
 
     set {-quests::blocks::9::blocks}  to 75_000
-    set {-quests::blocks::9::reward::xp}     to 10_000
+    set {-quests::blocks::9::reward::dust}     to 50
     set {-quests::blocks::9::reward::money}  to 10_000
     set {-quests::blocks::9::reward::beacon} to 1
 
     set {-quests::blocks::10::blocks} to 100_000
-    set {-quests::blocks::10::reward::xp}     to 25_000
+    set {-quests::blocks::10::reward::dust}     to 125
     set {-quests::blocks::10::reward::money}  to 25_000
     set {-quests::blocks::10::reward::beacon} to 2
 
     set {-quests::blocks::11::blocks} to 125_000
-    set {-quests::blocks::11::reward::xp}     to 25_000
+    set {-quests::blocks::11::reward::dust}     to 125
     set {-quests::blocks::11::reward::money}  to 25_000
     set {-quests::blocks::11::reward::beacon} to 2
 
     set {-quests::blocks::12::blocks} to 175_000
-    set {-quests::blocks::12::reward::xp}     to 25_000
+    set {-quests::blocks::12::reward::dust}     to 125
     set {-quests::blocks::12::reward::money}  to 25_000
     set {-quests::blocks::12::reward::beacon} to 2
 
     set {-quests::blocks::13::blocks} to 200_000
-    set {-quests::blocks::13::reward::xp}     to 50_000
+    set {-quests::blocks::13::reward::dust}     to 250
     set {-quests::blocks::13::reward::money}  to 50_000
     set {-quests::blocks::13::reward::beacon} to 3
 
     set {-quests::blocks::14::blocks} to 300_000
-    set {-quests::blocks::14::reward::xp}     to 100_000
+    set {-quests::blocks::14::reward::dust}     to 500
     set {-quests::blocks::14::reward::money}  to 100_000
     set {-quests::blocks::14::reward::beacon} to 3
 
     set {-quests::blocks::15::blocks} to 400_000
-    set {-quests::blocks::15::reward::xp}     to 100_000
+    set {-quests::blocks::15::reward::dust}     to 500
     set {-quests::blocks::15::reward::money}  to 100_000
     set {-quests::blocks::15::reward::beacon} to 5
 
     set {-quests::blocks::16::blocks} to 500_000
-    set {-quests::blocks::16::reward::xp}     to 100_000
+    set {-quests::blocks::16::reward::dust}     to 500
     set {-quests::blocks::16::reward::money}  to 100_000
     set {-quests::blocks::16::reward::beacon} to 6
 
     set {-quests::blocks::17::blocks} to 600_000
-    set {-quests::blocks::17::reward::xp}     to 150_000
+    set {-quests::blocks::17::reward::dust}     to 750
     set {-quests::blocks::17::reward::money}  to 150_000
     set {-quests::blocks::17::reward::beacon} to 7
 
     set {-quests::blocks::18::blocks} to 750_000
-    set {-quests::blocks::18::reward::xp}     to 250_000
+    set {-quests::blocks::18::reward::dust}     to 1250
     set {-quests::blocks::18::reward::money}  to 250_000
     set {-quests::blocks::18::reward::beacon} to 8
 
     set {-quests::blocks::19::blocks} to 1_000_000
-    set {-quests::blocks::19::reward::xp}     to 500000
+    set {-quests::blocks::19::reward::dust}     to 2500
     set {-quests::blocks::19::reward::money}  to 500000
     set {-quests::blocks::19::reward::beacon} to 9
 
     set {-quests::blocks::20::blocks} to 5_000_000
-    set {-quests::blocks::20::reward::xp}     to 750_000
+    set {-quests::blocks::20::reward::dust}     to 3750
     set {-quests::blocks::20::reward::money}  to 750_000
     set {-quests::blocks::20::reward::beacon} to 10
 
     set {-quests::blocks::21::blocks} to 10_000_000
-    set {-quests::blocks::21::reward::xp}     to 2_500_000
+    set {-quests::blocks::21::reward::dust}     to 12500
     set {-quests::blocks::21::reward::money}  to 2_500_000
     set {-quests::blocks::21::reward::beacon} to 20
 
     # ---- Repeatable Block Quests ----
     set {-quests::blocks::repeatable::1::blocks}        to 5_000
-    set {-quests::blocks::repeatable::1::reward::xp}    to 5_000
+    set {-quests::blocks::repeatable::1::reward::dust}    to 25
     set {-quests::blocks::repeatable::1::reward::money} to 5_000
 
     set {-quests::blocks::repeatable::2::blocks}         to 50_000
-    set {-quests::blocks::repeatable::2::reward::xp}     to 10_000
+    set {-quests::blocks::repeatable::2::reward::dust}     to 50
     set {-quests::blocks::repeatable::2::reward::money}  to 10_000
     set {-quests::blocks::repeatable::2::reward::beacon} to 1
 
     # ---- Level Quests ----
-    set {-quests::level::0::reward::xp}    to 0
+    set {-quests::level::0::reward::dust}    to 0
     set {-quests::level::0::reward::money} to 500
     set {-quests::level::0::reward::text}  to "Welcome to Beans!"
 
-    set {-quests::level::5::reward::xp}     to 1_000
+    set {-quests::level::5::reward::dust}     to 5
     set {-quests::level::5::reward::money}  to 1_000
     set {-quests::level::5::reward::beacon} to 1
 
-    set {-quests::level::10::reward::xp}     to 5_000
+    set {-quests::level::10::reward::dust}     to 25
     set {-quests::level::10::reward::money}  to 5_000
     set {-quests::level::10::reward::beacon} to 1
     set {-quests::level::10::reward::text}   to "Tier 2 Upgrades. Start Auctions."
 
-    set {-quests::level::15::reward::xp}     to 10_000
+    set {-quests::level::15::reward::dust}     to 50
     set {-quests::level::15::reward::money}  to 10_000
     set {-quests::level::15::reward::beacon} to 1
 
-    set {-quests::level::20::reward::xp}     to 25_000
+    set {-quests::level::20::reward::dust}     to 125
     set {-quests::level::20::reward::money}  to 25_000
     set {-quests::level::20::reward::beacon} to 2
 
-    set {-quests::level::25::reward::xp}     to 50_000
+    set {-quests::level::25::reward::dust}     to 250
     set {-quests::level::25::reward::money}  to 50_000
     set {-quests::level::25::reward::beacon} to 2
     set {-quests::level::25::reward::text}   to "Tier 3 Upgrades. Able to trade items, beacons, and money."
 
-    set {-quests::level::30::reward::xp}     to 75_000
+    set {-quests::level::30::reward::dust}     to 375
     set {-quests::level::30::reward::money}  to 75_000
     set {-quests::level::30::reward::beacon} to 2
     set {-quests::level::30::reward::item}   to createStoredCustomBook("beacon finder", 1)
 
-    set {-quests::level::35::reward::xp}     to 100_000
+    set {-quests::level::35::reward::dust}     to 500
     set {-quests::level::35::reward::money}  to 100_000
     set {-quests::level::35::reward::beacon} to 2
 
-    set {-quests::level::40::reward::xp}     to 200_000
+    set {-quests::level::40::reward::dust}     to 1000
     set {-quests::level::40::reward::money}  to 200_000
     set {-quests::level::40::reward::beacon} to 3
     set {-quests::level::40::reward::item}   to createStoredCustomBook("flight", 1)
 
-    set {-quests::level::45::reward::xp}     to 200_000
+    set {-quests::level::45::reward::dust}     to 1000
     set {-quests::level::45::reward::money}  to 200_000
     set {-quests::level::45::reward::beacon} to 3
 
-    set {-quests::level::50::reward::xp}     to 500_000
+    set {-quests::level::50::reward::dust}     to 2500
     set {-quests::level::50::reward::money}  to 500_000
     set {-quests::level::50::reward::beacon} to 3
     set {-quests::level::50::reward::text}   to "Tier 4 Upgrades."
 
-    set {-quests::level::55::reward::xp}     to 250_000
+    set {-quests::level::55::reward::dust}     to 1250
     set {-quests::level::55::reward::money}  to 250_000
     set {-quests::level::55::reward::beacon} to 4
 
-    set {-quests::level::60::reward::xp}     to 250_000
+    set {-quests::level::60::reward::dust}     to 1250
     set {-quests::level::60::reward::money}  to 250_000
     set {-quests::level::60::reward::beacon} to 4
 
-    set {-quests::level::65::reward::xp}     to 250_000
+    set {-quests::level::65::reward::dust}     to 1250
     set {-quests::level::65::reward::money}  to 250_000
     set {-quests::level::65::reward::beacon} to 5
 
-    set {-quests::level::70::reward::xp}     to 250_000
+    set {-quests::level::70::reward::dust}     to 1250
     set {-quests::level::70::reward::money}  to 250_000
     set {-quests::level::70::reward::beacon} to 5
 
-    set {-quests::level::75::reward::xp}     to 250_000
+    set {-quests::level::75::reward::dust}     to 1250
     set {-quests::level::75::reward::money}  to 250_000
     set {-quests::level::75::reward::beacon} to 5
 
-    set {-quests::level::80::reward::xp}     to 250_000
+    set {-quests::level::80::reward::dust}     to 1250
     set {-quests::level::80::reward::money}  to 250_000
     set {-quests::level::80::reward::beacon} to 5
 
-    set {-quests::level::85::reward::xp}     to 250_000
+    set {-quests::level::85::reward::dust}     to 1250
     set {-quests::level::85::reward::money}  to 250_000
     set {-quests::level::85::reward::beacon} to 5
 
-    set {-quests::level::90::reward::xp}     to 250_000
+    set {-quests::level::90::reward::dust}     to 1250
     set {-quests::level::90::reward::money}  to 250_000
     set {-quests::level::90::reward::beacon} to 5
 
-    set {-quests::level::95::reward::xp}     to 250_000
+    set {-quests::level::95::reward::dust}     to 1250
     set {-quests::level::95::reward::money}  to 250_000
     set {-quests::level::95::reward::beacon} to 5
 
-    set {-quests::level::100::reward::xp}     to 2_000_000
+    set {-quests::level::100::reward::dust}     to 10000
     set {-quests::level::100::reward::money}  to 2_000_000
     set {-quests::level::100::reward::beacon} to 15
     set {-quests::level::100::reward::text}   to "Congratulations on reaching max level!"
 
     # ---- Playtime Quests ----
     set {-quests::playtime::1::time}          to 10 minutes
-    set {-quests::playtime::1::reward::xp}    to 1_000
+    set {-quests::playtime::1::reward::dust}    to 5
     set {-quests::playtime::1::reward::money} to 1_000
     set {-quests::playtime::1::reward::beacon} to 1
 
     set {-quests::playtime::2::time}          to 30 minutes
-    set {-quests::playtime::2::reward::xp}    to 2_500
+    set {-quests::playtime::2::reward::dust}    to 12
     set {-quests::playtime::2::reward::money} to 2_500
     set {-quests::playtime::2::reward::beacon} to 1
 
     set {-quests::playtime::3::time}           to 1 hour
-    set {-quests::playtime::3::reward::xp}     to 5_000
+    set {-quests::playtime::3::reward::dust}     to 25
     set {-quests::playtime::3::reward::money}  to 5_000
     set {-quests::playtime::3::reward::beacon} to 1
 
     set {-quests::playtime::4::time}           to 2 hours
-    set {-quests::playtime::4::reward::xp}     to 10_000
+    set {-quests::playtime::4::reward::dust}     to 50
     set {-quests::playtime::4::reward::money}  to 10_000
     set {-quests::playtime::4::reward::beacon} to 1
 
     set {-quests::playtime::5::time}           to 3 hours
-    set {-quests::playtime::5::reward::xp}     to 10_000
+    set {-quests::playtime::5::reward::dust}     to 50
     set {-quests::playtime::5::reward::money}  to 10_000
     set {-quests::playtime::5::reward::beacon} to 2
     # set {-quests::playtime::5::reward::item}   to createStoredCustomBook("auto-repair", 1)
 
     set {-quests::playtime::6::time}           to 6 hours
-    set {-quests::playtime::6::reward::xp}     to 10_000
+    set {-quests::playtime::6::reward::dust}     to 50
     set {-quests::playtime::6::reward::money}  to 10_000
     set {-quests::playtime::6::reward::beacon} to 2
 
     set {-quests::playtime::7::time}           to 8 hours
-    set {-quests::playtime::7::reward::xp}     to 20_000
+    set {-quests::playtime::7::reward::dust}     to 100
     set {-quests::playtime::7::reward::money}  to 20_000
     set {-quests::playtime::7::reward::beacon} to 2
 
     set {-quests::playtime::8::time}           to 12 hours
-    set {-quests::playtime::8::reward::xp}     to 30_000
+    set {-quests::playtime::8::reward::dust}     to 150
     set {-quests::playtime::8::reward::money}  to 30_000
     set {-quests::playtime::8::reward::beacon} to 3
     # set {-quests::playtime::8::reward::item}   to createStoredCustomBook("bloodforge", 1)
 
     set {-quests::playtime::9::time}           to 16 hours
-    set {-quests::playtime::9::reward::xp}     to 35_000
+    set {-quests::playtime::9::reward::dust}     to 175
     set {-quests::playtime::9::reward::money}  to 35_000
     set {-quests::playtime::9::reward::beacon} to 3
 
     set {-quests::playtime::10::time}           to 24 hours
-    set {-quests::playtime::10::reward::xp}     to 50_000
+    set {-quests::playtime::10::reward::dust}     to 250
     set {-quests::playtime::10::reward::money}  to 50_000
     set {-quests::playtime::10::reward::beacon} to 4
 
     set {-quests::playtime::11::time}           to 36 hours
-    set {-quests::playtime::11::reward::xp}     to 50_000
+    set {-quests::playtime::11::reward::dust}     to 250
     set {-quests::playtime::11::reward::money}  to 50_000
     set {-quests::playtime::11::reward::beacon} to 4
 
     set {-quests::playtime::12::time}           to 2 days
-    set {-quests::playtime::12::reward::xp}     to 60_000
+    set {-quests::playtime::12::reward::dust}     to 300
     set {-quests::playtime::12::reward::money}  to 60_000
     set {-quests::playtime::12::reward::beacon} to 5
 
     set {-quests::playtime::13::time}           to 2 days and 12 hours
-    set {-quests::playtime::13::reward::xp}     to 60_000
+    set {-quests::playtime::13::reward::dust}     to 300
     set {-quests::playtime::13::reward::money}  to 60_000
     set {-quests::playtime::13::reward::beacon} to 5
 
     set {-quests::playtime::14::time}           to 3 days
-    set {-quests::playtime::14::reward::xp}     to 70_000
+    set {-quests::playtime::14::reward::dust}     to 350
     set {-quests::playtime::14::reward::money}  to 70_000
     set {-quests::playtime::14::reward::beacon} to 6
 
     set {-quests::playtime::15::time}           to 3 days and 12 hours
-    set {-quests::playtime::15::reward::xp}     to 80_000
+    set {-quests::playtime::15::reward::dust}     to 400
     set {-quests::playtime::15::reward::money}  to 80_000
     set {-quests::playtime::15::reward::beacon} to 7
 
     set {-quests::playtime::16::time}           to 4 days
-    set {-quests::playtime::16::reward::xp}     to 90_000
+    set {-quests::playtime::16::reward::dust}     to 450
     set {-quests::playtime::16::reward::money}  to 90_000
     set {-quests::playtime::16::reward::beacon} to 8
 
     set {-quests::playtime::17::time}           to 5 days
-    set {-quests::playtime::17::reward::xp}     to 100_000
+    set {-quests::playtime::17::reward::dust}     to 500
     set {-quests::playtime::17::reward::money}  to 100_000
     set {-quests::playtime::17::reward::beacon} to 10
 
     set {-quests::playtime::18::time}           to 6 days
-    set {-quests::playtime::18::reward::xp}     to 150_000
+    set {-quests::playtime::18::reward::dust}     to 750
     set {-quests::playtime::18::reward::money}  to 150_000
     set {-quests::playtime::18::reward::beacon} to 10
 
     set {-quests::playtime::19::time}           to 6 days and 12 hours
-    set {-quests::playtime::19::reward::xp}     to 200_000
+    set {-quests::playtime::19::reward::dust}     to 1000
     set {-quests::playtime::19::reward::money}  to 200_000
     set {-quests::playtime::19::reward::beacon} to 10
 
     set {-quests::playtime::20::time}           to 7 days
-    set {-quests::playtime::20::reward::xp}     to 300_000
+    set {-quests::playtime::20::reward::dust}     to 1500
     set {-quests::playtime::20::reward::money}  to 300_000
     set {-quests::playtime::20::reward::beacon} to 10
 
     set {-quests::playtime::21::time}           to 14 days
-    set {-quests::playtime::21::reward::xp}     to 2_000_000
+    set {-quests::playtime::21::reward::dust}     to 10000
     set {-quests::playtime::21::reward::money}  to 2_000_000
     set {-quests::playtime::21::reward::beacon} to 20
 
@@ -322,7 +322,7 @@ async every second:
                 if {quests::%loop-player%::blocks::%loop-number%} isn't set:
                     if {blocks::%loop-player%} >= {-quests::blocks::%loop-number%::blocks}:
                         set {quests::%loop-player%::blocks::%loop-number%} to true
-                        add {-quests::blocks::%loop-number%::reward::xp} to loop-player's experience
+                        add {-quests::blocks::%loop-number%::reward::dust} to {dust::%loop-player%}
                         add {-quests::blocks::%loop-number%::reward::money} to {money::%loop-player%}
                         wait 1 tick
                         if {-quests::blocks::%loop-number%::reward::beacon} is set:
@@ -335,7 +335,7 @@ async every second:
             if {blocks::%loop-player%} >= {-quests::blocks::repeatable::%loop-number%::blocks} * ({quests::%loop-player%::blocks::repeatable::%loop-number%::completions} + 1):
                 add 1 to {quests::%loop-player%::blocks::repeatable::%loop-number%::completions}
                 if {blocks::%loop-player%} isn't 0:
-                    add {-quests::blocks::repeatable::%loop-number%::reward::xp} to loop-player's experience
+                    add {-quests::blocks::repeatable::%loop-number%::reward::dust} to {dust::%loop-player%}
                     add {-quests::blocks::repeatable::%loop-number%::reward::money} to {money::%loop-player%}
                     wait 1 tick
                     if {-quests::blocks::repeatable::%loop-number%::reward::beacon} is set:
@@ -344,10 +344,10 @@ async every second:
         # -- Level quests --
         set {_level} to {level::%loop-player%}
         loop all numbers between 0 and {_level}:
-            if {-quests::level::%loop-number%::reward::xp} is set:
+            if {-quests::level::%loop-number%::reward::dust} is set:
                 if {quests::%loop-player%::level::%loop-number%::reward::claimed} isn't set:
                     set {quests::%loop-player%::level::%loop-number%::reward::claimed} to true
-                    add {-quests::level::%loop-number%::reward::xp} to loop-player's experience
+                    add {-quests::level::%loop-number%::reward::dust} to {dust::%loop-player%}
                     add {-quests::level::%loop-number%::reward::money} to {money::%loop-player%}
                     wait 1 tick
                     if {-quests::level::%loop-number%::reward::beacon} is set:
@@ -359,11 +359,11 @@ async every second:
 
         # -- Playtime quests --
         loop 21 times:
-            if {-quests::playtime::%loop-number%::reward::xp} is set:
+            if {-quests::playtime::%loop-number%::reward::dust} is set:
                 if {quests::%loop-player%::playtime::%loop-number%::reward::claimed} isn't set:
                     if loop-player's playtime >= {-quests::playtime::%loop-number%::time}:
                         set {quests::%loop-player%::playtime::%loop-number%::reward::claimed} to true
-                        add {-quests::playtime::%loop-number%::reward::xp} to loop-player's experience
+                        add {-quests::playtime::%loop-number%::reward::dust} to {dust::%loop-player%}
                         add {-quests::playtime::%loop-number%::reward::money} to {money::%loop-player%}
                         wait 1 tick
                         if {-quests::playtime::%loop-number%::reward::beacon} is set:

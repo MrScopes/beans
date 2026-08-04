@@ -18,8 +18,8 @@ function createStoredCustomBook(enchantment: string, level: integer, special: st
     set name of {_item} to formatted enchantmentDisplay({_enchantment}, {_level}, {_special})
 
     set {_money sell value} to moneySaleValue({_enchantment}, {_level})
-    set {_xp sell value} to xpSaleValue({_enchantment}, {_level})
-    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantmentTypeSprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%, %formatNumber({_xp sell value})% XP"
+    set {_dust sell value} to dustSaleValue({_enchantment}, {_level})
+    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantmentTypeSprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%&7, %{-dust sprite}%%formatNumber({_dust sell value})%"
     return {_item}
 
 function createStoredVanillaBook(enchantment: string, level: integer, special: string = {_}) :: item:
@@ -220,15 +220,15 @@ function moneySaleValue(enchantment: string, level: integer) :: number:
         return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max level})
     return round({-ce::%{_enchantment}%::money cost::%{_level}%} / 2)
 
-function xpSaleValue(enchantment: string, level: integer) :: number:
+function dustSaleValue(enchantment: string, level: integer) :: number:
     if {-ce::%{_enchantment}%::max level} is 1:
-        return 100_000
+        return 250
     if {_level} is 1:
-        return round({-ce::%{_enchantment}%::xp cost::%{_level} + 1%} / 4)
+        return round({-ce::%{_enchantment}%::dust cost::%{_level} + 1%} / 4)
     if {_level} > {-ce::%{_enchantment}%::max level}:
-        set {_max value} to round({-ce::%{_enchantment}%::xp cost::%{-ce::%{_enchantment}%::max level}%} / 2)
+        set {_max value} to round({-ce::%{_enchantment}%::dust cost::%{-ce::%{_enchantment}%::max level}%} / 2)
         return {_max value} * (({_level} * 2) / {-ce::%{_enchantment}%::max level})
-    return round({-ce::%{_enchantment}%::xp cost::%{_level}%} / 2)
+    return round({-ce::%{_enchantment}%::dust cost::%{_level}%} / 2)
 
 
 # ============================================================
@@ -256,7 +256,7 @@ command /sellenchantments:
     trigger:
         set {-enchantment sell gui::%player%} to chest inventory with 6 rows named "Sell Enchantments"
         set slot integers between 0 and 8 of {-enchantment sell gui::%player%} to black stained glass pane named ""
-        set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore "&7Money Value: &b$0", "&7XP Value: &b0 XP"
+        set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$0", "&7Dust: &b%{-dust sprite}%0"
         open {-enchantment sell gui::%player%} to player
 
 # Update the sell value display after any click
@@ -264,14 +264,14 @@ on inventory click:
     player's current inventory is {-enchantment sell gui::%player%}
     wait 1 tick
     set {_money sell value} to 0
-    set {_xp sell value} to 0
+    set {_dust sell value} to 0
     loop items in {-enchantment sell gui::%player%}:
         index of loop-item > 8
         set {_level} to data tag "stored_level" of loop-item
         {_level} is set
         add moneySaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_money sell value}
-        add xpSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_xp sell value}
-    set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore "&7Money Value: &b$%formatNumber({_money sell value})%", "&7XP Value: &b%formatNumber({_xp sell value})% XP"
+        add dustSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_dust sell value}
+    set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$%formatNumber({_money sell value})%", "&7Dust: &b%{-dust sprite}%%formatNumber({_dust sell value})%"
 
 # Handle clicking the sell button
 on inventory click:
@@ -282,18 +282,18 @@ on inventory click:
     index of event-slot is 4
 
     set {_money sell value} to 0
-    set {_xp sell value} to 0
+    set {_dust sell value} to 0
     loop items in {-enchantment sell gui::%player%}:
         index of loop-item > 8
         set {_level} to data tag "stored_level" of loop-item
         {_level} is set
         add moneySaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_money sell value}
-        add xpSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_xp sell value}
+        add dustSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_dust sell value}
         set loop-item to air
 
     add {_money sell value} to {money::%player%}
-    add {_xp sell value} to player's experience
-    send "You sold your enchantments for $%formatNumber({_money sell value})% and %formatNumber({_xp sell value})% XP." to player
+    add {_dust sell value} to {dust::%player%}
+    send formatted "You sold your enchantments for &f$%formatNumber({_money sell value})% &7and %{-dust sprite}%%formatNumber({_dust sell value})%&7." to player
     close player's inventory
 
 on inventory close:

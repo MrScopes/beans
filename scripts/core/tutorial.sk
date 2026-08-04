@@ -18,8 +18,8 @@ command /tutorial:
 
             wait 3 seconds
             send "&7Here's a boost to help your early game progression&8."
-            send "&7These enchantments are designed to be used to boost your XP and Money gain&8."
-            give player createStoredCustomBook("xp_boost", 1)
+            send "&7These enchantments are designed to be used to boost your Dust and Money gain&8."
+            give player createStoredCustomBook("dust_boost", 1)
             give player createStoredCustomBook("money_boost", 1)
 
             wait 3 seconds
@@ -39,7 +39,7 @@ command /tutorial:
             wait 2 seconds
             
             teleport player to {tutorial mine}
-            send "&7This is the mine&8. &7You come here to earn money and xp to progress&8."
+            send "&7This is the mine&8. &7You come here to earn money, dust, and xp to progress&8."
 
             wait 3 seconds
             teleport player to {tutorial afk}
@@ -76,17 +76,15 @@ command /tutorial:
             send "&7Level can be seen on the sidebar&8, &7look at %levelDisplay({level::%player%})%&f."
 
             wait 3 seconds
-            send "&7You'll also see there's Money and XP&8."
+            send formatted "&7You'll also see there's Money and %{-dust sprite}%Dust&8."
             wait 1 second
-            send "&7Don't mix this XP up with level progression&8&7, it's separately used for enchanting&8."
-            wait 1 second
-            send "&7Money can be traded with players&8&7, but XP has to be earned by mining and combat&8."
+            send "&7Money can be traded with players&8&7, but Dust has to be earned by mining and combat&8."
 
             wait 3 seconds
 
             send "&7Here's a boost to help your early game progression&8."
-            send "&7These enchantments are designed to be used to boost your XP and Money gain&8."
-            give player createStoredCustomBook("xp_boost", 1)
+            send "&7These enchantments are designed to be used to boost your Dust and Money gain&8."
+            give player createStoredCustomBook("dust_boost", 1)
             give player createStoredCustomBook("money_boost", 1)
 
             wait 3 seconds

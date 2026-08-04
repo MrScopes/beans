@@ -14,11 +14,11 @@ on load:
             set level 4 to 1 minute and 30 seconds
             set level 5 to 1 minute
 
-        level values for "xp cost":
-            set level 2 to 300_000
-            set level 3 to 800_000
-            set level 4 to 1_750_000
-            set level 5 to 3_500_000
+        level values for "dust cost":
+            set level 2 to 325
+            set level 3 to 900
+            set level 4 to 1_950
+            set level 5 to 3_900
 
         level values for "money cost":
             set level 2 to 400_000

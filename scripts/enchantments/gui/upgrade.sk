@@ -89,13 +89,13 @@ function createVanillaEnchantGuiItem(player: player, enchantment: object) :: ite
             set {_label} to "&c%{_display}% &7(MAX)"
         set {_book} to enchanted book with all item flags named formatted {_label}
     else:
-        set {_xp cost} to {-vanilla enchantment::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_dust cost} to {-vanilla enchantment::%{_enchantment}%::dust cost::%{_level} + 1%}
         set {_money cost} to {-vanilla enchantment::%{_enchantment}%::money cost::%{_level} + 1%}
         if {_level} > 0:
             set {_label} to "&a%{_display}% %romanNumeral({_level})%"
         else:
             set {_label} to "&a%{_display}%"
-        set {_book} to enchanted book named formatted {_label} with lore "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)", "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)", "&fMax: %{-vanilla enchantment::%{_enchantment}%::max level}%" with all item flags
+        set {_book} to enchanted book named formatted {_label} with lore "&fdust cost: &7%formatNumber({_dust cost})% &o(%formatNumber({dust::%{_player}%})%)", "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)", "&fMax: %{-vanilla enchantment::%{_enchantment}%::max level}%" with all item flags
 
     set data tag "vanilla_enchantment" of {_book} to "%{_enchantment}%"
     return {_book}
@@ -132,9 +132,9 @@ function createCustomEnchantGuiItem(player: player, tool: item, enchantment: str
         enchant {_item} with unbreaking 10
         set {_item} to {_item} named formatted {_label} with lore formatted getDescription({_enchantment}, {_level})
     else:
-        set {_xp cost} to {-ce::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_dust cost} to {-ce::%{_enchantment}%::dust cost::%{_level} + 1%}
         set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
-        set {_lore1} to "&fXP Cost: &7%formatNumber({_xp cost})% &o(%formatNumber({_player}'s experience)%)"
+        set {_lore1} to "&fDust Cost: &7%formatNumber({_dust cost})% &o(%formatNumber({dust::%{_player}%})%)"
         set {_lore2} to "&fMoney Cost: &7$%formatNumber({_money cost})% &o($%formatNumber({money::%{_player}%})%)"
         set {_lore3} to "&fMax: %{-ce::%{_enchantment}%::max level}%"
         if {_level} is 0:
@@ -227,14 +227,14 @@ function handleCustomEnchantClick(player: player, guiItem: item, click: click ty
 
     if {_click} is left mouse button:
         {_level} < {-ce::%{_enchantment}%::max level}
-        set {_xp cost} to {-ce::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_dust cost} to {-ce::%{_enchantment}%::dust cost::%{_level} + 1%}
         set {_money cost} to {-ce::%{_enchantment}%::money cost::%{_level} + 1%}
-        if {_player}'s experience < {_xp cost}:
-            send "You need %formatNumber({_xp cost} - {_player}'s experience)% more xp to upgrade this enchantment." to {_player}
+        if {dust::%{_player}%} < {_dust cost}:
+            send "You need %formatNumber({_dust cost} - {dust::%{_player}%})% more dust to upgrade this enchantment." to {_player}
         else if {money::%{_player}%} < {_money cost}:
             send "You need %formatNumber({_money cost} - {money::%{_player}%})% more money to upgrade this enchantment." to {_player}
         else:
-            remove {_xp cost} from {_player}'s experience
+            remove {_dust cost} from {dust::%{_player}%}
             remove {_money cost} from {money::%{_player}%}
             set {_player}'s tool to enchantItem({_player}'s tool, {_enchantment}, {_level} + 1, {_player})
             openUpgradeGui({_player})
@@ -256,14 +256,14 @@ function handleVanillaEnchantClick(player: player, guiItem: item, click: click t
         if {_level} >= {-vanilla enchantment::%{_enchantment}%::max level}:
             send "The max level for that enchantment is %{-vanilla enchantment::%{_enchantment}%::max level}%." to {_player}
             stop
-        set {_xp cost} to {-vanilla enchantment::%{_enchantment}%::xp cost::%{_level} + 1%}
+        set {_dust cost} to {-vanilla enchantment::%{_enchantment}%::dust cost::%{_level} + 1%}
         set {_money cost} to {-vanilla enchantment::%{_enchantment}%::money cost::%{_level} + 1%}
-        if {_player}'s experience < {_xp cost}:
-            send "You need %formatNumber({_xp cost} - {_player}'s experience)% more xp to upgrade this enchantment." to {_player}
+        if {dust::%{_player}%} < {_dust cost}:
+            send "You need %formatNumber({_dust cost} - {dust::%{_player}%})% more dust to upgrade this enchantment." to {_player}
         else if {money::%{_player}%} < {_money cost}:
             send "You need %formatNumber({_money cost} - {money::%{_player}%})% more money to upgrade this enchantment." to {_player}
         else:
-            remove {_xp cost} from {_player}'s experience
+            remove {_dust cost} from {dust::%{_player}%}
             remove {_money cost} from {money::%{_player}%}
             add 1 to level of {_parsed} on {_player}'s tool
             openUpgradeGui({_player})

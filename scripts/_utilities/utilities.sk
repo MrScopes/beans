@@ -147,3 +147,9 @@ function kdrDisplay(kdr: number) :: text:
             return "?"
         else:
             return {_result}
+
+###
+###
+
+on load:
+    set {-dust sprite} to "<sprite:items:item/gunpowder>"

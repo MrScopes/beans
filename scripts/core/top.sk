@@ -25,9 +25,9 @@ on load:
     set {-top command::playtime::display} to "&evalue"
     set {-top command::playtime::title} to "Most Playtime"
     
-    set {-top command::xp} to "cached xp"
-    set {-top command::xp::display} to "&3value XP"
-    set {-top command::xp::title} to "Top XP"
+    set {-top command::dust} to "cached dust"
+    set {-top command::dust::display} to "%{-dust sprite}%&fvalue"
+    set {-top command::dust::title} to "Top Dust"
 
     set {-top command::kills} to "kills"
     set {-top command::kills::display} to "&fvalue kills"
@@ -111,7 +111,6 @@ on tab complete of "/top":
 
 function cacheStats():
     loop all players:
-        set {cached xp::%loop-player%} to experience of loop-player
         set {cached playtime::%loop-player%} to playtime of loop-player
 
         if {kills::%loop-player%} > 20:

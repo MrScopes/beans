@@ -101,14 +101,15 @@ function fastRadiusClear(player: player, location: location, radius: number):
             set {_material} to "%{_material}%" parsed as item type
             
             set {_sell value} to {-sell::%{_material}%} * {_amount} * {_money mult}
-            set {_xp value} to mean({-xp::%{_material}%::min}, {-xp::%{_material}%::max}) * {_amount}
+            set {_dust value} to {-dust::%{_material}%} * {_amount}
+            set {_dust value} to {_dust value} * (1 + ({_fortune} * 0.2))
 
             add {_sell value} to {_total money}
-            add {_xp value} to {_total xp}
+            add {_dust value} to {_total dust}
             
         add {_total blocks} to {blocks::%{_player}%}, {level progress::%{_player}%}, {total level progress::%{_player}%}
         add {_total money} to {money::%{_player}%}
-        add {_total xp} to {_player}'s experience
+        add {_total dust} to {dust::%{_player}%}
         
 function sortedEnchantments(item: item) :: objects:
     set {_enchantments::*} to custom enchantments of {_item}

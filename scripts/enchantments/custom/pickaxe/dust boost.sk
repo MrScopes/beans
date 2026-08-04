@@ -1,9 +1,9 @@
 on load:
-    create pickaxe enchantment named "xp_boost":
-        set enchantment display to "&f<sprite:blocks:block/enchanting_table_top> &bXP Boost"
+    create pickaxe enchantment named "dust_boost":
+        set enchantment display to "&f<sprite:items:item/gunpowder> &bDust Boost"
         set enchantment max level to 10
         set enchantment priority to 9999
-        set enchantment item to enchanting table
+        set enchantment item to gunpowder
 
         level values for "chance":
             set level 1 to 20
@@ -29,16 +29,16 @@ on load:
             set level 9 to 9
             set level 10 to 10
 
-        level values for "xp cost":
-            set level 2 to 1_000
-            set level 3 to 4_000
-            set level 4 to 16_000
-            set level 5 to 64_000
-            set level 6 to 256_000
-            set level 7 to 1_000_000
-            set level 8 to 2_000_000
-            set level 9 to 3_000_000
-            set level 10 to 4_000_000
+        level values for "dust cost":
+            set level 2 to 0
+            set level 3 to 5
+            set level 4 to 20
+            set level 5 to 70
+            set level 6 to 275
+            set level 7 to 1_100
+            set level 8 to 2_200
+            set level 9 to 3_300
+            set level 10 to 4_400
 
         level values for "money cost":
             set level 2 to 1_500
@@ -52,11 +52,11 @@ on load:
             set level 10 to 4_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_multiplier} to "multiplier" of "xp_boost" at {_level}
-    return "boost xp gain by &f%{_multiplier}%x"
+    set {_multiplier} to "multiplier" of "dust_boost" at {_level}
+    return "boost dust gain &f%{_multiplier}%x"
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    set {_multiplier} to "multiplier" of "xp_boost" at {_level}
-    set {_xp} to {_multiplier} * xpYield({_block})
-    add {_xp} to {_player}'s experience
+    set {_multiplier} to "multiplier" of "dust_boost" at {_level}
+    set {_dust} to {_multiplier} * {-dust::%{_block type}%}
+    add {_dust} to {dust::%{_player}%}
     playEnchantmentSound("mining", "minecraft:entity.experience_orb.pickup", 0.5, 1, location of {_player}, all players, {_player})

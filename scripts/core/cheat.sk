@@ -13,10 +13,10 @@ command /blocks <text>:
         set {blocks::%player%} to unformatted number arg-1
         send "Set your blocks mined to %kNumber({blocks::%player%})%"
 
-command /xp <text>:
+command /dust <text>:
     trigger:
-        set player's experience to unformatted number arg-1
-        send "Set your XP to %formatNumber(player's experience)%"
+        set {dust::%player%} to unformatted number arg-1
+        send "Set your Dust to %kNumber({dust::%player%})%"
 
 command /trophies <text>:
     trigger:
@@ -84,7 +84,7 @@ command /cheats:
         send " &8| &f/level &7<number> &8- &fSet your level."
         send " &8| &f/blocks &7<number> &8- &fSet your blocks mined."
         send " &8| &f/money &7<number> &8- &fSet your balance."
-        send " &8| &f/xp &7<number> &8- &fSet your XP."
+        send " &8| &f/dust &7<number> &8- &fSet your dust."
         send " &8| &f/beacon &7<number> &8- &fGive yourself beacons."
         send " &8| &f/max &8- &fMax enchant your held item."
         send " &8| &f/mine &8- &fReset the mine."

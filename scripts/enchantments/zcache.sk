@@ -12,8 +12,8 @@ on load:
                 broadcast "Vanilla enchantment %loop-value-1% is missing %loop-value-2%!"
 
         loop integers between 2 and {-vanilla enchantment::%loop-value%::max}:
-            if {-vanilla enchantment::%loop-value-1%::xp cost::%loop-value-2%} is not set:
-                broadcast "Vanilla enchantment %loop-value-1% level %loop-value-2% is missing an XP cost!"
+            if {-vanilla enchantment::%loop-value-1%::dust cost::%loop-value-2%} is not set:
+                broadcast "Vanilla enchantment %loop-value-1% level %loop-value-2% is missing a dust cost!"
             if {-vanilla enchantment::%loop-value-1%::money cost::%loop-value-2%} is not set:
                 broadcast "Vanilla enchantment %loop-value-1% level %loop-value-2% is missing a money cost!"
 
@@ -56,8 +56,8 @@ function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true
             broadcast "Enchantment %{_enchantment}% is missing a description for level %loop-value%!"
 
         if loop-value > 1:
-            if {-ce::%{_enchantment}%::xp cost::%loop-value%} is not set:
-                broadcast "Enchantment %{_enchantment}% level %loop-value% is missing an XP cost!"
+            if {-ce::%{_enchantment}%::dust cost::%loop-value%} is not set:
+                broadcast "Enchantment %{_enchantment}% level %loop-value% is missing a dust cost!"
 
             if {-ce::%{_enchantment}%::money cost::%loop-value%} is not set:
                 broadcast "Enchantment %{_enchantment}% level %loop-value% is missing a money cost!"

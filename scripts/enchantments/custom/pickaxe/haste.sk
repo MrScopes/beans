@@ -25,10 +25,10 @@ on load:
             set level 4 to potion effect of speed 4 for 5 seconds
             set level 5 to potion effect of speed 5 for 5 seconds
 
-        level values for "xp cost":
-            set level 2 to 80_000
-            set level 3 to 400_000
-            set level 4 to 800_000
+        level values for "dust cost":
+            set level 2 to 90
+            set level 3 to 450
+            set level 4 to 900
 
         level values for "money cost":
             set level 2 to 140_000

@@ -62,12 +62,4 @@ on inventory click:
         if {money::%player%} >= {_price}:
             remove {_price} from {money::%player%}
             give {_amount} of type of event-item to player
-
-on right click with xp bottle:
-    data tag "stored_levels" of (player's tool) isn't set
-    player is sneaking
-    cancel event
-    loop item amount of player's tool times:
-        set {_rng} to random number between 3 and 11
-        add {_rng} to player's experience
-        remove 1 from item amount of player's tool
+            

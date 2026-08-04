@@ -19,7 +19,7 @@ on async chat:
 		if async chat message is "%{-chat reaction required}%":
 			if {-chat reaction reward} is a number:
 				add {-chat reaction reward} to {money::%player%}
-				add {-chat reaction reward} to player's experience
+				add {-chat reaction reward} / 500 to {dust::%player%}
 			else:
 				give player {-chat reaction reward}
 			broadcast formatted "%playerDisplay(player, "[prefix][player]")% &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction start})%!"
@@ -352,7 +352,7 @@ function chatReaction():
 	broadcast ""
 	broadcast "&7Reward:"
 	if {-chat reaction reward} is a number:
-		broadcast "&b$%kNumber({-chat reaction reward})%&f, &a%kNumber({-chat reaction reward})% XP"
+		broadcast formatted "&b$%kNumber({-chat reaction reward})%&f, &f%{-dust sprite}%%formatNumber({-chat reaction reward} / 500)%"
 	else:
 		set {_name} to text component of name of {-chat reaction reward}
 		set {_amount} to "%item amount of {-chat reaction reward}%x " if item amount of {-chat reaction reward} > 1 else ""

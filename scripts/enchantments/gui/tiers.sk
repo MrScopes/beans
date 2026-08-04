@@ -5,10 +5,10 @@ on load:
     set {-tier::pickaxe::money cost::2} to 40000
     set {-tier::pickaxe::money cost::3} to 500000
     set {-tier::pickaxe::money cost::4} to 4000000
-    set {-tier::pickaxe::xp cost::1} to 6000
-    set {-tier::pickaxe::xp cost::2} to 30000
-    set {-tier::pickaxe::xp cost::3} to 400000
-    set {-tier::pickaxe::xp cost::4} to 3000000
+    set {-tier::pickaxe::dust cost::1} to 6000
+    set {-tier::pickaxe::dust cost::2} to 30000
+    set {-tier::pickaxe::dust cost::3} to 400000
+    set {-tier::pickaxe::dust cost::4} to 3000000
 
     set {-tier::pickaxe::max enchantments::0} to 4
     set {-tier::pickaxe::max enchantments::1} to 6
@@ -20,10 +20,10 @@ on load:
     set {-tier::sword::money cost::2} to 50000
     set {-tier::sword::money cost::3} to 400000
     set {-tier::sword::money cost::4} to 3000000
-    set {-tier::sword::xp cost::1} to 7000
-    set {-tier::sword::xp cost::2} to 40000
-    set {-tier::sword::xp cost::3} to 300000
-    set {-tier::sword::xp cost::4} to 2500000
+    set {-tier::sword::dust cost::1} to 7000
+    set {-tier::sword::dust cost::2} to 40000
+    set {-tier::sword::dust cost::3} to 300000
+    set {-tier::sword::dust cost::4} to 2500000
 
     set {-tier::sword::max enchantments::0} to 3
     set {-tier::sword::max enchantments::1} to 5
@@ -35,10 +35,10 @@ on load:
     set {-tier::armor::money cost::2} to 60000
     set {-tier::armor::money cost::3} to 500000
     set {-tier::armor::money cost::4} to 3500000
-    set {-tier::armor::xp cost::1} to 8000
-    set {-tier::armor::xp cost::2} to 50000
-    set {-tier::armor::xp cost::3} to 400000
-    set {-tier::armor::xp cost::4} to 3000000
+    set {-tier::armor::dust cost::1} to 8000
+    set {-tier::armor::dust cost::2} to 50000
+    set {-tier::armor::dust cost::3} to 400000
+    set {-tier::armor::dust cost::4} to 3000000
 
     set {-tier::armor::max enchantments::0} to 3
     set {-tier::armor::max enchantments::1} to 5
@@ -50,10 +50,10 @@ on load:
     set {-tier::bow::money cost::2} to 350000
     set {-tier::bow::money cost::3} to 1000000
     set {-tier::bow::money cost::4} to 5000000
-    set {-tier::bow::xp cost::1} to 35000
-    set {-tier::bow::xp cost::2} to 300000
-    set {-tier::bow::xp cost::3} to 800000
-    set {-tier::bow::xp cost::4} to 4000000
+    set {-tier::bow::dust cost::1} to 35000
+    set {-tier::bow::dust cost::2} to 300000
+    set {-tier::bow::dust cost::3} to 800000
+    set {-tier::bow::dust cost::4} to 4000000
 
     set {-tier::bow::max enchantments::0} to 3
     set {-tier::bow::max enchantments::1} to 5
@@ -79,7 +79,7 @@ function createTierUpgradeItem(player: player, item: item type) :: item type:
 
     set {_new tier} to {_tier} + 1
     set {_money cost} to {-tier::%{_type}%::money cost::%{_new tier}%}
-    set {_xp cost} to {-tier::%{_type}%::xp cost::%{_new tier}%}
+    set {_dust cost} to {-tier::%{_type}%::dust cost::%{_new tier}%}
     set {_level requirement} to {-tier::level requirement::%{_new tier}%}
 
     set {_new enchantment limit} to {-tier::%{_type}%::max enchantments::%{_new tier}%}
@@ -87,7 +87,7 @@ function createTierUpgradeItem(player: player, item: item type) :: item type:
 
     if any:
         {money::%{_player}%} < {_money cost}
-        {_player}'s experience < {_xp cost}
+        {dust::%{_player}%} < {_dust cost}
         {level::%{_player}%} < {_level requirement}
     then:
         set {_upgrade} to red concrete
@@ -95,7 +95,7 @@ function createTierUpgradeItem(player: player, item: item type) :: item type:
         set {_upgrade} to green concrete
 
     set name of {_upgrade} to "&fUpgrade to Tier %{_new tier}%"
-    set lore of {_upgrade} to "&7Level Requirement: %levelDisplay({_level requirement})%", "&7Money Cost: $%formatNumber({_money cost})% &7&o(%formatNumber({money::%{_player}%})%)", "&7XP Cost: %formatNumber({_xp cost})% &7&o(%formatNumber({_player}'s experience)%)", "&7Enchantment Limit: &m%{_old enchantment limit}%&r &6%formatNumber({_new enchantment limit})%"
+    set lore of {_upgrade} to "&7Level Requirement: %levelDisplay({_level requirement})%", "&7Money Cost: $%formatNumber({_money cost})% &7&o(%formatNumber({money::%{_player}%})%)", "&7Dust Cost: %formatNumber({_dust cost})% &7&o(%formatNumber({dust::%{_player}%})%)", "&7Enchantment Limit: &m%{_old enchantment limit}%&r &6%formatNumber({_new enchantment limit})%"
     return {_upgrade}
 
 on inventory click:
@@ -129,14 +129,14 @@ function tryUpgradeTier(player: player, slot: integer) :: string:
         return "Your item cannot be upgraded any further."
 
     set {_money cost} to {-tier::%{_type}%::money cost::%{_new tier}%}
-    set {_xp cost} to {-tier::%{_type}%::xp cost::%{_new tier}%}
+    set {_dust cost} to {-tier::%{_type}%::dust cost::%{_new tier}%}
     set {_level requirement} to {-tier::level requirement::%{_new tier}%}
 
     if {money::%{_player}%} < {_money cost}:
         return "&cYou don't have enough money."
 
-    if {_player}'s experience < {_xp cost}:
-        return "&cYou don't have enough XP."
+    if {dust::%{_player}%} < {_dust cost}:
+        return "&cYou don't have enough Dust."
 
     if {level::%{_player}%} < {_level requirement}:
         return "&cYou need to be at least level %{_level requirement}%."
@@ -145,7 +145,7 @@ function tryUpgradeTier(player: player, slot: integer) :: string:
     if {_new item} is set:
         set slot {_slot} of {_player} to {_new item}
         remove {_money cost} from {money::%{_player}%}
-        remove {_xp cost} from {_player}'s experience
+        remove {_dust cost} from {dust::%{_player}%}
         return "&aSuccessfully upgraded your item to tier %{_new tier}%!"
     else:
         return "&cAn error occurred while upgrading your item."

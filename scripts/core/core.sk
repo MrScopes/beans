@@ -137,7 +137,6 @@ function reset(player: player):
 
     set {_player}'s gamemode to survival
     set {_player}'s flight mode to false
-    set {_player}'s experience to 0
     clear {_player}'s inventory
     teleport {_player} to {spawn}
 
@@ -150,6 +149,7 @@ function reset(player: player):
     set {level progress::%{_player}%} to 0
     set {total level progress::%{_player}%} to 0
     set {money::%{_player}%} to 0
+    set {dust::%{_player}%} to 0
     set {blocks::%{_player}%} to 0
     set {trophies::%{_player}%} to 100
     set {kills::%{_player}%} to 0

@@ -19,11 +19,11 @@ on load:
             set level 4 to 1.25
             set level 5 to 1.75
 
-        level values for "xp cost":
-            set level 2 to 20_000
-            set level 3 to 100_000
-            set level 4 to 400_000
-            set level 5 to 1_000_000
+        level values for "dust cost":
+            set level 2 to 20
+            set level 3 to 100
+            set level 4 to 450
+            set level 5 to 1_100
 
         level values for "money cost":
             set level 2 to 25_000

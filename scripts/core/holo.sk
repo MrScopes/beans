@@ -23,7 +23,7 @@ on load:
     spawn text display at location(96.5, 51.5, 80.5):
         set data tag "holo" of display to true
         set billboard of display to center
-        set text of display to "", " &f5s: $1, 1XP, 1EXP ", " &f2h: 1 beacon ", ""
+        set text of display to "", formatted " &f5s: $1, %{-dust sprite}%0.01, 1XP ", " &f2h: 1 beacon ", ""
 
     spawn text display at location(-50, 25, -50):
         set data tag "holo" of display to true
