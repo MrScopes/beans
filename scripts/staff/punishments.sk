@@ -218,7 +218,7 @@ command /punish <offline player>:
 		set {_target} to arg 1
 		set {_history} to punishmentHistoryDisplay({_target})
 		open new notice dialog to player:
-			title: "&3Punish &b%{_target}%"
+			title: ""
 			can_close_with_escape: true
 			after_action: "close"
 			body:
