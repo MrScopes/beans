@@ -135,4 +135,15 @@ import:
     java.lang.String
 
 function kdrDisplay(kdr: number) :: text:
-    return String.format("%%.2f", {_kdr})
+    if any:
+        {_kdr} is infinite
+        {_kdr} is NaN
+        {_kdr} is not a number
+    then:
+        return "?"
+    else:
+        set {_result} to String.format("%%.2f", {_kdr})
+        if {_result} is "NaN":
+            return "?"
+        else:
+            return {_result}
