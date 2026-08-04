@@ -39,14 +39,14 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_multiplier} to "multiplier" of {_level} for "mark"
-    set {_duration} to "duration" of {_level} for "mark"
+    set {_multiplier} to "multiplier" of "mark" at {_level}
+    set {_duration} to "duration" of "mark" at {_level}
     return "mark the victim&8, &7increasing dmg taken by &f%{_multiplier} * 100%%% &7for &f%time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
-        set {_multiplier} to "multiplier" of {_level} for "mark"
-        set {_duration} to "duration" of {_level} for "mark"
+        set {_multiplier} to "multiplier" of "mark" at {_level}
+        set {_duration} to "duration" of "mark" at {_level}
         set {-marked::%{_victim}%} to now
         set {-marked level::%{_victim}%} to {_level}
         set {-marked multiplier::%{_victim}%} to {_multiplier}
@@ -58,5 +58,5 @@ on damage with priority monitor:
     damage > 0
     {-marked::%victim%} is set
     set {_dif} to difference between now and {-marked::%victim%}
-    if {_dif} < "duration" of {-marked level::%victim%} for "mark":
+    if {_dif} < "duration" of "mark" at {-marked level::%victim%}:
         set damage to damage * (1 + {-marked multiplier::%victim%})

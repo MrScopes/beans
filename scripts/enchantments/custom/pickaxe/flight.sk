@@ -8,7 +8,7 @@ on load:
 local function getDescription(level: integer) :: string:
     return "enables flight while mining"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
     if {-fly loop::%{_player}%} is not set:

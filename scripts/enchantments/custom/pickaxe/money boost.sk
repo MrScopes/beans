@@ -52,10 +52,10 @@ on load:
             set level 10 to 2_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_reward} to "reward" of {_level} for "money_boost"
+    set {_reward} to "reward" of "money_boost" at {_level}
     return "gain &f$%{_reward}%"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    set {_reward} to "reward" of {_level} for "money_boost"
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_reward} to "reward" of "money_boost" at {_level}
     playEnchantmentSound("mining", "minecraft:entity.villager.celebrate", 0.1, 1, location of {_player}, all players, {_player})
     add {_reward} to {money::%{_player}%}

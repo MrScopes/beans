@@ -39,8 +39,8 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_window} to "window" of {_level} for "substitution"
-    set {_speed} to "speed" of {_level} for "substitution"
+    set {_window} to "window" of "substitution" at {_level}
+    set {_speed} to "speed" of "substitution" at {_level}
     return "&e[RMB] &7parry an attack, resetting cooldown and dashing back. &8(&f%time_format({_window})% &7window&8, &f%effectDisplay({_speed})%&8)"
 
 local function onrightclick(player: player, item: item, level: integer):
@@ -50,7 +50,7 @@ local function onrightclick(player: player, item: item, level: integer):
     
 on damage of player with priority high:
     {-parry::%victim%} is set
-    set {_window} to "window" of {-parry level::%victim%} for "substitution"
+    set {_window} to "window" of "substitution" at {-parry level::%victim%}
 
     set {_ping bonus} to min(victim's ping / 2, 200) * 0.001 seconds
     set {_dif} to difference between {-parry::%victim%} and now
@@ -66,7 +66,7 @@ on damage of player with priority high:
 function parry(player: player, level: integer):
     playEnchantmentSound("combat", "block.anvil.land", 1, 1.8, location of {_player}, all players)
 
-    set {_speed} to "speed" of {_level} for "substitution"
+    set {_speed} to "speed" of "substitution" at {_level}
     add {_speed} to {_player}'s potion effects
 
     spawn block display at {_player}'s head ~ vector(0, 0.5, 0):

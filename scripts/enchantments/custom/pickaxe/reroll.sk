@@ -27,7 +27,7 @@ on load:
 local function getDescription(level: integer) :: string:
     return "retry enchantments"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-rerolling::%{_player}%} isn't set
     playEnchantmentSound("mining", "minecraft:block.wooden_button.click_on", 0.5, 1, location of {_player}, all players, {_player})
     set {-rerolling::%{_player}%} to true

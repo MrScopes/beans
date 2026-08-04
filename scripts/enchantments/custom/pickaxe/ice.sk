@@ -1,6 +1,6 @@
 on load:
     create pickaxe enchantment named "ice":
-        set enchantment display to "&f<sprite:""minecraft:blocks"":block/ice> &bIce"
+        set enchantment display to "&f<sprite:blocks:block/ice> &bIce"
         set enchantment max level to 5
         set enchantment priority to 10
         set enchantment item to packed ice
@@ -32,12 +32,12 @@ on load:
             set level 5 to 1_200_000
 
 local function getDescription(level: integer) :: string:
-    set {_radius} to "radius" of {_level} for "ice"
+    set {_radius} to "radius" of "ice" at {_level}
     return "set ice within &f%{_radius}%m"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     type of {_block} isn't packed ice or air
-    set {_radius} to "radius" of {_level} for "ice"
+    set {_radius} to "radius" of "ice" at {_level}
     loop all blocks in radius {_radius} around location of {_block}:
         loop-block isn't bedrock, beacon, obsidian, or packed ice
         loop-block is within bound with id "mine"

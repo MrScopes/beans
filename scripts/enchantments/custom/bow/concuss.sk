@@ -32,14 +32,14 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_effect} to "effect" of {_level} for "concuss"
+    set {_effect} to "effect" of "concuss" at {_level}
     set {_amplifier} to amplifier of {_effect}
     set {_duration} to time_format(duration of {_effect})
     return "applies &f%effectDisplay({_effect})% &7and &f%effectDisplay("firework disable", customDuration: duration of {_effect}, showAmplifier: false)%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
-        set {_effect} to "effect" of {_level} for "concuss"
+        set {_effect} to "effect" of "concuss" at {_level}
         add {_effect} to {_victim}'s potion effects
         set cooldown of firework for {_victim} to duration of {_effect}
         playEnchantmentSound("combat", "entity.spider.ambient", 1, 1, location of {_victim}, all players)

@@ -5,14 +5,14 @@ function enchantCanRun(player: player, enchantment: string, level: integer, luck
         if {_player} isn't op:
             return false
 
-    if "manual chance" of {_level} for {_enchantment} isn't set:
-        set {_chance} to "chance" of {_level} for {_enchantment}
+    if "manual chance" of {_enchantment} at {_level} isn't set:
+        set {_chance} to "chance" of {_enchantment} at {_level}
         {_chance} is set
         set {_chance} to {_chance} * (1 + {_luck})
         chance of (100 - {_chance})%:
             return false
 
-    if "manual cooldown" of {_level} for {_enchantment} isn't set:
+    if "manual cooldown" of {_enchantment} at {_level} isn't set:
         set {_expires} to {-enchant cooldown::%{_player}%::%{_enchantment}%}
 
         if {_expires} is set:
@@ -25,13 +25,13 @@ function miningEnchants(player: player, block: block):
     {_block} is within bound with id "mine"
 
     for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool):
-        set {_onbreak} to {-ce::%{_enchantment}%::onbreak}
-        {_onbreak} is set
+        set {_onBreak} to {-ce::%{_enchantment}%::onBreak}
+        {_onBreak} is set
 
         enchantCanRun({_player}, {_enchantment}, {_level}, {-mining luck::%{_player}%} ? 0) is true
 
         startEnchantCooldown({_player}, {_enchantment}, {_level})
-        run {_onbreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
+        run {_onBreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
 
 on break with priority high:
     event isn't canceled

@@ -32,14 +32,14 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_boost} to "boost" of {_level} for "grinder"
-    set {_requirement} to "requirement" of {_level} for "grinder"
+    set {_boost} to "boost" of "grinder" at {_level}
+    set {_requirement} to "requirement" of "grinder" at {_level}
     return "boost luck by &f%formatNumber({_boost}, "#.#####")%x &7every &f%{_requirement}% &7blocks"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_player} is within bound with id "mine flight"
-    set {_boost} to "boost" of {_level} for "grinder"
-    set {_requirement} to "requirement" of {_level} for "grinder"
+    set {_boost} to "boost" of "grinder" at {_level}
+    set {_requirement} to "requirement" of "grinder" at {_level}
 
     startGrinderWatcher({_player})
     

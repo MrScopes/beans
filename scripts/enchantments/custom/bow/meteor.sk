@@ -67,8 +67,8 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_damage per block} to "damage per block" of {_level} for "meteor"
-    set {_aoe per block} to "aoe per block" of {_level} for "meteor"
+    set {_damage per block} to "damage per block" of "meteor" at {_level}
+    set {_aoe per block} to "aoe per block" of "meteor" at {_level}
     return "create an explosion when shot from above&8, &f%{_damage per block}%<sprite:gui:hud/heart/full>&8/&7block&8, &7AOE &f%{_aoe per block}%m&8/&7block"
 
 local function onshoot(shooter: entity, tool: item, projectile: entity, level: integer, force: number):
@@ -79,8 +79,8 @@ local function onshoot(shooter: entity, tool: item, projectile: entity, level: i
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     {-%{_projectile}%::meteor} is set
     set {_distance} to distance between {-%{_projectile}%::meteor} and location of {_victim}
-    set {_damage} to clamp({_distance} * "damage per block" of {_level} for "meteor", 0, "max damage" of {_level} for "meteor")
-    set {_aoe} to clamp({_distance} * "aoe per block" of {_level} for "meteor", 0, "max aoe" of {_level} for "meteor")
+    set {_damage} to clamp({_distance} * "damage per block" of "meteor" at {_level}, 0, "max damage" of "meteor" at {_level})
+    set {_aoe} to clamp({_distance} * "aoe per block" of "meteor" at {_level}, 0, "max aoe" of "meteor" at {_level})
     {_damage} > 0
     playEnchantmentSound("combat", "entity.generic.explode", 1, 1, location of {_victim}, all players)
     loop all blocks in radius {_aoe} around {_victim}:

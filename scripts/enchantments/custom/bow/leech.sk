@@ -32,11 +32,11 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_heal percentage} to "heal percentage" of {_level} for "leech"
+    set {_heal percentage} to "heal percentage" of "leech" at {_level}
     return "heals for &f%{_heal percentage} * 100%%% &7of damage over &f3s"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
-    set {_heal percentage} to "heal percentage" of {_level} for "leech"
+    set {_heal percentage} to "heal percentage" of "leech" at {_level}
     loop 3 times:
         wait 1 second
         heal({_shooter}, ({_heal percentage} * {_damage}) / 3)

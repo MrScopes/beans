@@ -36,15 +36,15 @@ on load:
             set level 4 to 1_000_000
 
 local function getDescription(level: integer) :: string:
-    set {_speed} to "speed" of {_level} for "haste"
-    set {_haste} to "haste" of {_level} for "haste"
+    set {_speed} to "speed" of "haste" at {_level}
+    set {_haste} to "haste" of "haste" at {_level}
     return "apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_haste})%"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
-    set {_haste} to "haste" of {_level} for "haste"
-    set {_speed} to "speed" of {_level} for "haste"
+    set {_haste} to "haste" of "haste" at {_level}
+    set {_speed} to "speed" of "haste" at {_level}
     playEnchantmentSound("mining", "minecraft:entity.generic.drink", 0.5, 1, location of {_player}, all players, {_player})
     add {_haste} to {_player}'s potion effects
     add {_speed} to {_player}'s potion effects

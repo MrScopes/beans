@@ -46,14 +46,14 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_speed} to "speed" of {_level} for "adrenaline"
-    set {_resistance} to "resistance" of {_level} for "adrenaline"
+    set {_speed} to "speed" of "adrenaline" at {_level}
+    set {_resistance} to "resistance" of "adrenaline" at {_level}
     return "on hit&8, &7apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_resistance})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:
-        set {_speed} to "speed" of {_level} for "adrenaline"
-        set {_resistance} to "resistance" of {_level} for "adrenaline"
+        set {_speed} to "speed" of "adrenaline" at {_level}
+        set {_resistance} to "resistance" of "adrenaline" at {_level}
         set duration of {_speed} to duration of {_speed} * {_force}
         set duration of {_resistance} to duration of {_resistance} * {_force}
         apply {_speed} to {_shooter}

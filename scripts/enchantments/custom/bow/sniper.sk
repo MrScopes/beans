@@ -25,7 +25,7 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_scale} to "scale" of {_level} for "sniper"
+    set {_scale} to "scale" of "sniper" at {_level}
     return "deals &f%{_scale} * 100%<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
 
 local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
@@ -33,7 +33,7 @@ local function onshoot(shooter: entity, tool: item, projectile: projectile, leve
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     {_victim} is a living entity
-    set {_scale} to "scale" of {_level} for "sniper"
+    set {_scale} to "scale" of "sniper" at {_level}
     set {_distance} to distance between location of {_projectile} and {-%{_projectile}%::starting}
     set {_damage} to {_distance} * {_scale}
     send action bar "&lSNIPER: &f%{_damage}%&f<sprite:gui:hud/heart/full> &7, &lDISTANCE: &f%{_distance}%" to {_shooter}

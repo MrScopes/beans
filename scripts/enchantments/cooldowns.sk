@@ -1,5 +1,5 @@
 function startEnchantCooldown(player: player, enchantment: string, level: integer):
-    set {_cooldown} to "cooldown" of {_level} for {_enchantment}
+    set {_cooldown} to "cooldown" of {_enchantment} at {_level}
     if {_cooldown} is set:
         set {-enchant cooldown::%{_player}%::%{_enchantment}%} to now + {_cooldown}
         set {-enchant cooldown::%{_player}%::%{_enchantment}%::level} to {_level}

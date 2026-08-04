@@ -26,8 +26,8 @@ on load:
 local function getDescription(level: integer) :: string:
     return "gain a large amount of money and xp"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    set {_xp} to "xp" of {_level} for "jackpot"
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_xp} to "xp" of "jackpot" at {_level}
     set {_money} to {-jackpot money}
 
     add {_xp} to {_player}'s experience

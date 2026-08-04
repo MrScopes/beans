@@ -39,14 +39,14 @@ on load:
             set level 5 to 5_550_000
 
 local function getDescription(level: integer) :: string:
-    set {_duration} to "duration" of {_level} for "domain"
-    set {_radius} to "radius" of {_level} for "domain"
+    set {_duration} to "duration" of "domain" at {_level}
+    set {_radius} to "radius" of "domain" at {_level}
     return "on hit&8, &7create an inescapable &f%{_radius}%m &7domain for &f%time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
-        set {_duration} to "duration" of {_level} for "domain"
-        set {_radius} to "radius" of {_level} for "domain"
+        set {_duration} to "duration" of "domain" at {_level}
+        set {_radius} to "radius" of "domain" at {_level}
         playEnchantmentSound("combat", "entity.enderman.death", 1, 1, location of {_victim}, all players)
         send "%{_victim}% was trapped in a domain!" to {_shooter}
         set worldborder of {_victim} to a virtual worldborder:

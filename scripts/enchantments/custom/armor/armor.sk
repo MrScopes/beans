@@ -27,11 +27,11 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_armor} to "armor" of {_level} for "armor"
+    set {_armor} to "armor" of "armor" at {_level}
     return "increases armor by &f%{_armor}%"
 
 local function onapply(armor: item, level: integer, player: player = {_}):
-    set {_amount} to "armor" of {_level} for "armor"
+    set {_amount} to "armor" of "armor" at {_level}
     apply attribute modifier to (item within {_armor}):
         attribute: armor
         id: "skript:armor_enchantment"

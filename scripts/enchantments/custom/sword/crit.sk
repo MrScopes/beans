@@ -32,10 +32,10 @@ on load:
             set level 5 to 550_000
 
 local function getDescription(level: integer) :: string:
-    set {_multiplier} to "multiplier" of {_level} for "crit"
+    set {_multiplier} to "multiplier" of "crit" at {_level}
     return "increase final damage by &f%{_multiplier} * 100%%%"
 
 local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
-    set {_multiplier} to "multiplier" of {_level} for "crit"
+    set {_multiplier} to "multiplier" of "crit" at {_level}
     playEnchantmentSound("combat", "minecraft:entity.bat.hurt", 1, 1, location of {_attacker}, all players)
     return {_damage} * (1 + {_multiplier})

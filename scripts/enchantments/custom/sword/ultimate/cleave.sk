@@ -62,23 +62,23 @@ on load:
             set level 5 to 6_000_000
 
 local function getDescription(level: integer) :: string:
-    set {_damage} to "damage" of {_level} for "cleave"
-    set {_bleed} to "bleed" of {_level} for "cleave"
-    set {_bleed duration} to "bleed duration" of {_level} for "cleave"
-    set {_requirement} to "requirement" of {_level} for "cleave"
-    set {_distance} to "distance" of {_level} for "cleave"
-    set {_radius} to "radius" of {_level} for "cleave"
+    set {_damage} to "damage" of "cleave" at {_level}
+    set {_bleed} to "bleed" of "cleave" at {_level}
+    set {_bleed duration} to "bleed duration" of "cleave" at {_level}
+    set {_requirement} to "requirement" of "cleave" at {_level}
+    set {_distance} to "distance" of "cleave" at {_level}
+    set {_radius} to "radius" of "cleave" at {_level}
     return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%time_format({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
 
 local function onleftclick(player: player, item: item, level: integer):
-    set {_requirement} to "requirement" of {_level} for "cleave"
+    set {_requirement} to "requirement" of "cleave" at {_level}
     if {-cleave::%{_player}%} >= {_requirement}:
         delete {-cleave::%{_player}%}
-        set {_damage} to "damage" of {_level} for "cleave"
-        set {_bleed} to "bleed" of {_level} for "cleave"
-        set {_bleed duration} to "bleed duration" of {_level} for "cleave"
-        set {_distance} to "distance" of {_level} for "cleave"
-        set {_radius} to "radius" of {_level} for "cleave"
+        set {_damage} to "damage" of "cleave" at {_level}
+        set {_bleed} to "bleed" of "cleave" at {_level}
+        set {_bleed duration} to "bleed duration" of "cleave" at {_level}
+        set {_distance} to "distance" of "cleave" at {_level}
+        set {_radius} to "radius" of "cleave" at {_level}
 
         playEnchantmentSound("combat", "entity.player.attack.sweep", 1, 1, location of {_player}, all players)
         set {_origin} to location of {_player}'s head
@@ -101,14 +101,14 @@ local function onleftclick(player: player, item: item, level: integer):
 
 local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     add 1 to {-cleave::%{_attacker}%}
-    if {-cleave::%{_attacker}%} >= "requirement" of {_level} for "cleave":
+    if {-cleave::%{_attacker}%} >= "requirement" of "cleave" at {_level}:
         send action bar "&4&lCleave &fis ready." to {_attacker}
     return 0
 
 local function cleave(victim: entity, attacker: entity, level: integer):
-    set {_damage} to "damage" of {_level} for "cleave"
-    set {_bleed} to "bleed" of {_level} for "cleave"
-    set {_bleed duration} to "bleed duration" of {_level} for "cleave"
+    set {_damage} to "damage" of "cleave" at {_level}
+    set {_bleed} to "bleed" of "cleave" at {_level}
+    set {_bleed duration} to "bleed duration" of "cleave" at {_level}
 
     damage({_victim}, {_attacker}, {_damage})
 

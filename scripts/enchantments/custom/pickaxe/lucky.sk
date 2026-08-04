@@ -39,14 +39,14 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_boost} to "boost" of {_level} for "lucky"
-    set {_duration} to "duration" of {_level} for "lucky"
+    set {_boost} to "boost" of "lucky" at {_level}
+    set {_duration} to "duration" of "lucky" at {_level}
     return "gain &f%{_boost} * 100%%% &7luck for &f%time_format({_duration})%"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-mining luck boost::%{_player}%} isn't set
-    set {_boost} to "boost" of {_level} for "lucky"
-    set {_duration} to "duration" of {_level} for "lucky"
+    set {_boost} to "boost" of "lucky" at {_level}
+    set {_duration} to "duration" of "lucky" at {_level}
     set {-mining luck boost::%{_player}%} to true
     add {_boost} to {-mining luck::%{_player}%}
     playEnchantmentSound("mining", "minecraft:block.amethyst_block.resonate", 1, 1, location of {_player}, all players, {_player})

@@ -32,11 +32,11 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_radius} to "radius" of {_level} for "nuke"
+    set {_radius} to "radius" of "nuke" at {_level}
     return "nuke blocks within &f%{_radius}%m"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    set {_radius} to "radius" of {_level} for "nuke"
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_radius} to "radius" of "nuke" at {_level}
     playEnchantmentSound("mining", "minecraft:entity.creeper.primed", 1, 1, location of {_player}, all players, {_player})
     wait 1 second
     playEnchantmentSound("mining", "minecraft:entity.generic.explode", 0.25, 1, location of {_block}, all players, {_player})

@@ -56,20 +56,20 @@ on load:
             set level 5 to 7_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_feed} to "feed" of {_level} for "overload"
-    set {_regeneration} to "regeneration" of {_level} for "overload"
-    set {_speed} to "speed" of {_level} for "overload"
-    set {_health boost} to "health boost" of {_level} for "overload"
-    set {_absorption} to "absorption" of {_level} for "overload"
+    set {_feed} to "feed" of "overload" at {_level}
+    set {_regeneration} to "regeneration" of "overload" at {_level}
+    set {_speed} to "speed" of "overload" at {_level}
+    set {_health boost} to "health boost" of "overload" at {_level}
+    set {_absorption} to "absorption" of "overload" at {_level}
     return "on kill&8, &7feed you by &f%{-effect::saturation::display}%%{_feed}%&8, &7and grant &f%effectDisplay({_regeneration})%&8, &f%effectDisplay({_speed})%&8, &f%effectDisplay({_health boost})%&8, &7and &f%effectDisplay({_absorption})%"
 
 local function onkill(attacker: entity, armor: item, level: integer, victim: entity):
     {_victim} is a player
-    set {_feed} to "feed" of {_level} for "overload"
-    set {_regeneration} to "regeneration" of {_level} for "overload"
-    set {_speed} to "speed" of {_level} for "overload"
-    set {_health boost} to "health boost" of {_level} for "overload"
-    set {_absorption} to "absorption" of {_level} for "overload"
+    set {_feed} to "feed" of "overload" at {_level}
+    set {_regeneration} to "regeneration" of "overload" at {_level}
+    set {_speed} to "speed" of "overload" at {_level}
+    set {_health boost} to "health boost" of "overload" at {_level}
+    set {_absorption} to "absorption" of "overload" at {_level}
 
     set {_attacker}'s food level to clamp({_attacker}'s food level + {_feed}, 0, 10)
     add {_regeneration} to {_attacker}'s potion effects

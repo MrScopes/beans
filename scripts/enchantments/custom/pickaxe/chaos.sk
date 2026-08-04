@@ -41,13 +41,13 @@ on load:
             set level 5 to 1_500_000
 
 local function getDescription(level: integer) :: string:
-    set {_enchantments} to "enchantments" of {_level} for "chaos"
-    set {_luck boost} to "luck boost" of {_level} for "chaos"
+    set {_enchantments} to "enchantments" of "chaos" at {_level}
+    set {_luck boost} to "luck boost" of "chaos" at {_level}
     return "spin &f%{_enchantments}% &7random enchantments with &f%{_luck boost} * 100%%% &7luck boost"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    set {_enchantments} to "enchantments" of {_level} for "chaos"
-    set {_luck boost} to "luck boost" of {_level} for "chaos"
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_enchantments} to "enchantments" of "chaos" at {_level}
+    set {_luck boost} to "luck boost" of "chaos" at {_level}
     playEnchantmentSound("mining", "minecraft:entity.evoker.cast_spell", 0.5, 1, location of {_player}, all players, {_player})
     set {_enchantments::*} to custom enchantments of {_tool}
     set {_indices::*} to indices of {_enchantments::*}
@@ -57,11 +57,11 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
         if loop-iteration > {_enchantments}:
             stop
         set {_chance} to {-ce::%loop-value%::chance::%{_enchantments::%loop-value%}%}
-        if {-ce::%loop-value%::onbreak} is set:
+        if {-ce::%loop-value%::onBreak} is set:
             if {_chance} is set:
                 # if chance doesn't succeed, skip the enchantment
                 set {_chance} to {_chance} * (1 + ({-mining luck::%{_player}%} ? 0) + ({_luck boost} ? 0))
                 chance of (100 - {_chance})%:
                     continue
 
-            run {-ce::%loop-value%::onbreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, {_block type})
+            run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, {_block type})

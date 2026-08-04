@@ -39,15 +39,17 @@ expression level %integer% [%-string% of %-string%]:
         set {_current level value key} to {-current ce::%event%::level value key}
         set {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%} to change value
 
-expression %string% of %integer% for %string%:
+expression %string% of %string% at %integer%:
     get:
         set {_key} to expr-1
-        set {_enchantment} to expr-3
-        set {_level} to expr-2
+        set {_enchantment} to expr-2
+        set {_level} to expr-3
 
         set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
+
         if {_value} isn't set:
             set {_max} to enchantment max level of {_enchantment}
+
             if {_max} is set:
                 set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}
                 set {_previousValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max} - 1%}
@@ -62,4 +64,5 @@ expression %string% of %integer% for %string%:
                         else:
                             set {_ratio} to {_previousValue} / {_maxValue}
                             set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
+
         return {_value}

@@ -27,6 +27,6 @@ on load:
 local function getDescription(level: integer) :: string:
     return "instantly gives you a beacon"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     playEnchantmentSound("mining", "minecraft:block.beacon.activate", 0.5, 1, location of {_player}, all players, {_player})
     giveBeacons({_player}, 1)

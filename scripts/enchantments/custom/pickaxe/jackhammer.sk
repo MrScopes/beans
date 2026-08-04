@@ -41,14 +41,14 @@ on load:
             set level 5 to 1_300_000
 
 local function getDescription(level: integer) :: string:
-    set {_width} to "width" of {_level} for "jackhammer"
-    set {_height} to "height" of {_level} for "jackhammer"
+    set {_width} to "width" of "jackhammer" at {_level}
+    set {_height} to "height" of "jackhammer" at {_level}
     return "mine &f%{_width}%&7x&f%{_width}%&7x&f%{_height}% &7area"
 
-local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_block} is within bound with id "mine"
-    set {_width} to "width" of {_level} for "jackhammer"
-    set {_height} to "height" of {_level} for "jackhammer"
+    set {_width} to "width" of "jackhammer" at {_level}
+    set {_height} to "height" of "jackhammer" at {_level}
 
     playEnchantmentSound("mining", "minecraft:block.anvil.land", 0.5, 1, location of {_block}, all players, {_player})
 

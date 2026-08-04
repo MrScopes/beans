@@ -32,14 +32,14 @@ on load:
             set level 5 to 1_250_000
 
 local function getDescription(level: integer) :: string:
-    set {_multiplier} to "multiplier" of {_level} for "precision"
+    set {_multiplier} to "multiplier" of "precision" at {_level}
     return "hitting a shot increases arrow damage by &f%{_multiplier} * 100%%%&8. &7missing a shot resets the multiplier"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     {_shooter} isn't {_victim}
     if {-shots hit in a row::%{_shooter}%} > 1:
-        set {_multiplier} to "multiplier" of {_level} for "precision"
-        set {_max multiplier} to "max multiplier" of {_level} for "precision"
+        set {_multiplier} to "multiplier" of "precision" at {_level}
+        set {_max multiplier} to "max multiplier" of "precision" at {_level}
         playEnchantmentSound("combat", "entity.arrow.hit", 1, 1.5, location of {_victim}, all players)
         playEnchantmentSound("combat", "block.note_block.pling", 1, 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * ({_multiplier} * 1.5), 0, 1.5)), location of {_shooter}, all players)
         return {_damage} * (clamp({-shots hit in a row::%{_shooter}%} * {_multiplier}, 0, {_max multiplier}))
