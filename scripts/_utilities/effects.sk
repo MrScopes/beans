@@ -23,6 +23,7 @@ on load:
     set {-effect::hunger::display} to "<sprite:gui:mob_effect/hunger>"
     set {-effect::health boost::display} to "<sprite:gui:mob_effect/health_boost>"
     set {-effect::saturation::display} to "<sprite:gui:mob_effect/saturation>"
+    set {-effect::ignite::display} to "<sprite:blocks:block/fire_1>"
     set {-effect::armor::display} to "<sprite:gui:hud/armor_full>"
 
 function smallNumber(number: number) :: text:
@@ -39,13 +40,22 @@ function smallNumber(number: number) :: text:
     replace all "0" with "⁰" in {_text}
     return {_text}
 
-function effectDisplay(effect: potion effect, showAmplifier: boolean = true, showDuration: boolean = true) :: text:
-    set {_display} to "%{-effect::%type of {_effect}%::display}%"
+function effectDisplay(effect: object, customLevel: integer = 1, customDuration: timespan = {_}, showAmplifier: boolean = true, showDuration: boolean = true) :: text:
+    if {_effect} is an instance of (class "org.skriptlang.skript.bukkit.potion.util.SkriptPotionEffect"):
+        set {_display} to "%{-effect::%type of {_effect}%::display}%"
 
-    if {_showAmplifier} is true:
-        add smallNumber(amplifier of {_effect}) to {_display}
+        if {_showAmplifier} is true:
+            add smallNumber(amplifier of {_effect}) to {_display}
 
-    if {_showDuration} is true:
-        add " &f%time_format(duration of {_effect})%" to {_display}
+        if {_showDuration} is true:
+            add " &f%time_format(duration of {_effect})%" to {_display}
+    else:
+        set {_display} to "%{-effect::%{_effect}%::display}%"
+
+        if {_showAmplifier} is true:
+            add smallNumber({_customLevel}) to {_display}
+
+        if {_showDuration} is true:
+            add " &f%time_format({_customDuration})%" to {_display}
 
     return {_display}
