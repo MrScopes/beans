@@ -151,7 +151,7 @@ function reset(player: player):
     set {total level progress::%{_player}%} to 0
     set {money::%{_player}%} to 0
     set {blocks::%{_player}%} to 0
-    set {trophies::%{_player}%} to 0
+    set {trophies::%{_player}%} to 100
     set {kills::%{_player}%} to 0
     set {deaths::%{_player}%} to 0
     delete {daily::%{_player}%}
