@@ -37,12 +37,31 @@ async every tick:
 
         if {level::%loop-player%} < 100:
             set {_required xp} to {-required xp::%{level::%loop-player%} + 1%}
-            set {-level progress percent::%loop-player%} to ({level progress::%loop-player%} / {_required xp}) * 100
-            if {level progress::%loop-player%} >= {_required xp}:
-                add 1 to {level::%loop-player%}
+
+            while {level progress::%loop-player%} >= {_required xp}:
                 remove {_required xp} from {level progress::%loop-player%}
+                add 1 to {level::%loop-player%}
+
+                if {level::%loop-player%} >= 100:
+                    stop loop
+
+                set {_required xp} to {-required xp::%{level::%loop-player%} + 1%}
+
+            if {level::%loop-player%} >= 100:
+                set {-level progress percent::%loop-player%} to 100
+                set loop-player's level to 100
+                set loop-player's level progress to 1
+            else:
+                set {_required xp} to {-required xp::%{level::%loop-player%} + 1%}
+                set {_progress} to clamp(({level progress::%loop-player%} ? 0) / {_required xp}, 0, 1)
+
+                set {-level progress percent::%loop-player%} to {_progress} * 100
+                set loop-player's level to {level::%loop-player%}
+                set loop-player's level progress to {_progress}
         else:
             set {-level progress percent::%loop-player%} to 100
+            set loop-player's level to 100
+            set loop-player's level progress to 1
 
         set line 4 of loop-player's fastboard to "&bBlocks: &f%kNumber({blocks::%loop-player%})%"
         set line 5 of loop-player's fastboard to "&bMoney: &f$%kNumber({money::%loop-player%})%"
