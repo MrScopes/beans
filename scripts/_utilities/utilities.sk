@@ -127,3 +127,12 @@ function timedTP(player: player, location: location):
                 teleport {_player} to {_location}
     else:
         teleport {_player} to {_location}
+
+###
+###
+
+import:
+    java.lang.String
+
+function kdrDisplay(kdr: number) :: text:
+    return String.format("%%.2f", {_kdr})
