@@ -35,11 +35,32 @@ on death of player:
     else:
         set death message to "%player_display({_attacker})% &7killed %player_display(victim)%&7."
         add 1 to {kills::%{_attacker}%}
-        set {_money reward} to {money::%victim%} * 0.02
+        set {_money reward} to floor(2% of {money::%victim%})
         add {_money reward} to {money::%{_attacker}%}
         remove {_money reward} from {money::%victim%}
         send "&7You received &a$%kNumber({_money reward})% &7for killing %player_display(victim)%&7." to {_attacker}
         send "&7You lost &c$%kNumber({_money reward})% &7for being killed by %player_display({_attacker})%&7." to victim
+
+        set {_attacker level advantage} to {level::%{_attacker}%} - {level::%victim%}
+
+        if {_attacker level advantage} >= 1:
+            # Higher level
+            set {_percentage to remove} to 5%
+        else if {_attacker level advantage} > -10:
+            # Up to 9 levels lower
+            set {_percentage to remove} to 8%
+        else if {_attacker level advantage} > -25:
+            # 10-24 levels lower
+            set {_percentage to remove} to 12%
+        else:
+            # 25+ levels lower
+            set {_percentage to remove} to 15%
+
+        set {_trophy reward} to floor({trophies::%victim%} * {_percentage to remove})
+        set {trophies::%victim%} to max(0, {trophies::%victim%} - {_trophy reward})
+        send "&c-%{_trophy reward}%&6&l🏆" to victim
+        add {_trophy reward} to {trophies::%{_attacker}%}
+        send "&a+%{_trophy reward}%&6&l🏆" to {_attacker}
 
 command /protection:
     trigger:
