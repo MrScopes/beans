@@ -137,5 +137,8 @@ command /allenchantments:
                 {-ce::%{_enchantment}%::type} is {_type}
                 set {_max} to {-ce::%{_enchantment}%::max level}
                 set {_description} to getDescription({_enchantment}, {_max})
-                send "`%{_enchantment}% Lv. %{_max}%` %{_description}%" to console
+                if {-ce::%{_enchantment}%::ultimate} is true:
+                    send "**ULTIMATE** `%{_enchantment}% Lv. %{_max}%` %{_description}%" to console
+                else:
+                    send "`%{_enchantment}% Lv. %{_max}%` %{_description}%" to console
             send "" to console
