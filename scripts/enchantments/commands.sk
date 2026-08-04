@@ -126,3 +126,16 @@ on inventory close:
     event-inventory is {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
     wait 1 tick
     player command "/enchantments"
+
+command /allenchantments:
+    trigger:
+        set {_types::*} to "pickaxe", "bow", "sword", "armor"
+        for {_type} in {_types::*}:
+            send "# %capitalizeFirst({_type})% Enchantments" to console
+            for {_enchantment} in indexes of {-ce::*}:
+                {-ce::%{_enchantment}%::disabled} isn't true
+                {-ce::%{_enchantment}%::type} is {_type}
+                set {_max} to {-ce::%{_enchantment}%::max level}
+                set {_description} to getDescription({_enchantment}, {_max})
+                send "`%{_enchantment}% Lv. %{_max}%` %{_description}%" to console
+            send "" to console
