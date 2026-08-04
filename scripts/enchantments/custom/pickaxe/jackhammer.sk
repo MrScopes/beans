@@ -50,7 +50,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     set {_width} to "width" of {_level} for "jackhammer"
     set {_height} to "height" of {_level} for "jackhammer"
 
-    play sound "minecraft:block.anvil.land" with volume 0.5 and pitch 1 at location of {_block}
+    playEnchantmentSound("mining", "minecraft:block.anvil.land", 0.5, 1, location of {_block}, all players, {_player})
 
     set {_centerX} to x-coordinate of {_block}
     set {_centerY} to y-coordinate of {_block}

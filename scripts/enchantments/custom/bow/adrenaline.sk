@@ -58,4 +58,4 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         set duration of {_resistance} to duration of {_resistance} * {_force}
         apply {_speed} to {_shooter}
         apply {_resistance} to {_shooter}
-        play sound "entity.player.attack.sweep" at volume 1 and pitch 0.1 at {_shooter}
+        playEnchantmentSound("combat", "entity.player.attack.sweep", 1, 0.1, location of {_shooter}, all players)

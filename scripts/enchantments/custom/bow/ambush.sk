@@ -40,7 +40,7 @@ local function onattack(shooter: entity, victim: entity, projectile: entity, lev
     set {_time} to "time threshold" of {_level} for "ambush"
     if (difference between now and {-last damaged::%{_victim}%}) > {_time}:
         set {_multiplier} to "multiplier" of {_level} for "ambush"
-        play sound "entity.player.attack.crit" with volume 1 and pitch 0.1 at {_victim}
+        playEnchantmentSound("combat", "entity.player.attack.crit", 1, 0.1, location of {_victim}, all players)
         return {_damage} * {_multiplier}
 
 on damage of player with priority monitor:

@@ -59,4 +59,4 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     set {_multiplier} to "multiplier" of {_level} for "xp_boost"
     set {_xp} to {_multiplier} * xpYield({_block})
     add {_xp} to {_player}'s experience
-    play sound "minecraft:entity.experience_orb.pickup" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.experience_orb.pickup", 0.5, 1, location of {_player}, all players, {_player})

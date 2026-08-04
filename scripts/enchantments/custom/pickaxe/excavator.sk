@@ -28,7 +28,7 @@ local function getDescription(level: integer) :: string:
     return "make you break a nearby block"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    play sound "minecraft:block.gravel.break" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:block.gravel.break", 0.5, 1, location of {_player}, all players, {_player})
     while {_target} isn't set:
         add 1 to {_n}
         set {_potential} to random element out of (blocks in radius 3 around {_block})

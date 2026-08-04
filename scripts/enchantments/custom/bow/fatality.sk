@@ -40,5 +40,5 @@ local function onattack(shooter: entity, victim: entity, projectile: entity, lev
     set {_health threshold} to "health threshold" of {_level} for "fatality"
     if {_victim}'s health / {_victim}'s max health <= {_health threshold}:
         set {_multiplier} to "multiplier" of {_level} for "fatality"
-        play sound "entity.player.attack.strong" with volume 1 and pitch 0.1 at {_victim}
+        playEnchantmentSound("combat", "entity.player.attack.strong", 1, 0.1, location of {_victim}, all players)
         return {_damage} * {_multiplier}

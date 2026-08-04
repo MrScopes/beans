@@ -45,6 +45,6 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     {_dif} isn't less than {-combat log time}
     set {_haste} to "haste" of {_level} for "haste"
     set {_speed} to "speed" of {_level} for "haste"
-    play sound "minecraft:entity.generic.drink" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.generic.drink", 0.5, 1, location of {_player}, all players, {_player})
     add {_haste} to {_player}'s potion effects
     add {_speed} to {_player}'s potion effects

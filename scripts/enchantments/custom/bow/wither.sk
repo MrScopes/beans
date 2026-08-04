@@ -51,4 +51,4 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         set {_blindness} to potion effect of blindness 1 for (duration of {_effect} / 2)
         add {_effect} to {_victim}'s potion effects
         add {_blindness} to {_victim}'s potion effects
-        play sound "entity.wither.shoot" with volume 1 and pitch 1 at {_victim}
+        playEnchantmentSound("combat", "entity.wither.shoot", 1, 1, location of {_victim}, all players)

@@ -46,7 +46,7 @@ local function getDescription(level: integer) :: string:
 local function onrightclick(player: player, item: item, level: integer):
     set {-parry::%{_player}%} to now
     set {-parry level::%{_player}%} to {_level}
-    play sound "item.armor.equip_iron" with volume 0.6 and pitch 1.3 at {_player}
+    playEnchantmentSound("combat", "item.armor.equip_iron", 0.6, 1.3, location of {_player}, all players)
     
 on damage of player with priority high:
     {-parry::%victim%} is set
@@ -64,7 +64,7 @@ on damage of player with priority high:
         delete {-parry level::%victim%}
 
 function parry(player: player, level: integer):
-    play sound "block.anvil.land" with volume 1 and pitch 1.8 at {_player}
+    playEnchantmentSound("combat", "block.anvil.land", 1, 1.8, location of {_player}, all players)
 
     set {_speed} to "speed" of {_level} for "substitution"
     add {_speed} to {_player}'s potion effects

@@ -37,5 +37,5 @@ local function getDescription(level: integer) :: string:
 
 local function onattack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     set {_multiplier} to "multiplier" of {_level} for "crit"
-    play sound "minecraft:entity.bat.hurt" with volume 1 and pitch 1 to {_attacker}
+    playEnchantmentSound("combat", "minecraft:entity.bat.hurt", 1, 1, location of {_attacker}, all players)
     return {_damage} * (1 + {_multiplier})

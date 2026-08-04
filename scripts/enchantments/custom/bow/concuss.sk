@@ -42,4 +42,4 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         set {_effect} to "effect" of {_level} for "concuss"
         add {_effect} to {_victim}'s potion effects
         set cooldown of firework for {_victim} to duration of {_effect}
-        play sound "entity.spider.ambient" with volume 1 and pitch 1 at {_victim}
+        playEnchantmentSound("combat", "entity.spider.ambient", 1, 1, location of {_victim}, all players)

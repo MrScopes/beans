@@ -57,5 +57,5 @@ local function getDescription(level: integer) :: string:
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_reward} to "reward" of {_level} for "money_boost"
-    play sound "minecraft:entity.villager.celebrate" with volume 0.1 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.villager.celebrate", 0.1, 1, location of {_player}, all players, {_player})
     add {_reward} to {money::%{_player}%}

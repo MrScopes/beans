@@ -39,5 +39,5 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
     if {_victim} is a living entity:
         if distance between location of {_projectile} and eye of {_victim} < 0.5:
             set {_damage} to "damage" of {_level} for "bullseye"
-            play sound "entity.arrow.hit_player" at volume 1 and pitch 0.1 at {_shooter}
+            playEnchantmentSound("combat", "entity.arrow.hit_player", 1, 0.1, location of {_shooter}, all players)
             damage({_victim}, {_attacker}, {_damage})

@@ -50,7 +50,7 @@ command /settings:
     trigger:
         set {-settings gui::%player%} to chest inventory with 1 rows named "Settings"
 
-        simpleToggleSetting(player, note block, "mining enchantment sounds", "Mining Enchantment Sounds", "mining enchantment sounds", true)
+        multiOptionSetting(player, note block, "mining enchantment sounds", "Mining Enchantment Sounds", "mining enchantment sounds", ("All", "Yours Only", "None"))
         simpleToggleSetting(player, diamond sword, "combat enchantment sounds", "Combat Enchantment Sounds", "combat enchantment sounds", true)
         simpleToggleSetting(player, compass, "chat pinging", "Chat Pinging", "players pinging you in chat", true)
         simpleToggleSetting(player, music disc far, "instant wheel", "Instant Wheel Spin", "instant wheel spin", false)
@@ -96,12 +96,25 @@ on inventory click:
 
     player command "/settings"
 
-function playEnchantmentSound(type: text, sound: text, volume: number, pitch: number, at: location, players: players):
+function playEnchantmentSound(type: text, sound: text, volume: number, pitch: number, at: location, players: players, origin player: player = {_}):
     if {_type} is "mining":
-        set {_setting} to "mining enchantment sounds"
-    else if {_type} is "combat":
-        set {_setting} to "combat enchantment sounds"
+        for {_player} in {_players::*}:
+            set {_setting} to {setting::%{_player}%::mining enchantment sounds}
 
-    for {_player} in {_players::*}:
-        {setting::%{_player}%::%{_setting}%} isn't set
-        play sound {_sound} with volume {_volume} and pitch {_pitch} at {_at} for {_player}
+            if {_setting} is "None":
+                continue
+
+            if {_setting} is "Yours Only":
+                if {_origin player} isn't set:
+                    continue
+                if {_player} isn't {_origin player}:
+                    continue
+
+            play sound {_sound} with volume {_volume} and pitch {_pitch} at {_at} for {_player}
+
+    else if {_type} is "combat":
+        for {_player} in {_players::*}:
+            if {setting::%{_player}%::combat enchantment sounds} is set:
+                continue
+
+            play sound {_sound} with volume {_volume} and pitch {_pitch} at {_at} for {_player}

@@ -49,7 +49,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     set {_duration} to "duration" of {_level} for "lucky"
     set {-mining luck boost::%{_player}%} to true
     add {_boost} to {-mining luck::%{_player}%}
-    play sound "minecraft:block.amethyst_block.resonate" with volume 1 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:block.amethyst_block.resonate", 1, 1, location of {_player}, all players, {_player})
     wait {_duration}
     delete {-mining luck boost::%{_player}%}
     remove {_boost} from {-mining luck::%{_player}%}

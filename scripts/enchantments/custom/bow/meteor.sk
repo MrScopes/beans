@@ -82,7 +82,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
     set {_damage} to clamp({_distance} * "damage per block" of {_level} for "meteor", 0, "max damage" of {_level} for "meteor")
     set {_aoe} to clamp({_distance} * "aoe per block" of {_level} for "meteor", 0, "max aoe" of {_level} for "meteor")
     {_damage} > 0
-    play sound "entity.generic.explode" with volume 1 and pitch 1 at location of {_victim}
+    playEnchantmentSound("combat", "entity.generic.explode", 1, 1, location of {_victim}, all players)
     loop all blocks in radius {_aoe} around {_victim}:
         show explosion particle at loop-block
         "%blocks at loop-block%" doesn't contain "spawn"

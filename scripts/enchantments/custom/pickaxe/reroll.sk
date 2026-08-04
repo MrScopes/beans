@@ -29,7 +29,7 @@ local function getDescription(level: integer) :: string:
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-rerolling::%{_player}%} isn't set
-    play sound "minecraft:block.wooden_button.click_on" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:block.wooden_button.click_on", 0.5, 1, location of {_player}, all players, {_player})
     set {-rerolling::%{_player}%} to true
     miningEnchants({_player}, {_block})
     wait 1 tick

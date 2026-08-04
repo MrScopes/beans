@@ -80,7 +80,7 @@ local function onleftclick(player: player, item: item, level: integer):
         set {_distance} to "distance" of {_level} for "cleave"
         set {_radius} to "radius" of {_level} for "cleave"
 
-        play sound "entity.player.attack.sweep" at {_player}
+        playEnchantmentSound("combat", "entity.player.attack.sweep", 1, 1, location of {_player}, all players)
         set {_origin} to location of {_player}'s head
         set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
 
@@ -90,7 +90,7 @@ local function onleftclick(player: player, item: item, level: integer):
                 wait 1 tick
             set vector length of {_vector} to loop-value / 4
             set {_bullet} to {_origin} ~ {_vector}
-            play sound "entity.player.attack.sweep" at {_bullet}
+            playEnchantmentSound("combat", "entity.player.attack.sweep", 1, 1, {_bullet}, all players)
             loop clamp(({_radius} / 2), 1, 4) times:
                 draw 4 sweep attack particle at ({_bullet} ~ vector((random numbers between -1 and 1), (random numbers between -1 and 1), (random numbers between -1 and 1)))
 

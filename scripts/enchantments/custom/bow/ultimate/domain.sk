@@ -47,7 +47,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
     if {_victim} is a player:
         set {_duration} to "duration" of {_level} for "domain"
         set {_radius} to "radius" of {_level} for "domain"
-        play sound "entity.enderman.death" with volume 1 and pitch 1 at {_victim}
+        playEnchantmentSound("combat", "entity.enderman.death", 1, 1, location of {_victim}, all players)
         send "%{_victim}% was trapped in a domain!" to {_shooter}
         set worldborder of {_victim} to a virtual worldborder:
             set worldborder radius of event-worldborder to {_radius}

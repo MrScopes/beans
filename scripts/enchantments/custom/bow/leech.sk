@@ -40,5 +40,5 @@ local function onattack(shooter: entity, victim: entity, projectile: entity, lev
     loop 3 times:
         wait 1 second
         heal({_shooter}, ({_heal percentage} * {_damage}) / 3)
-        play sound "entity.witch.drink" at volume 1 and pitch 1 at {_shooter}
+        playEnchantmentSound("combat", "entity.witch.drink", 1, 1, location of {_shooter}, all players)
         show 5 heart particles at {_shooter}'s head

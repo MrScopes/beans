@@ -44,7 +44,7 @@ local function getDescription(level: integer) :: string:
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
         set {_duration} to "duration" of {_level} for "grounding"
-        play sound "entity.shulker.hurt" to {_shooter} and {_victim}
+        playEnchantmentSound("combat", "entity.shulker.hurt", 1, 1, location of {_victim}, all players)
         set gliding of {_victim} to false
         set cooldown of elytra for {_victim} to {_duration}
 

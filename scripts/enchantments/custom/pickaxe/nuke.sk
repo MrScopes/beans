@@ -37,7 +37,7 @@ local function getDescription(level: integer) :: string:
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_radius} to "radius" of {_level} for "nuke"
-    play sound "minecraft:entity.creeper.primed" with volume 1 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.creeper.primed", 1, 1, location of {_player}, all players, {_player})
     wait 1 second
-    play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
+    playEnchantmentSound("mining", "minecraft:entity.generic.explode", 0.25, 1, location of {_block}, all players, {_player})
     fastRadiusClear({_player}, location of {_block}, {_radius})

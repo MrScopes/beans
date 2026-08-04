@@ -30,7 +30,7 @@ local function getDescription(level: integer) :: string:
     return "activate most enchantments, bypassing chance and cooldown"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    play sound "minecraft:entity.ender_dragon.growl" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.ender_dragon.growl", 0.5, 1, location of {_player}, all players, {_player})
     set {_enchantments::*} to custom enchantments of {_tool}
     set {_indices::*} to indices of {_enchantments::*}
     set {_indices::*} to shuffled {_indices::*}

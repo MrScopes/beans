@@ -45,7 +45,7 @@ local function getDescription(level: integer) :: string:
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_distance} to "distance" of {_level} for "beam"
     set {_radius} to "radius" of {_level} for "beam"
-    play sound "minecraft:entity.ender_dragon.flap" with volume 0.5 and pitch 1 at {_player}
+    playEnchantmentSound("mining", "minecraft:entity.ender_dragon.flap", 0.5, 1, location of {_player}, all players, {_player})
     set {_origin} to location of {_player}'s head
     set {_vector} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
 

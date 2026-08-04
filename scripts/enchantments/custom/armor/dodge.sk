@@ -38,6 +38,6 @@ local function getDescription(level: integer) :: string:
 local function onattacked(victim: entity, armor: item, level: integer, attacker: entity = {_}, damage: number, damage cause: damage cause) :: number:
     set {_effect} to "speed" of {_level} for "dodge"
     apply {_effect} to {_victim}
-    play sound "minecraft:item.totem.use" with volume 0.2 and pitch 1 at {_victim}
+    playEnchantmentSound("combat", "minecraft:item.totem.use", 0.2, 1, location of {_victim}, all players)
     play (100 totem of undying item particles) with particle speed of 0.2 at {_victim}'s head
     return -1000

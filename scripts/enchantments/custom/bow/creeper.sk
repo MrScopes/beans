@@ -81,7 +81,7 @@ local function getDescription(level: integer) :: string:
 
 local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     set {-%{_projectile}%::spawn creeper} to true
-    play sound "entity.creeper.hurt" with volume 1 and pitch 1 at {_shooter}
+    playEnchantmentSound("combat", "entity.creeper.hurt", 1, 1, location of {_shooter}, all players)
     while {_projectile} is alive:
         wait 1 tick
         draw 5 green dust particle at location of {_projectile}
@@ -109,7 +109,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
 on explode:
     {-%event-entity%::damage} is set
     cancel event
-    play sound "entity.generic.explode" with volume 1 and pitch 1 at location of event-entity
+    playEnchantmentSound("combat", "entity.generic.explode", 1, 1, location of event-entity, all players)
     draw ({-%event-entity%::radius} * 20) explosion particle at (location of event-entity)
 
 on damage:

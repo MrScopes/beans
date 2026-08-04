@@ -39,4 +39,4 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
     if {_victim} is a living entity:
         set {_hunger} to "hunger" of {_level} for "starve"
         set {_victim}'s food level to clamp({_victim}'s food level - {_hunger}, 0, 10)
-        play sound "entity.zoglin.ambient" with volume 1 and pitch 1 at {_victim}
+        playEnchantmentSound("combat", "entity.zoglin.ambient", 1, 1, location of {_victim}, all players)

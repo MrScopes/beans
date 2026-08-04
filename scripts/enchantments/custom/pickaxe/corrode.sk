@@ -44,7 +44,7 @@ local function getDescription(level: integer) :: string:
     return "break blocks within &f%{_radius}%m&8, &7expanding by &f%{_expansion}% * 5"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    play sound "minecraft:entity.zombie.break_wooden_door" with volume 0.5 and pitch 1 at location of {_player}
+    playEnchantmentSound("mining", "minecraft:entity.zombie.break_wooden_door", 0.5, 1, location of {_player}, all players, {_player})
 
     set {_center} to location of {_block}
     set {_radius} to "radius" of {_level} for "corrode"
@@ -52,7 +52,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
     
     loop 5 times:
         wait 10 ticks
-        play sound "minecraft:entity.zombie.break_wooden_door" with volume 0.5 and pitch 1 at {_center}
+        playEnchantmentSound("mining", "minecraft:entity.zombie.break_wooden_door", 0.5, 1, {_center}, all players, {_player})
         add {_expansion} to {_radius}
 
         fastRadiusClear({_player}, {_center}, {_radius})

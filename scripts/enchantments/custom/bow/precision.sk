@@ -40,8 +40,8 @@ local function onattack(shooter: entity, victim: entity, projectile: entity, lev
     if {-shots hit in a row::%{_shooter}%} > 1:
         set {_multiplier} to "multiplier" of {_level} for "precision"
         set {_max multiplier} to "max multiplier" of {_level} for "precision"
-        play sound "entity.arrow.hit" at volume 1 and pitch 1.5 at {_victim}
-        play sound "block.note_block.pling" at volume 1 and pitch 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * ({_multiplier} * 1.5), 0, 1.5)) at {_shooter}
+        playEnchantmentSound("combat", "entity.arrow.hit", 1, 1.5, location of {_victim}, all players)
+        playEnchantmentSound("combat", "block.note_block.pling", 1, 0.5 + (clamp({-shots hit in a row::%{_shooter}%} * ({_multiplier} * 1.5), 0, 1.5)), location of {_shooter}, all players)
         return {_damage} * (clamp({-shots hit in a row::%{_shooter}%} * {_multiplier}, 0, {_max multiplier}))
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):

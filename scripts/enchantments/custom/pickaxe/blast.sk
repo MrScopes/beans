@@ -36,6 +36,6 @@ local function getDescription(level: integer) :: string:
     return "break blocks within &f%{_radius}%m"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
-    play sound "minecraft:entity.generic.explode" with volume 0.25 and pitch 1 at location of {_block}
+    playEnchantmentSound("mining", "minecraft:entity.generic.explode", 0.25, 1, location of {_block}, all players, {_player})
     set {_radius} to "radius" of {_level} for "blast"
     fastRadiusClear({_player}, location of {_block}, {_radius})

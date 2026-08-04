@@ -64,8 +64,8 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
             stop loop
 
         wait 1 tick
-        play sound "block.grindstone.use" with volume 0.7 and pitch 0.5 at {_center block}
-        play sound "block.deepslate.break" with volume 1 and pitch 0.6 at {_center block}
+        playEnchantmentSound("mining", "block.grindstone.use", 0.7, 0.5, location of {_center block}, all players, {_player})
+        playEnchantmentSound("mining", "block.deepslate.break", 1, 0.6, location of {_center block}, all players, {_player})
         teleport {_display} to {_display} ~ vector(0, -1, 0)
 
         for {_block} in all blocks in radius 1.25 around {_center block}:

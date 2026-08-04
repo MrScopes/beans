@@ -51,7 +51,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         set {-marked level::%{_victim}%} to {_level}
         set {-marked multiplier::%{_victim}%} to {_multiplier}
         add potion effect of glowing for {_duration} to {_victim}'s potion effects
-        play sound "entity.glow_squid.squirt" with volume 1 and pitch 1 at {_victim}
+        playEnchantmentSound("combat", "entity.glow_squid.squirt", 1, 1, location of {_victim}, all players)
 
 on damage with priority monitor:
     event isn't canceled
