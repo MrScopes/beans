@@ -34,10 +34,12 @@ on death of player:
         set death message to "%player_display(victim)% &7has died&7."
     else:
         set death message to "%player_display({_attacker})% &7killed %player_display(victim)%&7."
-        add 1 to {kills::%attacker%}
+        add 1 to {kills::%{_attacker}%}
         set {_money reward} to {money::%victim%} * 0.02
-        add {_money reward} to {money::%attacker%}
+        add {_money reward} to {money::%{_attacker}%}
         remove {_money reward} from {money::%victim%}
+        send "&7You received &a$%kNumber({_money reward})% &7for killing %player_display(victim)%&7." to {_attacker}
+        send "&7You lost &c$%kNumber({_money reward})% &7for being killed by %player_display({_attacker})%&7." to victim
 
 command /protection:
     trigger:
