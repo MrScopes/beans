@@ -62,3 +62,7 @@ on command:
 on armor change:
     wait 1 tick
     updateHealthbar(player)
+
+every minute:
+    loop all players:
+        updateNametag(loop-player)
