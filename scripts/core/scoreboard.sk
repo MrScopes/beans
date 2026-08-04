@@ -47,7 +47,9 @@ async every tick:
         set line 4 of loop-player's fastboard to "&bBlocks: &f%kNumber({blocks::%loop-player%})%"
         set line 5 of loop-player's fastboard to "&bMoney: &f$%kNumber({money::%loop-player%})%"
         set line 6 of loop-player's fastboard to "&bXP: &f%kNumber(loop-player's experience)%"
-        set line 7 of loop-player's fastboard to "&bLevel: &f%{-level display::%clamp({level::%loop-player%} ? 1, 1, 100)%}% &7(&f%floor({-level progress percent::%loop-player%})%%%&7)"
+        set line 8 of loop-player's fastboard to "&bK/D: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &7(&f%kdrDisplay({kills::%loop-player%} / min(1, {deaths::%loop-player%}))%&7)"
+        set line 9 of loop-player's fastboard to " "
+        set line 10 of loop-player's fastboard to "&bLevel: &f%{-level display::%clamp({level::%loop-player%} ? 1, 1, 100)%}% &7(&f%floor({-level progress percent::%loop-player%})%%%&7)"
 
 on join:
     async run 1 second later:
@@ -56,5 +58,5 @@ on join:
         set title of player's fastboard to "&0     &b&lBEANS     &0"
         set line 2 of player's fastboard to "&fHello, &b%player%&7!"
         set line 3 of player's fastboard to ""
-        set line 8 of player's fastboard to ""
-        set line 9 of player's fastboard to "&7&obeans.minehut.gg"
+        set line 11 of player's fastboard to ""
+        set line 12 of player's fastboard to "&7&obeans.minehut.gg"
