@@ -19,7 +19,7 @@ function createStoredCustomBook(enchantment: string, level: integer, special: st
 
     set {_money sell value} to moneySaleValue({_enchantment}, {_level})
     set {_dust sell value} to dustSaleValue({_enchantment}, {_level})
-    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantmentTypeSprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%&7, %{-dust sprite}%%formatNumber({_dust sell value})%"
+    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantmentTypeSprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%&7, &f%{-dust sprite}%%formatNumber({_dust sell value})%"
     return {_item}
 
 function createStoredVanillaBook(enchantment: string, level: integer, special: string = {_}) :: item:
@@ -256,7 +256,7 @@ command /sellenchantments:
     trigger:
         set {-enchantment sell gui::%player%} to chest inventory with 6 rows named "Sell Enchantments"
         set slot integers between 0 and 8 of {-enchantment sell gui::%player%} to black stained glass pane named ""
-        set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$0", "&7Dust: &b%{-dust sprite}%0"
+        set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$0", "&7Dust: &f%{-dust sprite}%0"
         open {-enchantment sell gui::%player%} to player
 
 # Update the sell value display after any click
@@ -271,7 +271,7 @@ on inventory click:
         {_level} is set
         add moneySaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_money sell value}
         add dustSaleValue(data tag "stored_custom_enchantment" of loop-item, {_level}) to {_dust sell value}
-    set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$%formatNumber({_money sell value})%", "&7Dust: &b%{-dust sprite}%%formatNumber({_dust sell value})%"
+    set slot 4 of {-enchantment sell gui::%player%} to emerald named "&a&lCLICK TO SELL!" with lore formatted "&7Money Value: &b$%formatNumber({_money sell value})%", "&7Dust: &f%{-dust sprite}%%formatNumber({_dust sell value})%"
 
 # Handle clicking the sell button
 on inventory click:
@@ -293,7 +293,7 @@ on inventory click:
 
     add {_money sell value} to {money::%player%}
     add {_dust sell value} to {dust::%player%}
-    send formatted "You sold your enchantments for &f$%formatNumber({_money sell value})% &7and %{-dust sprite}%%formatNumber({_dust sell value})%&7." to player
+    send formatted "You sold your enchantments for &f$%formatNumber({_money sell value})% &7and &f%{-dust sprite}%%formatNumber({_dust sell value})%&7." to player
     close player's inventory
 
 on inventory close:

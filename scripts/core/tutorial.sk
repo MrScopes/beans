@@ -76,7 +76,7 @@ command /tutorial:
             send "&7Level can be seen on the sidebar&8, &7look at %levelDisplay({level::%player%})%&f."
 
             wait 3 seconds
-            send formatted "&7You'll also see there's Money and %{-dust sprite}%Dust&8."
+            send formatted "&7You'll also see there's Money and &f%{-dust sprite}%&7Dust&8."
             wait 1 second
             send "&7Money can be traded with players&8&7, but Dust has to be earned by mining and combat&8."
 
