@@ -41,7 +41,6 @@ on respawn:
 function combatLogActionBar(player: player):
     set {_now} to now
     set {_ns} to current ns
-    broadcast "%(current ns - {_ns}) / 1_000_000%"
     set {-combat tag action bar::%{_player}%} to {_now}
     while {-combat tag action bar::%{_player}%} is {_now}:
         set {_dif} to difference between {-combat tag::%{_player}%} and now
