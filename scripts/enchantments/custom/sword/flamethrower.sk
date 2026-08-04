@@ -105,7 +105,7 @@ local function onleftclick(player: player, item: item, level: integer):
         drawConeFilled({_starting location}, {_range}, {_angle}, 16)
 
         for {_entity} in all living entities in radius ({_range} * 2) around {_player}:
-            {_entity} is not player or an armor stand
+            {_entity} is not {_player} or an armor stand
             if coneHit({_player}, {_entity}, {_range}, {_angle} * 1.25, 10) is true:
                 ignite {_entity} for 2 seconds
                 damage({_entity}, {_player}, {_damage})
