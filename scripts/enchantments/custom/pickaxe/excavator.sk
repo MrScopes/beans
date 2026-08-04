@@ -34,7 +34,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
         set {_potential} to random element out of (blocks in radius 3 around {_block})
         if all:
             {_potential} is within bound with id "mine"
-            {_potential} isn't bedrock, beacon, obsidian, or packed ice
+            {_potential} isn't bedrock, beacon, obsidian, black concrete, or packed ice
         then:
             set {_target} to {_potential}
             stop loop

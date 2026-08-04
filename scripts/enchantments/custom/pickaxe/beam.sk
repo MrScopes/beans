@@ -57,7 +57,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
 
         loop all blocks in radius {_radius} around {_bullet}:
             loop-block isn't air
-            loop-block isn't bedrock, beacon, obsidian, or packed ice
+            loop-block isn't bedrock, beacon, obsidian, black concrete, or packed ice
             loop-block is within bound with id "mine"
             {_affected::*} doesn't contain loop-block
 

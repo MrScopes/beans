@@ -76,7 +76,7 @@ local function onbreak(player: player, tool: item, level: integer, block: block,
                 set {_b} to block at location({_x}, {_y}, {_z}, {_world})
 
                 {_b} is within bound with id "mine"
-                {_b} isn't air, bedrock, beacon, obsidian, or packed ice
+                {_b} isn't air, bedrock, beacon, obsidian, packed ice, or black concrete
 
                 blockReward({_player}, {_tool}, {_b}, "jackhammer enchantment")
                 

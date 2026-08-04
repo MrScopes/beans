@@ -87,7 +87,7 @@ local function onhit(shooter: entity, tool: item, projectile: entity, level: int
         show explosion particle at loop-block
         "%blocks at loop-block%" doesn't contain "spawn"
         y coordinate of loop-block > 0
-        loop-block isn't bedrock
+        loop-block isn't bedrock or black concrete
         set loop-block to air
     loop all living entities in radius {_aoe} around {_victim}:
         damage(loop-value, {_shooter}, {_damage})

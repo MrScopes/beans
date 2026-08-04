@@ -1,5 +1,8 @@
 on break:
     player's gamemode isn't creative
+    if event-block is black concrete:
+        cancel event
+        
     if "%bounds at block%" contains "spawn":
         cancel event
 
