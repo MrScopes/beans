@@ -5,10 +5,10 @@ on load:
     set {-tier::pickaxe::money cost::2} to 40000
     set {-tier::pickaxe::money cost::3} to 500000
     set {-tier::pickaxe::money cost::4} to 4000000
-    set {-tier::pickaxe::dust cost::1} to 6000
-    set {-tier::pickaxe::dust cost::2} to 30000
-    set {-tier::pickaxe::dust cost::3} to 400000
-    set {-tier::pickaxe::dust cost::4} to 3000000
+    set {-tier::pickaxe::dust cost::1} to 50
+    set {-tier::pickaxe::dust cost::2} to 500
+    set {-tier::pickaxe::dust cost::3} to 5_000
+    set {-tier::pickaxe::dust cost::4} to 15_000
 
     set {-tier::pickaxe::max enchantments::0} to 4
     set {-tier::pickaxe::max enchantments::1} to 6
@@ -20,10 +20,10 @@ on load:
     set {-tier::sword::money cost::2} to 50000
     set {-tier::sword::money cost::3} to 400000
     set {-tier::sword::money cost::4} to 3000000
-    set {-tier::sword::dust cost::1} to 7000
-    set {-tier::sword::dust cost::2} to 40000
-    set {-tier::sword::dust cost::3} to 300000
-    set {-tier::sword::dust cost::4} to 2500000
+    set {-tier::sword::dust cost::1} to 50
+    set {-tier::sword::dust cost::2} to 350
+    set {-tier::sword::dust cost::3} to 3_000
+    set {-tier::sword::dust cost::4} to 8_000
 
     set {-tier::sword::max enchantments::0} to 3
     set {-tier::sword::max enchantments::1} to 5
@@ -35,10 +35,10 @@ on load:
     set {-tier::armor::money cost::2} to 60000
     set {-tier::armor::money cost::3} to 500000
     set {-tier::armor::money cost::4} to 3500000
-    set {-tier::armor::dust cost::1} to 8000
-    set {-tier::armor::dust cost::2} to 50000
-    set {-tier::armor::dust cost::3} to 400000
-    set {-tier::armor::dust cost::4} to 3000000
+    set {-tier::armor::dust cost::1} to 50
+    set {-tier::armor::dust cost::2} to 350
+    set {-tier::armor::dust cost::3} to 3_000
+    set {-tier::armor::dust cost::4} to 8_000
 
     set {-tier::armor::max enchantments::0} to 3
     set {-tier::armor::max enchantments::1} to 5
@@ -50,10 +50,10 @@ on load:
     set {-tier::bow::money cost::2} to 350000
     set {-tier::bow::money cost::3} to 1000000
     set {-tier::bow::money cost::4} to 5000000
-    set {-tier::bow::dust cost::1} to 35000
-    set {-tier::bow::dust cost::2} to 300000
-    set {-tier::bow::dust cost::3} to 800000
-    set {-tier::bow::dust cost::4} to 4000000
+    set {-tier::bow::dust cost::1} to 50
+    set {-tier::bow::dust cost::2} to 400
+    set {-tier::bow::dust cost::3} to 4_000
+    set {-tier::bow::dust cost::4} to 10_000
 
     set {-tier::bow::max enchantments::0} to 3
     set {-tier::bow::max enchantments::1} to 5
