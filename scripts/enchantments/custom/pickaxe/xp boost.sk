@@ -53,7 +53,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of {_level} for "xp_boost"
-    return "boost xp gain by %{_multiplier}%x"
+    return "boost xp gain by &f%{_multiplier}%x"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_multiplier} to "multiplier" of {_level} for "xp_boost"

@@ -53,7 +53,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_reward} to "reward" of {_level} for "money_boost"
-    return "gain $%{_reward}%"
+    return "gain &f$%{_reward}%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_reward} to "reward" of {_level} for "money_boost"

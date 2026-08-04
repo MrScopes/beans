@@ -38,7 +38,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of {_level} for "haste"
     set {_haste} to "haste" of {_level} for "haste"
-    return "apply %effectDisplay({_speed})% and %effectDisplay({_haste})%"
+    return "apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_haste})%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now

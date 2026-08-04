@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of {_level} for "feeding"
-    return "feed you by %{_feed}% food"
+    return "feed you by &f%{-effect::saturation::display}%%{_feed}%"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dif} to difference between {-combat tag::%{_player}%} and now

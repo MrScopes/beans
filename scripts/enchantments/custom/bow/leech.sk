@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_heal percentage} to "heal percentage" of {_level} for "leech"
-    return "heals for %{_heal percentage} * 100%%% of damage over 3 seconds"
+    return "heals for &f%{_heal percentage} * 100%%% &7of damage over &f3s"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     set {_heal percentage} to "heal percentage" of {_level} for "leech"

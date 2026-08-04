@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of {_level} for "super_fortune"
-    return "give %{_multiplier}%x more drops"
+    return "give &f%{_multiplier}%x &7more drops"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_multiplier} to "multiplier" of {_level} for "super_fortune"

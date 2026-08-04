@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of {_level} for "bullseye"
-    return "deals &f%{_damage}% &7with headshots"
+    return "deals &f%{_damage}%<sprite:gui:hud/heart/full> &7with headshots"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:

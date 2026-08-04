@@ -43,7 +43,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_width} to "width" of {_level} for "jackhammer"
     set {_height} to "height" of {_level} for "jackhammer"
-    return "mine %{_width}%x%{_width}%x%{_height}% area"
+    return "mine &f%{_width}%&7x&f%{_width}%&7x&f%{_height}% &7area"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_block} is within bound with id "mine"

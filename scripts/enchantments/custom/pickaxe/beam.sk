@@ -40,7 +40,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of {_level} for "beam"
-    return "break blocks in a %{_radius}%m beam"
+    return "break blocks in a &f%{_radius}%m &7beam"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_distance} to "distance" of {_level} for "beam"

@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_xp} to "xp" of {_level} for "experienced"
-    return "gain %{_xp}% experience"
+    return "gain &f%{_xp}% &7experience"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_xp} to "xp" of {_level} for "experienced"

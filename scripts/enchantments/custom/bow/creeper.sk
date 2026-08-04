@@ -77,7 +77,7 @@ local function getDescription(level: integer) :: string:
     set {_fuse} to "fuse" of {_level} for "creeper"
     set {_damage} to "damage" of {_level} for "creeper"
     set {_radius} to "radius" of {_level} for "creeper"
-    return "Spawn creeper on arrow. %{_fuse} / 20%s fuse, %{_damage}%&f<sprite:gui:hud/heart/full>&7, %{_radius}%m"
+    return "Spawn creeper on arrow. &f%{_fuse} / 20%s &7fuse&8, &7deals &f%{_damage}%<sprite:gui:hud/heart/full>&8, &7within &f%{_radius}%m"
 
 local function onshoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     set {-%{_projectile}%::spawn creeper} to true

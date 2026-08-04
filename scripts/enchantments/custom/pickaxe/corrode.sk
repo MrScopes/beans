@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of {_level} for "corrode"
     set {_expansion} to "expansion" of {_level} for "corrode"
-    return "break blocks within %{_radius}%m, expanding by %{_expansion}% * 5"
+    return "break blocks within &f%{_radius}%m&8, &7expanding by &f%{_expansion}% * 5"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     play sound "minecraft:entity.zombie.break_wooden_door" with volume 0.5 and pitch 1 at location of {_player}

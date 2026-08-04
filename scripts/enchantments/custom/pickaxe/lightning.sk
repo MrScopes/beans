@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_blocks} to "blocks" of {_level} for "lightning"
-    return "break %{_blocks}% blocks below"
+    return "break &f%{_blocks}% &7blocks below"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_blocks} to "blocks" of {_level} for "lightning"

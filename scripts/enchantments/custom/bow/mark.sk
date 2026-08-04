@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of {_level} for "mark"
     set {_duration} to "duration" of {_level} for "mark"
-    return "mark the victim, increasing dmg taken by %{_multiplier} * 100%%% for %time_format({_duration})%"
+    return "mark the victim&8, &7increasing dmg taken by &f%{_multiplier} * 100%%% &7for &f%time_format({_duration})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:

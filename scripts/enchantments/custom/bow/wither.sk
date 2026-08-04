@@ -43,7 +43,7 @@ local function getDescription(level: integer) :: string:
     set {_blindness} to potion effect of blindness 1 for (duration of {_wither} / 2)
     set {_duration} to duration of {_wither}
     set {_amplifier} to amplifier of {_wither}
-    return "applies %effectDisplay({_wither})% and %effectDisplay({_blindness})%"
+    return "applies &f%effectDisplay({_wither})% &7and &f%effectDisplay({_blindness})%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:

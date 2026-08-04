@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of {_level} for "precision"
-    return "hitting a shot increases arrow damage by %{_multiplier} * 100%%%. missing a shot resets the multiplier"
+    return "hitting a shot increases arrow damage by &f%{_multiplier} * 100%%%&8. &7missing a shot resets the multiplier"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number) :: number:
     {_shooter} isn't {_victim}

@@ -43,7 +43,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_enchantments} to "enchantments" of {_level} for "chaos"
     set {_luck boost} to "luck boost" of {_level} for "chaos"
-    return "spin %{_enchantments}% random enchantments with %{_luck boost} * 100%%% luck boost"
+    return "spin &f%{_enchantments}% &7random enchantments with &f%{_luck boost} * 100%%% &7luck boost"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_enchantments} to "enchantments" of {_level} for "chaos"

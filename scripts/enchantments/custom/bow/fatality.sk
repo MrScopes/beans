@@ -34,7 +34,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_health threshold} to "health threshold" of {_level} for "fatality"
     set {_multiplier} to "multiplier" of {_level} for "fatality"
-    return "when the victim is below %{_health threshold} * 100%%% health, increases dmg by %{_multiplier} * 100%%%"
+    return "when the victim is below &f%{_health threshold} * 100%%%<sprite:gui:hud/heart/full>&8, &7increases dmg by &f%{_multiplier} * 100%%%"
 
 local function onattack(shooter: entity, victim: entity, projectile: entity, level: integer, force: number, damage: number = {_}) :: number:
     set {_health threshold} to "health threshold" of {_level} for "fatality"

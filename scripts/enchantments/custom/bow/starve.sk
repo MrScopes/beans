@@ -33,7 +33,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_hunger} to "hunger" of {_level} for "starve"
-    return "removes %{_hunger}% hunger from the victim"
+    return "removes &f%{-effect::saturation::display}%%{_hunger}% &7from the victim"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a living entity:

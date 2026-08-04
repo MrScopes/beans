@@ -34,7 +34,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of {_level} for "grinder"
     set {_requirement} to "requirement" of {_level} for "grinder"
-    return "boost luck by %formatNumber({_boost}, "#.#####")%x every %{_requirement}% blocks"
+    return "boost luck by &f%formatNumber({_boost}, "#.#####")%x &7every &f%{_requirement}% &7blocks"
 
 local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_player} is within bound with id "mine flight"
