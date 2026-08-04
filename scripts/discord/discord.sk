@@ -34,22 +34,18 @@ on quit:
 on chat with priority monitor:
     event isn't cancelled
     set {_message} to message
-    set {_name} to player's name
-    set {_group} to {group::%player's uuid%} ? "default"
-    set {_prefix} to uncolored {-prefix::%{_group}%}
     replace all "*" with "\*" in {_message} and {_name}
     replace all "_" with "\_" in {_message} and {_name}
     replace all "<" with "\<" in {_message} and {_name}
     replace all ">" with "\>" in {_message} and {_name}
     replace all "`" with "\`" in {_message} and {_name}
-    sendToServerChat("**%{_prefix}%%{_name}%**: %{_message}%")
+    sendToServerChat("**%uncolored player_display(player, "[prefix][player]")%**: %{_message}%")
 
 on message received:
     event-user is not a discord bot
     if event-channel is {-discord::server chat channel}:
         set {_id} to discord id of event-user
         set {_user} to linkedUser({_id})
-        broadcast "%{_user}%"
         {_user} is set
         set {_message} to event-message
         replace all newline with " " in {_message}
