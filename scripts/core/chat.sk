@@ -89,12 +89,13 @@ on async chat:
 		component replace "[item]" with {_component} in {_m::2}
 
 	loop all players:
-		if "%{_m::2}%" contains player's name:
+		if "%{_m::2}%" contains loop-player's name:
 			if {setting::%loop-player%::chat pinging} is set:
-				send "&c%loop-player% has pinging disabled."
+				send "&c%loop-player% has pinging disabled." to player
 			else:
 				set {_component} to text component of "&b@%player_display(loop-player, "[prefix][player]")%"
-				component replace player's name with {_component} in {_m::2}
+				component replace loop-player's name with {_component} in {_m::2}
+
 				send formatted "&7You were mentioned by %player_display(player, "[prefix][player]")%&7." to loop-player
 				play sound "minecraft:block.note_block.pling" with volume 1 and pitch 2 to loop-player
 
