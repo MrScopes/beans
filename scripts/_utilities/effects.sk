@@ -24,6 +24,8 @@ on load:
     set {-effect::health boost::display} to "<sprite:gui:mob_effect/health_boost>"
     set {-effect::saturation::display} to "<sprite:gui:mob_effect/saturation>"
     set {-effect::ignite::display} to "<sprite:blocks:block/fire_1>"
+    set {-effect::elytra disable::display} to "<sprite:items:item/elytra><sprite:items:item/barrier>"
+    set {-effect::firework disable::display} to "<sprite:items:item/firework_rocket><sprite:items:item/barrier>"
     set {-effect::armor::display} to "<sprite:gui:hud/armor_full>"
 
 function smallNumber(number: number) :: text:

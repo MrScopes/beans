@@ -39,7 +39,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of {_level} for "grounding"
-    return "Ground a player, disabling their elytra for %time_format({_duration})%"
+    return "Ground a player&8, &7applying &f%effectDisplay("elytra disable", customDuration: {_duration}, showAmplifier: false)%"
 
 local function onhit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:
