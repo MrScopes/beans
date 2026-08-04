@@ -3,9 +3,9 @@ on load:
     
     set {-vanilla enchantment::punch::max level} to 3
 
-    set {-vanilla enchantment::punch::xp cost::1} to 8000
-    set {-vanilla enchantment::punch::xp cost::2} to 500000
-    set {-vanilla enchantment::punch::xp cost::3} to 1000000
+    set {-vanilla enchantment::knockback::dust cost::1} to 50
+    set {-vanilla enchantment::knockback::dust cost::2} to 500
+    set {-vanilla enchantment::knockback::dust cost::3} to 2_500
 
     set {-vanilla enchantment::punch::money cost::1} to 12000
     set {-vanilla enchantment::punch::money cost::2} to 750000

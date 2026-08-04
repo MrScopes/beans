@@ -3,16 +3,16 @@ on load:
     
     set {-vanilla enchantment::efficiency::max level} to 10
 
-    set {-vanilla enchantment::efficiency::xp cost::1} to 1000
-    set {-vanilla enchantment::efficiency::xp cost::2} to 4000
-    set {-vanilla enchantment::efficiency::xp cost::3} to 12000
-    set {-vanilla enchantment::efficiency::xp cost::4} to 26000
-    set {-vanilla enchantment::efficiency::xp cost::5} to 65000
-    set {-vanilla enchantment::efficiency::xp cost::6} to 150000
-    set {-vanilla enchantment::efficiency::xp cost::7} to 350000
-    set {-vanilla enchantment::efficiency::xp cost::8} to 550000
-    set {-vanilla enchantment::efficiency::xp cost::9} to 750000
-    set {-vanilla enchantment::efficiency::xp cost::10} to 1000000
+    set {-vanilla enchantment::efficiency::dust cost::1} to 5
+    set {-vanilla enchantment::efficiency::dust cost::2} to 15
+    set {-vanilla enchantment::efficiency::dust cost::3} to 60
+    set {-vanilla enchantment::efficiency::dust cost::4} to 250
+    set {-vanilla enchantment::efficiency::dust cost::5} to 500
+    set {-vanilla enchantment::efficiency::dust cost::6} to 750
+    set {-vanilla enchantment::efficiency::dust cost::7} to 1_000
+    set {-vanilla enchantment::efficiency::dust cost::8} to 1_500
+    set {-vanilla enchantment::efficiency::dust cost::9} to 2_000
+    set {-vanilla enchantment::efficiency::dust cost::10} to 3_000
 
     set {-vanilla enchantment::efficiency::money cost::1} to 1500
     set {-vanilla enchantment::efficiency::money cost::2} to 5000

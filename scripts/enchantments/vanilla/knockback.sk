@@ -3,9 +3,9 @@ on load:
     
     set {-vanilla enchantment::knockback::max level} to 3
 
-    set {-vanilla enchantment::knockback::xp cost::1} to 4000
-    set {-vanilla enchantment::knockback::xp cost::2} to 75000
-    set {-vanilla enchantment::knockback::xp cost::3} to 500000
+    set {-vanilla enchantment::knockback::dust cost::1} to 50
+    set {-vanilla enchantment::knockback::dust cost::2} to 500
+    set {-vanilla enchantment::knockback::dust cost::3} to 2_500
 
     set {-vanilla enchantment::knockback::money cost::1} to 6000
     set {-vanilla enchantment::knockback::money cost::2} to 100000

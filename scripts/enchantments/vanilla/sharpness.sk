@@ -3,11 +3,11 @@ on load:
     
     set {-vanilla enchantment::sharpness::max level} to 5
 
-    set {-vanilla enchantment::sharpness::xp cost::1} to 2000
-    set {-vanilla enchantment::sharpness::xp cost::2} to 24000
-    set {-vanilla enchantment::sharpness::xp cost::3} to 15000
-    set {-vanilla enchantment::sharpness::xp cost::4} to 800000
-    set {-vanilla enchantment::sharpness::xp cost::5} to 2750000
+    set {-vanilla enchantment::sharpness::dust cost::1} to 10
+    set {-vanilla enchantment::sharpness::dust cost::2} to 50
+    set {-vanilla enchantment::sharpness::dust cost::3} to 250
+    set {-vanilla enchantment::sharpness::dust cost::4} to 1_000
+    set {-vanilla enchantment::sharpness::dust cost::5} to 3_000
     set {-vanilla enchantment::sharpness::money cost::1} to 3000
     set {-vanilla enchantment::sharpness::money cost::2} to 24000
     set {-vanilla enchantment::sharpness::money cost::3} to 100000

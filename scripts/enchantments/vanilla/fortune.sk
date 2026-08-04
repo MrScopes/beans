@@ -3,16 +3,16 @@ on load:
     
     set {-vanilla enchantment::fortune::max level} to 10
 
-    set {-vanilla enchantment::fortune::xp cost::1} to 1000
-    set {-vanilla enchantment::fortune::xp cost::2} to 8000
-    set {-vanilla enchantment::fortune::xp cost::3} to 24000
-    set {-vanilla enchantment::fortune::xp cost::4} to 75000
-    set {-vanilla enchantment::fortune::xp cost::5} to 150000
-    set {-vanilla enchantment::fortune::xp cost::6} to 350000
-    set {-vanilla enchantment::fortune::xp cost::7} to 550000
-    set {-vanilla enchantment::fortune::xp cost::8} to 850000
-    set {-vanilla enchantment::fortune::xp cost::9} to 1250000
-    set {-vanilla enchantment::fortune::xp cost::10} to 1500000
+    set {-vanilla enchantment::fortune::dust cost::1} to 5
+    set {-vanilla enchantment::fortune::dust cost::2} to 25
+    set {-vanilla enchantment::fortune::dust cost::3} to 50
+    set {-vanilla enchantment::fortune::dust cost::4} to 150
+    set {-vanilla enchantment::fortune::dust cost::5} to 350
+    set {-vanilla enchantment::fortune::dust cost::6} to 600
+    set {-vanilla enchantment::fortune::dust cost::7} to 1_000
+    set {-vanilla enchantment::fortune::dust cost::8} to 1_500
+    set {-vanilla enchantment::fortune::dust cost::9} to 2_750
+    set {-vanilla enchantment::fortune::dust cost::10} to 4_000
 
     set {-vanilla enchantment::fortune::money cost::1} to 1500
     set {-vanilla enchantment::fortune::money cost::2} to 12000

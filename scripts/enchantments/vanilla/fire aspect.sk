@@ -3,11 +3,11 @@ on load:
     
     set {-vanilla enchantment::fire aspect::max level} to 5
 
-    set {-vanilla enchantment::fire aspect::xp cost::1} to 8000
-    set {-vanilla enchantment::fire aspect::xp cost::2} to 24000
-    set {-vanilla enchantment::fire aspect::xp cost::3} to 100000
-    set {-vanilla enchantment::fire aspect::xp cost::4} to 250000
-    set {-vanilla enchantment::fire aspect::xp cost::5} to 500000
+    set {-vanilla enchantment::fire aspect::dust cost::1} to 10
+    set {-vanilla enchantment::fire aspect::dust cost::2} to 250
+    set {-vanilla enchantment::fire aspect::dust cost::3} to 1_000
+    set {-vanilla enchantment::fire aspect::dust cost::4} to 3_000
+    set {-vanilla enchantment::fire aspect::dust cost::5} to 6_000
 
     set {-vanilla enchantment::fire aspect::money cost::1} to 12000
     set {-vanilla enchantment::fire aspect::money cost::2} to 36000
