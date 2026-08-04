@@ -119,9 +119,6 @@ function sortedEnchantments(item: item) :: objects:
         if {-ce::%{_enchantment}%::priority} isn't set:
             continue
 
-        if {-ce::%{_enchantment}%::disabled} is true:
-            continue
-
         add {_enchantment} to {_enabled enchantments::*}
 
     sort {_enabled enchantments::*} in descending order by {-ce::%input%::priority}
