@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_window} to "window" of {_level} for "substitution"
     set {_speed} to "speed" of {_level} for "substitution"
-    return "&e[RMB] &7parry an attack, resetting cooldown and dashing back. &8(&7%time_format({_window})% window, Speed %amplifier of {_speed}% for %time_format(duration of {_speed})%&8)"
+    return "&e[RMB] &7parry an attack, resetting cooldown and dashing back. &8(&f%time_format({_window})% &7window&8, &f%effectDisplay({_speed})%&8)"
 
 local function onrightclick(player: player, item: item, level: integer):
     set {-parry::%{_player}%} to now
