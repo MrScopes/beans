@@ -1,0 +1,82 @@
+on load:
+    create pickaxe enchantment named "bore":
+        set enchantment display to "&f<sprite:items:item/pointed_dripstone> &9Bore"
+        set enchantment max level to 5
+        set enchantment priority to 10
+        set enchantment item to pointed dripstone
+
+        level values for "chance":
+            set level 1 to 5
+            set level 2 to 7
+            set level 3 to 10
+            set level 4 to 13
+            set level 5 to 15
+
+        level values for "blocks":
+            set level 1 to 10
+            set level 2 to 12
+            set level 3 to 14
+            set level 4 to 16
+            set level 5 to 20
+
+        level values for "xp cost":
+            set level 2 to 80_000
+            set level 3 to 200_000
+            set level 4 to 600_000
+            set level 5 to 1_250_000
+
+        level values for "money cost":
+            set level 2 to 100_000
+            set level 3 to 300_000
+            set level 4 to 800_000
+            set level 5 to 1_500_000
+
+local function getDescription(level: integer) :: string:
+    set {_blocks} to "blocks" of {_level} for "bore"
+    return "drill through blocks in a small radius up to &f%{_blocks}% &7blocks deep"
+
+local function onbreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_blocks} to "blocks" of {_level} for "bore"
+    set {_y} to (y coordinate of {_block}) - ({_blocks} + 4)
+    
+    spawn block display at center of {_block} ~ vector(0, 3, 0):
+        set {_display} to display
+        make display not persistent
+
+        set blockdata of display to pointed dripstone[vertical_direction=down,thickness=tip]
+        set billboard of display to fixed
+
+        set transformation scale of display to vector(2.5, 2.5, 2.5)
+        set transformation translation of display to vector(-1.25, -1.25, -1.25)
+
+        set teleport duration of display to 2 ticks
+
+    loop 3 times:
+        wait 2 ticks
+        teleport {_display} to {_display} ~ vector(0, -1, 0)
+
+    for {_center block} in all blocks below location of {_block} where [y coordinate of input >= {_y}]:
+        if any:
+            {_center block} is obsidian
+            {_center block} is bedrock
+            {_center block} is black concrete
+        then:
+            stop loop
+
+        wait 1 tick
+        play sound "block.grindstone.use" with volume 0.7 and pitch 0.5 at {_center block}
+        play sound "block.deepslate.break" with volume 1 and pitch 0.6 at {_center block}
+        teleport {_display} to {_display} ~ vector(0, -1, 0)
+
+        for {_block} in all blocks in radius 1.25 around {_center block}:
+            {_block} isn't air
+            {_block} isn't bedrock, beacon, obsidian, black concrete, or packed ice
+            {_block} is within bound with id "mine"
+            {_affected::*} doesn't contain {_block}
+
+            blockReward({_player}, {_player}'s tool, {_block}, "bore enchantment")
+            
+            add {_block} to {_affected::*}
+            set block within {_block} to air
+
+    kill {_display}
