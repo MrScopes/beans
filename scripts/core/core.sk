@@ -152,12 +152,17 @@ function reset(player: player):
     set {money::%{_player}%} to 0
     set {blocks::%{_player}%} to 0
     set {trophies::%{_player}%} to 0
+    set {kills::%{_player}%} to 0
+    set {deaths::%{_player}%} to 0
     delete {daily::%{_player}%}
     delete {tutorial::%{_player}%}
     delete {quests::%{_player}%::*}
     delete {beacons::%{_player}%}
     delete {vault::%{_player}%::*}
     delete {unlocked vaults::%{_player}%}
+    delete {cached xp::%{_player}%}
+    delete {cached playtime::%{_player}%}
+    delete {cached kdr::%{_player}%}
     set {_player}'s play time to 0 seconds
 
     kit({_player}, true)
