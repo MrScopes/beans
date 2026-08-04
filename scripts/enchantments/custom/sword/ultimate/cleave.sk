@@ -68,7 +68,7 @@ local function getDescription(level: integer) :: string:
     set {_requirement} to "requirement" of "cleave" at {_level}
     set {_distance} to "distance" of "cleave" at {_level}
     set {_radius} to "radius" of "cleave" at {_level}
-    return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%time_format({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
+    return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%timeFormat({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
 
 local function onLeftClick(player: player, item: item, level: integer):
     set {_requirement} to "requirement" of "cleave" at {_level}

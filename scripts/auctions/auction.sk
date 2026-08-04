@@ -31,7 +31,7 @@ function auctionInfo() :: objects:
 
     add text component of "" to {_info::*}
 
-    add text component of "&3Auction Host: &b%player_display({auction::player}, "[level] [prefix][player]")%" to {_info::*}
+    add text component of "&3Auction Host: &b%playerDisplay({auction::player}, "[level] [prefix][player]")%" to {_info::*}
 
     set {_item} to text component of "&3Item: &f[item]"
     component replace "[item]" with {_component} in {_item}
@@ -39,10 +39,10 @@ function auctionInfo() :: objects:
 
     set {_bid} to "&3Current Bid: &b$%formatNumber({auction::bid})%"
     if {auction::bidder} is set:
-        set {_bid} to "%{_bid}% &7(by %player_display({auction::bidder}, "[level] [prefix][player]")%)"
+        set {_bid} to "%{_bid}% &7(by %playerDisplay({auction::bidder}, "[level] [prefix][player]")%)"
     add text component of {_bid} to {_info::*}
 
-    add text component of "&3Time Remaining: &b%time_format({auction::end})%" to {_info::*}
+    add text component of "&3Time Remaining: &b%timeFormat({auction::end})%" to {_info::*}
     add text component of "" to {_info::*}
 
     return {_info::*}
@@ -112,7 +112,7 @@ command /auction [<text>] [<text>]:
                         
                         if {auction::end} <= 5 seconds:
                             set {auction::end} to 5 seconds
-                        broadcast "&3Current Bid: &b$%formatNumber({auction::bid})% &7(by %player_display({auction::bidder}, "[level] [prefix][player]")%)"
+                        broadcast "&3Current Bid: &b$%formatNumber({auction::bid})% &7(by %playerDisplay({auction::bidder}, "[level] [prefix][player]")%)"
 
         else if arg 1 is "list":
             if {level::%player%} < {-required auction level}:
@@ -147,7 +147,7 @@ command /auction [<text>] [<text>]:
                                     {auction::end} > 0 seconds
                                     {auction::end} isn't 30 seconds
                                 then:
-                                    send "&3Auction Time Remaining: &b%time_format({auction::end})%" to all players
+                                    send "&3Auction Time Remaining: &b%timeFormat({auction::end})%" to all players
 
                             if {auction::end} <= 0 seconds:
                                 if {auction::bidder} is set:

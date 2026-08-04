@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "domain" at {_level}
     set {_radius} to "radius" of "domain" at {_level}
-    return "on hit&8, &7create an inescapable &f%{_radius}%m &7domain for &f%time_format({_duration})%"
+    return "on hit&8, &7create an inescapable &f%{_radius}%m &7domain for &f%timeFormat({_duration})%"
 
 local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     if {_victim} is a player:

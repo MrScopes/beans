@@ -1,4 +1,4 @@
-function vault_purchase_cost(player: player) :: number:
+function vaultPurchaseCost(player: player) :: number:
     set {_current} to {unlocked vaults::%{_player}%}
 
     if {_current} isn't set:
@@ -17,7 +17,7 @@ command /vault <text=1> [<text>]:
     aliases: /pv
     trigger:
         if arg 1 is "purchase":
-            set {_cost} to vault_purchase_cost(player)
+            set {_cost} to vaultPurchaseCost(player)
             if {money::%player%} < {_cost}:
                 send "&cYou don't have enough money. You need $%formatNumber({_cost})% to purchase."
             else:
@@ -37,7 +37,7 @@ command /vault <text=1> [<text>]:
             if player has permission "beans.admin":
                 set {_owner} to offlineplayer(arg-2, false) ? player
 
-            set {_max} to vault_amount_player({_owner})
+            set {_max} to vaultAmountPlayer({_owner})
             
             if all:
                 {_vault} > {_max}
@@ -81,7 +81,7 @@ function giveORvaultORdrop(player: offline player, item: item):
             continue
 
         set {_stored} to false
-        set {_max} to vault_amount_player({_player})
+        set {_max} to vaultAmountPlayer({_player})
 
         loop integers between 1 and {_max}:
             loop integers between 0 and 53:
@@ -108,6 +108,6 @@ on inventory close:
                 delete {vault::%{-open vault owner::%player%}%::%{-open vault::%player%}%::%loop-number%}
 
 on tab complete of "/vault":
-    loop integers between 1 and vault_amount_player(player):
+    loop integers between 1 and vaultAmountPlayer(player):
         add loop-number to {_completions::*}
     set tab completions for position 1 to {_completions::*} and "purchase"

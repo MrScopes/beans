@@ -7,14 +7,14 @@ command /bounty [<text=%player's name%>] [<text>]:
             send "&cPlayer not found."
         else:
             if {_money} < 1:
-                send formatted "&7%player_display({_player})%&7's bounty is &b$%kNumber({bounty::%{_player}%})%&7."
+                send formatted "&7%playerDisplay({_player})%&7's bounty is &b$%kNumber({bounty::%{_player}%})%&7."
             else:
                 if {money::%player%} < {_money}:
                     send formatted "&cYou don't have enough money." to player
                 else:
                     remove {_money} from {money::%player%}
                     add {_money} to {bounty::%{_player}%}
-                    broadcast formatted "%player_display(player)% &7added a bounty of &b$%kNumber({_money})%&7 to %player_display({_player})%&7!"
+                    broadcast formatted "%playerDisplay(player)% &7added a bounty of &b$%kNumber({_money})%&7 to %playerDisplay({_player})%&7!"
                     broadcast formatted "Current Bounty: &b$%kNumber({bounty::%{_player}%})%"
                 
 on death of player:
@@ -24,7 +24,7 @@ on death of player:
     set {_bounty} to {bounty::%victim%}
     delete {bounty::%victim%}
     add {_bounty} to {money::%attacker%}
-    broadcast formatted "%player_display(attacker)% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %player_display(victim)%&7!"
+    broadcast formatted "%playerDisplay(attacker)% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %playerDisplay(victim)%&7!"
 
 on tab complete of "/bounty":
     set tab completions for position 1 to all players

@@ -132,7 +132,7 @@ function updateNametag(entity: entity):
         set {_name} to {_entity}'s name
 
     if {_entity} is a player:
-        set {_display} to player_display({_entity}, "[level] [prefix][player]")
+        set {_display} to playerDisplay({_entity}, "[level] [prefix][player]")
     else:
         set {_display} to {_name}
 

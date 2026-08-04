@@ -9,20 +9,20 @@ async every second:
     loop all players where [bounds at input contains bound with id "afk"]:
         add 1 second to {-afk timer::%loop-player%}
         wait 1 tick
-        send action bar "You have been AFK for %time_format({-afk timer::%loop-player%} ? 0 seconds)%" to loop-player
+        send action bar "You have been AFK for %timeFormat({-afk timer::%loop-player%} ? 0 seconds)%" to loop-player
 
         # every 5 seconds, give basic rewards
         if mod(seconds of {-afk timer::%loop-player%}, 5) is 0:
-            add 1 * afkrewards_multi_player(loop-player) to {total level progress::%loop-player%}
-            add 1 * afkrewards_multi_player(loop-player) to {level progress::%loop-player%}
-            add 1 * afkrewards_multi_player(loop-player) to {money::%loop-player%}
-            add 1 * afkrewards_multi_player(loop-player) to {money source::%loop-player%::afk}
-            add 1 * afkrewards_multi_player(loop-player) to {xp source::%loop-player%::afk}
-            add 1 * afkrewards_multi_player(loop-player) to loop-player's experience
+            add 1 * afkRewardsMultiPlayer(loop-player) to {total level progress::%loop-player%}
+            add 1 * afkRewardsMultiPlayer(loop-player) to {level progress::%loop-player%}
+            add 1 * afkRewardsMultiPlayer(loop-player) to {money::%loop-player%}
+            add 1 * afkRewardsMultiPlayer(loop-player) to {money source::%loop-player%::afk}
+            add 1 * afkRewardsMultiPlayer(loop-player) to {xp source::%loop-player%::afk}
+            add 1 * afkRewardsMultiPlayer(loop-player) to loop-player's experience
 
         # every 2 hours, give a beacon. the multi might make it a decimal, so wait until it's whole to count it.
         if mod(seconds of {-afk timer::%loop-player%}, 7200) is 0:
-            add 1 * afkrewards_multi_player(loop-player) to {-afk beacons::%loop-player%}
+            add 1 * afkRewardsMultiPlayer(loop-player) to {-afk beacons::%loop-player%}
 
             set {_whole} to floor({-afk beacons::%loop-player%})
 

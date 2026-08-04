@@ -19,7 +19,7 @@ function createStoredCustomBook(enchantment: string, level: integer, special: st
 
     set {_money sell value} to moneySaleValue({_enchantment}, {_level})
     set {_xp sell value} to xpSaleValue({_enchantment}, {_level})
-    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantment_type_sprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%, %formatNumber({_xp sell value})% XP"
+    set lore of {_item} to formatted getDescription({_enchantment}, {_level}), "", "&7Drag onto &f%enchantmentTypeSprite({-ce::%{_enchantment}%::type})% &7to enchant.", "&aSell Value: &f$%formatNumber({_money sell value})%, %formatNumber({_xp sell value})% XP"
     return {_item}
 
 function createStoredVanillaBook(enchantment: string, level: integer, special: string = {_}) :: item:
@@ -199,7 +199,7 @@ function enchantmentTypeFromItem(item: item type) :: string:
     if {_item} is tagged with paper tag "bows":
         return "bow"
 
-function enchantment_type_sprite(type: string) :: text:
+function enchantmentTypeSprite(type: string) :: text:
     if {_type} is "pickaxe":
         return "&f<sprite:items:item/diamond_pickaxe>"
     if {_type} is "sword":

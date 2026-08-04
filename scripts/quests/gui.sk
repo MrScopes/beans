@@ -89,7 +89,7 @@ command /quests [<text>]:
             open {-level quest gui::%player%} to player
 
         else if arg 1 is "playtime":
-            set {-playtime quest gui::%player%} to chest inventory with 5 rows named time_format(player's playtime)
+            set {-playtime quest gui::%player%} to chest inventory with 5 rows named timeFormat(player's playtime)
             set slot (integers between 0 and 8), 9, 17, 18, 26, 27, 35, (integers between 36 and 44) of {-playtime quest gui::%player%} to black stained glass pane named "&c&lMain Menu" with lore "&7Click to return to the main menu!"
 
             loop 21 times:

@@ -79,7 +79,7 @@ command /clan [<text>] [<text>] [<text>]:
                             if difference between {-clan disband confirm::%player%} and now < 10 seconds:
                                 set {_clan} to {clan::%player%}
                                 loop {clans::%{_clan}%::members::*}:
-                                    send formatted "%player_display(player)% &7has disbanded the clan." to loop-value
+                                    send formatted "%playerDisplay(player)% &7has disbanded the clan." to loop-value
                                     delete {clan::%loop-value%}
                                 delete {clans::%{_clan}%::*}
                             else:
@@ -104,11 +104,11 @@ command /clan [<text>] [<text>] [<text>]:
                                 else if {clans::%{clan::%player%}%::members::*} contains {_searched player}:
                                     if difference between {-clan transfer confirm::%player%} and now < 10 seconds:
                                         set {clans::%{clan::%player%}%::owner} to {_searched player}
-                                        send formatted "&7You have transferred ownership of the clan to %player_display({_searched player})%&7." to player
-                                        send formatted "%player_display(player)% &7has transferred ownership of the clan to you." to {_searched player}
+                                        send formatted "&7You have transferred ownership of the clan to %playerDisplay({_searched player})%&7." to player
+                                        send formatted "%playerDisplay(player)% &7has transferred ownership of the clan to you." to {_searched player}
                                         delete {-clan transfer confirm::%player%}
                                     else:
-                                        send "&cAre you sure you want to transfer ownership of your clan to %player_display({_searched player})%&7?" 
+                                        send "&cAre you sure you want to transfer ownership of your clan to %playerDisplay({_searched player})%&7?" 
                                         send "&cRun the command again within 10 seconds to confirm."
                                         set {-clan transfer confirm::%player%} to now
                                 else:
@@ -131,8 +131,8 @@ command /clan [<text>] [<text>] [<text>]:
                                         send "&cThat player is already invited to your clan."
                                     else:
                                         add {clan::%player%} to {-clan invites::%{_searched player}%::*}
-                                        send formatted "&7You have invited %player_display({_searched player})% &7to your clan." to player
-                                        send formatted "%player_display(player)% &7has invited you to join their clan. Type &b/clan join %player% &7to accept." to {_searched player}
+                                        send formatted "&7You have invited %playerDisplay({_searched player})% &7to your clan." to player
+                                        send formatted "%playerDisplay(player)% &7has invited you to join their clan. Type &b/clan join %player% &7to accept." to {_searched player}
                 else if arg 2 is "kick":
                     if {clan::%player%} isn't set:
                         send "&cYou aren't in a clan."
@@ -149,8 +149,8 @@ command /clan [<text>] [<text>] [<text>]:
                                 else if {clans::%{clan::%player%}%::members::*} contains {_searched player}:
                                     remove {_searched player} from {clans::%{clan::%player%}%::members::*}
                                     delete {clan::%{_searched player}%}
-                                    send formatted "&7You have kicked %player_display({_searched player})% &7from the clan." to player
-                                    send formatted "%player_display(player)% &7has kicked you from the clan." to {_searched player}
+                                    send formatted "&7You have kicked %playerDisplay({_searched player})% &7from the clan." to player
+                                    send formatted "%playerDisplay(player)% &7has kicked you from the clan." to {_searched player}
                                 else:
                                     send "&cThat player isn't in your clan."
                 else:
@@ -165,7 +165,7 @@ command /clan [<text>] [<text>] [<text>]:
                         add player to {clans::%{_searched clan}%::members::*}
                         remove {_searched clan} from {-clan invites::%player%::*}
                         loop {clans::%{_searched clan}%::members::*}:
-                            send formatted "%player_display(player)% &7has joined the clan." to loop-value
+                            send formatted "%playerDisplay(player)% &7has joined the clan." to loop-value
                         run 0 ticks later:
                             player command "/clan info"
                     else:
@@ -178,7 +178,7 @@ command /clan [<text>] [<text>] [<text>]:
                         send "&cYou must disband your clan or transfer ownership before leaving."
                     else:
                         loop {clans::%{clan::%player%}%::members::*}:
-                            send formatted "%player_display(player)% &7has left the clan." to loop-value
+                            send formatted "%playerDisplay(player)% &7has left the clan." to loop-value
                         remove player from {clans::%{clan::%player%}%::members::*}
                         delete {clan::%player%}
             else:

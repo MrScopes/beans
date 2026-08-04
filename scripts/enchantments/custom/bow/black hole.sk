@@ -48,7 +48,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "black_hole" at {_level}
     set {_radius} to "radius" of "black_hole" at {_level}
-    return "on land&8, &7pull in entities within &f%{_radius}%m &7for &f%time_format({_duration})%&8, &7and &f%effectDisplay("elytra disable", showAmplifier: false, showDuration: false,)%"
+    return "on land&8, &7pull in entities within &f%{_radius}%m &7for &f%timeFormat({_duration})%&8, &7and &f%effectDisplay("elytra disable", showAmplifier: false, showDuration: false,)%"
 
 local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     set {_duration} to "duration" of "black_hole" at {_level}

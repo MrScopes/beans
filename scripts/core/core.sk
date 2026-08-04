@@ -5,7 +5,7 @@ on load:
     # really?
     set {-true} to true
 
-function player_display(player: offline player, show: text = "[level] [prefix][player]") :: text:
+function playerDisplay(player: offline player, show: text = "[level] [prefix][player]") :: text:
     if {_player} isn't set:
         return "???"
 
@@ -72,11 +72,11 @@ command /daily:
     trigger:
         set {_dif} to difference between {daily::%player%} and now
         if {_dif} < 24 hours:
-            send "&7You must wait &b%time_format(24 hours - {_dif})% &7for your daily reward&7."        
+            send "&7You must wait &b%timeFormat(24 hours - {_dif})% &7for your daily reward&7."        
         else:
-            set {_spins} to daily_wheel_spins_player(player)
+            set {_spins} to dailyWheelSpinsPlayer(player)
             add {_spins} to {wheel spins::%player%}
-            #set {_beacons} to daily_beacons_player(player) ? 1
+            #set {_beacons} to dailyBeaconsPlayer(player) ? 1
            # giveBeacons(player, {_beacons})
             send "&bYou received your daily reward."
             send "&a+%{_spins}% wheel spins"
@@ -120,7 +120,7 @@ on join:
         set join message to ""
     else:
         set {_group} to {group::%player's uuid%} ? "default"
-        set join message to formatted "&8[&a<sprite:gui:container/beacon/confirm>&8] %player_display(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
+        set join message to formatted "&8[&a<sprite:gui:container/beacon/confirm>&8] %playerDisplay(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
         if {level::%player%} isn't set:
             reset(player)
 
@@ -129,7 +129,7 @@ on quit:
         set quit message to ""
     else:
         set {_group} to {group::%player's uuid%} ? "default"
-        set quit message to formatted "&8[&c<sprite:gui:container/beacon/cancel>&8] %player_display(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
+        set quit message to formatted "&8[&c<sprite:gui:container/beacon/cancel>&8] %playerDisplay(player, "[level] [prefix][player] [trophies] [tag] [clan]")%"
 
 function reset(player: player):
     heal({_player}, 100)

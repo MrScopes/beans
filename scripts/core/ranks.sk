@@ -39,7 +39,7 @@ command /prefixes:
             send formatted "%group prefix of loop-value%%player%&8: <%group chat color of loop-value%>%player%" to player
 
 function updatePlayerTabName(player: player):
-    set tablist name of {_player} to player_display({_player}, "[level] [prefix][player] [trophies]")
+    set tablist name of {_player} to playerDisplay({_player}, "[level] [prefix][player] [trophies]")
 
 on join:
    updatePlayerTabName(player)
@@ -55,7 +55,7 @@ async every second:
         
         loop-player.setPlayerListOrder({_order})
 
-function daily_beacons_player(player: player) :: integer:
+function dailyBeaconsPlayer(player: player) :: integer:
     if {_player} has permission "group.patron":
         return {-daily beacons::patron}
 
@@ -73,7 +73,7 @@ function daily_beacons_player(player: player) :: integer:
     
     return {-daily beacons::default}
 
-function daily_wheel_spins_player(player: player) :: integer:
+function dailyWheelSpinsPlayer(player: player) :: integer:
     if {_player} has permission "group.patron":
         return {-daily wheel spins::patron}
 
@@ -91,7 +91,7 @@ function daily_wheel_spins_player(player: player) :: integer:
     
     return {-daily wheel spins::default}
 
-function afkrewards_multi_player(player: player) :: number:
+function afkRewardsMultiPlayer(player: player) :: number:
     if {_player} has permission "group.patron":
         return {-afk rewards multi::patron}
 
@@ -109,7 +109,7 @@ function afkrewards_multi_player(player: player) :: number:
     
     return 1
 
-function vault_amount_player(player: offline player) :: number:
+function vaultAmountPlayer(player: offline player) :: number:
     if {_player} has permission "group.default":
         set {_amount} to {-vault amount::default}
 
@@ -143,7 +143,7 @@ command /purchase <offline player> <text> <text>:
                 set {_prefix::*} to split (group prefix of "%{_rank}%") at " "
                 delete {_prefix::%size of {_prefix::*}%}
                 set {_prefix} to join {_prefix::*} with " "
-                broadcast "", formatted " &7%player_display(arg 1)% &7has purchased %{_prefix}%&8!", " &7Access the beans store with /buy&8.", ""
+                broadcast "", formatted " &7%playerDisplay(arg 1)% &7has purchased %{_prefix}%&8!", " &7Access the beans store with /buy&8.", ""
                 send "&bThank you for your purchase!" to arg 1
                 set {_onetime} to {-onetime beacons::%{_rank}%}
                 add {_onetime} to {beacons::%arg 1's uuid%}
@@ -155,7 +155,7 @@ command /purchase <offline player> <text> <text>:
                 send "unknown integer: %arg 3%" to console
                 send "You purchased beacons but the amount is unknown. report this asap. '%arg 3%'" to arg 1
             else:
-                broadcast "", formatted " &7%player_display(arg 1)% &7has purchased &b%arg 3% &lBEACONS&7!", " &7Access the beans store with /buy&8.", ""
+                broadcast "", formatted " &7%playerDisplay(arg 1)% &7has purchased &b%arg 3% &lBEACONS&7!", " &7Access the beans store with /buy&8.", ""
                 add {_beacons} to {beacons::%arg 1's uuid%}
                 send "&bThank you for your purchase!" to arg 1
                 send "&7You can access your beacons with &b/beacons&7." to arg 1
@@ -165,7 +165,7 @@ command /purchase <offline player> <text> <text>:
                 send "unknown integer: %arg 3%" to console
                 send "You purchased spins but the amount is unknown. report this asap. '%arg 3%'" to arg 1
             else:
-                broadcast "", formatted " &7%player_display(arg 1)% &7has purchased &a%{_spins}% &lSPINS&7!", " &7Access the beans store with /buy&8.", ""
+                broadcast "", formatted " &7%playerDisplay(arg 1)% &7has purchased &a%{_spins}% &lSPINS&7!", " &7Access the beans store with /buy&8.", ""
                 add {_spins} to {spins::%arg 1's uuid%}
                 send "&bThank you for your purchase!" to arg 1
                 send "&7You can access your spins with &b/spins&7." to arg 1

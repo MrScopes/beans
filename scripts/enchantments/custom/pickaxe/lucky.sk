@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of "lucky" at {_level}
     set {_duration} to "duration" of "lucky" at {_level}
-    return "gain &f%{_boost} * 100%%% &7luck for &f%time_format({_duration})%"
+    return "gain &f%{_boost} * 100%%% &7luck for &f%timeFormat({_duration})%"
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {-mining luck boost::%{_player}%} isn't set

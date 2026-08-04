@@ -90,7 +90,7 @@ function stringToTimespan(input: string) :: timespan:
     set {_result} to (join {_result::*} with "")
     return {_result} parsed as timespan
 
-function time_format(time: timespan) :: string:
+function timeFormat(time: timespan) :: string:
   set {_time} to "%{_time}%"
   set {_timespan::*} to {_time} parsed as "%number% %string%[s][ and %number% %string%[s]]"
   set {_first} to "%{_timespan::1}%%first character of {_timespan::2}%"

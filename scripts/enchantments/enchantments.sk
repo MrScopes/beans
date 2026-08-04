@@ -39,7 +39,7 @@ function getDescription(enchantment: string, level: integer) :: text:
         {_cooldown} is greater than 0 seconds
         {_cooldown} isn't 0
     then:
-        add text component of "&f<sprite:items:item/clock_63><#E8C1BA>%time_format({_cooldown})% " to {_line::*}
+        add text component of "&f<sprite:items:item/clock_63><#E8C1BA>%timeFormat({_cooldown})% " to {_line::*}
     if all:
         {_chance} is set
         {_chance} isn't greater than 100

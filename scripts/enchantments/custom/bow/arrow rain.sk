@@ -56,7 +56,7 @@ local function getDescription(level: integer) :: string:
     set {_amount} to "amount" of "arrow_rain" at {_level}
     set {_damage} to "damage" of "arrow_rain" at {_level}
     set {_duration} to "duration" of "arrow_rain" at {_level}
-    return "on land&8, &7rain &f%{_amount}% &7arrows for &f%time_format({_duration})% &7dealing &c%{_damage}%&4<sprite:gui:hud/heart/full>&7 each"
+    return "on land&8, &7rain &f%{_amount}% &7arrows for &f%timeFormat({_duration})% &7dealing &c%{_damage}%&4<sprite:gui:hud/heart/full>&7 each"
 
 local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     set {_amount} to "amount" of "arrow_rain" at {_level}

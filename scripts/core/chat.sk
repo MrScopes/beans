@@ -22,7 +22,7 @@ on async chat:
 				add {-chat reaction reward} to player's experience
 			else:
 				give player {-chat reaction reward}
-			broadcast formatted "%player_display(player, "[prefix][player]")% &fhas completed the chat reaction in %time_format(difference between now and {-chat reaction start})%!"
+			broadcast formatted "%playerDisplay(player, "[prefix][player]")% &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction start})%!"
 			add "%player's uuid%:%difference between now and {-chat reaction start}%" to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
 			set {_sorted::*} to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
 			sort {_sorted::*} in ascending order
@@ -52,7 +52,7 @@ on async chat:
 		set {_dif} to difference between now and {-last message time::%player%}
 		if {_dif} < 2 seconds:
 			cancel event
-			send "&cWait %time_format(2 seconds - {_dif})% before chatting again." to player
+			send "&cWait %timeFormat(2 seconds - {_dif})% before chatting again." to player
 		else:
 			set {-last message time::%player%} to now
 
@@ -76,8 +76,8 @@ on async chat:
 			cancel event
 			#replace all {_leet} in message with {_replacement}
 
-	#set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover] [clan]")%&8: "
-	set {_m::1} to formatted "%player_display(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
+	#set {_m::1} to formatted "%playerDisplay(player, "[level] [prefix][player] [trophies] [tag hover] [clan]")%&8: "
+	set {_m::1} to formatted "%playerDisplay(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
 	set {_m::2} to async chat message
 	set color format of {_m::2} to group chat color of {_rank}
 
@@ -93,10 +93,10 @@ on async chat:
 			if {setting::%loop-player%::chat pinging} is set:
 				send "&c%loop-player% has pinging disabled." to player
 			else:
-				set {_component} to text component of "&b@%player_display(loop-player, "[prefix][player]")%"
+				set {_component} to text component of "&b@%playerDisplay(loop-player, "[prefix][player]")%"
 				component replace loop-player's name with {_component} in {_m::2}
 
-				send formatted "&7You were mentioned by %player_display(player, "[prefix][player]")%&7." to loop-player
+				send formatted "&7You were mentioned by %playerDisplay(player, "[prefix][player]")%&7." to loop-player
 				play sound "minecraft:block.note_block.pling" with volume 1 and pitch 2 to loop-player
 
 	set {_format} to merge components {_m::*}
@@ -110,19 +110,19 @@ command /chat <text> [<text>]:
 			broadcast ""
 			loop 250 times:
 				send "" to all players where [input doesn't have permission "beans.mod"]
-			broadcast formatted " &8&l| &fChat has been cleared by %player_display(player, "[prefix][player]")%."
+			broadcast formatted " &8&l| &fChat has been cleared by %playerDisplay(player, "[prefix][player]")%."
 			if arg 2 is set:
 				broadcast formatted " &8&l| &fReason: %arg 2%"
 			broadcast ""
 		else if arg 1 is "mute":
 			set {-chat muted} to arg 2 ? "No Reason Provided"
-			broadcast formatted " &8&l| &fChat has been muted by %player_display(player, "[prefix][player]")%."
+			broadcast formatted " &8&l| &fChat has been muted by %playerDisplay(player, "[prefix][player]")%."
 			if arg 2 is set:
 				broadcast formatted " &8&l| &fReason: %arg 2%"
 			broadcast ""
 		else if arg 1 is "unmute":
 			delete {-chat muted}
-			broadcast formatted " &8&l| &fChat has been unmuted by %player_display(player, "[prefix][player]")%.&7"
+			broadcast formatted " &8&l| &fChat has been unmuted by %playerDisplay(player, "[prefix][player]")%.&7"
 
 on tab complete of "/chat":
 	set tab completions for position 1 to "clear", "mute", "unmute"

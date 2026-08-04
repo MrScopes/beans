@@ -22,7 +22,7 @@ command /reloadenchantment [<text>]:
             else:
                 set {_enchantment} to {_string::4}
             wait 1 ticks
-            cache_specific_enchantment({_enchantment})
+            cacheSpecificEnchantment({_enchantment})
             refreshEnchantmentGui()
         else:
             player command "/sk reload enchantments/"

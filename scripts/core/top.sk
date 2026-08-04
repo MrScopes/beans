@@ -77,11 +77,11 @@ function topEntryDisplay(player: offline player, stat: text) :: text:
         if {_value} is a number:
             set {_value} to formatNumber({_value})
         else if {_value} is a timespan:
-            set {_value} to time_format({_value})
+            set {_value} to timeFormat({_value})
 
         replace all "value" in {_stat display} with "%{_value}%"
 
-    return "&b#%{_index}% &f<head:%{_player}%> &7%player_display({_player}, "[level] [prefix][player]")%&8: &f%{_stat display}%"
+    return "&b#%{_index}% &f<head:%{_player}%> &7%playerDisplay({_player}, "[level] [prefix][player]")%&8: &f%{_stat display}%"
 
 command /top [<text>]:
     trigger:
@@ -109,7 +109,7 @@ command /top [<text>]:
 on tab complete of "/top":
     set tab completions for position 1 to indexes of {-top command::*}
 
-function cache_stats():
+function cacheStats():
     loop all players:
         set {cached xp::%loop-player%} to experience of loop-player
         set {cached playtime::%loop-player%} to playtime of loop-player
@@ -123,9 +123,9 @@ async every 5 minutes:
     calculateTops()
 
 async every minute:
-    cache_stats()
+    cacheStats()
 
 on load:
     async run 0 ticks later:
-        cache_stats()
+        cacheStats()
         calculateTops()

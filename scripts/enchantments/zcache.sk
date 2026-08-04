@@ -4,7 +4,7 @@ on load:
     set {_now} to current ns
 
     loop indexes of {-ce::*}:
-        cache_specific_enchantment(loop-value, false)
+        cacheSpecificEnchantment(loop-value, false)
 
     loop indexes of {-vanilla enchantment::*}:
         loop "max level", "display":
@@ -23,7 +23,7 @@ on load:
     set {_ms took} to (current ns - {_now}) / 1_000_000
     broadcast "Loaded %size of indices of {-ce::*}% enchantments in %{_ms took}% ms."
 
-function cache_specific_enchantment(enchantment: string, broadcast: boolean = true):
+function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true):
     set {_now} to current ns
 
     set {_type} to {-ce::%{_enchantment}%::type}

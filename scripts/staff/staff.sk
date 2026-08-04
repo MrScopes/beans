@@ -23,8 +23,8 @@ command /staffchat <text>:
     aliases: /sc
     permission: beans.mod
     trigger:
-        send "&8[&6Staff Chat&8] &e%player_display(player, "[prefix][player]")%&8: &f%arg 1%" to all players where [input has permission "beans.mod"]
-        sendToStaffChat("**%unformatted player_display(player, "[prefix][player]")%**: %arg 1%")
+        send "&8[&6Staff Chat&8] &e%playerDisplay(player, "[prefix][player]")%&8: &f%arg 1%" to all players where [input has permission "beans.mod"]
+        sendToStaffChat("**%unformatted playerDisplay(player, "[prefix][player]")%**: %arg 1%")
 
 async every second:
     loop all players:
@@ -32,7 +32,7 @@ async every second:
             wait 1 tick
             hide loop-player from all players where [input doesn't have permission "beans.mod"]
             if loop-player's tablist name doesn't contain "VANISHED":
-                set tablist name of loop-player to formatted "%player_display(loop-player, "[level] [prefix][player] [trophies]")% &a&l(VANISHED)"
+                set tablist name of loop-player to formatted "%playerDisplay(loop-player, "[level] [prefix][player] [trophies]")% &a&l(VANISHED)"
             if mod(floor(seconds of difference between {-vanish::%loop-player%} and now), 10) is 0:
                 send "&aYou are vanished." to loop-player
 

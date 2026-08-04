@@ -23,13 +23,13 @@ on join:
     {-vanish::%player%} isn't set
     updatePresence()
     set {_group} to {group::%player's uuid%} ? "default"
-    sendToServerChat(":white_check_mark: **%uncolored player_display(player, "[prefix][player]")%** joined the server.")
+    sendToServerChat(":white_check_mark: **%uncolored playerDisplay(player, "[prefix][player]")%** joined the server.")
 
 on quit:
     {-vanish::%player%} isn't set
     updatePresence()
     set {_group} to {group::%player's uuid%} ? "default"
-    sendToServerChat(":x: **%uncolored player_display(player, "[prefix][player]")%** left the server.")
+    sendToServerChat(":x: **%uncolored playerDisplay(player, "[prefix][player]")%** left the server.")
 
 on chat with priority monitor:
     event isn't cancelled
@@ -39,7 +39,7 @@ on chat with priority monitor:
     replace all "<" with "\<" in {_message} and {_name}
     replace all ">" with "\>" in {_message} and {_name}
     replace all "`" with "\`" in {_message} and {_name}
-    sendToServerChat("**%uncolored player_display(player, "[prefix][player]")%**: %{_message}%")
+    sendToServerChat("**%uncolored playerDisplay(player, "[prefix][player]")%**: %{_message}%")
 
 on message received:
     event-user is not a discord bot
@@ -49,11 +49,11 @@ on message received:
         {_user} is set
         set {_message} to event-message
         replace all newline with " " in {_message}
-        broadcast formatted "&b[Discord] &7%player_display({_user}, "[prefix][player]")%&8: &f%unformatted {_message}%"
+        broadcast formatted "&b[Discord] &7%playerDisplay({_user}, "[prefix][player]")%&8: &f%unformatted {_message}%"
     else if event-channel is {-discord::staff chat channel}:
         set {_id} to discord id of event-user
         set {_user} to linkedUser({_id})
-        send "&8[&6Staff Chat (Discord)&8] &e%player_display({_user}, "[prefix][player]")%&8: &f%event-message%" to all players where [input has permission "beans.mod"]
+        send "&8[&6Staff Chat (Discord)&8] &e%playerDisplay({_user}, "[prefix][player]")%&8: &f%event-message%" to all players where [input has permission "beans.mod"]
 
 command /discord:
     trigger:

@@ -64,13 +64,13 @@ function punishmentHistoryDisplay(target: offline player) :: text:
 			set {_date} to {punish history::%{_target}%::%loop-value%::punished at}
 			set {_staff} to {punish history::%{_target}%::%loop-value%::staff}
 			if {_staff} isn't "Console":
-				set {_staff} to player_display({_staff}, "[prefix][player]")
+				set {_staff} to playerDisplay({_staff}, "[prefix][player]")
 			add "&b#%loop-value% &f%{_type}% &3by &f%{_staff}% &3for &f%{_reason}% &3for &f%{_duration}% &8(&7&o%{_date}%&8)" to {_history::*}
 	return join {_history::*} with nl
 
 function punishmentMessage(header: text, player: offline player, reason: text, remaining: object, punished at: date, staff: offline player) :: text:
 	if {_staff} is set:
-		set {_staff display} to player_display({_staff}, "[prefix][player]")
+		set {_staff display} to playerDisplay({_staff}, "[prefix][player]")
 	else:
 		set {_staff display} to "Console"
 	add "&8&m-----------------------------&r" to {_message::*}
