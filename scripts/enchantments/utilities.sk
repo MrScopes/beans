@@ -112,10 +112,21 @@ function fastRadiusClear(player: player, location: location, radius: number):
         
 function sortedEnchantments(item: item) :: objects:
     set {_enchantments::*} to custom enchantments of {_item}
-    set {_indices::*} to indices of {_enchantments::*}
-    sort {_indices::*} in descending order by {-ce::%input%::priority}
+    for {_enchantment}, {_level} in {_enchantments::*}:
+        if {-ce::%{_enchantment}%::display} isn't set:
+            continue
+        
+        if {-ce::%{_enchantment}%::priority} isn't set:
+            continue
 
-    loop {_indices::*}:
+        if {-ce::%{_enchantment}%::disabled} is true:
+            continue
+
+        add {_enchantment} to {_enabled enchantments::*}
+
+    sort {_enabled enchantments::*} in descending order by {-ce::%input%::priority}
+
+    loop {_enabled enchantments::*}:
         set {_enchantment} to loop-value
         set {_sorted::%{_enchantment}%} to {_enchantments::%{_enchantment}%}
 
