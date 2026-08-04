@@ -22,14 +22,14 @@ on load:
         level values for "money cost":
             set level 2 to 160_000
             set level 3 to 500_000
-            set level 4 to 900_000
-            set level 5 to 1_200_000
+            set level 4 to 1_800_000
+            set level 5 to 3_000_000
 
         level values for "dust cost":
             set level 2 to 40
             set level 3 to 150
-            set level 4 to 450
-            set level 5 to 900
+            set level 4 to 2_300
+            set level 5 to 4_900
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "blast" at {_level}

@@ -5,6 +5,7 @@ on load:
     create bound with id "mine" within {-mine corner 1} and {-mine corner 2}
 
     add 4 to y coordinate of {-mine corner 2}
+    remove 4 from y coordinate of {-mine corner 1}
     delete bound with id "mine flight"
     create bound with id "mine flight" within {-mine corner 1} and {-mine corner 2}
 
@@ -27,13 +28,13 @@ on load:
     set {-sell::%("packed ice" parsed as item type)%} to 30
     set {-sell::%("obsidian" parsed as item type)%} to 250
 
-    set {-dust::%("stone" parsed as item type)%} to 0.05
-    set {-dust::%("coal ore" parsed as item type)%} to 0.1
-    set {-dust::%("iron ore" parsed as item type)%} to 0.15
-    set {-dust::%("diamond ore" parsed as item type)%} to 0.2
-    set {-dust::%("emerald ore" parsed as item type)%} to 0.25
-    set {-dust::%("packed ice" parsed as item type)%} to 0.15
-    set {-dust::%("obsidian" parsed as item type)%} to 0.5
+    set {-dust::%("stone" parsed as item type)%} to 0.0025
+    set {-dust::%("coal ore" parsed as item type)%} to 0.004
+    set {-dust::%("iron ore" parsed as item type)%} to 0.007
+    set {-dust::%("diamond ore" parsed as item type)%} to 0.01
+    set {-dust::%("emerald ore" parsed as item type)%} to 0.015
+    set {-dust::%("packed ice" parsed as item type)%} to 0.009
+    set {-dust::%("obsidian" parsed as item type)%} to 0.05
     set {-dust::%("beacon" parsed as item type)%} to 10.0
 
 on break with priority highest:
@@ -49,7 +50,7 @@ function blockReward(player: player, tool: item, block: block, reason: text):
     add 1 to {total level progress::%{_player}%}
 
     set {_fortune} to level of fortune of {_tool}
-    set {_dust} to {-dust::%type of {_block}%} * (1 + ({_fortune} * 0.2))
+    set {_dust} to {-dust::%type of {_block}%} * (1 + ({_fortune} * 0.025))
     add {_dust} to {dust::%{_player}%}
 
     set {_drops::*} to drops of {_block} using {_tool}

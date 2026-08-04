@@ -29,14 +29,14 @@ on load:
         level values for "dust cost":
             set level 2 to 45
             set level 3 to 225
-            set level 4 to 600
-            set level 5 to 1_350
+            set level 4 to 3_000
+            set level 5 to 7_400
 
         level values for "money cost":
             set level 2 to 50_000
             set level 3 to 250_000
-            set level 4 to 750_000
-            set level 5 to 1_500_000
+            set level 4 to 1_500_000
+            set level 5 to 3_800_000
 
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of "lucky" at {_level}

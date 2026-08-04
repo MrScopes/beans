@@ -37,8 +37,8 @@ on load:
             set level 6 to 550
             set level 7 to 850
             set level 8 to 1_100
-            set level 9 to 1_650
-            set level 10 to 2_200
+            set level 9 to 8_300
+            set level 10 to 12_000
 
         level values for "money cost":
             set level 2 to 6_000
@@ -48,8 +48,8 @@ on load:
             set level 6 to 768_000
             set level 7 to 1_000_000
             set level 8 to 1_500_000
-            set level 9 to 2_000_000
-            set level 10 to 2_500_000
+            set level 9 to 4_000_000
+            set level 10 to 6_300_000
 
 local function getDescription(level: integer) :: string:
     set {_reward} to "reward" of "money_boost" at {_level}

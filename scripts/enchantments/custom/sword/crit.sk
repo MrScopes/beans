@@ -22,14 +22,14 @@ on load:
         level values for "dust cost":
             set level 2 to 5
             set level 3 to 25
-            set level 4 to 100
-            set level 5 to 450
+            set level 4 to 500
+            set level 5 to 2_500
 
         level values for "money cost":
             set level 2 to 10_000
             set level 3 to 30_000
-            set level 4 to 140_000
-            set level 5 to 550_000
+            set level 4 to 280_000
+            set level 5 to 1_400_000
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "crit" at {_level}

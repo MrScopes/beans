@@ -102,7 +102,7 @@ function fastRadiusClear(player: player, location: location, radius: number):
             
             set {_sell value} to {-sell::%{_material}%} * {_amount} * {_money mult}
             set {_dust value} to {-dust::%{_material}%} * {_amount}
-            set {_dust value} to {_dust value} * (1 + ({_fortune} * 0.2))
+            set {_dust value} to {_dust value} * (1 + ({_fortune} * 0.025))
 
             add {_sell value} to {_total money}
             add {_dust value} to {_total dust}

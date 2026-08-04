@@ -29,14 +29,14 @@ on load:
         level values for "dust cost":
             set level 2 to 225
             set level 3 to 1_100
-            set level 4 to 2_200
-            set level 5 to 5_600
+            set level 4 to 8_000
+            set level 5 to 42_000
 
         level values for "money cost":
             set level 2 to 250_000
             set level 3 to 1_250_000
-            set level 4 to 2_500_000
-            set level 5 to 5_550_000
+            set level 4 to 4_000_000
+            set level 5 to 11_800_000
 
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "domain" at {_level}

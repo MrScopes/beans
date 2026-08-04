@@ -51,15 +51,15 @@ on load:
             set level 1 to 65
             set level 2 to 225
             set level 3 to 850
-            set level 4 to 1_100
-            set level 5 to 1_650
+            set level 4 to 5_500
+            set level 5 to 9_000
 
         level values for "money cost":
             set level 1 to 100_000
             set level 2 to 300_000
             set level 3 to 900_000
-            set level 4 to 1_250_000
-            set level 5 to 1_800_000
+            set level 4 to 2_500_000
+            set level 5 to 4_500_000
 
 local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of "flamethrower" at {_level}

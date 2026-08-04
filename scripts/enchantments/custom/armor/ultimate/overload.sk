@@ -45,15 +45,15 @@ on load:
             set level 1 to 450
             set level 2 to 1_650
             set level 3 to 2_800
-            set level 4 to 4_400
-            set level 5 to 6_700
+            set level 4 to 16_000
+            set level 5 to 50_000
 
         level values for "money cost":
             set level 1 to 500_000
             set level 2 to 2_000_000
             set level 3 to 3_000_000
-            set level 4 to 5_000_000
-            set level 5 to 7_500_000
+            set level 4 to 8_000_000
+            set level 5 to 16_000_000
 
 local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of "overload" at {_level}

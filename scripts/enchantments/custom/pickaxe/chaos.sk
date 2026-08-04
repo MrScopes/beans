@@ -31,14 +31,14 @@ on load:
         level values for "dust cost":
             set level 2 to 55
             set level 3 to 225
-            set level 4 to 500
-            set level 5 to 1_100
+            set level 4 to 2_500
+            set level 5 to 6_000
 
         level values for "money cost":
             set level 2 to 65_000
             set level 3 to 275_000
-            set level 4 to 550_000
-            set level 5 to 1_500_000
+            set level 4 to 1_100_000
+            set level 5 to 3_800_000
 
 local function getDescription(level: integer) :: string:
     set {_enchantments} to "enchantments" of "chaos" at {_level}

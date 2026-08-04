@@ -16,15 +16,15 @@ on load:
             set level 1 to 10
             set level 2 to 35
             set level 3 to 100
-            set level 4 to 550
-            set level 5 to 1_400
+            set level 4 to 2_800
+            set level 5 to 7_600
 
         level values for "money cost":
             set level 1 to 6_000
             set level 2 to 18_000
             set level 3 to 150_000
-            set level 4 to 750_000
-            set level 5 to 1_500_000
+            set level 4 to 1_500_000
+            set level 5 to 3_800_000
 
 local function getDescription(level: integer) :: string:
     set {_armor} to "armor" of "armor" at {_level}

@@ -15,14 +15,14 @@ on load:
         level values for "dust cost":
             set level 2 to 60
             set level 3 to 275
-            set level 4 to 800
-            set level 5 to 1_800
+            set level 4 to 4_000
+            set level 5 to 9_800
 
         level values for "money cost":
             set level 2 to 75_000
             set level 3 to 300_000
-            set level 4 to 800_000
-            set level 5 to 2_000_000
+            set level 4 to 1_600_000
+            set level 5 to 5_000_000
 
 local function getDescription(level: integer) :: string:
     return "instantly gives you a beacon"
