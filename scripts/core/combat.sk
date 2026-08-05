@@ -21,9 +21,15 @@ function damage(victim: entity, attacker: entity, damage: number, customDamage: 
     damage {_victim} by {_damage}
     reset {_victim}'s no damage time
 
-on damage of player:
+on damage of player with priority lowest:
     if attacker is a player:
         set {-last attacker::%victim%} to attacker
+        broadcast "initial damage: %damage%"
+        if damage cause is attack:
+            set damage to customDamage(victim, damage, attacker)
+        else:
+            set damage to customDamage(victim, damage)
+        broadcast "new damage: %damage%"
     else if attacker is a mob:
         set {-last attacker::%victim%} to {-owner::%attacker%}
 
