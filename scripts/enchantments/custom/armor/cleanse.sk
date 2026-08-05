@@ -57,6 +57,8 @@ on entity potion effect added or changed:
 
     for {_enchantment}, {_level} in custom enchantments of entity's helmet:
         if {_enchantment} is "cleanse":
+            cancel event
+
             set {_entity} to entity
             set {_type} to event-potioneffecttype
             set {_tier} to amplifier of event-potioneffect
@@ -65,15 +67,10 @@ on entity potion effect added or changed:
             set {_reduction} to "effect reduction" of "cleanse" at {_level}
             set {_removed} to {_duration} * {_reduction}
 
-            broadcast "removing %{_removed}% from %{_duration}%"
             remove {_removed} from {_duration}
-            broadcast "new duration %{_duration}%"
-
-            cancel event
+            set {_newEffect} to potion effect of {_type} of tier {_tier} for {_duration}
 
             set {-%{_entity}%::reducing::%{_type}%} to true
-
-            set {_newEffect} to potion effect of {_type} of tier {_tier} for {_duration}
             apply {_newEffect} to {_entity}
 
             wait 1 tick
