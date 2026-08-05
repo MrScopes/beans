@@ -1,0 +1,68 @@
+on load:
+    create bow enchantment named "dash":
+        set enchantment display to "&f<sprite:items:item/ender_pearl> &5Dash"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to ender pearl (item type)
+
+        level values for "cooldown":
+            set level 1 to 20 seconds
+            set level 2 to 18 seconds
+            set level 3 to 15 seconds
+            set level 4 to 12 seconds
+            set level 5 to 10 seconds
+
+        level values for "distance":
+            set level 1 to 12
+            set level 2 to 14
+            set level 3 to 16
+            set level 4 to 18
+            set level 5 to 22
+
+        level values for "dust cost":
+            set level 2 to 65
+            set level 3 to 225
+            set level 4 to 4_300
+            set level 5 to 8_000
+
+        level values for "money cost":
+            set level 2 to 100_000
+            set level 3 to 300_000
+            set level 4 to 1_800_000
+            set level 5 to 3_100_000
+
+local function getDescription(level: integer) :: string:
+    set {_distance} to "distance" of "dash" at {_level}
+    return "&e[F] &7dash forward &f%{_distance}%m"
+
+local function onOffHand(player: player, item: item, level: integer) :: boolean:
+    set {_distance} to "distance" of "dash" at {_level}
+    dashPlayer({_player}, {_distance})
+    return true
+
+local function dashPlayer(player: player, distance: number):
+    set {_start} to location of {_player}
+    set {_speed} to {_distance} / 2.184
+
+    push {_player} horizontally forward at speed {_speed}
+
+    loop 40 times:
+        wait 1 tick
+
+        set {_current} to location of {_player}
+
+        set y-coordinate of {_current} to y-coordinate of {_start}
+        set {_travelled} to distance between {_start} and {_current}
+
+        if {_travelled} >= {_distance}:
+            set {_velocity} to velocity of {_player}
+            set x component of {_velocity} to 0
+            set z component of {_velocity} to 0
+            set velocity of {_player} to {_velocity}
+            stop
+
+        set {_horizontalVelocity} to velocity of {_player}
+        set y component of {_horizontalVelocity} to 0
+
+        if vector length of {_horizontalVelocity} < 0.02:
+            stop
