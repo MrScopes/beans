@@ -1,14 +1,17 @@
 import:
-    org.bukkit.Bukkit
     org.bukkit.permissions.PermissionAttachment
 
 effect sync permissions of %players%:
     trigger:
         for {_player} in exprs-1:
-            set {_group} to {group::%{_player}%} ? "default"
+            set {_group} to group of {_player}
 
             if {-permission attachment::%{_player}%} is set:
-                {_player}.removeAttachment({-permission attachment::%{_player}%})
+                set {_oldAttachment} to {-permission attachment::%{_player}%}
+
+                try:
+                    {_oldAttachment}.remove()
+
                 delete {-permission attachment::%{_player}%}
 
             set {_attachment} to {_player}.addAttachment(instance of plugin "Skript")
@@ -24,6 +27,15 @@ effect sync permissions of %players%:
 
             {_player}.recalculatePermissions()
             {_player}.updateCommands()
+
+on quit:
+    if {-permission attachment::%player%} is set:
+        set {_attachment} to {-permission attachment::%player%}
+
+        try:
+            {_attachment}.remove()
+
+        delete {-permission attachment::%player%}
 
 expression:
     patterns:
