@@ -66,7 +66,7 @@ async every tick:
         set line 4 of loop-player's fastboard to "&bBlocks: &f%kNumber({blocks::%loop-player%})%"
         set line 5 of loop-player's fastboard to "&bMoney: &f$%kNumber({money::%loop-player%})%"
         set line 6 of loop-player's fastboard to formatted "&bDust: &f%{-dust sprite}%%formatNumber(floor({dust::%loop-player%} ? 0))%"
-        set line 8 of loop-player's fastboard to "&bK/D: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &7(&f%kdrDisplay({kills::%loop-player%} / min(1, {deaths::%loop-player%}))%&7)"
+        set line 8 of loop-player's fastboard to "&bK/D: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &7(&f%kdrDisplay({kills::%loop-player%} / max(1, {deaths::%loop-player%}))%&7)"
         set line 9 of loop-player's fastboard to " "
         set line 10 of loop-player's fastboard to "&bLevel: &f%{-level display::%clamp({level::%loop-player%} ? 1, 1, 100)%}% &7(&f%floor({-level progress percent::%loop-player%})%%%&7)"
 
