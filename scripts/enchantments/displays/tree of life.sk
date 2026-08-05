@@ -1,0 +1,608 @@
+function treeOfLifeDisplays(origin: location) :: entities:
+    set yaw of {_origin} to 0
+    set pitch of {_origin} to 0
+    delete {_displays::*}
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 1.2, 1.2)
+        set left transformation rotation of block display to quaternion(0.707107, 0, 0, 0.707107)
+        set transformation translation of block display to vector(0.5, 0, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, 0, 0.707107)
+        set transformation translation of block display to vector(0.401875, 1.5, -0.401875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.8, 0.8)
+        set left transformation rotation of block display to quaternion(0.707107, 0, 0, 0.707107)
+        set transformation translation of block display to vector(0.305, 3, -0.30375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.6, 0.6)
+        set left transformation rotation of block display to quaternion(0.683013, 0.183013, -0.183013, 0.683013)
+        set transformation translation of block display to vector(0.195, 4.75, -0.30375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.6, 0.6)
+        set left transformation rotation of block display to quaternion(0.183013, 0.683013, 0.683013, -0.183013)
+        set transformation translation of block display to vector(-0.40875, 4.75, 0.48)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.6, 0.6)
+        set left transformation rotation of block display to quaternion(0.353553, -0.353553, -0.612372, 0.612372)
+        set transformation translation of block display to vector(0.013125, 4.75, 0.396875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.6, 0.6)
+        set left transformation rotation of block display to quaternion(0.612372, 0.612372, 0.353553, 0.353553)
+        set transformation translation of block display to vector(-0.326875, 4.75, -0.20375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.4, 0.4)
+        set left transformation rotation of block display to quaternion(0.683013, 0.683013, 0.183013, 0.183013)
+        set transformation translation of block display to vector(0.58875, 6.311875, -0.091875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.4, 0.4)
+        set left transformation rotation of block display to quaternion(0.183013, -0.183013, -0.683013, 0.683013)
+        set transformation translation of block display to vector(-0.93125, 6.311875, 0.30125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.4, 0.4)
+        set left transformation rotation of block display to quaternion(0.612372, 0.353553, -0.353553, 0.612372)
+        set transformation translation of block display to vector(0.10625, 6.311875, 0.618125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.4, 0.4)
+        set left transformation rotation of block display to quaternion(0.353553, 0.612372, 0.612372, -0.353553)
+        set transformation translation of block display to vector(-0.318125, 6.311875, -0.4275)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.606875, 6.603125, 1.888125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.606875, 6.603125, -2.671875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-3.255, 6.603125, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.89, 6.603125, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.23875, 7.51875, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-2.513125, 7.59, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.35375, 8.52625, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.555, 8.52625, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.598125, 7.581875, -2)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.598125, 7.581875, 1.2)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.598125, 8.5, 0.411875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.598125, 8.585, -1.25)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.5, 8.02625, 0.501875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.25, 8.02625, 0.501875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.25, 8.02625, -1.25)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.5, 8.02625, -1.25)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-2.60875, 6.603125, -1.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.605, 6.603125, -2.27625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-2.12125, 7.5, -1.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.605, 7.5, -1.763125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-0.598125, 8.585, -0.463125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-2.60875, 6.603125, 0.498125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.57125, 6.603125, 1.373125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-1.28875, 7.5, 0.87625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(-2.25, 7.5, 0.40625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.07, 8.02625, -1.1675)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.32, 6.603125, -2.27625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(2.09625, 6.603125, -1.2725)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.32, 7.5, -1.78875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.64125, 7.5, -1.185)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.41875, 6.603125, 0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.396875, 6.603125, 1.24875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.86625, 7.28, 0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(0.29375, 7.28, 0.743125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.07, 8.02625, -1.1675)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.32, 6.603125, -2.27625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(2.09625, 6.603125, -1.2725)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.32, 7.5, -1.78875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.049375, 6.22, -1.266875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(-0.536875, 6.22, -1.266875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(-0.536875, 6.22, 0.30625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(1.25, 6.22, 0.30625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(0.801875, 5.541875, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(0.4125, 5.541875, -0.188125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(-0.01375, 5.541875, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set left transformation rotation of block display to quaternion(0.707107, 0, -0.707107, 0)
+        set transformation translation of block display to vector(0.4125, 5.541875, -0.661875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.353553, 0.612372, 0.612372, -0.353553)
+        set transformation translation of block display to vector(-0.268125, 3.938125, -0.14625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.487561, 0.512427, 0.488349, -0.511095)
+        set transformation translation of block display to vector(-0.268125, 4.691875, -1.433125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(0.8, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.666315, 0.698934, 0.187856, 0.179513)
+        set transformation translation of block display to vector(-0.23, 4.568125, -1.45375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.3, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.183607, -0.183962, -0.667498, 0.697776)
+        set transformation translation of block display to vector(0.038125, 4.04375, -0.281875)
+
+    spawn item display at {_origin}:
+        add item display to {_displays::*}
+        make item display not persistent
+        set item inside of item display to apple
+        set item transform of item display to no transform
+        set transformation scale of item display to vector(0.5, 0.5, 0.5)
+        set left transformation rotation of item display to quaternion(0.96143, 0, 0.27505, 0)
+        set transformation translation of item display to vector(-0.096875, 4.215, -2.29)
+
+    spawn item display at {_origin}:
+        add item display to {_displays::*}
+        make item display not persistent
+        set item inside of item display to apple
+        set item transform of item display to no transform
+        set transformation scale of item display to vector(0.5, 0.5, 0.5)
+        set left transformation rotation of item display to quaternion(0.938131, 0, -0.346281, 0)
+        set transformation translation of item display to vector(-0.123125, 3.223125, 1.27625)
+
+    spawn item display at {_origin}:
+        add item display to {_displays::*}
+        make item display not persistent
+        set item inside of item display to apple
+        set item transform of item display to no transform
+        set transformation scale of item display to vector(0.5, 0.5, 0.5)
+        set left transformation rotation of item display to quaternion(0.964072, 0, -0.26564, 0)
+        set transformation translation of item display to vector(2.03125, 4.041875, 0.131875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(-0.270598, 0.653281, 0.653281, 0.270598)
+        set transformation translation of block display to vector(-0.268125, 2.51, 0.361875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.6, 0.6)
+        set left transformation rotation of block display to quaternion(0.612372, 0.612372, 0.353553, 0.353553)
+        set transformation translation of block display to vector(-0.07875, 2.869375, -0.20375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(2, 0.4, 0.4)
+        set left transformation rotation of block display to quaternion(0.695074, 0.695074, 0.129891, 0.129891)
+        set transformation translation of block display to vector(0.96375, 4.573125, -0.091875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(2.335, 4.604375, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.49, 4.998125, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.49, 4.17375, -0.5)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.56125, 4.604375, 0.248125)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to jungle leaves
+        set transformation scale of block display to vector(1, 1, 1)
+        set transformation translation of block display to vector(1.56125, 4.604375, -1.17375)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.612372, -0.353553, -0.353553, -0.612372)
+        set transformation translation of block display to vector(-0.268125, 0.5, 0.361875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.653281, 0.270598, 0.270598, -0.653281)
+        set transformation translation of block display to vector(-0.268125, 0.976875, -0.36)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(-0.270598, 0.270598, -0.653281, 0.653281)
+        set transformation translation of block display to vector(-0.23625, 0.73375, 0.20625)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.5, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.612372, -0.612372, 0.353553, -0.353553)
+        set transformation translation of block display to vector(0.148125, 0.918125, 0.246875)
+
+    spawn block display at {_origin}:
+        add block display to {_displays::*}
+        make block display not persistent
+        set block data of block display to oak log[axis=x]
+        set transformation scale of block display to vector(1.3, 0.3, 0.3)
+        set left transformation rotation of block display to quaternion(0.183607, -0.183962, -0.667498, 0.697776)
+        set transformation translation of block display to vector(0.038125, 2.25, 0.25)
+
+    spawn item display at {_origin}:
+        add item display to {_displays::*}
+        make item display not persistent
+        set item inside of item display to apple
+        set item transform of item display to no transform
+        set transformation scale of item display to vector(0.5, 0.5, 0.5)
+        set left transformation rotation of item display to quaternion(0.525917, 0, -0.850536, 0)
+        set transformation translation of item display to vector(-1, 2.31625, 0.06)
+
+    spawn item display at {_origin}:
+        add item display to {_displays::*}
+        make item display not persistent
+        set item inside of item display to enchanted golden apple
+        set item transform of item display to no transform
+        set transformation scale of item display to vector(1, 1, 1)
+        set left transformation rotation of item display to quaternion(0.92388, 0, -0.382683, 0)
+        set transformation translation of item display to vector(-2.57125, 6.248125, -0.01875)
+
+    return {_displays::*}
