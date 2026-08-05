@@ -1,0 +1,82 @@
+on load:
+    create armor enchantment named "cleanse":
+        set enchantment display to "&f<sprite:items:item/milk_bucket> &fCleanse"
+        set enchantment max level to 5
+        set enchantment priority to 1
+        set enchantment item to milk bucket
+
+        level values for "effect reduction":
+            set level 1 to 10%
+            set level 2 to 15%
+            set level 3 to 20%
+            set level 4 to 25%
+            set level 5 to 35%
+
+        level values for "dust cost":
+            set level 2 to 40
+            set level 3 to 150
+            set level 4 to 2_000
+            set level 5 to 6_000
+
+        level values for "money cost":
+            set level 2 to 60_000
+            set level 3 to 200_000
+            set level 4 to 1_000_000
+            set level 5 to 3_000_000
+
+    set {-negative effects::*} to poison, blindness, wither, nausea, slowness, weakness, levitation, hunger, bad omen, darkness, mining fatigue
+
+local function getDescription(level: integer) :: string:
+    set {_reduction} to "effect reduction" of "cleanse" at {_level}
+    return "automatically&8, &7and on kill&8, &7reduces most negative effect durations by &f%{_reduction} * 100%%%" 
+
+local function onKill(attacker: entity, armor: item, level: integer, victim: entity):
+    set {_reduction} to "effect reduction" of "cleanse" at {_level}
+
+    for {_effect} in active potion effects of {_attacker}:
+        set {_type} to type of {_effect}
+        {-negative effects::*} contains {_type}
+        set {-%{_attacker}%::reducing::%{_type}%} to true
+        set {_removed} to duration of {_effect} * {_reduction}
+        remove {_removed} from duration of {_attacker}'s {_type} effect
+        wait 1 tick
+        delete {-%{_attacker}%::reducing::%{_type}%}
+
+on combust:
+    for {_enchantment}, {_level} in custom enchantments of entity's helmet:
+        if {_enchantment} is "cleanse":
+            set {_reduction} to "effect reduction" of "cleanse" at {_level}
+            set {_remove} to entity's burning time * {_reduction}
+            wait 1 tick
+            remove {_remove} from entity's burning time
+            stop loop
+
+on entity potion effect added or changed:
+    {-negative effects::*} contains event-potioneffecttype
+    {-%entity%::reducing::%event-potioneffecttype%} is not set
+
+    for {_enchantment}, {_level} in custom enchantments of entity's helmet:
+        if {_enchantment} is "cleanse":
+            set {_entity} to entity
+            set {_type} to event-potioneffecttype
+            set {_tier} to amplifier of event-potioneffect
+            set {_duration} to duration of event-potioneffect
+
+            set {_reduction} to "effect reduction" of "cleanse" at {_level}
+            set {_removed} to {_duration} * {_reduction}
+
+            broadcast "removing %{_removed}% from %{_duration}%"
+            remove {_removed} from {_duration}
+            broadcast "new duration %{_duration}%"
+
+            cancel event
+
+            set {-%{_entity}%::reducing::%{_type}%} to true
+
+            set {_newEffect} to potion effect of {_type} of tier {_tier} for {_duration}
+            apply {_newEffect} to {_entity}
+
+            wait 1 tick
+            delete {-%{_entity}%::reducing::%{_type}%}
+
+            stop
