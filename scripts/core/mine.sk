@@ -1,6 +1,6 @@
 on load:
-    set {-mine corner 1} to location(-0.5, -49.5, -0.5, world "world")
-    set {-mine corner 2} to location(-99.5, 0, -99.5, world "world")
+    set {-mine corner 1} to location(-0, -50, -0, world "world")
+    set {-mine corner 2} to location(-100, 0, -100, world "world")
     delete bound with id "mine"
     create bound with id "mine" within {-mine corner 1} and {-mine corner 2}
 
