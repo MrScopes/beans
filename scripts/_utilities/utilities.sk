@@ -153,3 +153,14 @@ function kdrDisplay(kdr: number) :: text:
 
 on load:
     set {-dust sprite} to "<sprite:items:item/gunpowder>"
+
+###
+###
+
+import:
+    org.bukkit.event.entity.EntityCombustEvent
+
+function ignite(entity: entity, duration: timespan):
+    set {_entity}'s burning time to {_duration}
+    set {_event} to new EntityCombustEvent({_entity}, ticks of {_duration})
+    {_event}.callEvent()

@@ -107,7 +107,7 @@ local function onLeftClick(player: player, item: item, level: integer):
         for {_entity} in all living entities in radius ({_range} * 2) around {_player}:
             {_entity} is not {_player} or an armor stand
             if coneHit({_player}, {_entity}, {_range}, {_angle} * 1.25, 10) is true:
-                ignite {_entity} for 2 seconds
+                ignite({_entity}, 2 seconds)
                 damage({_entity}, {_player}, {_damage})
 
         add {_addrange} to {_range}
