@@ -17,11 +17,12 @@ on load:
             if {-vanilla enchantment::%loop-value-1%::money cost::%loop-value-2%} is not set:
                 broadcast "Vanilla enchantment %loop-value-1% level %loop-value-2% is missing a money cost!"
 
-
     refreshEnchantmentGui()
     
     set {_ms took} to (current ns - {_now}) / 1_000_000
     broadcast "Loaded %size of indices of {-ce::*}% enchantments in %{_ms took}% ms."
+
+    delete {-current ce::*}
 
 function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true):
     set {_now} to current ns
