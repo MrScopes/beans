@@ -104,7 +104,7 @@ function updateHealthbar(entity: entity):
 
         add "&6&m " repeated {_filledGold} times to {_flashBar::*}
 
-        set {_remaining} to 50 - size of {_flashBar::*}
+        set {_remaining} to 50 - ({_filledGreen} + {_filledGold})
         set {_remaining} to clamp({_remaining}, 0, 50)
 
         add "&8&m " repeated {_remaining} times to {_flashBar::*}
