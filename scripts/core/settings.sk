@@ -56,6 +56,7 @@ command /settings:
         simpleToggleSetting(player, music disc far, "instant wheel", "Instant Wheel Spin", "instant wheel spin", false)
         multiOptionSetting(player, beacon, "beacon announcements", "Beacon Announcements", "Show other player's beacon rewards", ("All", "Ultra Rare Only", "Ultimate Only", "None"))
         multiOptionSetting(player, ender pearl, "tpa requests", "TPA Requests", "Manage incoming TPA requests", ("All", "Clan Only", "None"))
+        multiOptionSetting(player, oak sign, "chat reactions", "Chat Reactions", "Which chat reaction games to see", ("All", "Small Rewards", "Big Rewards", "None"))
 
         open {-settings gui::%player%} to player
 

@@ -15,31 +15,32 @@ function leet(input: text) :: text:
 on async chat:
 	set {_rank} to {group::%player%} ? "default"
 
-	if {-chat reaction start} is set:
-		if async chat message is "%{-chat reaction required}%":
-			if {-chat reaction reward} is a number:
-				add {-chat reaction reward} to {money::%player%}
-				add {-chat reaction reward} / 500 to {dust::%player%}
-			else:
-				give player {-chat reaction reward}
-			broadcast formatted "%playerDisplay(player, "[prefix][player]")% &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction start})%!"
-			add "%player's uuid%:%difference between now and {-chat reaction start}%" to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
-			set {_sorted::*} to {chat reaction times::%{-chat reaction required}%::%{-chat reaction job}%::*}
+	if {-chat reaction::start} is set:
+		if async chat message is "%{-chat reaction::required}%":
+			if {-chat reaction reward::money} is set:
+				add {-chat reaction reward::money} to {money::%player%}
+			if {-chat reaction reward::dust} is set:
+				add {-chat reaction reward::dust} to {dust::%player%}
+			if {-chat reaction reward::beacon} is set:
+				giveBeacons(player, {-chat reaction reward::beacon})
+			if {-chat reaction reward::wheel} is set:
+				add {-chat reaction reward::wheel} to {wheel spins::%player%}
+				send "&a&l+%{-chat reaction reward::wheel}% WHEEL SPINS!"
+			broadcast formatted "%playerDisplay(player, "[prefix][player]")% &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction::start})%!"
+			add "%player's uuid%:%difference between now and {-chat reaction::start}%" to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
+			set {_sorted::*} to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
 			sort {_sorted::*} in ascending order
 			loop {_sorted::*}:
 				set {_split::*} to loop-value split at ":"
 				set {_player} to offlineplayer({_split::1})
 				set {_time} to {_split::2} parsed as timespan
-				if loop-value is "%player's uuid%:%difference between now and {-chat reaction start}%":
+				if loop-value is "%player's uuid%:%difference between now and {-chat reaction::start}%":
 					broadcast "&c#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
 				else:
 					broadcast "&b#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
 				if loop-iteration is 3:
 					stop loop
-			delete {-chat reaction required}
-			delete {-chat reaction reward}
-			delete {-chat reaction start}
-			delete {-chat reaction job}
+			delete {-chat reaction::*}
 			cancel event
 
 	if player doesn't have permission "beans.mod":
@@ -134,9 +135,9 @@ on tab complete of "/chat":
 #
 
 function force():
-	set {-chat reaction job} to "type"
-	set {-chat reaction start} to now
-	set {-chat reaction required} to "test"
+	set {-chat reaction::job} to "type"
+	set {-chat reaction::start} to now
+	set {-chat reaction::required} to "test"
 	set {-chat reaction reward} to 1
 
 on load:
@@ -323,51 +324,79 @@ function chatReaction():
 	set {_type} to "word" or "sentence"
 	if {_type} is "word":
 		set {_job} to "type" or "unscramble"
-		set {-chat reaction job} to {_job}
+		set {-chat reaction::job} to {_job}
 		set {_difficulty} to "easy" or "hard"
 		if {_difficulty} is "easy":
-			set {-chat reaction required} to random element out of {-chat reactions::words::easy::*}
+			set {-chat reaction::required} to random element out of {-chat reactions::words::easy::*}
 			if {_job} is "type":
-				set {-chat reaction reward} to 25_000
+				set {-chat reaction reward::money} to 25000
+				set {-chat reaction reward::dust} to 50
 			else:
-				set {-chat reaction reward} to 35_000
+				set {-chat reaction reward::money} to 35000
+				set {-chat reaction reward::dust} to 70
 		else:
-			set {-chat reaction required} to random element out of {-chat reactions::words::hard::*}
-			if {_job} is "type":
-				set {-chat reaction reward} to 1 of beaconItem()
-			else:
-				set {-chat reaction reward} to 2 of beaconItem()
+			set {-chat reaction::required} to random element out of {-chat reactions::words::hard::*}
+			chance of 25%:
+				set {-chat reaction reward::wheel} to 1
+			set {-chat reaction reward::beacon} to 1
+			set {-chat reaction reward::dust} to 100
 	else:
 		set {_job} to "type"
-		set {-chat reaction required} to random element out of {-chat reactions::sentences::*}
-		set {-chat reaction reward} to 1 of beaconItem()
+		set {-chat reaction::required} to random element out of {-chat reactions::sentences::*}
+		chance of 25%:
+			set {-chat reaction reward::wheel} to 1
+		set {-chat reaction reward::beacon} to 1
+		set {-chat reaction reward::dust} to 100
 	
-	broadcast "", " &b&lCHAT REACTION!", ""
-	if {_job} is "type":
-		broadcast "&7Type the following:"
-		broadcast "%{-chat reaction required}%"
-	else if {_job} is "unscramble":
-		broadcast "&7Unscramble the following:"
-		broadcast scramble({-chat reaction required})
-	broadcast ""
-	broadcast "&7Reward:"
-	if {-chat reaction reward} is a number:
-		broadcast formatted "&b$%kNumber({-chat reaction reward})%&f, &f%{-dust sprite}%%formatNumber({-chat reaction reward} / 500)%"
-	else:
-		set {_name} to text component of name of {-chat reaction reward}
-		set {_amount} to "%item amount of {-chat reaction reward}%x " if item amount of {-chat reaction reward} > 1 else ""
-		set {_display} to "%{_amount}%%{_name}%"
-		broadcast formatted {_display} ? {-chat reaction reward}
-	broadcast ""
+	loop all players:
+		if {setting::%loop-player%::chat reactions} is "None":
+			continue
+		else if {setting::%loop-player%::chat reactions} is "Small Rewards Only":
+			if {_difficulty} is "hard":
+				continue
+		else if {setting::%loop-player%::chat reactions} is "Big Rewards Only":
+			if {_difficulty} is "easy":
+				continue
+		add loop-player to {_chat reaction players::*}
 
-	set {-chat reaction start} to now
+	send "", " &b&lCHAT REACTION!", "" to {_chat reaction players::*}
+	if {_job} is "type":
+		send "&7Type the following:" to {_chat reaction players::*}
+		send "%{-chat reaction::required}%" to {_chat reaction players::*}
+	else if {_job} is "unscramble":
+		send "&7Unscramble the following:" to {_chat reaction players::*}
+		send scramble({-chat reaction::required}) to {_chat reaction players::*}
+	send "" to {_chat reaction players::*}
+	send "&7Reward:" to {_chat reaction players::*}
+
+	if {-chat reaction reward::beacon} is set:
+		if {-chat reaction reward::beacon} is 1:
+			add "&b&lBEACON" to {_rewards::*}
+		else:
+			add "&b&l%{-chat reaction reward::beacon}% BEACONS" to {_rewards::*}
+
+	if {-chat reaction reward::wheel} is set:
+		if {-chat reaction reward::wheel} is 1:
+			add "&a&lWHEEL SPIN" to {_rewards::*}
+		else:
+			add "&a&l%{-chat reaction reward::wheel}% WHEEL SPINS" to {_rewards::*}
+
+	if {-chat reaction reward::dust} is set:
+		add "&f%{-dust sprite}%%formatNumber({-chat reaction reward::dust})%" to {_rewards::*}
+
+	if {-chat reaction reward::money} is set:
+		add "&b$%kNumber({-chat reaction reward::money})%" to {_rewards::*}
+
+	set {_reward string} to join {_rewards::*} with "&8, "
+			
+	send formatted {_reward string} to {_chat reaction players::*}
+	send "" to {_chat reaction players::*}
+
+	set {-chat reaction::start} to now
 
 	wait 30 seconds
-	if {-chat reaction start} is set:
-		broadcast "The chat reaction has expired. Better luck next time!"
+	if {-chat reaction::start} is set:
+		send "The chat reaction has expired. Better luck next time!" to {_chat reaction players::*}
 		if {_job} is "unscramble":
-			broadcast "The correct answer was: &7%{-chat reaction required}%"
-		delete {-chat reaction required}
-		delete {-chat reaction reward}
-		delete {-chat reaction start}
-		delete {-chat reaction job}
+			send "The correct answer was: &7%{-chat reaction::required}%" to {_chat reaction players::*}
+		delete {-chat reaction::*}
