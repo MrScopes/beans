@@ -34,6 +34,6 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     set {_enchantments::*} to custom enchantments of {_tool}
     set {_indices::*} to indices of {_enchantments::*}
     set {_indices::*} to shuffled {_indices::*}
-    remove "miracle", "reroll", "jackpot", "chaos", "beacon finder" from {_indices::*}
+    remove "miracle", "reroll", "jackpot", "chaos", "beacon finder", "genesis" from {_indices::*}
     loop {_indices::*}:
         run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, {_block type})

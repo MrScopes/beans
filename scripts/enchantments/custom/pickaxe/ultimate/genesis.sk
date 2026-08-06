@@ -1,0 +1,70 @@
+on load:
+    create ultimate pickaxe enchantment named "genesis":
+        set enchantment display to "&f<sprite:items:item/nether_star> <rainbow><bold>Genesis"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to nether star
+
+        level values for "distance":
+            set level 1 to 8
+            set level 2 to 10
+            set level 3 to 12
+            set level 4 to 14
+            set level 5 to 16
+
+        level values for "radius":
+            set level 1 to 4
+            set level 2 to 6
+            set level 3 to 8
+            set level 4 to 10
+            set level 5 to 12
+
+        level values for "cooldown":
+            set level 1 to 3 minutes
+            set level 2 to 2 minutes and 45 seconds
+            set level 3 to 2 minutes and 30 seconds
+            set level 4 to 2 minutes and 15 seconds
+            set level 5 to 2 minutes
+
+        level values for "dust cost":
+            set level 2 to 325
+            set level 3 to 900
+            set level 4 to 7_100
+            set level 5 to 29_000
+
+        level values for "money cost":
+            set level 2 to 400_000
+            set level 3 to 1_000_000
+            set level 4 to 3_200_000
+            set level 5 to 8_500_000
+
+local function getDescription(level: integer) :: string:
+    set {_distance} to "distance" of "genesis" at {_level}
+    set {_radius} to "radius" of "genesis" at {_level}
+
+    return "in each direction&8, &7shoot a beam of light &f%{_distance}%m &7that will break blocks in a &f%{_radius}%m &7radius"
+
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_distance} to "distance" of "genesis" at {_level}
+    set {_radius} to "radius" of "genesis" at {_level}
+    set {_origin} to location of {_block}
+
+    set {_safe distance} to ({_distance} + {_radius}) / 2.5
+
+    loop {_distance} times:
+        set {_step} to loop-number + {_safe distance}
+
+        set {_north} to {_origin} ~ vector(0, 0, {_step} * -1)
+        set {_south} to {_origin} ~ vector(0, 0, {_step})
+        set {_east} to {_origin} ~ vector({_step}, 0, 0)
+        set {_west} to {_origin} ~ vector({_step} * -1, 0, 0)
+
+        draw 20 white flash particle at {_north}
+        draw 20 white flash particle at {_south}
+        draw 20 white flash particle at {_east}
+        draw 20 white flash particle at {_west}
+
+        fastRadiusClear({_player}, {_north}, {_radius})
+        fastRadiusClear({_player}, {_south}, {_radius})
+        fastRadiusClear({_player}, {_east}, {_radius})
+        fastRadiusClear({_player}, {_west}, {_radius})
