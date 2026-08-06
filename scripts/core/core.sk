@@ -79,7 +79,7 @@ command /daily:
             #set {_beacons} to dailyBeaconsPlayer(player) ? 1
            # giveBeacons(player, {_beacons})
             send "&bYou received your daily reward."
-            send "&a+%{_spins}% wheel spins"
+            send "&a&l+%{_spins}% WHEEL SPINS!"
             #send "&b&l+%{_beacons}% BEACONS"
             set {daily::%player%} to now
 
