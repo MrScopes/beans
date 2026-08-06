@@ -48,6 +48,8 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     set {_distance} to "distance" of "genesis" at {_level}
     set {_radius} to "radius" of "genesis" at {_level}
     set {_origin} to location of {_block}
+    
+    playEnchantmentSound("mining", "minecraft:entity.ender_dragon.growl", 0.5, 1, location of {_player}, all players, {_player})
 
     set {_safe distance} to ({_distance} + {_radius}) / 2.5
 
