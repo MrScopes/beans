@@ -69,7 +69,5 @@ function blockReward(player: player, tool: item, block: block, reason: text):
                 if loop-block is a beacon:
                     add 1 to {_beacons}
             broadcast "There are currently %{_beacons}% beacons in the mine."
-            if {_beacons} isn't set:
-                broadcast "The mine is out of beacons! Resetting..."
-                wait 1 tick
+            if {_beacons} isn't greater than 8:
                 execute console command "mine"
