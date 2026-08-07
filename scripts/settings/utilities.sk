@@ -20,3 +20,9 @@ function playEnchantmentSound(type: text, sound: text, volume: number, pitch: nu
                 continue
 
             play sound {_sound} with volume {_volume} and pitch {_pitch} at {_at} for {_player}
+
+function playersWithSetting(setting: text, values: texts) :: players:
+    for {_player} in all players:
+        if {_values::*} contains setting {_setting} for {_player}:
+            add {_player} to {_players::*}
+    return {_players::*}
