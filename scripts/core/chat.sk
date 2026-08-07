@@ -350,17 +350,10 @@ function chatReaction():
 		set {-chat reaction::reward::beacon} to 1
 		set {-chat reaction::reward::dust} to 100
 	
-	loop all players:
-		set {_setting} to setting "chat reactions" for loop-player
-		if {_setting} is "None":
-			continue
-		else if {_setting} is "Small Rewards Only":
-			if {_difficulty} is "hard":
-				continue
-		else if {_setting} is "Big Rewards Only":
-			if {_difficulty} is "easy":
-				continue
-		add loop-player to {_chat reaction players::*}
+	if {_difficulty} is "easy":
+		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Small Rewards"))
+	else if {_difficulty} is "hard":
+		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Big Rewards"))
 
 	send "", " &b&lCHAT REACTION!", "" to {_chat reaction players::*}
 	if {_job} is "type":
