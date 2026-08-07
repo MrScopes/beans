@@ -105,20 +105,13 @@ on inventory click:
 
         else if {_tier} is 1:
             set {_level} to 1
-            set {_chance} to {_level1Chance} / 100
 
         else if {_tier} is 2:
             set {_high} to min(3, {_max})
             set {_level} to random integer between 2 and {_high}
 
-            set {_range} to {_high} - 1
-            set {_chance} to ({_luckyChance} / 100) * (1 / {_range})
-
         else:
             set {_level} to random integer between 3 and {_max}
-
-            set {_range} to {_max} - 2
-            set {_chance} to ({_ultraChance} / 100) * (1 / {_range})
 
         set {_level} to clamp({_level}, 1, {_max})
         set {_item} to createStoredCustomBook({_enchantment}, {_level})
@@ -129,25 +122,18 @@ on inventory click:
     
         if {_rolledUltimate} is true:  
             set {_odds} to {_chance} * 100000
-            broadcast formatted "<rainbow><bold>ULTIMATE! &f%player% rolled a %name of {_item}% &fbook!"
-            play sound "entity.ender_dragon.death" at volume 0.2 to all players
+            set {_recipients::*} to playersWithSetting("beacon announcements", ("All", "Ultimate Only"))
+            send formatted "<rainbow><bold>ULTIMATE! &f%player% rolled a %name of {_item}% &fbook!" to {_recipients::*}
+            play sound "entity.ender_dragon.death" at volume 0.2 to {_recipients::*}
 
         else if {_level} is {_max}:
             {_level} > 3
-            set {_insanelyChance} to 0
-
-            loop {_applicableEnchantments::*}:
-                set {_loopMax} to {-ce::%loop-value%::max level}
-
-                if {_loopMax} is {_level}:
-                    add (1 / size of {_applicableEnchantments::*}) * {_chance} to {_insanelyChance}
-
-            set {_odds} to round(1 / {_insanelyChance})
-
-            broadcast formatted "<aqua><bold>INSANELY LUCKY! &f%player% rolled a %name of {_item}% &fbook! &8(&f1 in %{_odds}%&8)"
+            set {_recipients::*} to playersWithSetting("beacon announcements", ("All", "Ultra Rare Only"))
+            send formatted "<aqua><bold>INSANELY LUCKY! &f%player% rolled a %name of {_item}% &fbook!" to {_recipients::*}
 
         else if {_level} >= 3:
-            broadcast formatted "%player% rolled a %name of {_item}% &fenchantment book!"
+            set {_recipients::*} to playersWithSetting("beacon announcements", ("All"))
+            send formatted "%player% rolled a %name of {_item}% &fenchantment book!" to {_recipients::*}
 
 command /beacons [<text>] [<text>] [<integer>]:
     trigger:
