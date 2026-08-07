@@ -48,21 +48,40 @@ expression %string% of %string% at %integer%:
         set {_value} to {-ce::%{_enchantment}%::%{_key}%::%{_level}%}
 
         if {_value} isn't set:
-            set {_max} to enchantment max level of {_enchantment}
+            set {_max} to {-ce::%{_enchantment}%::max level}
 
             if {_max} is set:
                 set {_maxValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max}%}
                 set {_previousValue} to {-ce::%{_enchantment}%::%{_key}%::%{_max} - 1%}
 
-                set {_value} to {_maxValue}
+                if {_maxValue} is an instance of SkriptPotionEffect:
+                    set {_maxValue} to ({_maxValue}.clone())
+                    set {_maxDur} to duration of {_maxValue}
+                    set {_prevDur} to duration of {_previousValue}
+                    set {_maxAmp} to amplifier of {_maxValue}
+                    set {_prevAmp} to amplifier of {_previousValue}
 
-                if {_level} > {_max}:
-                    if {_maxValue} and {_previousValue} are set:
-                        if {_maxValue} > {_previousValue}:
-                            set {_difference} to {_maxValue} - {_previousValue}
-                            set {_value} to {_maxValue} + ({_level} - {_max}) * {_difference}
-                        else:
-                            set {_ratio} to {_previousValue} / {_maxValue}
-                            set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
+                    set {_durDiff} to {_maxDur} - {_prevDur}
+                    set {_newDur} to {_maxDur} + ({_level} - {_max}) * {_durDiff}
+
+                    set {_ampDiff} to {_maxAmp} - {_prevAmp}
+                    set {_newAmp} to {_maxAmp} + ({_level} - {_max}) * {_ampDiff}
+
+                    # Extract the potion type and build a NEW object from scratch
+                    set {_type} to type of {_maxValue}
+                    set {_value} to potion effect of {_type} {_newAmp} for {_newDur}
+
+                else:
+                    if {_level} > {_max}:
+                        if {_maxValue} and {_previousValue} are set:
+                            if {_maxValue} > {_previousValue}:
+                                set {_difference} to {_maxValue} - {_previousValue}
+                                set {_value} to {_maxValue} + ({_level} - {_max}) * {_difference}
+                            else:
+                                set {_ratio} to {_previousValue} / {_maxValue}
+                                set {_value} to {_maxValue} / ({_ratio} ^ ({_level} - {_max}))
 
         return {_value}
+
+import:
+    org.skriptlang.skript.bukkit.potion.util.SkriptPotionEffect
