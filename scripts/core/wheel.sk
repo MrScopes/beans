@@ -208,41 +208,46 @@ command /wheel [<text>]:
             send "&cYou don't have any wheel spins available."
         else:
             remove 1 from {wheel spins::%player%}
-            setupWheelRewards()
-
-            if arg-1 is "reset":
+            if setting "instant wheel" for player is "enabled":
+                set {-wheel reward::%player%} to wheelReward()
+                giveWheelReward(player)
                 forceCleanupWheel(player)
-                send "&aWheel state reset."
-                stop
+            else:
+                setupWheelRewards()
 
-            if {-wheel spinning::%player%} is true:
-                if {-wheel reward::%player%} is set:
-                    send "&cYour wheel is already spinning."
-                    stop
-                else:
+                if arg-1 is "reset":
                     forceCleanupWheel(player)
+                    send "&aWheel state reset."
+                    stop
 
-            set {-wheel gui::%player%} to chest inventory with 3 rows named "            Spin The Wheel"
+                if {-wheel spinning::%player%} is true:
+                    if {-wheel reward::%player%} is set:
+                        send "&cYour wheel is already spinning."
+                        stop
+                    else:
+                        forceCleanupWheel(player)
 
-            set {_filler} to black stained glass pane
-            apply tooltip display component to {_filler}:
-                hide_tooltip: true
+                set {-wheel gui::%player%} to chest inventory with 3 rows named "            Spin The Wheel"
 
-            set slot (numbers between 0 and 26) of {-wheel gui::%player%} to {_filler}
+                set {_filler} to black stained glass pane
+                apply tooltip display component to {_filler}:
+                    hide_tooltip: true
 
-            set {_win} to wheelOddsItem()
+                set slot (numbers between 0 and 26) of {-wheel gui::%player%} to {_filler}
 
-            set slot 4 of {-wheel gui::%player%} to {_win}
-            set slot 22 of {-wheel gui::%player%} to {_win}
+                set {_win} to wheelOddsItem()
 
-            set slot (numbers between 10 and 16) of {-wheel gui::%player%} to air
+                set slot 4 of {-wheel gui::%player%} to {_win}
+                set slot 22 of {-wheel gui::%player%} to {_win}
 
-            open {-wheel gui::%player%} to player
+                set slot (numbers between 10 and 16) of {-wheel gui::%player%} to air
 
-            wait 5 ticks
+                open {-wheel gui::%player%} to player
 
-            if {-wheel gui::%player%} is set:
-                startWheelSpin(player)
+                wait 5 ticks
+
+                if {-wheel gui::%player%} is set:
+                    startWheelSpin(player)
 
 on inventory click:
     if player's current inventory is {-wheel gui::%player%}:
@@ -295,6 +300,7 @@ on right click:
         set {_random enchantment} to random element out of indexes of {_random enchantment::*}
         set {_item} to createStoredCustomBook({_random enchantment}, {_random enchantment::%{_random enchantment}%}, "Wheel Reward")
 
+        wait 1 tick
         give player 1 of {_item}
         broadcast formatted "%player% rolled %name of {_item}%&f!"
 
@@ -321,3 +327,4 @@ on any inventory click:
 on join:
     if {choosing custom enchantment::%player%} is set:
         player command "/enchantments"
+        
