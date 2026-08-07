@@ -91,7 +91,7 @@ on async chat:
 
 	loop all players:
 		if "%{_m::2}%" contains loop-player's name:
-			if {setting::%loop-player%::chat pinging} is set:
+			if setting "chat pinging" for loop-player is "disabled":
 				send "&c%loop-player% has pinging disabled." to player
 			else:
 				set {_component} to text component of "&b@%playerDisplay(loop-player, "[prefix][player]")%"
@@ -349,12 +349,13 @@ function chatReaction():
 		set {-chat reaction reward::dust} to 100
 	
 	loop all players:
-		if {setting::%loop-player%::chat reactions} is "None":
+		set {_setting} to setting "chat reactions" for loop-player
+		if {_setting} is "None":
 			continue
-		else if {setting::%loop-player%::chat reactions} is "Small Rewards Only":
+		else if {_setting} is "Small Rewards Only":
 			if {_difficulty} is "hard":
 				continue
-		else if {setting::%loop-player%::chat reactions} is "Big Rewards Only":
+		else if {_setting} is "Big Rewards Only":
 			if {_difficulty} is "easy":
 				continue
 		add loop-player to {_chat reaction players::*}

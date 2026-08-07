@@ -1,0 +1,42 @@
+on load:
+    create multi choice setting named "mining enchantment sounds":
+        set setting item to note block
+        set setting display to "Mining Enchantment Sounds"
+        set setting description to "play mining enchantment sounds"
+        set setting options to "All", "Yours Only", "None"
+
+    create toggle setting named "combat enchantment sounds":
+        set setting item to diamond sword
+        set setting display to "Combat Enchantment Sounds"
+        set setting description to "play combat enchantment sounds"
+        set setting options to "enabled", "disabled"
+
+    create toggle setting named "chat pinging":
+        set setting item to compass
+        set setting display to "Chat Pinging"
+        set setting description to "players pinging you in chat"
+        set setting options to "enabled", "disabled"
+
+    create toggle setting named "instant wheel":
+        set setting item to music disc far
+        set setting display to "Instant Wheel Spin"
+        set setting description to "spin the wheel instantly"
+        set setting options to "enabled", "disabled"
+
+    create multi choice setting named "beacon announcements":
+        set setting item to beacon
+        set setting display to "Beacon Announcements"
+        set setting description to "show other player's beacon rewards"
+        set setting options to "All", "Ultra Rare Only", "Ultimate Only", "None"
+
+    create multi choice setting named "tpa requests":
+        set setting item to ender pearl (item)
+        set setting display to "TPA Requests"
+        set setting description to "manage incoming TPA requests"
+        set setting options to "All", "Clan Only", "None"
+
+    create multi choice setting named "chat reactions":
+        set setting item to oak sign
+        set setting display to "Chat Reactions"
+        set setting description to "which chat reaction games to see"
+        set setting options to "All", "Small Rewards", "Big Rewards", "None"

@@ -1,62 +1,62 @@
-command /tpa <player>:
+command /tpa <target: player>:
     trigger:
-        if arg 1 is player:
+        if {_target} is player:
             send "&cYou cannot send a tpa request to yourself."
             stop
 
-        if {setting::%arg 1%::tpa requests} is set:
-            if {setting::%arg 1%::tpa requests} is "None":
+        set {_setting} to setting "tpa requests" for {_target}
+        if {_setting} isn't "All":
+            if {_setting} is "None":
                 send "&cThat player has tpa requests disabled!"
                 stop
-            else if {setting::%arg 1%::tpa requests} is "Clan Only":
-                if {clan::%player%} isn't {clan::%arg 1%}:
+            else if {_setting} is "Clan Only":
+                if {clan::%player%} isn't {clan::%{_target}%}:
                     send "&cThat player only accepts tpa requests from clan members!"
                     stop
 
-        if {-tpa requests::%arg 1%::*} contains player:
-            send "&cYou already have a teleport request to %arg 1%."
+        if {-tpa requests::%{_target}%::*} contains player:
+            send "&cYou already have a teleport request to %{_target}%."
             stop
 
-        set {-tpa requests::%arg 1%::%player%} to "tpa"
-        set {-latest tpa request::%arg 1%} to player
+        set {-tpa requests::%{_target}%::%player%} to "tpa"
+        set {-latest tpa request::%{_target}%} to player
 
-        send "&aTpa request sent to %arg 1%."
+        send "&aTpa request sent to %{_target}%."
         send "&eYou can cancel this request with /tpacancel."
-        send "&e%player% has requested to teleport to you." to arg 1
-        send formatted "<click:run_command:'/tpaccept %player%'>&a&l[ACCEPT] <click:run_command:'/tpdeny %player%'>&c&l[DENY]" to arg 1
+        send "&e%player% has requested to teleport to you." to {_target}
+        send formatted "<click:run_command:'/tpaccept %player%'>&a&l[ACCEPT] <click:run_command:'/tpdeny %player%'>&c&l[DENY]" to {_target}
 
-
-command /tpahere <player>:
+command /tpahere <target: player>:
     trigger:
-        if arg 1 is player:
+        if {_target} is player:
             send "&cYou cannot send a tpahere request to yourself."
             stop
 
-        if {setting::%arg 1%::tpa requests} is set:
-            if {setting::%arg 1%::tpa requests} is "None":
+        set {_setting} to setting "tpa requests" for {_target}
+        if {_setting} isn't "All":
+            if {_setting} is "None":
                 send "&cThat player has tpa requests disabled!"
                 stop
-            else if {setting::%arg 1%::tpa requests} is "Clan Only":
-                if {clan::%player%} isn't {clan::%arg 1%}:
+            else if {_setting} is "Clan Only":
+                if {clan::%player%} isn't {clan::%{_target}%}:
                     send "&cThat player only accepts tpa requests from clan members!"
                     stop
 
-        if {-tpa requests::%arg 1%::*} contains player:
-            send "&cYou already have a teleport request to %arg 1%."
+        if {-tpa requests::%{_target}%::*} contains player:
+            send "&cYou already have a teleport request to %{_target}%."
             stop
 
-        set {-tpa requests::%arg 1%::%player%} to "tpahere"
-        set {-latest tpa request::%arg 1%} to player
+        set {-tpa requests::%{_target}%::%player%} to "tpahere"
+        set {-latest tpa request::%{_target}%} to player
 
-        send "&aTpahere request sent to %arg 1%."
+        send "&aTpahere request sent to %{_target}%."
         send "&eYou can cancel this request with /tpacancel."
-        send "&e%player% has requested that you teleport to them." to arg 1
-        send formatted "<click:run_command:'/tpaccept %player%'>&a&l[ACCEPT] <click:run_command:'/tpdeny %player%'>&c&l[DENY]" to arg 1
+        send "&e%player% has requested that you teleport to them." to {_target}
+        send formatted "<click:run_command:'/tpaccept %player%'>&a&l[ACCEPT] <click:run_command:'/tpdeny %player%'>&c&l[DENY]" to {_target}
 
-
-command /tpaccept [<player>]:
+command /tpaccept [<target: player>]:
     trigger:
-        set {_target} to arg 1 ? {-latest tpa request::%player%}
+        set {_target} to {_target} ? {-latest tpa request::%player%}
 
         if {_target} is not set:
             send "&cYou don't have a teleport request."
@@ -81,10 +81,9 @@ command /tpaccept [<player>]:
         else if {_type} is "tpahere":
             timedTP(player, {_target})
 
-
-command /tpdeny [<player>]:
+command /tpdeny [<target: player>]:
     trigger:
-        set {_target} to arg 1 ? {-latest tpa request::%player%}
+        set {_target} to {_target} ? {-latest tpa request::%player%}
 
         if {_target} is not set:
             send "&cYou don't have a teleport request."
@@ -99,7 +98,6 @@ command /tpdeny [<player>]:
 
         send "&cTeleport request from %{_target}% denied."
         send "&c%player% has denied your teleport request." to {_target}
-
 
 on tab complete of "/tpaccept" or "/tpdeny":
     set tab completions for position 1 to {-tpa requests::%player%::*}

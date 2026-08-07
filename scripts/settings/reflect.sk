@@ -1,0 +1,33 @@
+condition create [multi choice:multi choice|toggle:toggle] setting named %string%:
+    parse:
+        set {_type} to first element out of parse tags
+        continue
+    check:
+        delete {-setting::%expr-1%::*}
+        set {-current setting::%event%} to expr-1
+        set {-setting::%expr-1%::type} to {_type}
+        return true
+
+expression setting (item:item|display:display|description:description|default:default) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_current setting} to expr-1 ? {-current setting::%event%}
+        return {-setting::%{_current setting}%::%{_key}%}
+    set:
+        set {_current setting} to expr-1 ? {-current setting::%event%}
+        set {-setting::%{_current setting}%::%{_key}%} to change value
+
+expression setting options [of %-string%]:
+    get:
+        set {_current setting} to expr-1 ? {-current setting::%event%}
+        return {-setting::%{_current setting}%::options::*}
+    set:
+        set {_current setting} to expr-1 ? {-current setting::%event%}
+        set {-setting::%{_current setting}%::options::*} to change values
+        set {-setting::%{_current setting}%::default} to 1st element out of change values
+
+expression setting %string% for %offlineplayer%:
+    get:
+        return {setting::%expr-2%::%expr-1%} ? {-setting::%expr-1%::default}

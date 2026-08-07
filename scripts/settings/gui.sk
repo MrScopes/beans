@@ -1,0 +1,89 @@
+command /settings:
+    trigger:
+        set {-settings gui::%player%} to chest inventory with 1 rows named "Settings"
+
+        for {_setting} in indexes of {-setting::*}:
+            set {_type} to {-setting::%{_setting}%::type}
+            set {_item} to setting item of {_setting}
+            set {_display} to setting display of {_setting}
+            set {_description} to setting description of {_setting}
+
+            if {_type} is "toggle":
+                simpleToggleSetting(player, {_item}, {_setting}, {_display}, {_description})
+            else if {_type} is "multi choice":
+                set {_options::*} to setting options of {_setting}
+                multiOptionSetting(player, {_item}, {_setting}, {_display}, {_description}, {_options::*})
+
+        open {-settings gui::%player%} to player
+
+on inventory click:
+    player's current inventory is {-settings gui::%player%}
+    cancel event
+    event-inventory is {-settings gui::%player%}
+    
+    set {_setting} to {-settings gui::%player%::%index of event-slot%}
+    {_setting} is set
+    
+    set {_type} to {-setting::%{_setting}%::type}
+    play sound "ui.button.click" with volume 1 and pitch 1 to player
+
+    if {_type} is "toggle":
+        set {_current} to setting {_setting} for player
+        if {_current} is "enabled":
+            set {setting::%player%::%{_setting}%} to "disabled"
+        else:
+            set {setting::%player%::%{_setting}%} to "enabled"
+
+    else if {_type} is "multi choice":
+        set {_options::*} to setting options of {_setting}
+        set {_current} to setting {_setting} for player
+
+        loop {_options::*}:
+            if loop-value is {_current}:
+                set {_n} to loop-iteration
+
+        set {_size} to size of {_options::*}
+        if {_n} is {_size}:
+            set {_nextIndex} to 1
+        else:
+            set {_nextIndex} to {_n} + 1
+
+        set {_next} to {_nextIndex}th element out of {_options::*}
+        set {setting::%player%::%{_setting}%} to {_next}
+
+    player command "/settings"
+
+function simpleToggleSetting(player: player, item: item type, setting: text, title: text, description: text):
+    set {_index} to index of first empty slot of {-settings gui::%{_player}%}
+    set {_item} to {_item} named "&f%{_title}%" with all item flags
+
+    set {_current} to setting {_setting} for {_player}
+
+    if {_current} is "enabled":
+        force {_item} to glint
+        set lore of {_item} to "&7Click to &cdisable &7%{_description}%."
+    else:
+        force {_item} to stop glinting
+        set lore of {_item} to "&7Click to &aenable &7%{_description}%."
+
+    set {-settings gui::%{_player}%::%{_index}%} to {_setting}
+    set slot {_index} of {-settings gui::%{_player}%} to {_item}
+
+function multiOptionSetting(player: player, item: item type, setting: text, title: text, description: text, options: texts):
+    set {_index} to index of first empty slot of {-settings gui::%{_player}%}
+
+    set {_item} to {_item} named "&f%{_title}%" with lore "&7%{_description}%" with all item flags
+    force {_item} to glint
+
+    set {_selected} to setting {_setting} for {_player}
+
+    add "" to lore of {_item}
+    for {_option} in {_options::*}:
+        if {_option} is {_selected}:
+            add "&8- &a%{_option}%" to lore of {_item}
+        else:
+            add "&8- &7%{_option}%" to lore of {_item}
+    add "" to lore of {_item}
+
+    set {-settings gui::%{_player}%::%{_index}%} to {_setting}
+    set slot {_index} of {-settings gui::%{_player}%} to {_item}
