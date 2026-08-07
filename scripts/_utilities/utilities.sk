@@ -12,14 +12,14 @@ function romanNumeral(arabic:number) :: string:
 
 import:
     java.lang.System 
-    java.lang.Float
 
-expression current (:m|:n)s:
+expression current ns:
     get:
-        if parse tags is "m":
-            return System.currentTimeMillis()
-        else if parse tags is "n":
-            return System.nanoTime()
+        return System.nanoTime()
+
+expression elapsed ms since %number%:
+    get:
+        return (System.nanoTime() - expr-1) / 1_000_000
 
 function capitalizeFirst(input: string) :: string:
     set {_split::*} to split {_input} at ""
