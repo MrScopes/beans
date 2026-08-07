@@ -43,7 +43,7 @@ function smallNumber(number: number) :: text:
     return {_text}
 
 function effectDisplay(effect: object, customLevel: integer = 1, customDuration: timespan = {_}, showAmplifier: boolean = true, showDuration: boolean = true) :: text:
-    if {_effect} is an instance of (class "org.skriptlang.skript.bukkit.potion.util.SkriptPotionEffect"):
+    if {_effect} is an instance of SkriptPotionEffect:
         set {_display} to "%{-effect::%type of {_effect}%::display}%"
 
         if {_showAmplifier} is true:
@@ -61,3 +61,6 @@ function effectDisplay(effect: object, customLevel: integer = 1, customDuration:
             add " &f%timeFormat({_customDuration})%" to {_display}
 
     return {_display}
+
+import:
+    org.skriptlang.skript.bukkit.potion.util.SkriptPotionEffect
