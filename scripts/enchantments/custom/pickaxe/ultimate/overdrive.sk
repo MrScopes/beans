@@ -1,0 +1,53 @@
+using reflection
+
+on load:
+    create ultimate pickaxe enchantment named "overdrive":
+        set enchantment display to "&f<sprite:items:item/recovery_compass_00> <rainbow><bold>Overdrive"
+        set enchantment max level to 3
+        set enchantment priority to 0
+        set enchantment item to recovery compass
+
+        level values for "chance":
+            set level 1 to 0.5
+            set level 2 to 0.75
+            set level 3 to 1
+
+        level values for "enchantments":
+            set level 1 to 1
+            set level 2 to 2
+            set level 3 to 3
+
+        level values for "level boost":
+            set level 1 to 1
+            set level 2 to 2
+            set level 3 to 3
+
+        level values for "dust cost":
+            set level 2 to 7_000
+            set level 3 to 20_000
+
+        level values for "money cost":
+            set level 2 to 2_000_000
+            set level 3 to 9_000_000
+
+local function getDescription(level: integer) :: string:
+    set {_enchantments} to "enchantments" of "overdrive" at {_level}
+    set {_level boost} to "level boost" of "overdrive" at {_level}
+    return "spin &f%{_enchantments}% &7random enchantments on your tool&8, &7but at &f%{_level boost}% &7levels higher"
+
+local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+    set {_enchantments} to "enchantments" of "overdrive" at {_level}
+    set {_level boost} to "level boost" of "overdrive" at {_level}
+
+    playEnchantmentSound("mining", "minecraft:entity.wither.spawn", 0.5, 1, location of {_player}, all players, {_player})
+
+    set {_enchantments::*} to custom enchantments of {_tool}
+    set {_indices::*} to indices of {_enchantments::*}
+    remove "overdrive", "reroll", "lucky", "jackpot" from {_indices::*}
+    loop {_enchantments} times:
+        set {_enchantment} to random element out of {_indices::*} where [{-ce::%input%::onBreak} is set]
+        if {_enchantment} is set:
+            set {_level} to {_enchantments::%{_enchantment}%} + {_level boost}
+            if enchantCanRun({_player}, {_enchantment}, {_level}) is true:
+                startEnchantCooldown({_player}, {_enchantment}, {_level})
+                run {-ce::%{_enchantment}%::onBreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
