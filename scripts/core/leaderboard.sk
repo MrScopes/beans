@@ -5,6 +5,7 @@ on load:
 
     set {_kNumber} to function named "kNumber"
     set {_formatNumber} to function named "formatNum"
+    set {_formatFloor} to function named "formatFloor"
     set {_timeFormat} to function named "timeFormat"
 
     set {-top command::money} to "money"
@@ -20,7 +21,7 @@ on load:
 
     set {-top command::blocks} to "blocks"
     set {-top command::blocks::display} to "&bvalue blocks"
-    set {-top command::blocks::display function} to {_formatNumber}
+    set {-top command::blocks::display function} to {_kNumber}
     set {-top command::blocks::title} to "Block Top"
     set {-top command::blocks::leaderboard} to location(79.5, 52, 95.5)
 
@@ -28,6 +29,7 @@ on load:
     set {-top command::trophies::display} to "&6🏆value"
     set {-top command::trophies::display function} to {_formatNumber}
     set {-top command::trophies::title} to "Top Trophies"
+    set {-top command::trophies::leaderboard} to location(79.5, 52, 85.5)
 
     set {-top command::level} to "level"
     set {-top command::level::display} to "&fvalue"
@@ -41,7 +43,7 @@ on load:
     
     set {-top command::dust} to "dust"
     set {-top command::dust::display} to "%{-dust sprite}%&fvalue"
-    set {-top command::dust::display function} to {_formatNumber}
+    set {-top command::dust::display function} to {_formatFloor}
     set {-top command::dust::title} to "Top Dust"
 
     set {-top command::kills} to "kills"
@@ -171,3 +173,6 @@ function leaderboardText():
 
 local function formatNum(number: number) :: text:
     return formatNumber({_number})
+
+local function formatFloor(number: number) :: text:
+    return formatNumber(floor({_number}))
