@@ -67,7 +67,6 @@ expression %string% of %string% at %integer%:
                     set {_ampDiff} to {_maxAmp} - {_prevAmp}
                     set {_newAmp} to {_maxAmp} + ({_level} - {_max}) * {_ampDiff}
 
-                    # Extract the potion type and build a NEW object from scratch
                     set {_type} to type of {_maxValue}
                     set {_value} to potion effect of {_type} {_newAmp} for {_newDur}
 
