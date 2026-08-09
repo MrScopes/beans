@@ -10,10 +10,20 @@ on load:
             set level 2 to 0.02
             set level 3 to 0.04
 
+        level values for "money":
+            set level 1 to 100_000
+            set level 2 to 300_000
+            set level 3 to 600_000
+
         level values for "dust":
             set level 1 to 250
-            set level 2 to 250
-            set level 3 to 250
+            set level 2 to 300
+            set level 3 to 350
+
+        level values for "scale per level":
+            set level 1 to 0.01
+            set level 2 to 0.015
+            set level 3 to 0.02
 
         level values for "dust cost":
             set level 2 to 1_400
@@ -24,27 +34,23 @@ on load:
             set level 3 to 3_000_000
 
 local function getDescription(level: integer) :: string:
-    return "gain a large amount of money and xp"
+    set {_dust} to "dust" of "jackpot" at {_level}
+    set {_money} to "money" of "jackpot" at {_level}
+    set {_scale} to "scale per level" of "jackpot" at {_level}
+    return "gain &f$%kNumber({_money})% &7and &f%{-dust sprite}%%{_dust}%&8, &7scales by &f%{_scale} * 100%%% &7per player level"
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     set {_dust} to "dust" of "jackpot" at {_level}
-    set {_money} to {-jackpot money}
+    set {_money} to "money" of "jackpot" at {_level}
+    set {_scale} to "scale per level" of "jackpot" at {_level}
+
+    set {_dust} to {_dust} * (1 + {_scale} * {level::%{_player}%})
+    set {_money} to {_money} * (1 + {_scale} * {level::%{_player}%})
 
     add {_dust} to {dust::%{_player}%}
     add {_money} to {money::%{_player}%}
 
     playEnchantmentSound("mining", "minecraft:ui.toast.challenge_complete", 1, 1, location of {_player}, all players, {_player})
     send "&6&lJACKPOT!" to {_player}
-    send "&a+%formatNumber({_money})% money" to {_player}
+    send "&a+$%formatNumber({_money})%" to {_player}
     send formatted "&f+%{-dust sprite}%%formatNumber({_dust})%" to {_player}
-
-on load:
-    getJackpotAmount()
-
-async every 10 minutes:
-    getJackpotAmount()
-
-function getJackpotAmount():
-    set {-jackpot money} to 50_000
-    #async run 0 seconds later:
-     #   set {-jackpot money} to 50_000 + (mean({money::*}) / 10) 
