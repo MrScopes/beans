@@ -56,12 +56,7 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     loop {_indices::*}:
         if loop-iteration > {_enchantments}:
             stop
-        set {_chance} to {-ce::%loop-value%::chance::%{_enchantments::%loop-value%}%}
         if {-ce::%loop-value%::onBreak} is set:
-            if {_chance} is set:
-                # if chance doesn't succeed, skip the enchantment
-                set {_chance} to {_chance} * (1 + ({-mining luck::%{_player}%} ? 0) + ({_luck boost} ? 0))
-                chance of (100 - {_chance})%:
-                    continue
-
-            run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, {_block type})
+            if enchantCanRun({_player}, loop-value, 1, {_luck boost}) is true:
+                startEnchantCooldown({_player}, loop-value, 1)
+                run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, type of {_block})
