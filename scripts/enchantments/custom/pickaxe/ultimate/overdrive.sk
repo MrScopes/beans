@@ -42,12 +42,19 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     playEnchantmentSound("mining", "minecraft:entity.wither.spawn", 0.5, 1, location of {_player}, all players, {_player})
 
     set {_enchantments::*} to custom enchantments of {_tool}
-    set {_indices::*} to indices of {_enchantments::*}
-    remove "overdrive", "reroll", "lucky", "jackpot" from {_indices::*}
+    set {_viable::*} to viableEnchantments(indexes of {_enchantments::*})
     loop {_enchantments} times:
-        set {_enchantment} to random element out of {_indices::*} where [{-ce::%input%::onBreak} is set]
+        set {_enchantment} to random element out of {_viable::*}
         if {_enchantment} is set:
             set {_level} to {_enchantments::%{_enchantment}%} + {_level boost}
             if enchantCanRun({_player}, {_enchantment}, {_level}) is true:
                 startEnchantCooldown({_player}, {_enchantment}, {_level})
                 run {-ce::%{_enchantment}%::onBreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
+
+local function viableEnchantments(enchantments: strings) :: strings:
+    remove "overdrive", "reroll", "lucky", "jackpot" from {_enchantments::*}
+    for {_enchantment} in {_enchantments::*}:
+        {-ce::%{_enchantment}%::onBreak} is set
+        {-ce::%{_enchantment}%::max level} > 1
+        add {_enchantment} to {_viable::*}
+    return {_viable::*}
