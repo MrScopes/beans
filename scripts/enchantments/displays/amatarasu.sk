@@ -1,0 +1,142 @@
+function amatarasuDisplays(target: entity) :: entities:
+    # -------------------------
+    # COAL CORE
+    # -------------------------
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to coal block
+        set billboard of display to center
+        set scale of display to vector(0.25, 0.25, 0.15)
+        set display transformation translation of display to vector(0, -0.85, -0.25)
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to coal block
+        set billboard of display to center
+        set scale of display to vector(0.25, 0.3, 0.2)
+        set display transformation translation of display to vector(-0.4, -0.65, -0.15)
+        rotate display around local z-axis by -15
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to coal block
+        set billboard of display to center
+        set scale of display to vector(0.25, 0.3, 0.2)
+        set display transformation translation of display to vector(0.4, -0.7, -0.15)
+        rotate display around local z-axis by 15
+
+    # -------------------------
+    # LEFT FLAMES
+    # -------------------------
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.11, 0.42, 0.06)
+        set display transformation translation of display to vector(-0.65, -0.55, -0.3)
+        rotate display around local z-axis by -35
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.09, 0.575, 0.05)
+        set display transformation translation of display to vector(-0.85, -0.2, -0.15)
+        rotate display around local z-axis by -50
+
+    # -------------------------
+    # RIGHT FLAMES
+    # -------------------------
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.11, 0.475, 0.06)
+        set display transformation translation of display to vector(0.65, -0.55, -0.3)
+        rotate display around local z-axis by 35
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.09, 0.575, 0.05)
+        set display transformation translation of display to vector(0.85, -0.2, -0.15)
+        rotate display around local z-axis by 50
+
+    # -------------------------
+    # LOWER FLAMES
+    # -------------------------
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.1, 0.35, 0.05)
+        set display transformation translation of display to vector(-0.35, -1.35, -0.3)
+        rotate display around local z-axis by -20
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.1, 0.4, 0.05)
+        set display transformation translation of display to vector(0.35, -1.35, -0.3)
+        rotate display around local z-axis by 20
+
+    # -------------------------
+    # BACK FLAMES
+    # -------------------------
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.09, 0.575, 0.05)
+        set display transformation translation of display to vector(-0.4, -0.45, 0.45)
+        rotate display around local z-axis by -25
+
+    summon item display at {_target}:
+        add display to {_displays::*}
+        hide display from {_target}
+        make display not persistent
+        make display ride {_target}
+        set item of display to black stained glass
+        set billboard of display to center
+        set scale of display to vector(0.09, 0.575, 0.05)
+        set display transformation translation of display to vector(0.4, -0.45, 0.45)
+        rotate display around local z-axis by 25
+
+    return {_displays::*}

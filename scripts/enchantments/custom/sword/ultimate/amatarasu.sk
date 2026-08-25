@@ -1,0 +1,108 @@
+on load:
+    create ultimate sword enchantment named "amatarasu":
+        set enchantment display to "&f<sprite:particles:sculk_soul_7> <rainbow><bold>Amatarasu"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to netherite nautilus armor
+
+        level values for "dps":
+            set level 1 to 0.5
+            set level 2 to 0.55
+            set level 3 to 0.6
+            set level 4 to 0.65
+            set level 5 to 0.7
+
+        level values for "blindness":
+            set level 1 to potion effect of blindness 1 for 3 seconds
+            set level 2 to potion effect of blindness 1 for 3 seconds
+            set level 3 to potion effect of blindness 1 for 3 seconds
+            set level 4 to potion effect of blindness 1 for 3 seconds
+            set level 5 to potion effect of blindness 1 for 3 seconds
+
+        level values for "blindness chance":
+            set level 1 to 33%
+            set level 2 to 30%
+            set level 3 to 25%
+            set level 4 to 20%
+            set level 5 to 10%
+
+        level values for "dust cost":
+            set level 1 to 275
+            set level 2 to 900
+            set level 3 to 1_650
+            set level 4 to 12_000
+            set level 5 to 42_000
+
+        level values for "money cost":
+            set level 1 to 350_000
+            set level 2 to 1_000_000
+            set level 3 to 2_000_000
+            set level 4 to 5_600_000
+            set level 5 to 12_800_000
+
+        level values for "cooldown":
+            set level 1 to 30 seconds
+            set level 2 to 27 seconds
+            set level 3 to 24 seconds
+            set level 4 to 21 seconds
+            set level 5 to 18 seconds
+
+local function getDescription(level: integer) :: string:
+    set {_dps} to "dps" of "amatarasu" at {_level}
+    set {_blindness chance} to "blindness chance" of "amatarasu" at {_level}
+    set {_blindness} to "blindness" of "amatarasu" at {_level}
+    return "set black flames to your target for 7s &8(&f%{_dps}%&4<sprite:gui:hud/heart/full>&8/&7s &8, &7disable natural healing&8, &7Recoil&8: &f%{_blindness chance} * 100%%% &7for &f%effectDisplay({_blindness})%&8)"
+
+local function onLeftClick(player: player, item: item, level: integer):
+    set {_target} to {_player}'s target entity
+    if any:
+        {_target} isn't set
+        {_target} is dead
+        {_target} isn't a living entity
+        {_target} is invisible
+    then:
+        resetEnchantCooldown({_player}, "amatarasu")
+    else:
+        set {_chance} to "blindness chance" of "amatarasu" at {_level}
+        chance of {_chance}:
+            set {_blindness} to "blindness" of "amatarasu" at {_level}
+            add {_blindness} to {_player}'s potion effects
+
+        set {_dps} to "dps" of "amatarasu" at {_level}
+        set {_per second} to 5
+        set {_ticks} to {_per second} * 7
+        set {_damage per tick} to {_dps} / {_per second}
+        set {-amatarasu ends::%{_target}%} to 7 seconds from now
+
+        set {_displays::*} to amatarasuDisplays({_target})
+
+        loop {_ticks} times:
+            if any:
+                {_target} is dead
+                {-amatarasu ends::%{_target}%} isn't set
+            then:
+                stop loop
+
+            damage({_target}, {_player}, {_damage per tick})
+
+            set interpolation duration of {_displays::*} to 2 ticks
+
+            for {_display} in {_displays::*}:
+
+                rotate {_display} around local y-axis by random number between -100 and 100
+                rotate {_display} around local z-axis by random number between -50 and 50
+
+                set {_scale} to random number between 0.35 and 0.85
+                set scale of {_display} to vector({_scale}, {_scale}, {_scale})
+
+            wait 1 / {_per second} * 1 second
+
+        delete entities within {_displays::*}
+
+on heal due to satiated:
+    {-amatarasu ends::%player%} is set
+    {-amatarasu ends::%player%} isn't in the past
+    cancel event
+
+on death:
+    delete {-amatarasu ends::%victim%}
