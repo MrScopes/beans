@@ -19,6 +19,7 @@ function buildLeaderboardDisplays():
             set color of display to rgb(0, 0, 0, 0)
             apply drop shadow to display
             set line width of display to 1000
+            set text alignment of display to left aligned
 
 function leaderboardText():
     for {_leaderboard} in indexes of {-leaderboard::*}:
