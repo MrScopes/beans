@@ -26,7 +26,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_scale} to "scale" of "sniper" at {_level}
-    return "deals &f%{_scale} * 100%<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
+    return "deals &f%{_scale}%<sprite:gui:hud/heart/full> &7per block traveled by the arrow"
 
 local function onShoot(shooter: entity, tool: item, projectile: projectile, level: integer, force: number):
     set {-%{_projectile}%::starting} to location of {_projectile}

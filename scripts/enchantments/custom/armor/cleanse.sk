@@ -28,7 +28,7 @@ on load:
 
 local function getDescription(level: integer) :: string:
     set {_reduction} to "effect reduction" of "cleanse" at {_level}
-    return "when applied&8, &7and on kill&8, &7reduces most negative effect durations by &f%{_reduction} * 100%%%" 
+    return "passively and on kill&8, &7reduce most negative effect durations by &f%{_reduction} * 100%%%" 
 
 local function onKill(attacker: entity, armor: item, level: integer, victim: entity):
     set {_reduction} to "effect reduction" of "cleanse" at {_level}

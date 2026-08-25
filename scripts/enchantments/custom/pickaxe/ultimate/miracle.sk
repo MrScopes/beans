@@ -27,7 +27,7 @@ on load:
             set level 5 to 8_500_000
 
 local function getDescription(level: integer) :: string:
-    return "activate most enchantments, bypassing chance and cooldown"
+    return "activate most enchantments&8, &7bypassing chance and cooldown"
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     playEnchantmentSound("mining", "minecraft:entity.ender_dragon.growl", 0.5, 1, location of {_player}, all players, {_player})

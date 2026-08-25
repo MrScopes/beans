@@ -41,7 +41,7 @@ on load:
 local function getDescription(level: integer) :: string:
     set {_distance} to "distance" of "snatch" at {_level}
     set {_disable duration} to "disable duration" of "snatch" at {_level}
-    return "&e[LMB] &7projectile that pulls in entities within &f%{_distance}%m&8, &7and applies &f%effectDisplay("elytra disable", customDuration: {_disable duration}, showAmplifier: false)%."
+    return "&e[LMB] &7pull in a target within &f%{_distance}%m&8, &7and apply &f%effectDisplay("elytra disable", customDuration: {_disable duration}, showAmplifier: false)%."
 
 local function onLeftClick(player: player, item: item, level: integer):
     set {_origin} to location of {_player}'s head
