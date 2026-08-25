@@ -1,0 +1,25 @@
+command /top [<text>]:
+    trigger:
+        async run 0 ticks later:
+            set {_variable} to {-leaderboard::%arg 1%::variable}
+            if {_variable} is set:
+                loop 5 times:
+                    set {_player} to offlineplayer({-leaderboard sorted::%{_variable}%::%loop-value%::player}, false)
+                    {_player} is set
+                    set {_top::%loop-iteration-2%} to topEntryDisplay({_player}, arg 1)
+
+                if {-leaderboard sorted::%{_variable}%::%player%} is set:
+                    set {_player iteration} to {-leaderboard sorted::%{_variable}%::%player%}
+                    if {_player iteration} > 5:
+                        set {_top::%{_player iteration}%} to topEntryDisplay(player, arg 1)
+    
+                send ""
+                send {-leaderboard::%arg 1%::title}
+                send ""
+                send formatted {_top::*}
+                send ""
+            else:
+                send "&c/top <%join (indexes of {-leaderboard::*}) with " | "%>"
+
+on tab complete of "/top":
+    set tab completions for position 1 to indexes of {-leaderboard::*}

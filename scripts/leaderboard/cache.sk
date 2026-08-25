@@ -1,0 +1,11 @@
+function cacheStats():
+    loop all players:
+        set {cached playtime::%loop-player%} to playtime of loop-player
+
+        if {kills::%loop-player%} > 20:
+            set {_deaths} to max(1, {deaths::%loop-player%})
+            set {_kdr} to {kills::%loop-player%} / {_deaths}
+            set {cached kdr::%loop-player%} to {_kdr}
+
+async every minute:
+    cacheStats()

@@ -1,0 +1,16 @@
+condition create leaderboard named %string%:
+    check:
+        delete {-leaderboard::%expr-1%::*}
+        set {-current leaderboard::%event%} to expr-1
+        return true
+
+expression leaderboard (title:title|variable:variable|display:display|display function:display function|location:location) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_current leaderboard} to expr-1 ? {-current leaderboard::%event%}
+        return {-leaderboard::%{_current leaderboard}%::%{_key}%}
+    set:
+        set {_current leaderboard} to expr-1 ? {-current leaderboard::%event%}
+        set {-leaderboard::%{_current leaderboard}%::%{_key}%} to change value

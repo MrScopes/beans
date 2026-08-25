@@ -1,0 +1,105 @@
+using reflection
+
+on load:
+    create leaderboard named "money":
+        set leaderboard title to "Top Money"
+        set leaderboard variable to "money"
+        set leaderboard display to "&a$value"
+        set leaderboard display function to function named "kNumber"
+        set leaderboard location to location(79.5, 52, 90.5)
+
+    create leaderboard named "bounty":
+        set leaderboard title to "Top Bounties"
+        set leaderboard variable to "bounty"
+        set leaderboard display to "&c$value"
+        set leaderboard display function to function named "kNumber"
+
+    create leaderboard named "blocks":
+        set leaderboard title to "Block Top"
+        set leaderboard variable to "blocks"
+        set leaderboard display to "&bvalue blocks"
+        set leaderboard display function to function named "kNumber"
+        set leaderboard location to location(79.5, 52, 95.5)
+
+    create leaderboard named "trophies":
+        set leaderboard title to "Top Trophies"
+        set leaderboard variable to "trophies"
+        set leaderboard display to "&6🏆value"
+        set leaderboard display function to function named "formatNum"
+        set leaderboard location to location(79.5, 52, 85.5)
+
+    create leaderboard named "level":
+        set leaderboard title to "Highest Level"
+        set leaderboard variable to "level"
+        set leaderboard display to "&fvalue"
+        set leaderboard display function to function named "levelDisplay"
+
+    create leaderboard named "playtime":
+        set leaderboard title to "Most Playtime"
+        set leaderboard variable to "cached playtime"
+        set leaderboard display to "&evalue"
+        set leaderboard display function to function named "timeFormat"
+
+    create leaderboard named "dust":
+        set leaderboard title to "Top Dust"
+        set leaderboard variable to "dust"
+        set leaderboard display to "%{-dust sprite}%&fvalue"
+        set leaderboard display function to function named "formatFloor"
+
+    create leaderboard named "kills":
+        set leaderboard title to "Top Kills"
+        set leaderboard variable to "kills"
+        set leaderboard display to "&fvalue kills"
+        set leaderboard display function to function named "formatNum"
+
+    create leaderboard named "deaths":
+        set leaderboard title to "Top Deaths"
+        set leaderboard variable to "deaths"
+        set leaderboard display to "&fvalue deaths"
+        set leaderboard display function to function named "formatNum"
+
+    create leaderboard named "kdr":
+        set leaderboard title to "Top KDR (more than 20 kills)"
+        set leaderboard variable to "cached kdr"
+        set leaderboard display to "&evalue KDR"
+        set leaderboard display function to function named "kdrDisplay"
+
+    async run 0 ticks later:
+        calculateTops()
+
+function calculateTops():
+    for {_stat} in indexes of {-leaderboard::*}:
+        set {_variable} to {-leaderboard::%{_stat}%::variable}
+        delete {-leaderboard sorted::%{_variable}%::*}
+
+        for {_player} in sorted indices of {%{_variable}%::*} in descending order:
+            set {-leaderboard sorted::%{_variable}%::%loop-iteration-2%::player} to {_player}
+            set {-leaderboard sorted::%{_variable}%::%loop-iteration-2%::value} to {%{_variable}%::%{_player}%}
+            set {-leaderboard sorted::%{_variable}%::%{_player}%} to loop-iteration-2
+
+function topEntryDisplay(player: offline player, stat: text) :: text:
+    set {_variable} to {-leaderboard::%{_stat}%::variable}
+
+    set {_index} to {-leaderboard sorted::%{_variable}%::%{_player}%}
+    set {_raw value} to {-leaderboard sorted::%{_variable}%::%{_index}%::value}
+
+    set {_value} to {_raw value}
+
+    if {-leaderboard::%{_stat}%::display function} is set:
+        set {_function} to {-leaderboard::%{_stat}%::display function}
+        set {_value} to result of {_function} with arguments {_raw value}
+
+    if {-leaderboard::%{_stat}%::display variable} is set:
+        set {_display variable} to {-leaderboard::%{_stat}%::display variable}
+        set {_display value} to {%{_display variable}%::%{_raw value}%}
+
+        if {_display value} is set:
+            set {_value} to {_display value}
+
+    set {_stat display} to {-leaderboard::%{_stat}%::display}
+    replace all "value" in {_stat display} with "%{_value}%"
+
+    return "&b#%{_index}% &f<head:%{_player}%> &7%playerDisplay({_player}, "[level] [prefix][player]")%&8: &f%{_stat display}%"
+
+async every 5 minutes:
+    calculateTops()

@@ -1,0 +1,41 @@
+on load:
+    wait 1 tick
+    buildLeaderboardDisplays()
+
+    async run 0 ticks later:
+        calculateTops()
+        leaderboardText()
+
+function buildLeaderboardDisplays():
+    for {_leaderboard type} in indexes of {-leaderboard::*}:
+        {-leaderboard::%{_leaderboard type}%::location} is set
+        if {-leaderboard display::%{_leaderboard type}%} is set:
+            delete entity within {-leaderboard display::%{_leaderboard type}%}
+
+        spawn text display at {-leaderboard::%{_leaderboard type}%::location}:
+            set {-leaderboard display::%{_leaderboard type}%} to display
+            make display not persistent     
+            set billboard of display to center
+            set color of display to rgb(0, 0, 0, 0)
+            apply drop shadow to display
+            set line width of display to 1000
+
+function leaderboardText():
+    for {_leaderboard} in indexes of {-leaderboard::*}:
+        {-leaderboard display::%{_leaderboard}%} is set
+        set {_variable} to {-leaderboard::%{_leaderboard}%::variable}
+        loop 5 times:
+            set {_player} to offlineplayer({-leaderboard sorted::%{_variable}%::%loop-number%::player}, false)
+            {_player} is set
+            set {_top::%loop-iteration-2%} to topEntryDisplay({_player}, {_leaderboard})
+        
+        set text of {-leaderboard display::%{_leaderboard}%} to formatted "", {-leaderboard::%{_leaderboard}%::title}, "", {_top::*}, ""
+
+local function formatNum(number: number) :: text:
+    return formatNumber({_number})
+
+local function formatFloor(number: number) :: text:
+    return formatNumber(floor({_number}))
+
+async every 5 minutes:
+    leaderboardText()
