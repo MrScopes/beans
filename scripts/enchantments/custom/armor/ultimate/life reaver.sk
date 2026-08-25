@@ -42,5 +42,4 @@ on damage:
         {_level} is set
         set {_heal percent} to "heal percent" of "life_reaver" at {_level}
         set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
-        #run 0 ticks later:
         heal({_attacker}, {_heal amount})
