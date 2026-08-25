@@ -36,9 +36,11 @@ on damage:
     set {_attacker} to {-last attacker::%victim%} ? attacker
     {_attacker} is set
     {_attacker} isn't victim
-    set {_enchantments::*} to custom enchantments of {_attacker}'s helmet
-    set {_level} to {_enchantments::life_reaver}
-    {_level} is set
-    set {_heal percent} to "heal percent" of "life_reaver" at {_level}
-    set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
-    heal({_attacker}, {_heal amount})
+    async run 0 ticks later:
+        set {_enchantments::*} to custom enchantments of {_attacker}'s helmet
+        set {_level} to {_enchantments::life_reaver}
+        {_level} is set
+        set {_heal percent} to "heal percent" of "life_reaver" at {_level}
+        set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
+        #run 0 ticks later:
+        heal({_attacker}, {_heal amount})
