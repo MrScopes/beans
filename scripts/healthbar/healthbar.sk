@@ -182,6 +182,7 @@ function resetBars(wait: boolean = true):
             bar(loop-entity)
 
 function heal(entity: entity, amount: number):
+    {_amount} > 0
     heal {_entity} by {_amount}
     wait 1 tick
     updateHealthbar({_entity})
