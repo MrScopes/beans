@@ -1,14 +1,14 @@
 on load:
     set {-beacon chance random::1} to 80
     set {-beacon chance random::2} to 19
-    set {-beacon chance random::3} to 0.9
+    set {-beacon chance random::3} to 0.8
 
     set {-beacon chance specific::1} to 95
     set {-beacon chance specific::2} to 4.5
-    set {-beacon chance specific::3} to 0.45
+    set {-beacon chance specific::3} to 0.38
 
-    set {-beacon chance ultimate random} to 0.1
-    set {-beacon chance ultimate specific} to 0.05
+    set {-beacon chance ultimate random} to 100 - ({-beacon chance random::1} + {-beacon chance random::2} + {-beacon chance random::3})
+    set {-beacon chance ultimate specific} to 100 - ({-beacon chance specific::1} + {-beacon chance specific::2} + {-beacon chance specific::3})
 
     set {-beacon gui} to hopper inventory named "Spin an enchantment"
     set slot 0 of {-beacon gui} to enchanted book named "&5Random Enchantment" with lore "&7Click to receive a random enchantment book.", "&7Level 1: %{-beacon chance random::1}%%% chance", "&bLevel 2-3: %{-beacon chance random::2}%%% chance", "&b&lLevel 3+: %{-beacon chance random::3}%%% chance", formatted "<white><rainbow><bold>ULTIMATE<white>: %{-beacon chance ultimate random}%%% chance"
