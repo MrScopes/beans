@@ -327,4 +327,10 @@ on any inventory click:
 on join:
     if {choosing custom enchantment::%player%} is set:
         player command "/enchantments"
-        
+    
+on inventory close:
+    event-inventory is {-all enchantments gui}
+    {choosing custom enchantment::%player%} is set
+    wait 2 ticks
+    player's current inventory isn't {-enchantments gui::pickaxe}, {-enchantments gui::sword}, {-enchantments gui::armor}, or {-enchantments gui::bow}
+    player command "/enchantments"
