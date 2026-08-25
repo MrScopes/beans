@@ -78,10 +78,12 @@ function calculateTops():
             set {-leaderboard sorted::%{_variable}%::%{_player}%} to loop-iteration-2
 
 function topEntryDisplay(player: offline player, stat: text) :: text:
+    {_player} is set
     set {_variable} to {-leaderboard::%{_stat}%::variable}
 
     set {_index} to {-leaderboard sorted::%{_variable}%::%{_player}%}
     set {_raw value} to {-leaderboard sorted::%{_variable}%::%{_index}%::value}
+    {_raw value} is set
 
     set {_value} to {_raw value}
 
