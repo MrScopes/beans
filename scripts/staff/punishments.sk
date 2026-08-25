@@ -99,8 +99,9 @@ function applyPunishment(target: offline player, punishment type: text, duration
 		return "&cYou cannot punish this player."
 
 	if {_punishment type} is "Warn":
-		if {_target} is online:
-			send punishmentMessage("&eYou have been Warned", {_target}, {_reason}, {_}, now, {_staff}) to {_target}
+		if {_target} is not online:
+			return "&c%{_target}% is not online."
+		send punishmentMessage("&eYou have been Warned", {_target}, {_reason}, {_}, now, {_staff}) to {_target}
 		notifyPunishment(punishmentMessage("&ePlayer Warned", {_target}, {_reason}, {_}, {_}, {_staff}), {_silent})
 		addToPunishHistory({_target}, "Warn", {_reason}, "N/A", now, {_staff})
 		return "&a%{_target}% has been warned."
