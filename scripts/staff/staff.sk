@@ -4,7 +4,6 @@ command /vanish:
         if {-vanish::%player%} is set:
             delete {-vanish::%player%}, {-no bar::%player%}
             bar(player)
-            updatePlayerTabName(player)
             send "You are no longer vanished."
             reveal player to all players
             if all:
@@ -31,8 +30,6 @@ async every second:
         if {-vanish::%loop-player%} is set:
             wait 1 tick
             hide loop-player from all players where [input doesn't have permission "beans.mod"]
-            if loop-player's tablist name doesn't contain "VANISHED":
-                set tablist name of loop-player to formatted "%playerDisplay(loop-player, "[level] [prefix][player] [trophies]")% &a&l(VANISHED)"
             if mod(floor(seconds of difference between {-vanish::%loop-player%} and now), 10) is 0:
                 send "&aYou are vanished." to loop-player
 

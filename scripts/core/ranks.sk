@@ -39,7 +39,11 @@ command /prefixes:
             send formatted "%group prefix of loop-value%%player%&8: <%group chat color of loop-value%>%player%" to player
 
 function updatePlayerTabName(player: player):
-    set tablist name of {_player} to playerDisplay({_player}, "[level] [prefix][player] [trophies]")
+    if {-vanish::%{_player}%} is set:
+        set {_display} to playerDisplay({_player}, " [prefix][player] &7&o<vanished> ")
+    else:
+        set {_display} to playerDisplay({_player}, "[level] [prefix][player] [trophies]")
+    set tablist name of {_player} to {_display}
 
 on join:
    updatePlayerTabName(player)
