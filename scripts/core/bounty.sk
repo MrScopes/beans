@@ -18,13 +18,14 @@ command /bounty [<text=%player's name%>] [<text>]:
                     broadcast formatted "Current Bounty: &b$%kNumber({bounty::%{_player}%})%"
                 
 on death of player:
-    attacker is a player
-    attacker isn't victim
+    set {_attacker} to {-last attacker::%victim%} ? attacker
+    {_attacker} is set
+    {_attacker} isn't victim
     {bounty::%victim%} is set
     set {_bounty} to {bounty::%victim%}
     delete {bounty::%victim%}
-    add {_bounty} to {money::%attacker%}
-    broadcast formatted "%playerDisplay(attacker)% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %playerDisplay(victim)%&7!"
+    add {_bounty} to {money::%{_attacker}%}
+    broadcast formatted "%playerDisplay({_attacker})% &7claimed a bounty of &b$%kNumber({_bounty})%&7 for killing %playerDisplay(victim)%&7!"
 
 on tab complete of "/bounty":
     set tab completions for position 1 to all players
