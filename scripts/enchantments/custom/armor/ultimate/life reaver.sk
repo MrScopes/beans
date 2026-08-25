@@ -1,0 +1,44 @@
+on load:
+    create ultimate armor enchantment named "life_reaver":
+        set enchantment ultimate to true
+        set enchantment display to "&f<sprite:items:item/heart_of_the_sea> <rainbow><bold>Life Reaver"
+        set enchantment max level to 5
+        set enchantment priority to 1
+        set enchantment item to heart of the sea
+
+        level values for "heal percent":
+            set level 1 to 1
+            set level 2 to 1.5
+            set level 3 to 2
+            set level 4 to 2.5
+            set level 5 to 3
+
+        level values for "dust cost":
+            set level 1 to 450
+            set level 2 to 1_650
+            set level 3 to 2_800
+            set level 4 to 16_000
+            set level 5 to 50_000
+
+        level values for "money cost":
+            set level 1 to 500_000
+            set level 2 to 2_000_000
+            set level 3 to 3_000_000
+            set level 4 to 8_000_000
+            set level 5 to 16_000_000
+
+local function getDescription(level: integer) :: string:
+    set {_heal percent} to "heal percent" of "life_reaver" at {_level}
+    return "heal you by &f%{_heal percent}%%% &7of ALL damage done by you and your summons"
+
+# proof of concept probably until I setup a cached enchantment system
+on damage:
+    set {_attacker} to {-last attacker::%victim%} ? attacker
+    {_attacker} is set
+    {_attacker} isn't victim
+    set {_enchantments::*} to custom enchantments of {_attacker}'s helmet
+    set {_level} to {_enchantments::life_reaver}
+    {_level} is set
+    set {_heal percent} to "heal percent" of "life_reaver" at {_level}
+    set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
+    heal({_attacker}, {_heal amount})
