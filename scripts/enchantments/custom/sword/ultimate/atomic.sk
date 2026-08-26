@@ -1,0 +1,103 @@
+on load:
+    create ultimate sword enchantment named "atomic":
+        set enchantment display to "&f<sprite:celestials:end_flash> <rainbow><bold>Atomic"
+        set enchantment max level to 5
+        set enchantment priority to 0
+        set enchantment item to sea lantern
+
+        level values for "dust cost":
+            set level 1 to 275
+            set level 2 to 900
+            set level 3 to 1_650
+            set level 4 to 12_000
+            set level 5 to 42_000
+
+        level values for "money cost":
+            set level 1 to 350_000
+            set level 2 to 1_000_000
+            set level 3 to 2_000_000
+            set level 4 to 5_600_000
+            set level 5 to 12_800_000
+
+local function getDescription(level: integer) :: string:
+    return "&e[LMB] &7atomic"
+
+local function onLeftClick(player: player, item: item, level: integer):
+    set {_origin} to location of {_player}
+    set yaw of {_origin} to 0
+    set pitch of {_origin} to 0
+    set {_displays::*} to keyed atomicDisplays({_origin})
+
+    set {_start size} to 8
+    set {_size} to 50
+    set {_thickness} to 0.05
+    set {_duration} to 4 seconds
+
+    set {_half} to {_size} / 2
+    set {_edge} to {_size} - {_thickness}
+
+    wait 2 ticks
+
+    # FLOOR
+    set scale of {_displays::floor} to vector({_size}, {_thickness}, {_size})
+    set display translation of {_displays::floor} to vector({_half} * -1, {_half} * -1, {_half} * -1)
+
+    # ROOF
+    set scale of {_displays::roof} to vector({_size}, {_thickness}, {_size})
+    set display translation of {_displays::roof} to vector({_half} * -1, {_half} - {_thickness}, {_half} * -1)
+
+    # NORTH
+    set scale of {_displays::north} to vector({_size}, {_size}, {_thickness})
+    set display translation of {_displays::north} to vector({_half} * -1, {_half} * -1, {_half} * -1)
+
+    # SOUTH
+    set scale of {_displays::south} to vector({_size}, {_size}, {_thickness})
+    set display translation of {_displays::south} to vector({_half} * -1, {_half} * -1, {_half} - {_thickness})
+
+    # WEST
+    set scale of {_displays::west} to vector({_thickness}, {_size}, {_size})
+    set display translation of {_displays::west} to vector({_half} * -1, {_half} * -1, {_half} * -1)
+
+    # EAST
+    set scale of {_displays::east} to vector({_thickness}, {_size}, {_size})
+    set display translation of {_displays::east} to vector({_half} - {_thickness}, {_half} * -1, {_half} * -1)
+
+    set {_started at} to now
+    set {_ends at} to {_duration} from now
+
+    while {_ends at} is in the future:
+        wait 2 ticks
+
+        set {_elapsed} to difference between now and {_started at}
+        set {_progress} to clamp({_elapsed} / {_duration}, 0, 1)
+
+        set {_current size} to {_start size} + (({_size} - {_start size}) * {_progress})
+        set {_current half} to {_current size} / 2
+
+        delete {_affected::*}
+
+        loop all living entities:
+            set {_x} to abs((x of loop-entity) - (x of {_origin}))
+            set {_y} to abs((y of loop-entity) - (y of {_origin}))
+            set {_z} to abs((z of loop-entity) - (z of {_origin}))
+
+            {_x} <= {_current half}
+            {_y} <= {_current half}
+            {_z} <= {_current half}
+
+            add loop-entity to {_affected::*}
+
+            send title "" with subtitle "DANGER!" to loop-entity for 2 ticks
+            if loop-entity is not in {_old affected::*}:
+                send "one time affected message" to loop-entity
+
+        loop {_old affected::*}:
+            if loop-value is not in {_affected::*}:
+                send title "" with subtitle "SAFE!" to loop-value for 2 ticks
+
+        set {_old affected::*} to {_affected::*}
+
+    loop {_affected::*}:
+        send "You were affected!" to loop-value
+        
+    delete entities within {_displays::*}

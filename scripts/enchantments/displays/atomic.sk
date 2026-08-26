@@ -1,0 +1,68 @@
+function atomicDisplays(origin: location) :: entities:
+    spawn block display at {_origin}:
+        set {_displays::floor} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(8, 0.05, 8)
+        set display translation of display to vector(-4, -4, -4)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    spawn block display at {_origin}:
+        set {_displays::roof} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(8, 0.05, 8)
+        set display translation of display to vector(-4, 3.95, -4)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    spawn block display at {_origin}:
+        set {_displays::north} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(8, 8, 0.05)
+        set display translation of display to vector(-4, -4, -4)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    spawn block display at {_origin}:
+        set {_displays::south} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(8, 8, 0.05)
+        set display translation of display to vector(-4, -4, 3.95)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    spawn block display at {_origin}:
+        set {_displays::west} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(0.05, 8, 8)
+        set display translation of display to vector(-4, -4, -4)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    spawn block display at {_origin}:
+        set {_displays::east} to display
+        make display not persistent
+        set blockdata of display to purple stained glass
+
+        set scale of display to vector(0.05, 8, 8)
+        set display translation of display to vector(3.95, -4, -4)
+
+        set interpolation delay of display to 0 ticks
+        set interpolation duration of display to 80 ticks
+
+    return {_displays::*}
