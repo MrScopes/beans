@@ -43,37 +43,37 @@ local function onKill(attacker: entity, armor: item, level: integer, victim: ent
         delete {-%{_attacker}%::reducing::%{_type}%}
 
 on combust:
-    for {_enchantment}, {_level} in custom enchantments of entity's helmet:
-        if {_enchantment} is "cleanse":
-            set {_reduction} to "effect reduction" of "cleanse" at {_level}
-            set {_remove} to entity's burning time * {_reduction}
-            wait 1 tick
-            remove {_remove} from entity's burning time
-            stop loop
+    set {_level} to {-cached enchantments::%entity%::helmet::cleanse}
+    {_level} is set
 
+    set {_reduction} to "effect reduction" of "cleanse" at {_level}
+    set {_remove} to entity's burning time * {_reduction}
+    wait 1 tick
+    remove {_remove} from entity's burning time
+    
 on entity potion effect added or changed:
     {-negative effects::*} contains event-potioneffecttype
     {-%entity%::reducing::%event-potioneffecttype%} is not set
 
-    for {_enchantment}, {_level} in custom enchantments of entity's helmet:
-        if {_enchantment} is "cleanse":
-            cancel event
+    set {_level} to {-cached enchantments::%entity%::helmet::cleanse}
+    {_level} is set
 
-            set {_entity} to entity
-            set {_type} to event-potioneffecttype
-            set {_tier} to amplifier of event-potioneffect
-            set {_duration} to duration of event-potioneffect
+    cancel event
 
-            set {_reduction} to "effect reduction" of "cleanse" at {_level}
-            set {_removed} to {_duration} * {_reduction}
+    set {_entity} to entity
+    set {_type} to event-potioneffecttype
+    set {_tier} to amplifier of event-potioneffect
+    set {_duration} to duration of event-potioneffect
 
-            remove {_removed} from {_duration}
-            set {_newEffect} to potion effect of {_type} of tier {_tier} for {_duration}
+    set {_reduction} to "effect reduction" of "cleanse" at {_level}
+    set {_removed} to {_duration} * {_reduction}
 
-            set {-%{_entity}%::reducing::%{_type}%} to true
-            apply {_newEffect} to {_entity}
+    remove {_removed} from {_duration}
+    set {_newEffect} to potion effect of {_type} of tier {_tier} for {_duration}
 
-            wait 1 tick
-            delete {-%{_entity}%::reducing::%{_type}%}
+    set {-%{_entity}%::reducing::%{_type}%} to true
+    apply {_newEffect} to {_entity}
 
-            stop
+    wait 1 tick
+    delete {-%{_entity}%::reducing::%{_type}%}
+    

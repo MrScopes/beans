@@ -52,13 +52,16 @@ function setApplyResult(player: player, status: text, item: item):
 # ============================================================
 
 function tryApplyStoredBook(player: player, book: item, target: item):
-    if data tag "stored_custom_enchantment" of {_book} is set:
-        tryApplyStoredCustomBook({_player}, {_book}, {_target})
-        stop
-    if data tag "stored_vanilla_enchantment" of {_book} is set:
-        tryApplyStoredVanillaBook({_player}, {_book}, {_target})
-        stop
-    setApplyResult({_player}, "invalid", {_target})
+    if {_player} isn't within bound with id "spawn":
+        send "&cYou can only upgrade items in spawn." to {_player}
+        setApplyResult({_player}, "invalid", {_target})
+    else:
+        if data tag "stored_custom_enchantment" of {_book} is set:
+            tryApplyStoredCustomBook({_player}, {_book}, {_target})
+        else if data tag "stored_vanilla_enchantment" of {_book} is set:
+            tryApplyStoredVanillaBook({_player}, {_book}, {_target})
+        else:
+            setApplyResult({_player}, "invalid", {_target})
 
 function tryApplyStoredCustomBook(player: player, book: item, target: item):
     clearApplyResult({_player})

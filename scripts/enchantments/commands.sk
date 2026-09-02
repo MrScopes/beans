@@ -37,16 +37,19 @@ on tab complete of "/reloadenchantment":
 
 command /upgrade:
     trigger:
-        if any:
-            player's tool is tagged with minecraft tag "pickaxes"
-            player's tool is tagged with minecraft tag "swords"
-            #player's tool is tagged with paper tag "chest_equippable"
-            #player's tool is tagged with paper tag "armor"
-            player's tool is tagged with paper tag "helmets"
-            player's tool is tagged with paper tag "bows"
-        then:
-            data tag "stored_custom_enchantment" of (player's tool) isn't set
-            openUpgradeGui(player)
+        if player isn't within bound with id "spawn":
+            send "&cYou can only upgrade items in spawn."
+        else:
+            if any:
+                player's tool is tagged with minecraft tag "pickaxes"
+                player's tool is tagged with minecraft tag "swords"
+                #player's tool is tagged with paper tag "chest_equippable"
+                #player's tool is tagged with paper tag "armor"
+                player's tool is tagged with paper tag "helmets"
+                player's tool is tagged with paper tag "bows"
+            then:
+                data tag "stored_custom_enchantment" of (player's tool) isn't set
+                openUpgradeGui(player)
 
 on tab complete of "/ce":
     set tab completions for position 1 to indexes of {-ce::*}

@@ -1,6 +1,13 @@
 using reflection
 
 function enchantItem(item: item, enchantment: string, level: integer, player: player = {_}) :: item:
+    if all:
+        {_player} is set
+        {_player} isn't within bound with id "spawn"
+    then:
+        send "&cYou can only enchant items in spawn." to {_player}
+        return {_item}
+
     set {_special} to data tag "special_%{_enchantment}%" of {_item}
 
     if all:
@@ -9,7 +16,7 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
     then:
         send "&bOVER MAX LEVEL" to ops and console
         send "%{_player}%, %{_enchantment}% %{_level}%. max: %{-ce::%{_enchantment}%::max level}%" to ops and console
-
+    
     if {_level} is 0:
         if {-ce::%{_enchantment}%::onUnapply} is set:
             run {-ce::%{_enchantment}%::onUnapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
@@ -144,3 +151,44 @@ on inventory slot change:
             set data tag "original_owner" of {_item} to player's uuid
             set data tag "original_owner_name" of {_item} to "%player's name%"
         set event-slot to {_item}
+
+function cacheEnchantments(player: player):
+    delete {-cached enchantments::%{_player}%::*}
+
+    if {_player}'s helmet is a leather helmet:
+        {-cached enchantments::%{_player}%::armor::*} isn't set
+        set {-cached enchantments::%{_player}%::armor::*} to custom enchantments of {_player}'s helmet
+        set {-cached enchantments::%{_player}%::armor::vanilla::*} to keyed keyedVanillaEnchantments({_player}'s helmet)
+
+    for {_item} in items in {_player}'s inventory:
+        if type of {_item} is diamond sword:
+            {-cached enchantments::%{_player}%::sword::*} isn't set
+            set {-cached enchantments::%{_player}%::sword::*} to custom enchantments of {_item}
+            set {-cached enchantments::%{_player}%::sword::vanilla::*} to keyed keyedVanillaEnchantments({_item})
+
+        else if type of {_item} is diamond pickaxe:
+            {-cached enchantments::%{_player}%::pickaxe::*} isn't set
+            set {-cached enchantments::%{_player}%::pickaxe::*} to custom enchantments of {_item}
+            set {-cached enchantments::%{_player}%::pickaxe::vanilla::*} to keyed keyedVanillaEnchantments({_item})
+
+        else if type of {_item} is leather helmet:
+            {-cached enchantments::%{_player}%::armor::*} isn't set
+            set {-cached enchantments::%{_player}%::armor::*} to custom enchantments of {_item}
+            set {-cached enchantments::%{_player}%::armor::vanilla::*} to keyed keyedVanillaEnchantments({_item})
+
+        else if type of {_item} is bow:
+            {-cached enchantments::%{_player}%::bow::*} isn't set
+            set {-cached enchantments::%{_player}%::bow::*} to custom enchantments of {_item}
+            set {-cached enchantments::%{_player}%::bow::vanilla::*} to keyed keyedVanillaEnchantments({_item})
+
+function keyedVanillaEnchantments(item: item) :: objects:
+    for {_enchantment} in enchantments of {_item}:
+        set {_enchantments::%type of {_enchantment}%} to enchantment level of {_enchantment}
+    return {_enchantments::*}
+
+on respawn:
+    wait 10 ticks
+    cacheEnchantments(player)
+
+on bound exit with id "spawn":
+    cacheEnchantments(player)

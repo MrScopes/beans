@@ -111,12 +111,17 @@ function fastRadiusClear(player: player, location: location, radius: number):
         add {_total money} to {money::%{_player}%}
         add {_total dust} to {dust::%{_player}%}
         
-function sortedEnchantments(item: item) :: objects:
-    set {_enchantments::*} to custom enchantments of {_item}
+function sortedEnchantments(item: item, player: player = {_}) :: objects:
+    set {_type} to enchantmentTypeFromItem({_item})
+    if {_player} is set:
+        set {_enchantments::*} to {-cached enchantments::%{_player}%::%{_type}%::*}
+    else:
+        set {_enchantments::*} to custom enchantments of {_item}
+
     for {_enchantment}, {_level} in {_enchantments::*}:
         if {-ce::%{_enchantment}%::display} isn't set:
             continue
-        
+
         if {-ce::%{_enchantment}%::priority} isn't set:
             continue
 

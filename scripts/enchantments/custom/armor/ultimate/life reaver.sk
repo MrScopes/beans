@@ -31,15 +31,14 @@ local function getDescription(level: integer) :: string:
     set {_heal percent} to "heal percent" of "life_reaver" at {_level}
     return "heal you by &f%{_heal percent}%%% &7of ALL damage done by you and your summons"
 
-# proof of concept probably until I setup a cached enchantment system
-on damage:
+on damage with priority highest:
     set {_attacker} to {-last attacker::%victim%} ? attacker
     {_attacker} is set
     {_attacker} isn't victim
-    async run 0 ticks later:
-        set {_enchantments::*} to custom enchantments of {_attacker}'s helmet
-        set {_level} to {_enchantments::life_reaver}
-        {_level} is set
-        set {_heal percent} to "heal percent" of "life_reaver" at {_level}
-        set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
-        heal({_attacker}, {_heal amount})
+
+    set {_level} to {-cached enchantments::%{_attacker}%::helmet::life_reaver}
+    {_level} is set
+
+    set {_heal percent} to "heal percent" of "life_reaver" at {_level}
+    set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
+    heal({_attacker}, {_heal amount})

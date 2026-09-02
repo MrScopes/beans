@@ -31,7 +31,7 @@ local function getDescription(level: integer) :: string:
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     playEnchantmentSound("mining", "minecraft:entity.ender_dragon.growl", 0.5, 1, location of {_player}, all players, {_player})
-    set {_enchantments::*} to custom enchantments of {_tool}
+    set {_enchantments::*} to {-cached enchantments::%{_player}%::pickaxe::*}
     set {_indices::*} to indices of {_enchantments::*}
     set {_indices::*} to shuffled {_indices::*}
     remove "miracle", "reroll", "jackpot", "chaos", "beacon finder", "genesis", "overdrive" from {_indices::*}

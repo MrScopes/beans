@@ -96,6 +96,7 @@ on drop of beacon:
 
 on step on pressure plate:
     bounds at location of event-block contains bound with id "spawn"
+    close player's inventory
 
     push player upward at speed 3
     push player forward at speed 3
