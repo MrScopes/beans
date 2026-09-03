@@ -26,6 +26,20 @@ on load:
             set level 4 to 25
             set level 5 to 25
 
+        level values for "poison":
+            set level 1 to potion effect of poison 1 for 3 seconds
+            set level 2 to potion effect of poison 1 for 3 seconds
+            set level 3 to potion effect of poison 1 for 3 seconds
+            set level 4 to potion effect of poison 1 for 3 seconds
+            set level 5 to potion effect of poison 1 for 3 seconds
+
+        level values for "blindness":
+            set level 1 to potion effect of blindness 1 for 3 seconds
+            set level 2 to potion effect of blindness 1 for 3 seconds
+            set level 3 to potion effect of blindness 1 for 3 seconds
+            set level 4 to potion effect of blindness 1 for 3 seconds
+            set level 5 to potion effect of blindness 1 for 3 seconds
+
         level values for "dust cost":
             set level 1 to 275
             set level 2 to 900
@@ -44,8 +58,10 @@ local function getDescription(level: integer) :: string:
     set {_required combo} to "required combo" of "atomic" at {_level}
     set {_percentage} to "percentage" of "atomic" at {_level}
     set {_radius} to "radius" of "atomic" at {_level}
+    set {_poison} to "poison" of "atomic" at {_level}
+    set {_blindness} to "blindness" of "atomic" at {_level}
 
-    return "&7after &f%{_required combo}% &7hits without taking damage&8, &7deal &f%{_percentage} * 100%%% &7of enemy max hp within &f%{_radius}%m&8."
+    return "&7after &f%{_required combo}% &7hits without taking damage&8, &7unleash an explosion after 4s&8. (&f%{_radius}%m&8, &f%{_percentage} * 100%%% max hp damage&8, &f%effectDisplay({_poison})% &f%effectDisplay({_blindness})%&8)"
 
 local function onAttack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     {_victim} isn't an armor stand
@@ -79,6 +95,8 @@ function atomic(player: player, level: integer):
 
     set {_percentage} to "percentage" of "atomic" at {_level}
     set {_radius} to "radius" of "atomic" at {_level}
+    set {_poison} to "poison" of "atomic" at {_level}
+    set {_blindness} to "blindness" of "atomic" at {_level}
 
     set {_origin} to location of {_player}
     set yaw of {_origin} to 0
@@ -167,25 +185,59 @@ function atomic(player: player, level: integer):
             # EXPANDING SPHERE
             set {_sphere} to a sphere with radius {_current half}
             set particle of {_sphere} to electric spark particle
-            set particle density of {_sphere} to 0.5
+            set particle density of {_sphere} to 0.25
             draw shape {_sphere} at {_origin}
+
+            # MYSTICAL ENCHANTMENT FIELD
+            # Dense enchanting particles filling the entire sphere.
+            set {_mystical} to a sphere with radius {_current half} * 0.9
+            set particle of {_mystical} to enchanting particle
+            set particle density of {_mystical} to 0.18
+            draw shape {_mystical} at {_origin}
+
+            # PORTAL ENERGY
+            # A second interior sphere gives the field a constantly shifting void effect.
+            set {_portal} to a sphere with radius {_current half} * 0.75
+            set particle of {_portal} to portal particle
+            set particle density of {_portal} to 0.12
+            draw shape {_portal} at {_origin}
+
+            # END RODS
+            # Sparse bright particles mixed into the magical field.
+            set {_end rods} to a sphere with radius {_current half} * 0.8
+            set particle of {_end rods} to end rod particle
+            set particle density of {_end rods} to 0.035
+            draw shape {_end rods} at {_origin}
+
+            # TOP-DOWN ENCHANTMENT STREAM
+            # Particles descend from the roof toward the center of the field.
+            set {_stream} to a helix with radius {_current half} * 0.65, height {_current half} * 2, and winding rate of 0.35
+            set particle of {_stream} to enchanting particle
+            set particle density of {_stream} to 0.5
+            draw shape {_stream} at {_origin}
+
+            # PORTAL HELIX
+            set {_portal helix} to a helix with radius {_current half} * 0.45, height {_current half} * 1.8, and winding rate of 0.7
+            set particle of {_portal helix} to portal particle
+            set particle density of {_portal helix} to 0.3
+            draw shape {_portal helix} at {_origin}
 
         # GROUND RING
         set {_ring} to a circle with radius {_current half}
         set particle of {_ring} to electric spark particle
-        set particle density of {_ring} to 0.5
+        set particle density of {_ring} to 0.3
         draw shape {_ring} at {_origin}
 
         # HELIX 1
         set {_helix 1} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
         set particle of {_helix 1} to electric spark particle
-        set particle density of {_helix 1} to 0.5
+        set particle density of {_helix 1} to 0.3
         draw shape {_helix 1} at {_origin}
 
         # HELIX 2
         set {_helix 2} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
         set particle of {_helix 2} to electric spark particle
-        set particle density of {_helix 2} to 0.5
+        set particle density of {_helix 2} to 0.3
         draw shape {_helix 2} at {_origin}
 
         delete {_affected::*}
@@ -221,14 +273,25 @@ function atomic(player: player, level: integer):
             set {_uuid} to loop-index
             set {_old affected::%{_uuid}%} to loop-value
 
-    # FINAL DETONATION
-    playEnchantmentSound("combat", "minecraft:entity.generic.explode", 0.8, 0.5, {_origin}, all players)
+    loop 5 times:
+        wait 4 ticks
 
-    loop {_affected::*}:
-        set {_max hp} to loop-value's max health
-        set {_damage} to clamp({_max hp} * {_percentage}, 0, {_max hp})
-        damage loop-value by customDamage(loop-value, {_damage}, {_player})
-        send "You were affected!" to loop-value
+        set {_explosion} to a sphere with radius {_radius} * 0.8
+        set particle of {_explosion} to rgb(170, 0, 255) dust particle of size 1.5
+        set particle density of {_explosion} to 1
+        draw shape {_explosion} at {_origin}
+
+        playEnchantmentSound("combat", "minecraft:entity.generic.explode", 100, 2, {_origin}, all players)
+
+        for {_affected} in {_affected::*}:
+            set {_max hp} to {_affected}'s max health
+            set {_damage} to clamp(({_max hp} * {_percentage}) / 5, 0, {_max hp})
+            damage({_affected}, {_player}, {_damage})
+            loop-iteration-1 is 5
+            add {_poison} to {_affected}'s potion effects
+            add {_blindness} to {_affected}'s potion effects
+
+    wait 5 ticks
 
     delete entities within {_displays::*}
 
