@@ -1,12 +1,15 @@
 on load:
-    set {-broadcast::1} to "broadcast 1"
-    set {-broadcast::2} to "broadcast 2"
-    set {-broadcast::3} to "broadcast 3"
+    set {_discord} to "https://discord.gg/wjQz6ea6JV"
+    set {_github} to "https://github.com/MrScopes/beans"
 
-async every 4 minutes and 25 seconds:
+    set {-broadcast::1::*} to formatted ("", "<click:open_url:'%{_discord}%'> &b&lBEANS &8| <hover:show_text:'%{_discord}%'>&f&n&lCLICK HERE&r to join our discord!", "")
+    set {-broadcast::2::*} to formatted ("", "<click:open_url:'%{_github}%'> &b&lBEANS &8| &fWant to contribute to beans? <hover:show_text:'%{_github}%'>&n&lCLICK HERE&r to check out the GitHub.", "")
+    set {-broadcast::3::*} to formatted ("", "<click:suggest_command:'/buy'> &b&lBEANS &8| &fAll supporters are appreciated! (/buy)", "")
+
+async every 4 minutes and 7 seconds:
     add 1 to {-broadcast}
     if {-broadcast::%{-broadcast}%} is set:
-        send formatted {-broadcast::%{-broadcast}%} to playersWithSetting("server broadcasts", "enabled")
+        send {-broadcast::%{-broadcast}%::*} to playersWithSetting("server broadcasts", "enabled")
     
     if {-broadcast::%{-broadcast} + 1%} isn't set:
         set {-broadcast} to 0
