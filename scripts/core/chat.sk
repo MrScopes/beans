@@ -91,7 +91,10 @@ on async chat:
 
 	loop all players:
 		if "%{_m::2}%" contains loop-player's name:
-			if setting "chat pinging" for loop-player is "disabled":
+			if all:
+				setting "chat pinging" for loop-player is "disabled"
+				player doesn't have permission "beans.mod"
+			then:
 				send "&c%loop-player% has pinging disabled." to player
 			else:
 				set {_component} to text component of "&b@%playerDisplay(loop-player, "[prefix][player]")%"
