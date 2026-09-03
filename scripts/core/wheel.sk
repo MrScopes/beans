@@ -14,7 +14,7 @@ function setupWheelRewards():
     addWheelReward(25, 3 of beaconItem(), "&f3x &b&lBEACON")
     addWheelReward(2.5, 6 of beaconItem(), "&f6x &b&lBEACON")
 
-    set {_voucher} to 1 book named "&fEnchantment Voucher" with lore "&7Use this to get an enchantment of your choice."
+    set {_voucher} to 1 book named "&fEnchantment Voucher" with lore "&7Use this to get a common enchantment of your choice."
     set data tag "enchantment_voucher" of {_voucher} to 1
     addWheelReward(1.65, {_voucher}, "&3Enchantment Voucher")
 
@@ -22,7 +22,7 @@ function setupWheelRewards():
     set data tag "ultimate_enchantment" of {_ultimate} to 1
     addWheelReward(0.5, {_ultimate}, formatted "<rainbow>Ultimate Enchantment")
 
-    set {_maxVoucher} to 1 enchanted book named "&fEnchantment Voucher (MAX)" with lore "&7Use this to get a maxed enchantment of your choice."
+    set {_maxVoucher} to 1 enchanted book named "&fEnchantment Voucher (MAX)" with lore "&7Use this to get a maxed common enchantment of your choice."
     set data tag "enchantment_voucher" of {_maxVoucher} to -1
     addWheelReward(0.25, {_maxVoucher}, "&3Enchantment Voucher &b&l(MAX)")
 
