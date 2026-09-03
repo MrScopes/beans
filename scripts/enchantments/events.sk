@@ -24,7 +24,7 @@ function enchantCanRun(player: player, enchantment: string, level: integer, luck
 function miningEnchants(player: player, block: block):
     {_block} is within bound with id "mine"
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool, {_player}):
         set {_onBreak} to {-ce::%{_enchantment}%::onBreak}
         {_onBreak} is set
 
@@ -44,7 +44,7 @@ on entity shoot bow:
 
     set {-%projectile%::force} to projectile force
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool, shooter):
         set {_onShoot} to {-ce::%{_enchantment}%::onShoot}
         if {_onShoot} isn't set:
             continue
@@ -67,7 +67,7 @@ on projectile hit with priority highest:
     projectile is an arrow
     {-%projectile%::force} is set
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(shooter's tool, shooter):
         set {_onHit} to {-ce::%{_enchantment}%::onHit}
         if {_onHit} isn't set:
             continue
@@ -90,7 +90,7 @@ on damage with priority highest:
     if damage cause is projectile:
         attacker is holding a bow
 
-        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool, attacker):
             set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
             if {_onAttack} isn't set:
                 continue
@@ -107,7 +107,7 @@ on damage with priority highest:
             add result of {_onAttack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
 
     else if damage cause is attack:
-        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool):
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool, attacker):
             set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
             {_onAttack} is set
 
@@ -116,7 +116,7 @@ on damage with priority highest:
             startEnchantCooldown(attacker, {_enchantment}, {_level})
             add result of {_onAttack} with arguments (attacker, attacker's tool, {_level}, victim, damage) to damage
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(victim's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(victim's tool, victim):
         set {_onAttacked} to {-ce::%{_enchantment}%::onAttacked}
         {_onAttacked} is set
 
@@ -126,7 +126,7 @@ on damage with priority highest:
         add result of {_onAttacked} with arguments (victim, victim's tool, {_level}, attacker, damage, damage cause) to damage
 
     if attacker's helmet is a leather helmet:
-        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's helmet):
+        for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's helmet, attacker):
             if {_attacker armor already processed::%{_enchantment}%} is set:
                 continue
 
@@ -142,7 +142,7 @@ on damage with priority highest:
     if victim's helmet is set:
         set {_attacker} to attacker ? victim
 
-        for {_enchantment}, {_level} in keyed sortedEnchantments(victim's helmet):
+        for {_enchantment}, {_level} in keyed sortedEnchantments(victim's helmet, victim):
             if {_victim armor already processed::%{_enchantment}%} is set:
                 continue
 
@@ -161,7 +161,7 @@ on damage with priority highest:
 on swap items:
     bounds at player does not contain bound with id "spawn"
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
         set {_onOffHand} to {-ce::%{_enchantment}%::onOffHand}
         {_onOffHand} is set
 
@@ -176,7 +176,7 @@ on swap items:
 on right click with priority monitor:
     bounds at player does not contain bound with id "spawn"
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
         set {_onRightClick} to {-ce::%{_enchantment}%::onRightClick}
         {_onRightClick} is set
 
@@ -188,7 +188,7 @@ on right click with priority monitor:
 on left click with priority monitor:
     bounds at player does not contain bound with id "spawn"
 
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool):
+    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
         set {_onLeftClick} to {-ce::%{_enchantment}%::onLeftClick}
         {_onLeftClick} is set
 
@@ -202,7 +202,7 @@ on death with priority monitor:
 
     for {_item} in victim's tool and victim's armor:
         {_item} isn't air
-        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
+        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, victim):
             set {_onDeath} to {-ce::%{_enchantment}%::onDeath}
             {_onDeath} is set
 
@@ -213,7 +213,7 @@ on death with priority monitor:
 
     for {_item} in attacker's tool and attacker's armor:
         {_item} isn't air
-        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}):
+        for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, attacker):
             set {_onKill} to {-ce::%{_enchantment}%::onKill}
             {_onKill} is set
 
