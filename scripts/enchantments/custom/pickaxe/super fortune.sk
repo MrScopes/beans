@@ -39,7 +39,7 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     set {_multiplier} to "multiplier" of "super_fortune" at {_level}
     set {_drops::*} to drops of {_block type} using {_player}'s tool
     if type of {_block} is packed ice:
-        add ((level of fortune on {_tool} + 1) of packed ice) to {_drops::*}
+        add (({-cached enchantments::%{_player}%::pickaxe::vanilla::fortune} + 1) of packed ice) to {_drops::*}
     loop {_drops::*}:
         set item amount of loop-value to item amount of loop-value * {_multiplier}
         add {-sell::%type of loop-value%} * item amount of loop-value to {_value}

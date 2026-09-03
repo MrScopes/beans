@@ -89,7 +89,7 @@ import:
 
 function fastRadiusClear(player: player, location: location, radius: number):
     set {_drops} to FastBlocks.nuke({_location}, {_radius})
-    set {_fortune} to level of fortune on {_player}'s tool
+    set {_fortune} to {-cached enchantments::%{_player}%::pickaxe::vanilla::fortune}
     set {_money mult} to 1 + ({_fortune} / 2)
 
     async run 0 ticks later:

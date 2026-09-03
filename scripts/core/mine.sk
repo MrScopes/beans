@@ -49,13 +49,13 @@ function blockReward(player: player, tool: item, block: block, reason: text):
     add 1 to {level progress::%{_player}%}
     add 1 to {total level progress::%{_player}%}
 
-    set {_fortune} to level of fortune of {_tool}
+    set {_fortune} to {-cached enchantments::%{_player}%::pickaxe::vanilla::fortune}
     set {_dust} to {-dust::%type of {_block}%} * (1 + ({_fortune} * 0.025))
     add {_dust} to {dust::%{_player}%}
 
     set {_drops::*} to drops of {_block} using {_tool}
     if type of {_block} is packed ice:
-        add ((level of fortune on {_tool} + 1) of packed ice) to {_drops::*}
+        add (({-cached enchantments::%{_player}%::pickaxe::vanilla::fortune} + 1) of packed ice) to {_drops::*}
 
     loop {_drops::*}:
         set {_money} to ({-sell::%type of loop-value%} * item amount of loop-value)
