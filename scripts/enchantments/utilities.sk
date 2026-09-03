@@ -112,9 +112,9 @@ function fastRadiusClear(player: player, location: location, radius: number):
         add {_total dust} to {dust::%{_player}%}
         
 function sortedEnchantments(item: item, player: player = {_}) :: objects:
-    set {_type} to enchantmentTypeFromItem({_item})
     if {_player} is set:
-        set {_enchantments::*} to {-cached enchantments::%{_player}%::%{_type}%::*}
+        set {_type} to enchantmentTypeFromItem(type of {_item})
+        set {_enchantments::*} to keyed {-cached enchantments::%{_player}%::%{_type}%::*}
     else:
         set {_enchantments::*} to custom enchantments of {_item}
 
