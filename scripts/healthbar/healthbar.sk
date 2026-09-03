@@ -6,6 +6,7 @@ function bar(entity: entity):
 
     # healthbar
     spawn text display at {_entity}:
+        hide text display from {_entity}
         set {-healthbar::%{_entity}%} to text display
         make text display not persistent
         make text display ride {_entity}
@@ -20,6 +21,7 @@ function bar(entity: entity):
 
     # health number
     spawn text display at {_entity}:
+        hide text display from {_entity}
         set {-health number::%{_entity}%} to text display
         make text display not persistent
         make text display ride {_entity}
@@ -33,6 +35,7 @@ function bar(entity: entity):
 
     # nametag
     spawn text display at {_entity}:
+        hide text display from {_entity}
         set {-nametag::%{_entity}%} to text display
         make text display not persistent
         make text display ride {-healthbar::%{_entity}%}
