@@ -14,7 +14,7 @@ command /reloadenchantment [<text>]:
     permission: beans.admin
     trigger:
         if arg 1 is set:
-            player command "/sk reload %arg 1%"
+            sender command "/sk reload %arg 1%"
             set {_string::*} to arg 1 split at "\"
             replace all ".sk" in {_string::*} with ""
             if {_string::*} contains "ultimate":
@@ -26,7 +26,7 @@ command /reloadenchantment [<text>]:
             cacheSpecificEnchantment({_enchantment})
             refreshEnchantmentGui()
         else:
-            player command "/sk reload enchantments/"
+            sender command "/sk reload enchantments/custom/"
 
 on tab complete of "/reloadenchantment":
     loop all scripts:
