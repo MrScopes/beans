@@ -17,10 +17,15 @@ on async chat:
 
 	if {-chat reaction::start} is set:
 		if async chat message is "%{-chat reaction::required}%":
+			set {_level} to {level::%player%}
 			if {-chat reaction::reward::money} is set:
-				add {-chat reaction::reward::money} to {money::%player%}
+				set {_money} to {-chat reaction::reward::money}
+				set {_money} to round({_money} + ({_level} * 750))
+				add {_money} to {money::%player%}
 			if {-chat reaction::reward::dust} is set:
-				add {-chat reaction::reward::dust} to {dust::%player%}
+				set {_dust} to {-chat reaction::reward::dust}
+				set {_dust} to round({_dust} + ({_level} * 1.5))
+				add {_dust} to {dust::%player%}
 			if {-chat reaction::reward::beacon} is set:
 				giveBeacons(player, {-chat reaction::reward::beacon})
 			if {-chat reaction::reward::wheel} is set:
@@ -345,14 +350,17 @@ function chatReaction():
 				set {-chat reaction::reward::wheel} to 1
 			set {-chat reaction::reward::beacon} to 1
 			set {-chat reaction::reward::dust} to 100
+			set {-chat reaction::reward::money} to 50000
 	else:
 		set {_job} to "type"
+		set {_difficulty} to "hard"
 		set {-chat reaction::required} to random element out of {-chat reactions::sentences::*}
 		chance of 25%:
 			set {-chat reaction::reward::wheel} to 1
 		set {-chat reaction::reward::beacon} to 1
 		set {-chat reaction::reward::dust} to 100
-	
+		set {-chat reaction::reward::money} to 50000
+
 	if {_difficulty} is "easy":
 		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Small Rewards"))
 	else if {_difficulty} is "hard":
@@ -368,27 +376,34 @@ function chatReaction():
 	send "" to {_chat reaction players::*}
 	send "&7Reward:" to {_chat reaction players::*}
 
-	if {-chat reaction::reward::beacon} is set:
-		if {-chat reaction::reward::beacon} is 1:
-			add "&b&lBEACON" to {_rewards::*}
-		else:
-			add "&b&l%{-chat reaction::reward::beacon}% BEACONS" to {_rewards::*}
+	for {_player} in {_chat reaction players::*}:
+		delete {_rewards::*}
 
-	if {-chat reaction::reward::wheel} is set:
-		if {-chat reaction::reward::wheel} is 1:
-			add "&a&lWHEEL SPIN" to {_rewards::*}
-		else:
-			add "&a&l%{-chat reaction::reward::wheel}% WHEEL SPINS" to {_rewards::*}
+		set {_level} to {level::%{_player}%}
 
-	if {-chat reaction::reward::dust} is set:
-		add "&f%{-dust sprite}%%formatNumber({-chat reaction::reward::dust})%" to {_rewards::*}
+		if {-chat reaction::reward::beacon} is set:
+			if {-chat reaction::reward::beacon} is 1:
+				add "&b&lBEACON" to {_rewards::*}
+			else:
+				add "&b&l%{-chat reaction::reward::beacon}% BEACONS" to {_rewards::*}
 
-	if {-chat reaction::reward::money} is set:
-		add "&b$%kNumber({-chat reaction::reward::money})%" to {_rewards::*}
+		if {-chat reaction::reward::wheel} is set:
+			if {-chat reaction::reward::wheel} is 1:
+				add "&a&lWHEEL SPIN" to {_rewards::*}
+			else:
+				add "&a&l%{-chat reaction::reward::wheel}% WHEEL SPINS" to {_rewards::*}
 
-	set {_reward string} to join {_rewards::*} with "&8, "
-			
-	send formatted {_reward string} to {_chat reaction players::*}
+		if {-chat reaction::reward::dust} is set:
+			set {_dust} to round({-chat reaction::reward::dust} + ({_level} * 1.5))
+			add "&f%{-dust sprite}%&f%formatNumber({_dust})%" to {_rewards::*}
+
+		if {-chat reaction::reward::money} is set:
+			set {_money} to round({-chat reaction::reward::money} + ({_level} * 750))
+			add "&b$%kNumber({_money})%" to {_rewards::*}
+
+		set {_reward string} to join {_rewards::*} with "&8, "
+		send formatted {_reward string} to {_player}
+
 	send "" to {_chat reaction players::*}
 
 	set {-chat reaction::start} to now
