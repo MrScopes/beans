@@ -6,7 +6,7 @@ on load:
 async every 4 minutes and 25 seconds:
     add 1 to {-broadcast}
     if {-broadcast::%{-broadcast}%} is set:
-        send formatted {-broadcast::%{-broadcast}%} to all players
+        send formatted {-broadcast::%{-broadcast}%} to playersWithSetting("server broadcasts", "enabled")
     
     if {-broadcast::%{-broadcast} + 1%} isn't set:
         set {-broadcast} to 0
@@ -14,4 +14,4 @@ async every 4 minutes and 25 seconds:
 command /broadcast <text>:
     permission: beans.mod
     trigger:
-        broadcast formatted ("", "&8| &b&lBEANS &8| &f%arg 1%", "")
+        broadcast formatted ("", " &b&lBEANS &8| &f%arg 1%", "")

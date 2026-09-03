@@ -14,13 +14,13 @@ on load:
     create toggle setting named "chat pinging":
         set setting item to compass
         set setting display to "Chat Pinging"
-        set setting description to "players pinging you in chat"
+        set setting description to "players pinging you in chat &o(note: staff bypass this setting)&7"
         set setting options to "enabled", "disabled"
 
     create toggle setting named "instant wheel":
         set setting item to music disc far
         set setting display to "Instant Wheel Spin"
-        set setting description to "spin the wheel instantly"
+        set setting description to "spinning the wheel instantly"
         set setting options to "enabled", "disabled"
 
     create multi choice setting named "beacon announcements":
@@ -40,3 +40,9 @@ on load:
         set setting display to "Chat Reactions"
         set setting description to "which chat reaction games to see"
         set setting options to "All", "Small Rewards", "Big Rewards", "None"
+
+    create toggle setting named "server broadcasts":
+        set setting item to bell
+        set setting display to "Server Broadcasts"
+        set setting description to "automated server broadcasts"
+        set setting options to "enabled", "disabled"
