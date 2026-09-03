@@ -89,22 +89,34 @@ function updateHealthbar(entity: entity):
 
     if {_deltaHealth} != 0:
         if {_deltaHealth} < 0:
-            set {_damageSegments} to 0 - {_deltaHealth}
-            set {_damageSegments} to clamp({_damageSegments}, 0, {_filledGreen})
-            set {_normalSegments} to {_filledGreen} - {_damageSegments}
+            set {_oldGreen} to {_filledGreen} + (0 - {_deltaHealth})
+            set {_oldGreen} to clamp({_oldGreen}, 0, 50 - {_filledGold})
 
-            add "%{_healthColor}%&m " repeated {_normalSegments} times to {_flashBar::*}
+            add "%{_healthColor}%&m " repeated {_filledGreen} times to {_flashBar::*}
+
+            set {_damageSegments} to {_oldGreen} - {_filledGreen}
+            set {_damageSegments} to clamp({_damageSegments}, 0, 50 - {_filledGreen} - {_filledGold})
+
             add "&4&m " repeated {_damageSegments} times to {_flashBar::*}
-        else:
-            set {_healSegments} to clamp({_deltaHealth}, 0, {_filledGreen})
-            set {_normalSegments} to {_filledGreen} - {_healSegments}
 
-            add "%{_healthColor}%&m " repeated {_normalSegments} times to {_flashBar::*}
+            set {_flashUsed} to {_filledGreen} + {_damageSegments} + {_filledGold}
+
+        else:
+            set {_oldGreen} to {_filledGreen} - {_deltaHealth}
+            set {_oldGreen} to clamp({_oldGreen}, 0, {_filledGreen})
+
+            add "%{_healthColor}%&m " repeated {_oldGreen} times to {_flashBar::*}
+
+            set {_healSegments} to {_filledGreen} - {_oldGreen}
+            set {_healSegments} to clamp({_healSegments}, 0, 50 - {_oldGreen} - {_filledGold})
+
             add "&2&m " repeated {_healSegments} times to {_flashBar::*}
+
+            set {_flashUsed} to {_oldGreen} + {_healSegments} + {_filledGold}
 
         add "&6&m " repeated {_filledGold} times to {_flashBar::*}
 
-        set {_remaining} to 50 - ({_filledGreen} + {_filledGold})
+        set {_remaining} to 50 - {_flashUsed}
         set {_remaining} to clamp({_remaining}, 0, 50)
 
         add "&8&m " repeated {_remaining} times to {_flashBar::*}
@@ -196,10 +208,10 @@ function damageIndicator(entity: entity, damage: number = {_}, healing: number =
         if {_healing} is set:
             set text of {_display} to "&a%{_healing}%"
         else if {_damage} is set:
-            set text of {_display} to "&c%{_damage}%" 
+            set text of {_display} to "&c%{_damage}%"
         apply drop shadow to text of {_display}
         set teleport duration of {_display} to 5 ticks
     teleport {_display} to {_display} ~ vector(0, 0.5, 0)
-    
+
     wait 5 ticks
     kill {_display}
