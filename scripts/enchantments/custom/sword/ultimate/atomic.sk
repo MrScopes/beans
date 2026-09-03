@@ -132,6 +132,9 @@ function atomic(player: player, level: integer):
     while {_ends at} is in the future:
         wait 2 ticks
 
+        if {-atomic active::%{_player}%} isn't set:
+            stop loop
+
         add 2 to {_particle tick}
 
         set {_elapsed} to difference between now and {_started at}
