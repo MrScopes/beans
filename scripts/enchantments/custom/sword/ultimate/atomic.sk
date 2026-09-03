@@ -5,6 +5,27 @@ on load:
         set enchantment priority to 0
         set enchantment item to sea lantern
 
+        level values for "required combo":
+            set level 1 to 6
+            set level 2 to 6
+            set level 3 to 6
+            set level 4 to 6
+            set level 5 to 5
+
+        level values for "percentage":
+            set level 1 to 40%
+            set level 2 to 45%
+            set level 3 to 50%
+            set level 4 to 55%
+            set level 5 to 60%
+
+        level values for "radius":
+            set level 1 to 25
+            set level 2 to 25
+            set level 3 to 25
+            set level 4 to 25
+            set level 5 to 25
+
         level values for "dust cost":
             set level 1 to 275
             set level 2 to 900
@@ -20,21 +41,62 @@ on load:
             set level 5 to 12_800_000
 
 local function getDescription(level: integer) :: string:
-    return "&e[LMB] &7atomic"
+    set {_required combo} to "required combo" of "atomic" at {_level}
+    set {_percentage} to "percentage" of "atomic" at {_level}
+    set {_radius} to "radius" of "atomic" at {_level}
 
-local function onLeftClick(player: player, item: item, level: integer):
+    return "&7after &f%{_required combo}% &7hits without taking damage&8, &7deal &f%{_percentage} * 100%%% &7of enemy max hp within &f%{_radius}%m&8."
+
+local function onAttack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
+    {_victim} isn't an armor stand
+    {clan::%{_victim}%} isn't {clan::%{_attacker}%}
+
+    add 1 to {-atomic combo::%{_attacker}%}
+
+    set {_required combo} to "required combo" of "atomic" at {_level}
+
+    if {-atomic combo::%{_attacker}%} >= {_required combo}:
+        delete {-atomic combo::%{_attacker}%}
+        atomic({_attacker}, {_level})
+
+on damage of player:
+    set {_level} to {-cached enchantments::%victim%::sword::atomic}
+    {_level} is set
+
+    delete {-atomic combo::%victim%}
+
+on quit:
+    delete {-atomic combo::%player%}
+    delete {-atomic active::%player%}
+
+on bound enter with id "spawn":
+    delete {-atomic combo::%player%}
+    delete {-atomic active::%player%}
+
+function atomic(player: player, level: integer):
+    {-atomic active::%{_player}%} isn't set
+    set {-atomic active::%{_player}%} to true
+
+    set {_percentage} to "percentage" of "atomic" at {_level}
+    set {_radius} to "radius" of "atomic" at {_level}
+
     set {_origin} to location of {_player}
     set yaw of {_origin} to 0
     set pitch of {_origin} to 0
     set {_displays::*} to keyed atomicDisplays({_origin})
 
     set {_start size} to 8
-    set {_size} to 50
+    set {_size} to {_radius} * 2
     set {_thickness} to 0.05
     set {_duration} to 4 seconds
 
     set {_half} to {_size} / 2
     set {_edge} to {_size} - {_thickness}
+
+    delete {_old affected::*}
+
+    # INITIAL ACTIVATION
+    playEnchantmentSound("combat", "minecraft:block.beacon.activate", 0.8, 0.5, {_origin}, all players)
 
     wait 2 ticks
 
@@ -64,9 +126,13 @@ local function onLeftClick(player: player, item: item, level: integer):
 
     set {_started at} to now
     set {_ends at} to {_duration} from now
+    set {_particle tick} to 0
+    set {_sound stage} to 0
 
     while {_ends at} is in the future:
         wait 2 ticks
+
+        add 2 to {_particle tick}
 
         set {_elapsed} to difference between now and {_started at}
         set {_progress} to clamp({_elapsed} / {_duration}, 0, 1)
@@ -74,9 +140,57 @@ local function onLeftClick(player: player, item: item, level: integer):
         set {_current size} to {_start size} + (({_size} - {_start size}) * {_progress})
         set {_current half} to {_current size} / 2
 
+        # SOUND STAGES
+        if {_progress} >= 0.25:
+            if {_sound stage} < 1:
+                set {_sound stage} to 1
+                playEnchantmentSound("combat", "minecraft:block.respawn_anchor.charge", 0.5, 0.7, {_origin}, all players)
+
+        if {_progress} >= 0.5:
+            if {_sound stage} < 2:
+                set {_sound stage} to 2
+                playEnchantmentSound("combat", "minecraft:block.respawn_anchor.charge", 0.6, 0.9, {_origin}, all players)
+
+        if {_progress} >= 0.75:
+            if {_sound stage} < 3:
+                set {_sound stage} to 3
+                playEnchantmentSound("combat", "minecraft:block.beacon.power_select", 0.7, 0.6, {_origin}, all players)
+
+        # PARTICLES
+        # Only draw particles every 4 ticks to keep the client load low.
+        if {_particle tick} >= 4:
+            set {_particle tick} to 0
+
+            # EXPANDING SPHERE
+            set {_sphere} to a sphere with radius {_current half}
+            set particle of {_sphere} to electric spark particle
+            set particle density of {_sphere} to 0.5
+            draw shape {_sphere} at {_origin}
+
+        # GROUND RING
+        set {_ring} to a circle with radius {_current half}
+        set particle of {_ring} to electric spark particle
+        set particle density of {_ring} to 0.5
+        draw shape {_ring} at {_origin}
+
+        # HELIX 1
+        set {_helix 1} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
+        set particle of {_helix 1} to electric spark particle
+        set particle density of {_helix 1} to 0.5
+        draw shape {_helix 1} at {_origin}
+
+        # HELIX 2
+        set {_helix 2} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
+        set particle of {_helix 2} to electric spark particle
+        set particle density of {_helix 2} to 0.5
+        draw shape {_helix 2} at {_origin}
+
         delete {_affected::*}
 
         loop all living entities:
+            loop-entity isn't {_player}
+            {clan::%{_player}%} isn't {clan::%loop-entity%}
+
             set {_x} to abs((x of loop-entity) - (x of {_origin}))
             set {_y} to abs((y of loop-entity) - (y of {_origin}))
             set {_z} to abs((z of loop-entity) - (z of {_origin}))
@@ -85,19 +199,34 @@ local function onLeftClick(player: player, item: item, level: integer):
             {_y} <= {_current half}
             {_z} <= {_current half}
 
-            add loop-entity to {_affected::*}
+            set {_uuid} to uuid of loop-entity
+            set {_affected::%{_uuid}%} to loop-entity
 
             send title "" with subtitle "DANGER!" to loop-entity for 2 ticks
-            if loop-entity is not in {_old affected::*}:
+
+            if {_old affected::%{_uuid}%} isn't set:
                 send "one time affected message" to loop-entity
 
         loop {_old affected::*}:
-            if loop-value is not in {_affected::*}:
+            set {_uuid} to loop-index
+            if {_affected::%{_uuid}%} isn't set:
                 send title "" with subtitle "SAFE!" to loop-value for 2 ticks
 
-        set {_old affected::*} to {_affected::*}
+        delete {_old affected::*}
+
+        loop {_affected::*}:
+            set {_uuid} to loop-index
+            set {_old affected::%{_uuid}%} to loop-value
+
+    # FINAL DETONATION
+    playEnchantmentSound("combat", "minecraft:entity.generic.explode", 0.8, 0.5, {_origin}, all players)
 
     loop {_affected::*}:
+        set {_max hp} to loop-value's max health
+        set {_damage} to clamp({_max hp} * {_percentage}, 0, {_max hp})
+        damage loop-value by customDamage(loop-value, {_damage}, {_player})
         send "You were affected!" to loop-value
-        
+
     delete entities within {_displays::*}
+
+    delete {-atomic active::%{_player}%}
