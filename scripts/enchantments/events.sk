@@ -83,6 +83,9 @@ on projectile hit with priority highest:
         startEnchantCooldown(shooter, {_enchantment}, {_level})
         run {_onHit} with arguments (shooter, shooter's tool, projectile, {_level}, {-%projectile%::force}, (victim ? block))
 
+on attack attempt:
+    set {-pre attack cooldown::%attacker%} to attack cooldown of attacker
+
 on damage with priority highest:
     event isn't cancelled
     final damage > 0
@@ -107,6 +110,7 @@ on damage with priority highest:
             add result of {_onAttack} with arguments (attacker, victim, projectile, {_level}, {-%projectile%::force}, damage) to damage
 
     else if damage cause is attack:
+        {-pre attack cooldown::%attacker%} is 1
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool, attacker):
             set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
             {_onAttack} is set
@@ -157,6 +161,8 @@ on damage with priority highest:
 
     if damage < 0:
         cancel event
+
+    delete {-pre attack cooldown::%attacker%}
 
 on swap items:
     bounds at player does not contain bound with id "spawn"
