@@ -70,7 +70,7 @@ function updateHealthbar(entity: entity):
 
     {_maxHealth} > 0
 
-    set {_totalPercentage} to (({_currentHealth} + {_absorption}) / {_maxHealth}) * 100
+    set {_totalPercentage} to ceil((({_currentHealth} + {_absorption}) / {_maxHealth}) * 100)
     set text of {-health number::%{_entity}%} to "%round({_totalPercentage})%"
 
     set {_totalCapacity} to {_maxHealth} + {_absorption}
