@@ -1,0 +1,43 @@
+function searchClan(input: text) :: number:
+    if {clans::%{_input}%::id} is set:
+        return {clans::%{_input}%::id}
+
+    set {_offlineplayer} to offlineplayer({_input}, false)
+    if {_offlineplayer} is set:
+        if {_offlineplayer}'s name is {_input}:
+            set {_offlineplayer clan} to {clan::%{_offlineplayer}%}
+            if {_offlineplayer clan} is set:
+                if {clans::%{_offlineplayer clan}%::id} is set:
+                    return {clans::%{_offlineplayer clan}%::id}
+
+    loop all players:
+        if {clan::%loop-player%} is set:
+            if loop-player's name is {_input}:
+                set {_player clan} to {clan::%loop-player%}
+                if {_player clan} is set:
+                    if {clans::%{_player clan}%::id} is set:
+                        return {clans::%{_player clan}%::id}
+    
+    loop indexes of {clans::*}:
+        if {clans::%loop-value%::name} is {_input}:
+            return {clans::%loop-value%::id}
+        else if {clans::%loop-value%::player::%{_input}%} is set:
+            return {clans::%loop-value%::id}
+
+function clanMaxMembers(id: number) :: number:
+    return {-default max members}
+
+function clanNameValid(name: text) :: boolean:
+    if searchClan({_name}) is set:
+        return false
+        
+    if length of {_name} < 3:
+        return false
+
+    if length of {_name} > 16:
+        return false
+
+    if {_name} doesn't match "^[A-Za-z0-9]+$":
+        return false
+
+    return true

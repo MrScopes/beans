@@ -3,14 +3,20 @@
 # {clans::%id%::id} = id of the clan
 # {clans::%id%::name} = name of the clan
 # {clans::%id%::owner} = uuid of the owner of the clan
-# {clans::%id%::members::*} = uuid of the members of the clan
+# {clans::%id%::created at} = date of when the clan was created
+# {clans::%id%::members::*} = members of the clan
 
 on load:
     set {clans::1::id} to 1
     set {clans::1::name} to "beans"
-    set {clans::1::owner} to player "MrScopes"
-    set {clans::1::members::*} to player "MrScopes" and offlineplayer("Notch")
-    set {clan::649ddc08-5406-4d15-83ab-c00974a7fee7} to 1
+    set {clans::1::owner} to offlineplayer("Notch")
+    set {clans::1::members::*} to offlineplayer("Notch")
+    set {clans::1::created at} to now
+    set {clan::%offlineplayer("Notch")%} to 1
+
+    add 1 to {-clan invites::%player "MrScopes"%::*}
+
+    set {-default max members} to 3
 
 command /clan [<text>] [<text>] [<text>]:
     trigger:
@@ -56,20 +62,19 @@ command /clan [<text>] [<text>] [<text>]:
                         if arg 3 isn't set:
                             send "&c/clan manage create (clan name)"
                         else:
-                            loop {clans::*}:
-                                if {clans::%loop-value%::name} is arg 3:
-                                    send "&cA clan with that name already exists."
-                                    stop
+                            if clanNameValid(arg 3) is false:
+                                send "&cChoose another name."
+                            else:
+                                set {_id} to size of {clans::*} + 1
+                                set {clans::%{_id}%::id} to {_id}
+                                set {clans::%{_id}%::name} to arg 3
+                                set {clans::%{_id}%::owner} to player
+                                set {clans::%{_id}%::members::*} to player
+                                set {clans::%{_id}%::created at} to now
+                                set {clan::%player%} to {_id}
 
-                            set {_id} to size of {clans::*} + 1
-                            set {clans::%{_id}%::id} to {_id}
-                            set {clans::%{_id}%::name} to arg 3
-                            set {clans::%{_id}%::owner} to player
-                            set {clans::%{_id}%::members::*} to player
-                            set {clan::%player%} to {_id}
-
-                            run 0 ticks later:
-                                player command "/clan info"
+                                run 0 ticks later:
+                                    player command "/clan info"
                             
                 else if arg 2 is "disband":
                     if {clan::%player%} isn't set:
@@ -162,12 +167,15 @@ command /clan [<text>] [<text>] [<text>]:
                 else:
                     if {-clan invites::%player%::*} contains {_searched clan}:
                         set {clan::%player%} to {_searched clan}
-                        add player to {clans::%{_searched clan}%::members::*}
-                        remove {_searched clan} from {-clan invites::%player%::*}
-                        loop {clans::%{_searched clan}%::members::*}:
-                            send formatted "%playerDisplay(player)% &7has joined the clan." to loop-value
-                        run 0 ticks later:
-                            player command "/clan info"
+                        if size of {clans::%{_searched clan}%::members::*} >= clanMaxMembers({_searched clan}):
+                            send "&cThat clan is full."
+                        else:
+                            add player to {clans::%{_searched clan}%::members::*}
+                            remove {_searched clan} from {-clan invites::%player%::*}
+                            loop {clans::%{_searched clan}%::members::*}:
+                                send formatted "%playerDisplay(player)% &7has joined the clan." to loop-value
+                            run 0 ticks later:
+                                player command "/clan info"
                     else:
                         send "&cYou aren't invited to that clan."
             else if arg 1 is "leave":
@@ -185,7 +193,6 @@ command /clan [<text>] [<text>] [<text>]:
                 run 0 ticks later:
                     player command "/clan"
                     
-
 on tab complete of "/clan":
     set tab completions for position 1 to "info", "manage", "join", and "leave"
     set tab completions for position 2 to "create", "disband", "transfer", "invite", and "kick"
@@ -201,44 +208,11 @@ on tab complete of "/clan":
             set {_applicable::*} to all players where [{clan::%input%} isn't {clan::%player%}]
             set tab completions for position 3 to {_applicable::*}
 
+    else if tab arg 1 is "join":
+        set {_invited::*} to {-clan invites::%player%::*}
+        loop {_invited::*}:
+            add {clans::%loop-value%::name} to {_names::*}
+        set tab completions for position 2 to {_names::*}
+
     if player has permission "beans.admin":
         add "admin" to tab completions for position 1
-
-function searchClan(input: text) :: number:
-    if {clans::%{_input}%::id} is set:
-        return {clans::%{_input}%::id}
-
-    set {_offlineplayer} to offlineplayer({_input}, false)
-    if {_offlineplayer} is set:
-        if {_offlineplayer}'s name is {_input}:
-            set {_offlineplayer clan} to {clan::%{_offlineplayer}%}
-            if {_offlineplayer clan} is set:
-                if {clans::%{_offlineplayer clan}%::id} is set:
-                    return {clans::%{_offlineplayer clan}%::id}
-
-    loop all players:
-        if {clan::%loop-player%} is set:
-            if loop-player's name is {_input}:
-                set {_player clan} to {clan::%loop-player%}
-                if {_player clan} is set:
-                    if {clans::%{_player clan}%::id} is set:
-                        return {clans::%{_player clan}%::id}
-    
-    loop indexes of {clans::*}:
-        broadcast "%{clans::%loop-value%::name}%"
-        if {clans::%loop-value%::name} is {_input}:
-            return {clans::%loop-value%::id}
-        else if {clans::%loop-value%::player::%{_input}%} is set:
-            return {clans::%loop-value%::id}
-
-import:
-    com.destroystokyo.paper.event.server.AsyncTabCompleteEvent
-    java.util.List
-
-on AsyncTabCompleteEvent:
-    set {_buffer::*} to split event.getBuffer() at " "
-
-    if {_buffer::1} is "/tab":
-        set {_completion} to AsyncTabCompleteEvent.Completion.completion("test", formatted "tooltip")
-        set {_list} to List.of({_completion})
-        event.completions({_list})
