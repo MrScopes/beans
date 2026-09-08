@@ -254,24 +254,10 @@ function atomic(player: player, level: integer):
             {_y} <= {_current half}
             {_z} <= {_current half}
 
-            set {_uuid} to uuid of loop-entity
-            set {_affected::%{_uuid}%} to loop-entity
+            add loop-entity to {_affected::*}
 
+            add potion effect of slowness 1 for 1 second to loop-entity's potion effects
             send title "" with subtitle "DANGER!" to loop-entity for 2 ticks
-
-            if {_old affected::%{_uuid}%} isn't set:
-                send "one time affected message" to loop-entity
-
-        loop {_old affected::*}:
-            set {_uuid} to loop-index
-            if {_affected::%{_uuid}%} isn't set:
-                send title "" with subtitle "SAFE!" to loop-value for 2 ticks
-
-        delete {_old affected::*}
-
-        loop {_affected::*}:
-            set {_uuid} to loop-index
-            set {_old affected::%{_uuid}%} to loop-value
 
     loop 5 times:
         wait 4 ticks
