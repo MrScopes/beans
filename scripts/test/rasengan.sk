@@ -1,0 +1,287 @@
+function rasengan(player: player, duration: timespan):
+    add potion effect of speed 3 for {_duration} to {_player}'s potion effects
+    add potion effect of resistance 1 for {_duration} to {_player}'s potion effects
+
+    # -------------------------
+    # PARTICLES
+    # -------------------------
+
+    set {_blue} to a light blue dust particle of size 0.8
+    set {_white} to a white dust particle of size 0.55
+
+    create a new custom electric spark particle:
+        count: 0
+        force: true
+    set {_spark} to last created particle
+
+    # -------------------------
+    # RASENGAN SHAPES
+    # -------------------------
+
+    set {_core} to a sphere with radius 0.06
+
+    set {_spiral1} to a helix with radius 0.18, height 0.26, and winding rate of 5
+    set {_spiral2} to a helix with radius 0.18, height 0.26, and winding rate of 5
+    set {_spiral3} to a helix with radius 0.17, height 0.25, and winding rate of 5
+
+    set {_spiral4} to a helix with radius 0.16, height 0.23, and winding rate of 6
+
+    set {_spark1} to a helix with radius 0.145, height 0.22, and winding rate of 6
+    set {_spark2} to a helix with radius 0.135, height 0.21, and winding rate of 6
+
+    # -------------------------
+    # PARTICLE DENSITY
+    # -------------------------
+
+    set particle density of {_core} to 6
+
+    set particle density of {_spiral1} to 15
+    set particle density of {_spiral2} to 15
+    set particle density of {_spiral3} to 14
+    set particle density of {_spiral4} to 7
+
+    set particle density of {_spark1} to 7
+    set particle density of {_spark2} to 6
+
+    # -------------------------
+    # CENTER HELICES
+    # -------------------------
+
+    set offset vector of {_spiral1} to vector(0, -0.13, 0)
+    set offset vector of {_spiral2} to vector(0, -0.13, 0)
+    set offset vector of {_spiral3} to vector(0, -0.125, 0)
+    set offset vector of {_spiral4} to vector(0, -0.115, 0)
+
+    set offset vector of {_spark1} to vector(0, -0.11, 0)
+    set offset vector of {_spark2} to vector(0, -0.105, 0)
+
+    # -------------------------
+    # SPIRAL PLANES
+    # -------------------------
+
+    rotate shape {_spiral2} around x axis by 90 degrees
+    rotate shape {_spiral3} around z axis by 90 degrees
+
+    rotate shape {_spiral4} around x axis by 45 degrees
+    rotate shape {_spiral4} around z axis by 45 degrees
+
+    rotate shape {_spark1} around x axis by 60 degrees
+    rotate shape {_spark1} around z axis by 25 degrees
+
+    rotate shape {_spark2} around z axis by 70 degrees
+    rotate shape {_spark2} around x axis by -25 degrees
+
+    # -------------------------
+    # ASSIGN PARTICLES
+    # -------------------------
+
+    set particle of {_core} to {_blue}
+
+    set particle of {_spiral1} to {_blue}
+    set particle of {_spiral2} to {_blue}
+    set particle of {_spiral3} to {_blue}
+
+    set particle of {_spiral4} to {_white}
+
+    set particle of {_spark1} to {_spark}
+    set particle of {_spark2} to {_spark}
+
+    # -------------------------
+    # FORMING SOUND
+    # -------------------------
+
+    play sound "block.beacon.power_select" with volume 1 and pitch 1.8 at {_player}
+    play sound "entity.allay.ambient_with_item" with volume 0.6 and pitch 2 at {_player}
+
+    # -------------------------
+    # MOVEMENT TRACKING
+    # -------------------------
+
+    set {_lastLoc} to {_player}'s location
+
+    # -------------------------
+    # RASENGAN ANIMATION
+    # -------------------------
+
+    loop (ticks of {_duration}) times:
+
+        # -------------------------
+        # ACTUAL PLAYER MOVEMENT
+        # -------------------------
+
+        set {_currentLoc} to {_player}'s location
+
+        set {_currentX} to x coordinate of {_currentLoc}
+        set {_currentZ} to z coordinate of {_currentLoc}
+
+        set {_lastX} to x coordinate of {_lastLoc}
+        set {_lastZ} to z coordinate of {_lastLoc}
+
+        set {_moveX} to {_currentX} - {_lastX}
+        set {_moveZ} to {_currentZ} - {_lastZ}
+
+        set {_lastLoc} to {_currentLoc}
+
+        # -------------------------
+        # PLAYER DIRECTION
+        # -------------------------
+
+        set {_forward} to vector from yaw {_player}'s yaw and pitch 0
+
+        set {_fx} to x component of {_forward}
+        set {_fz} to z component of {_forward}
+
+        # -------------------------
+        # LEFT HAND POSITION
+        # -------------------------
+
+        set {_loc} to {_player}'s eye location
+
+        # Slightly in front
+        add ({_fx} * 0.30) to x coordinate of {_loc}
+        add ({_fz} * 0.30) to z coordinate of {_loc}
+
+        # Player's left side
+        add ({_fz} * 0.40) to x coordinate of {_loc}
+        add ((0 - {_fx}) * 0.40) to z coordinate of {_loc}
+
+        # Hand height
+        remove 0.67 from y coordinate of {_loc}
+
+        # -------------------------
+        # MOVEMENT COMPENSATION
+        # -------------------------
+
+        set {_prediction} to 2.5
+
+        add ({_moveX} * {_prediction}) to x coordinate of {_loc}
+        add ({_moveZ} * {_prediction}) to z coordinate of {_loc}
+
+        # -------------------------
+        # DRAW RASENGAN
+        # -------------------------
+
+        draw shape {_core} at {_loc}
+
+        draw shape {_spiral1} at {_loc}
+        draw shape {_spiral2} at {_loc}
+        draw shape {_spiral3} at {_loc}
+        draw shape {_spiral4} at {_loc}
+
+        draw shape {_spark1} at {_loc}
+        draw shape {_spark2} at {_loc}
+
+        # -------------------------
+        # RASENGAN SOUND
+        # -------------------------
+
+        if mod(loop-number, 1) = 0:
+            play sound "entity.evoker_fangs.attack" with volume 0.02 and pitch 2 at {_loc}
+
+        if mod(loop-number, 1) = 0:
+            play sound "item.trident.thunder" with volume 0.02 and pitch 2 at {_loc}
+
+        if mod(loop-number, 1) = 0:
+            play sound "block.respawn_anchor.deplete" with volume 0.1 and pitch 2 at {_loc}
+
+        # -------------------------
+        # HIT DETECTION
+        # -------------------------
+
+        set {_hit} to false
+
+        loop living entities in radius 2 around {_loc}:
+            if loop-entity is not {_player}:
+
+                # -------------------------
+                # DAMAGE + DEBUFFS
+                # -------------------------
+
+                damage(loop-entity, {_player}, 5)
+
+                add potion effect of slowness 2 for 5 seconds to loop-entity's potion effects
+                add potion effect of blindness 1 for 1 second to loop-entity's potion effects
+
+                # -------------------------
+                # IMPACT LOCATION
+                # -------------------------
+
+                set {_impact} to loop-entity's location
+                add 1 to y coordinate of {_impact}
+
+                # -------------------------
+                # IMPACT PARTICLES
+                # -------------------------
+
+                # Dense blue chakra burst
+                draw 35 light blue dust particles with a distribution of vector(0.45, 0.45, 0.45) at {_impact}
+
+                # Bright white center flash
+                draw 20 white dust particles with a distribution of vector(0.30, 0.30, 0.30) at {_impact}
+
+                # Chaotic chakra sparks
+                draw 25 electric spark particles with a distribution of vector(0.50, 0.50, 0.50) at {_impact}
+
+                # Larger outer energy burst
+                draw 18 light blue dust particles with a distribution of vector(0.75, 0.55, 0.75) at {_impact}
+
+                # Small white fragments around the outside
+                draw 10 white dust particles with a distribution of vector(0.65, 0.45, 0.65) at {_impact}
+
+                # -------------------------
+                # IMPACT SOUND
+                # -------------------------
+
+                play sound "entity.generic.explode" with volume 1 and pitch 2 at {_impact}
+
+                # -------------------------
+                # KNOCKBACK
+                # -------------------------
+
+                set {_targetLoc} to loop-entity's location
+                set {_playerLoc} to {_player}'s location
+
+                set {_dx} to (x coordinate of {_targetLoc}) - (x coordinate of {_playerLoc})
+                set {_dz} to (z coordinate of {_targetLoc}) - (z coordinate of {_playerLoc})
+
+                set {_length} to sqrt(({_dx} * {_dx}) + ({_dz} * {_dz}))
+
+                if {_length} > 0:
+                    set {_dx} to {_dx} / {_length}
+                    set {_dz} to {_dz} / {_length}
+
+                set {_knockback} to vector(({_dx} * 1.25), 0.55, ({_dz} * 1.25))
+
+                set velocity of loop-entity to {_knockback}
+
+                set {_hit} to true
+                stop loop
+
+        # -------------------------
+        # END RASENGAN ON IMPACT
+        # -------------------------
+
+        if {_hit} is true:
+            stop loop
+
+        # -------------------------
+        # MAIN CHAKRA SWIRL
+        # -------------------------
+
+        rotate shape {_spiral1} around vector(0, 1, 0) by 44 degrees
+        rotate shape {_spiral2} around vector(1, 0, 0) by -48 degrees
+        rotate shape {_spiral3} around vector(0, 0, 1) by 52 degrees
+        rotate shape {_spiral4} around vector(1, 1, 0) by -46 degrees
+
+        # -------------------------
+        # ELECTRIC ENERGY SWIRL
+        # -------------------------
+
+        rotate shape {_spark1} around vector(1, 0, 1) by 63 degrees
+        rotate shape {_spark2} around vector(0, 1, 1) by -68 degrees
+
+        wait 1 tick
+
+command /rasengan:
+    trigger:
+        rasengan(player, 5 seconds)
