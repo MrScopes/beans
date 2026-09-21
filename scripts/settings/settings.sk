@@ -8,7 +8,7 @@ on load:
     create toggle setting named "combat enchantment sounds":
         set setting item to diamond sword
         set setting display to "Combat Enchantment Sounds"
-        set setting description to "play combat enchantment sounds"
+        set setting description to "combat enchantment sounds"
         set setting options to "enabled", "disabled"
 
     create toggle setting named "chat pinging":
