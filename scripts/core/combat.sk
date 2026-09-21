@@ -80,9 +80,11 @@ command /protection:
             if {pvp protection::%player%} is set:
                 send ""
                 send " &bYou have PVP protection enabled."
-                send " &bTo disable it, Run the command again within 10s to confirm."
+                send " &bTo disable it forever, Run the command again within 10s."
                 send ""
                 set {-pvp protection confirm::%player%} to 10 seconds from now
+            else:
+                send "&cYour PVP protection is permanently disabled."
 
 on damage with priority low:
     event isn't canceled
@@ -97,3 +99,9 @@ on damage with priority low:
     else if {pvp protection::%victim%} is set:
         cancel event
         send "&7That player has starter PVP protection on." to attacker
+
+on bound exit with id "spawn":
+    {pvp protection::%player%} is set
+    {level::%player%} >= 20
+    delete {pvp protection::%player%}
+    send "&cYour PVP protection has been disabled."
