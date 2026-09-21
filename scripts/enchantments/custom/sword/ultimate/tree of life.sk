@@ -94,7 +94,7 @@ local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of "tree_of_life" at {_level}
     set {_heal} to "heal" of "tree_of_life" at {_level}
 
-    return "buffs allies within &f%{_radius}%m &7for &f%timeFormat({_duration})% &8(&f%effectDisplay({_speed})% %effectDisplay({_regeneration})% %effectDisplay({_healthBoost})% %effectDisplay({_resistance})% %effectDisplay({_strength})%&8, &f%{_heal}%<sprite:gui:hud/heart/full>&8)"
+    return "&e[F] &7buffs allies within &f%{_radius}%m &7for &f%timeFormat({_duration})% &8(&f%effectDisplay({_speed})% %effectDisplay({_regeneration})% %effectDisplay({_healthBoost})% %effectDisplay({_resistance})% %effectDisplay({_strength})%&8, &f%{_heal}%<sprite:gui:hud/heart/full>&8)"
 
 local function onOffHand(player: player, item: item, level: integer) :: boolean:
     add 1 to {-tree of life session::%{_player}%}
