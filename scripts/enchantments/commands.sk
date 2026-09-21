@@ -10,30 +10,68 @@ command /ce <text> <integer> [<text>] [<text>]:
                     set data tag "special_%arg 1%" of (player's tool) to arg 4
                 set player's tool to enchantItem(player's tool, arg 1, arg 2, player)
 
+import:
+    java.util.List
+    java.nio.file.Files
+    java.nio.file.Paths
+    com.destroystokyo.paper.event.server.AsyncTabCompleteEvent
+
+function cacheEnchantmentFileNames():
+    delete {-cached enchantment file::*}
+
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/sword/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/sword/ultimate/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/armor/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/armor/ultimate/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/bow/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/bow/ultimate/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/pickaxe/") to {_enchantment files::*}
+    add filesAndCloseStream("plugins/Skript/scripts/enchantments/custom/pickaxe/ultimate/") to {_enchantment files::*}
+
+    for {_file} in {_enchantment files::*}:
+        set {_name} to {_file}.getFileName().toString()
+        replace all ".sk" with "" in {_name}
+        replace all " " with "_" in {_name}
+        set {-cached enchantment file::%{_name}%} to {_file}
+
+function filesAndCloseStream(path: string) :: objects:
+    set {_stream} to Files.list(Paths.get({_path}))
+    set {_files::*} to ...{_stream}
+    {_stream}.close()
+    return {_files::*}
+
 command /reloadenchantment [<text>]:
     permission: beans.admin
     trigger:
+        cacheEnchantmentFileNames()
+
         if arg 1 is set:
-            sender command "/sk reload %arg 1%"
-            set {_string::*} to arg 1 split at "\"
-            replace all ".sk" in {_string::*} with ""
-            if {_string::*} contains "ultimate":
-                set {_enchantment} to {_string::5}
+            set {_file} to {-cached enchantment file::%arg 1%}
+            if {_file} isn't set:
+                send "&cEnchantment not found."
             else:
-                set {_enchantment} to {_string::4}
-            replace all " " with "_" in {_enchantment}
-            wait 1 ticks
-            cacheSpecificEnchantment({_enchantment})
-            refreshEnchantmentGui()
+                set {_name} to {-cached enchantment file::%arg 1%}.toString()
+                replace all "plugins\Skript\scripts" with "" in {_name}
+                sender command "/sk reload %{_name}%"
+                wait 1 tick
+                cacheSpecificEnchantment(arg 1)
+                refreshEnchantmentGui()
         else:
             sender command "/sk reload enchantments/custom/"
+            sender command "/sk reload enchantments/zcache.sk"
 
-on tab complete of "/reloadenchantment":
-    loop all scripts:
-        if loop-value starts with "enchantments\custom":
-            add loop-value to {_completions::*}
-    
-    set tab completions for position 1 to {_completions::*}
+on AsyncTabCompleteEvent:
+    if event.getBuffer() starts with "/reloadenchantment ":
+        cacheEnchantmentFileNames()
+
+        set {_input} to event.getBuffer()
+        replace first "/reloadenchantment " with "" in {_input}
+
+        loop indexes of {-cached enchantment file::*}:
+            if loop-value starts with {_input}:
+                add loop-value to {_completions::*}
+
+        event.setCompletions(List.of({_completions::*}))
 
 command /upgrade:
     trigger:
