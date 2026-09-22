@@ -8,10 +8,10 @@ on load:
 
 async every 4 minutes and 7 seconds:
     add 1 to {-broadcast}
-    if {-broadcast::%{-broadcast}%} is set:
+    if {-broadcast::%{-broadcast}%::*} is set:
         send {-broadcast::%{-broadcast}%::*} to playersWithSetting("server broadcasts", "enabled")
     
-    if {-broadcast::%{-broadcast} + 1%} isn't set:
+    if {-broadcast::%{-broadcast} + 1%::*} isn't set:
         set {-broadcast} to 0
 
 command /broadcast <text>:
