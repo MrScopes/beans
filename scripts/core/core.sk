@@ -294,27 +294,31 @@ command /rules:
         send ""
 
 on drop:
+    player's gamemode isn't creative
     if any:
-        {_item} is tagged with paper tag "swords"
-        {_item} is tagged with paper tag "bows"
-        {_item} is tagged with paper tag "pickaxes"
-        {_item} is tagged with paper tag "helmets"
+        event-item is tagged with paper tag "swords"
+        event-item is tagged with paper tag "bows"
+        event-item is tagged with paper tag "pickaxes"
+        event-item is tagged with paper tag "helmets"
         data tag "stored_level" of event-item is set
     then:
-        if {level::%player%} < 25:
+        if bound at player doesn't contain bound with id "spawn":
             cancel event
-            send "&cYou can't drop those items until level 25." to player
         else:
-            if any:
-                {-drop confirm::%event-item%} isn't set
-                difference between {-drop confirm::%event-item%} and now > 10 seconds
-            then:
-                send "&cAre you sure you want to drop this? Drop it again within 10s." to player
+            if {level::%player%} < 25:
                 cancel event
-                set {-drop confirm::%event-item%} to 10 seconds from now
+                send "&cYou can't drop those items until level 25." to player
             else:
-                if difference between {-drop confirm::%event-item%} and now < 10 seconds:
-                    delete {-drop confirm::%event-item%}
+                if any:
+                    {-drop confirm::%event-item%} isn't set
+                    difference between {-drop confirm::%event-item%} and now > 10 seconds
+                then:
+                    send "&cAre you sure you want to drop this? Drop it again within 10s." to player
+                    cancel event
+                    set {-drop confirm::%event-item%} to 10 seconds from now
+                else:
+                    if difference between {-drop confirm::%event-item%} and now < 10 seconds:
+                        delete {-drop confirm::%event-item%}
 
 on projectile hit with priority monitor:
     projectile is an arrow
