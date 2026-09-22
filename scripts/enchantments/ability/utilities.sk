@@ -1,0 +1,34 @@
+using reflection
+
+function bindText(bind: string) :: string:
+    return switch return {_bind}:
+        case "right click" -> "RMB"
+        case "sneak right click" -> "Sneak + RMB"
+        case "left click" -> "LMB"
+        case "sneak left click" -> "Sneak + LMB"
+        case "offhand" -> "Swap Offhand"
+        case "sneak offhand" -> "Sneak + Swap Offhand"
+        case "drop" -> "Drop"
+        case "sneak drop" -> "Sneak + Drop"
+
+function currentAbilities(player: player) :: objects:
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool, {_player}):
+        add {-ce::%{_enchantment}%::abilities::*} to {_abilities::*}
+
+    return {_abilities::*}
+
+function runAbilityBind(player: player, bind: string) :: boolean:
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool, {_player}):
+        for {_ability} in {-ce::%{_enchantment}%::abilities::*}:
+            ability bind of {_ability} for {_player} is {_bind}
+
+            set {_function} to ability function of {_ability}
+            {_function} is set
+
+            enchantCanRun({_player}, {_enchantment}, {_level}) is true
+
+            startEnchantCooldown({_player}, {_enchantment}, {_level})
+            run {_function} with arguments ({_player}, {_level})
+            return true
+
+    return false

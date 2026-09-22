@@ -1,0 +1,35 @@
+on right click with priority monitor:
+    bounds at player does not contain bound with id "spawn"
+
+    if player is pressing sneak key:
+        runAbilityBind(player, "sneak right click")
+    else:
+        runAbilityBind(player, "right click")
+
+on left click with priority monitor:
+    bounds at player does not contain bound with id "spawn"
+
+    if player is pressing sneak key:
+        runAbilityBind(player, "sneak left click")
+    else:
+        runAbilityBind(player, "left click")
+
+on swap items:
+    bounds at player does not contain bound with id "spawn"
+
+    if player is pressing sneak key:
+        if runAbilityBind(player, "sneak offhand") is true:
+            cancel event
+    else:
+        if runAbilityBind(player, "offhand") is true:
+            cancel event
+
+on drop:
+    bounds at player does not contain bound with id "spawn"
+
+    if player is pressing sneak key:
+        if runAbilityBind(player, "sneak drop") is true:
+            cancel event
+    else:
+        if runAbilityBind(player, "drop") is true:
+            cancel event

@@ -1,0 +1,40 @@
+condition create ability named %string%:
+    check:
+        set {-current ce ability} to expr-1
+        set {_current enchantment} to {-current ce::name}
+
+        delete {-ce ability::%expr-1%::*}
+
+        if {-ce::%{_current enchantment}%::abilities::*} doesn't contain expr-1:
+            add expr-1 to {-ce::%{_current enchantment}%::abilities::*}
+
+        return true
+
+expression ability function [of %-string%]:
+    get:
+        set {_current ability} to expr-1 ? {-current ce ability}
+        return {-ce ability::%{_current ability}%::function}
+    set:
+        set {_current ability} to expr-1 ? {-current ce ability}
+        set {-ce ability::%{_current ability}%::function} to change value 
+
+expression ability bind [of %-string% [for %-player%]]:
+    get:
+        set {_ability} to expr-1 ? {-current ce ability}
+
+        set {_bind} to {-ce ability::%{_ability}%::bind}
+
+        if expr-2 is set:
+            set {_bind} to {ability bind::%expr-2%::%{_ability}%} ? {_bind}
+
+        return {_bind}
+    set:
+        set {_ability} to expr-1 ? {-current ce ability}
+        if expr-2 is set:
+            set {ability bind::%expr-2%::%{_ability}%} to change value
+        else:
+            set {-ce ability::%{_ability}%::bind} to change value
+    reset:
+        set {_ability} to expr-1 ? {-current ce ability}
+        if expr-2 is set:
+            delete {ability bind::%expr-2%::%{_ability}%}

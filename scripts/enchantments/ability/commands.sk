@@ -1,0 +1,45 @@
+on load:
+    set {-ability binds::*} to "reset", "right click", "sneak right click", "left click", "sneak left click", "offhand", "sneak offhand", "drop", "sneak drop"
+
+command /bind <ability: text> <bind: text>:
+    trigger:
+        set {_abilities::*} to currentAbilities(player)
+        if {_abilities::*} doesn't contain {_ability}:
+            send "&cYou do not have that ability."
+        else:
+            if {-ability binds::*} doesn't contain arg 2:
+                send "&cInvalid bind."
+            else:
+                if {_bind} is "reset":
+                    reset ability bind of {_ability} for player
+                else:
+                    set ability bind of {_ability} for player to {_bind}
+                send "&7Ability bind for &f%proper case {_ability}% &7has been set to &e[%bindText(ability bind of {_ability} for player)%]&8."
+                updateInventory(player's inventory)
+        
+import:
+    com.destroystokyo.paper.event.server.AsyncTabCompleteEvent
+    java.util.List
+
+on AsyncTabCompleteEvent:
+    if event.getBuffer().startsWith("/bind "):
+        set {_abilities::*} to currentAbilities(event.getSender())
+
+        set {_input} to event.getBuffer()
+        replace first "/bind " with "" in {_input}
+
+        for {_ability} in {_abilities::*}:
+            if {_input} doesn't start with "%{_ability}% ":
+                if {_ability} starts with {_input}:
+                    add {_ability} to {_completions::*}
+            else:
+                set {_bindInput} to {_input}
+                replace first "%{_ability}% " with "" in {_bindInput}
+
+                for {_bind} in {-ability binds::*}:
+                    if {_bind} starts with {_bindInput}:
+                        add {_bind} to {_completions::*}
+
+                stop loop
+
+        event.setCompletions(List.of({_completions::*}))
