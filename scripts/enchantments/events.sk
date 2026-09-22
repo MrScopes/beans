@@ -111,6 +111,7 @@ on damage with priority highest:
 
     else if damage cause is attack:
         {-pre attack cooldown::%attacker%} is 1
+
         for {_enchantment}, {_level} in keyed sortedEnchantments(attacker's tool, attacker):
             set {_onAttack} to {-ce::%{_enchantment}%::onAttack}
             {_onAttack} is set
@@ -164,50 +165,12 @@ on damage with priority highest:
 
     delete {-pre attack cooldown::%attacker%}
 
-on swap items:
-    bounds at player does not contain bound with id "spawn"
-
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
-        set {_onOffHand} to {-ce::%{_enchantment}%::onOffHand}
-        {_onOffHand} is set
-
-        enchantCanRun(player, {_enchantment}, {_level}) is true
-
-        startEnchantCooldown(player, {_enchantment}, {_level})
-        set {_should cancel} to result of {_onOffHand} with arguments (player, player's tool, {_level})
-
-        if {_should cancel} is true:
-            cancel event
-
-on right click with priority monitor:
-    bounds at player does not contain bound with id "spawn"
-
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
-        set {_onRightClick} to {-ce::%{_enchantment}%::onRightClick}
-        {_onRightClick} is set
-
-        enchantCanRun(player, {_enchantment}, {_level}) is true
-
-        startEnchantCooldown(player, {_enchantment}, {_level})
-        run {_onRightClick} with arguments (player, player's tool, {_level})
-
-on left click with priority monitor:
-    bounds at player does not contain bound with id "spawn"
-
-    for {_enchantment}, {_level} in keyed sortedEnchantments(player's tool, player):
-        set {_onLeftClick} to {-ce::%{_enchantment}%::onLeftClick}
-        {_onLeftClick} is set
-
-        enchantCanRun(player, {_enchantment}, {_level}) is true
-
-        startEnchantCooldown(player, {_enchantment}, {_level})
-        run {_onLeftClick} with arguments (player, player's tool, {_level})
-
 on death with priority monitor:
     bounds at victim does not contain bound with id "spawn"
 
     for {_item} in victim's tool and victim's armor:
         {_item} isn't air
+
         for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, victim):
             set {_onDeath} to {-ce::%{_enchantment}%::onDeath}
             {_onDeath} is set
@@ -219,6 +182,7 @@ on death with priority monitor:
 
     for {_item} in attacker's tool and attacker's armor:
         {_item} isn't air
+
         for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, attacker):
             set {_onKill} to {-ce::%{_enchantment}%::onKill}
             {_onKill} is set
@@ -227,7 +191,6 @@ on death with priority monitor:
 
             startEnchantCooldown(attacker, {_enchantment}, {_level})
             run {_onKill} with arguments (attacker, {_item}, {_level}, victim)
-
 
 ### summon related events
 
@@ -239,3 +202,4 @@ on target:
     {-%entity%::owner} is set
     target is {-%entity%::owner}
     cancel event
+    
