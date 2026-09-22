@@ -1,0 +1,71 @@
+condition create [multi choice:multi choice|toggle:toggle] setting named %string%:
+    parse:
+        set {_type} to first element out of parse tags
+        continue
+    check:
+        delete {-setting::%expr-1%::*}
+        set {-current setting} to expr-1
+        set {-setting::%expr-1%::type} to {_type}
+        return true
+
+condition add setting option named %string% with description %string%:
+    check:
+        set {_current setting} to {-current setting}
+
+        add expr-1 to {-setting::%{_current setting}%::options::*}
+        set {-setting::%{_current setting}%::option::%expr-1%::description} to expr-2
+
+        if {-setting::%{_current setting}%::default} isn't set:
+            set {-setting::%{_current setting}%::default} to expr-1
+
+        return true
+
+expression setting (display:display|description:description|default:default) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_current setting} to expr-1 ? {-current setting}
+        return {-setting::%{_current setting}%::%{_key}%}
+    set:
+        set {_current setting} to expr-1 ? {-current setting}
+        set {_current category} to {-current setting category}
+        set {-setting::%{_current setting}%::%{_key}%} to change value
+
+        if {-setting category::%{_current category}%::settings::*} doesn't contain {_current setting}:
+            add {_current setting} to {-setting category::%{_current category}%::settings::*}
+
+expression setting options [of %-string%]:
+    get:
+        set {_current setting} to expr-1 ? {-current setting}
+        return {-setting::%{_current setting}%::options::*}
+    set:
+        set {_current setting} to expr-1 ? {-current setting}
+        set {-setting::%{_current setting}%::options::*} to change values
+        set {-setting::%{_current setting}%::default} to 1st element out of change values
+
+expression setting option %string% description of %string%:
+    get:
+        return {-setting::%expr-2%::option::%expr-1%::description}
+
+expression setting %string% for %offlineplayer%:
+    get:
+        return {setting::%expr-2%::%expr-1%} ? {-setting::%expr-1%::default}
+
+condition create setting category named %string%:
+    check:
+        delete {-setting category::%expr-1%::*}
+
+        if {-setting categories::*} doesn't contain expr-1:
+            add expr-1 to {-setting categories::*}
+
+        set {-current setting category} to expr-1
+        return true
+
+expression category description [of %-string%]:
+    get:
+        set {_current category} to expr-1 ? {-current setting category}
+        return {-setting category::%{_current category}%::description}
+    set:
+        set {_current category} to expr-1 ? {-current setting category}
+        set {-setting category::%{_current category}%::description} to change value

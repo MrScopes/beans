@@ -1,0 +1,74 @@
+on load:
+    create setting category named "general":
+        set category description to "General Settings"
+
+        create toggle setting named "instant wheel":
+            set setting display to "Instant Wheel Spin"
+            set setting description to "spin the wheel instantly"
+            set setting options to "enabled", "disabled"
+
+        create multi choice setting named "tpa requests":
+            set setting display to "TPA Requests"
+            add setting option named "All" with description "receive all TPA requests"
+            add setting option named "Clan Only" with description "receive TPA requests only from clan members"
+            add setting option named "None" with description "receive no TPA requests"
+
+        create multi choice setting named "vault messages":
+            set setting display to "Vault Messages"
+            add setting option named "Chat" with description "show vault messages in chat"
+            add setting option named "Action Bar" with description "show vault messages in your action bar"
+            add setting option named "Title" with description "show vault messages as a title"
+            add setting option named "None" with description "hide vault messages"
+
+    create setting category named "sounds":
+        set category description to "Sound Settings"
+
+        create multi choice setting named "mining enchantment sounds":
+            set setting display to "Mining Enchantment Sounds"
+            add setting option named "All" with description "hear all mining enchantment sounds"
+            add setting option named "Yours Only" with description "hear only your own mining enchantment sounds"
+            add setting option named "None" with description "hear no mining enchantment sounds"
+
+        create toggle setting named "combat enchantment sounds":
+            set setting display to "Combat Enchantment Sounds"
+            set setting description to "play combat enchantment sounds"
+            set setting options to "enabled", "disabled"
+
+    create setting category named "chat":
+        set category description to "Chat Settings"
+
+        create toggle setting named "chat pinging":
+            set setting display to "Chat Pinging"
+            set setting description to "allow players to ping you in chat%nl%&o(note: staff bypass this setting)&7"
+            set setting options to "enabled", "disabled"
+
+        create multi choice setting named "chat reactions":
+            set setting display to "Chat Reactions"
+            add setting option named "All" with description "show all chat reaction games"
+            add setting option named "Small Rewards" with description "show chat reactions with small rewards"
+            add setting option named "Big Rewards" with description "show chat reactions with big rewards"
+            add setting option named "None" with description "show no chat reaction games"
+
+        create toggle setting named "server broadcasts":
+            set setting display to "Server Broadcasts"
+            set setting description to "show automated server broadcasts"
+            set setting options to "enabled", "disabled"
+
+    create setting category named "beacons":
+        set category description to "Beacon Settings"
+
+        create multi choice setting named "beacon announcements":
+            set setting display to "Your Beacon Announcements"
+            add setting option named "All" with description "show all of your beacon rewards"
+            add setting option named "Rare" with description "show your rare or better beacon rewards"
+            add setting option named "Ultra Rare" with description "show your ultra rare or better beacon rewards"
+            add setting option named "Ultimate" with description "show only your ultimate beacon rewards"
+            add setting option named "None" with description "show none of your beacon rewards"
+
+        create multi choice setting named "others beacon announcements":
+            set setting display to "Others Beacon Announcements"
+            add setting option named "All" with description "show all beacon rewards from other players"
+            add setting option named "Rare" with description "show rare or better beacon rewards from other players"
+            add setting option named "Ultra Rare" with description "show ultra rare or better beacon rewards from other players"
+            add setting option named "Ultimate" with description "show only ultimate beacon rewards from other players"
+            add setting option named "None" with description "show no beacon rewards from other players"

@@ -1,0 +1,98 @@
+function settings(player: player, category: string = {_}):
+    if {_category} is not set:
+        open multi action dialog to {_player}:
+            title: "Settings"
+            after_action: "none"
+            actions:
+                loop {-setting categories::*}:
+                    set {_category} to loop-value
+                    set {_description} to {-setting category::%{_category}%::description}
+
+                    add callback action button:
+                        label: "%proper case {_category}%"
+                        tooltip: "%{_description}%"
+                        width: 150
+                        trigger:
+                            settings({_player}, {_category})
+    else:
+        set {_category description} to {-setting category::%{_category}%::description}
+
+        open multi action dialog to {_player}:
+            title: "%proper case {_category}% Settings"
+            columns: 1
+            after_action: "none"
+            actions:
+                loop {-setting category::%{_category}%::settings::*}:
+                    set {_setting} to loop-value
+
+                    set {_type} to {-setting::%{_setting}%::type}
+                    set {_display} to {-setting::%{_setting}%::display}
+                    set {_default} to {-setting::%{_setting}%::default}
+                    set {_current} to setting {_setting} for {_player}
+
+                    if {_type} is "toggle":
+                        set {_description} to {-setting::%{_setting}%::description}
+
+                        if {_current} is "enabled":
+                            add callback action button:
+                                label: "%{_display}%: Enabled"
+                                tooltip: "%{_description}%%newline%&7(Default: %proper case {_default}%)"
+                                width: 250
+                                trigger:
+                                    set {setting::%{_player}%::%{_setting}%} to "disabled"
+                                    settings({_player}, {_category})
+                        else:
+                            add callback action button:
+                                label: "%{_display}%: Disabled"
+                                tooltip: "%{_description}%%newline%&7(Default: %proper case {_default}%)"
+                                width: 250
+                                trigger:
+                                    set {setting::%{_player}%::%{_setting}%} to "enabled"
+                                    settings({_player}, {_category})
+                    else if {_type} is "multi choice":
+                        set {_options::*} to setting options of {_setting}
+                        set {_description} to setting option {_current} description of {_setting}
+
+                        add callback action button:
+                            label: "%{_display}%: %{_current}%"
+                            tooltip: "%{_description}%%newline%&7(Default: %proper case {_default}%)"
+                            width: 250
+                            trigger:
+                                set {_current index} to 0
+
+                                loop {_options::*}:
+                                    if loop-value is {_current}:
+                                        set {_current index} to loop-index parsed as integer
+                                        exit loop
+
+                                set {_next index} to {_current index} + 1
+
+                                if {_next index} > size of {_options::*}:
+                                    set {_next index} to 1
+
+                                set {_next} to {_next index}th element out of {_options::*}
+
+                                set {setting::%{_player}%::%{_setting}%} to {_next}
+
+                                settings({_player}, {_category})
+
+            exit_action:
+                add callback action button:
+                    label: "Back"
+                    tooltip: "Return to the main settings menu"
+                    width: 250
+                    trigger:
+                        settings({_player})
+
+command /settings [<text>]:
+    trigger:
+        if arg 1 is set:
+            if {-setting categories::*} doesn't contain arg 1:
+                settings(player)
+            else:
+                settings(player, arg-1)
+        else:
+            settings(player)
+
+on tab complete of "/settings":
+    set tab completions for position 1 to {-setting categories::*}
