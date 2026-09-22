@@ -1,0 +1,83 @@
+condition create group named %string%:
+    check:
+        set {-current group} to expr-1
+        return true
+
+expression group (prefix:prefix|weight:weight|chat color:chat color|permissions:permissions|parent:parent) [of %-string%]:
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    get:
+        set {_group} to expr-1 ? {-current group}
+
+        if size of {-groups::%{_group}%::%{_key}%::*} > 0:
+            if {_key} is "permissions":
+                return {-groups::%{_group}%::%{_key}%::*} and "beans.%{_group}%"
+            else:
+                return {-groups::%{_group}%::%{_key}%::*}
+
+        return {-groups::%{_group}%::%{_key}%}
+    set:
+        set {_group} to expr-1 ? {-current group}
+
+        if any:
+            {_key} is "permissions"
+            size of {-groups::%{_group}%::%{_key}%::*} > 0
+        then:
+            set {-groups::%{_group}%::%{_key}%::*} to change values
+        else:
+            set {-groups::%{_group}%::%{_key}%} to change value
+
+        if {_key} is "parent":
+            add (group permissions of change value) to {-groups::%{_group}%::permissions::*}
+
+expression all groups:
+    delete:
+        delete {-groups::*}
+    get:
+        return indexes of {-groups::*}
+
+expression:
+    patterns:
+        group of %offlineplayer%
+        %offlineplayer%'s group
+    get:
+        return {group::%expr-1%} ? "default"
+    set:
+        set {groups::%expr-1%::*} to change value
+        set {group::%expr-1%} to change value
+        sync expr-1
+    reset:
+        delete {groups::%expr-1%::*}
+        delete {group::%expr-1%::*}
+        sync expr-1
+
+effect update top group of %offlineplayer%:
+    trigger:
+        set {_groups::*} to {groups::%expr-1%::*} ? "default"
+        sort {_groups::*} in descending order by (group weight of input ? 0)
+        set {group::%expr-1%} to {_groups::1}
+
+expression groups of %offlineplayer%:
+    get:
+        set {_groups::*} to {groups::%expr-1%::*} ? "default"
+        sort {_groups::*} in descending order by (group weight of input ? 0)
+        return {_groups::*}
+    set:
+        set {groups::%expr-1%::*} to change values
+        sync expr-1
+    add:
+        add change value to {groups::%expr-1%::*}
+        sync expr-1
+    remove:
+        remove change value from {groups::%expr-1%::*}
+        sync expr-1
+    reset:
+        delete {groups::%expr-1%::*}
+        delete {group::%expr-1%}
+        sync permissions of expr-1
+
+effect sync %offlineplayer%:
+    trigger:
+        update top group of expr-1
+        sync permissions of expr-1

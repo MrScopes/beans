@@ -4,8 +4,8 @@ condition create [disabled:disabled] [ultimate:ultimate] (pickaxe:pickaxe|sword:
         continue
     check:
         delete {-ce::%expr-1%::*}
-        set {-current ce::%event%::name} to expr-1
-        set {-current ce::%event%::type} to {_type}
+        set {-current ce::name} to expr-1
+        set {-current ce::type} to {_type}
         set {-ce::%expr-1%::type} to {_type}
         if parse tags contains "ultimate":
             set {-ce::%expr-1%::ultimate} to true
@@ -15,7 +15,7 @@ condition create [disabled:disabled] [ultimate:ultimate] (pickaxe:pickaxe|sword:
 
 condition level values for %string%:
     check:
-        set {-current ce::%event%::level value key} to expr-1
+        set {-current ce::level value key} to expr-1
         return true
 
 expression enchantment (display:display|max level:max level|priority:priority|item:item|disabled:disabled|ultimate:ultimate) [of %-string%]:
@@ -23,20 +23,20 @@ expression enchantment (display:display|max level:max level|priority:priority|it
         set {_key} to first element out of parse tags
         continue
     get:
-        set {_current enchantment} to expr-1 ? {-current ce::%event%::name}
+        set {_current enchantment} to expr-1 ? {-current ce::name}
         return {-ce::%{_current enchantment}%::%{_key}%}
     set:
-        set {_current enchantment} to expr-1 ? {-current ce::%event%::name}
+        set {_current enchantment} to expr-1 ? {-current ce::name}
         set {-ce::%{_current enchantment}%::%{_key}%} to change value
 
 expression level %integer% [%-string% of %-string%]:
     get:
-        set {_current enchantment} to {-current ce::%event%::name}
-        set {_current level value key} to {-current ce::%event%::level value key}
+        set {_current enchantment} to {-current ce::name}
+        set {_current level value key} to {-current ce::level value key}
         return {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%}
     set:
-        set {_current enchantment} to {-current ce::%event%::name}
-        set {_current level value key} to {-current ce::%event%::level value key}
+        set {_current enchantment} to {-current ce::name}
+        set {_current level value key} to {-current ce::level value key}
         set {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%} to change value
 
 expression %string% of %string% at %integer%:
