@@ -82,12 +82,20 @@ function giveORvaultORdrop(player: offline player, item: item):
 
         set {_stored} to false
         set {_max} to vaultAmountPlayer({_player})
+        set {_vault message setting} to setting "vault messages" for {_player}
 
         loop integers between 1 and {_max}:
             loop integers between 0 and 53:
                 if {vault::%{_player}%::%loop-number-1%::%loop-number-2%} isn't set:
                     set {vault::%{_player}%::%loop-number-1%::%loop-number-2%} to {_stack}
-                    send formatted "Added %{_giveAmount}%x %{_base}% &fto vault %loop-number-1%." to {_player}
+
+                    if {_vault message setting} is "Chat":
+                        send formatted "Added %{_giveAmount}%x %{_base}% &fto vault %loop-number-1%." to {_player}
+                    else if {_vault message setting} is "Action Bar":
+                        send action bar formatted "Added %{_giveAmount}%x %{_base}% &fto vault %loop-number-1%." to {_player}
+                    else if {_vault message setting} is "Title":
+                        send title formatted "" with subtitle formatted "Added %{_giveAmount}%x %{_base}% &fto vault %loop-number-1%." to {_player}
+
                     remove {_giveAmount} from {_remaining}
                     set {_stored} to true
                     stop loop
