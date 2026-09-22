@@ -24,6 +24,26 @@ function beaconItem() :: item:
     damage {_item} by 0 # for some reason... some beacons have 0 damage? ill just set all of them to it
     return {_item}
 
+function shouldSeeBeaconAnnouncement(player: player, setting: string, rarity: string) :: boolean:
+    set {_value} to setting {_setting} for {_player}
+
+    if {_value} is "All":
+        return true
+    if {_value} is "None":
+        return false
+
+    if {_rarity} is "Rare":
+        if {_value} is "Rare":
+            return true
+    else if {_rarity} is "Ultra Rare":
+        if {_value} is "Rare" or "Ultra Rare":
+            return true
+    else if {_rarity} is "Ultimate":
+        if {_value} is "Rare" or "Ultra Rare" or "Ultimate":
+            return true
+
+    return false
+
 on right click with beacon:
     cancel event
     data tag "stored_level" of event-item isn't set
@@ -66,18 +86,15 @@ on inventory click:
 
         if {_roll} < {_ultimateChance}:
             set {_rolledUltimate} to true
-            send formatted "<rainbow><bold>ULTIMATE!"
 
         else if {_roll} < {_ultimateChance} + {_level1Chance}:
             set {_tier} to 1
 
         else if {_roll} < {_ultimateChance} + {_level1Chance} + {_luckyChance}:
             set {_tier} to 2
-            send "&bLucky!"
 
         else:
             set {_tier} to 3
-            send "&b&lULTRA LUCKY!"
 
         loop indexes of {-ce::*}:
             if {_type} isn't "random":
@@ -118,22 +135,43 @@ on inventory click:
 
         giveORvaultORdrop(player, {_item})
 
-        send formatted "You rolled a %name of {_item}% &fenchantment book!"
-    
-        if {_rolledUltimate} is true:  
-            set {_odds} to {_chance} * 100000
-            set {_recipients::*} to playersWithSetting("beacon announcements", ("All", "Ultimate Only"))
-            send formatted "<rainbow><bold>ULTIMATE! &f%player% rolled a %name of {_item}% &fbook!" to {_recipients::*}
-            play sound "entity.ender_dragon.death" at volume 0.2 to {_recipients::*}
-
+        if {_rolledUltimate} is true:
+            set {_rarity} to "Ultimate"
         else if {_level} is {_max}:
-            {_level} > 3
-            set {_recipients::*} to playersWithSetting("beacon announcements", ("All", "Ultra Rare Only"))
-            send formatted "<aqua><bold>INSANELY LUCKY! &f%player% rolled a %name of {_item}% &fbook!" to {_recipients::*}
-
+            if {_level} > 3:
+                set {_rarity} to "Ultra Rare"
+            else:
+                set {_rarity} to "Rare"
         else if {_level} >= 3:
-            set {_recipients::*} to playersWithSetting("beacon announcements", ("All"))
-            send formatted "%player% rolled a %name of {_item}% &fenchantment book!" to {_recipients::*}
+            set {_rarity} to "Rare"
+        else:
+            set {_rarity} to "All"
+
+        if shouldSeeBeaconAnnouncement(player, "beacon announcements", {_rarity}) is true:
+            if {_rolledUltimate} is true:
+                send formatted "<rainbow><bold>ULTIMATE!" to player
+                play sound "entity.ender_dragon.death" at volume 0.2 to player
+            else if {_tier} is 2:
+                send "&bLucky!" to player
+            else if {_tier} is 3:
+                send "&b&lULTRA LUCKY!" to player
+
+            send formatted "You rolled a %name of {_item}% &fenchantment book!" to player
+
+        if {_rarity} is "Ultimate":
+            set {_message} to formatted "<rainbow><bold>ULTIMATE! &f%player% rolled a %name of {_item}% &fbook!"
+        else if {_rarity} is "Ultra Rare":
+            set {_message} to formatted "<aqua><bold>INSANELY LUCKY! &f%player% rolled a %name of {_item}% &fbook!"
+        else if {_rarity} is "Rare":
+            set {_message} to formatted "%player% rolled a %name of {_item}% &fenchantment book!"
+
+        if {_message} is set:
+            loop all players:
+                if loop-player isn't player:
+                    if shouldSeeBeaconAnnouncement(loop-player, "others beacon announcements", {_rarity}) is true:
+                        send {_message} to loop-player
+                        if {_rarity} is "Ultimate":
+                            play sound "entity.ender_dragon.death" at volume 0.2 to loop-player
 
 command /beacons [<text>] [<text>] [<integer>]:
     trigger:
