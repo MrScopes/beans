@@ -26,11 +26,11 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
         set level of custom enchantment {_enchantment} of {_item} to {_level}
         if {-ce::%{_enchantment}%::onApply} is set:
             run {-ce::%{_enchantment}%::onApply} with arguments ({_item}, {_level}, {_player})
-    set {_item} to updateLore({_item})
+    set {_item} to updateLore({_item}, true, {_player})
 
     return {_item}
     
-function getDescription(enchantment: string, level: integer) :: text:
+function getDescription(enchantment: string, level: integer, player: player = {_}) :: text:
     set {_cooldown} to "cooldown" of {_enchantment} at {_level}
     set {_chance} to "chance" of {_enchantment} at {_level}
     if {_chance} < 0.01:
@@ -59,10 +59,17 @@ function getDescription(enchantment: string, level: integer) :: text:
     then:
         add text component of "&f<sprite:items:item/bow_pulling_2><#E8C1BA>%{_threshold}%%% " to {_line::*}
 
-    if {_level} > {-ce::%{_enchantment}%::max level}:
-        set {_description} to result of {-ce::%{_enchantment}%::getDescription} with arguments ({_level})
-    else:
-        set {_description} to {-ce::%{_enchantment}%::description::%{_level}%}
+    set {_description} to result of {-ce::%{_enchantment}%::getDescription} with arguments ({_level})
+
+    for {_ability} in {-ce::%{_enchantment}%::abilities::*}:
+        if {_player} is set:
+            set {_bind} to ability bind of {_ability} for {_player}
+        else:
+            set {_bind} to ability bind of {_ability}
+
+        set {_bind text} to bindText({_bind})
+        replace all "<%{_ability}%>" with "%{_bind text}%" in {_description}
+
     add text component of "&7%{_description}%" to {_line::*}
 
     return merge components {_line::*}
@@ -112,7 +119,7 @@ function enchantmentDisplay(enchantment: text, level: integer, special: string =
 
     return {_name}
 
-function updateLore(tool: item, showDescriptions: boolean = true) :: item:
+function updateLore(tool: item, showDescriptions: boolean = true, player: player = {_}) :: item:
     set {_old::*} to lore of {_tool}
 
     loop {_old::*}:
@@ -136,7 +143,7 @@ function updateLore(tool: item, showDescriptions: boolean = true) :: item:
         set {_special} to data tag "special_%loop-index%" of {_tool}
         add formatted "%enchantmentDisplay(loop-index, loop-value, {_special})%§" to {_enchLore::*}
         if {_showDescriptions} is true:
-            add formatted "%getDescription(loop-index, loop-value)%§" to {_enchLore::*}
+            add formatted "%getDescription(loop-index, loop-value, {_player})%§" to {_enchLore::*}
 
     add {_enchLore::*} to {_newLore::*}
     add {_cleanOld::*} to {_newLore::*}

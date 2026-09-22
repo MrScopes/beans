@@ -29,4 +29,5 @@ function updateInventory(inventory: inventory):
                 loop-item is tagged with paper tag "pickaxes"
                 loop-item is tagged with paper tag "helmets"
             then:
-                set loop-item to {_amount} of updateLore(loop-item, true)
+                set {_player} to (holder of {_inventory}).getPlayer()
+                set loop-item to {_amount} of updateLore(loop-item, true, {_player})
