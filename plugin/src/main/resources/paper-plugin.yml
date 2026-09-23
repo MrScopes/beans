@@ -1,0 +1,17 @@
+name: beans
+version: '${version}'
+main: me.mrscopes.beans.Beans
+bootstrapper: me.mrscopes.beans.BeansBootstrap
+api-version: '26.2'
+description: Beans server plugin
+
+dependencies:
+  server:
+    FastAsyncWorldEdit:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    Skript:
+      load: BEFORE
+      required: false
+      join-classpath: true

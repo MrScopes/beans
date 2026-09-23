@@ -12,4 +12,5 @@ features.sk
 plugin/.gradle
 plugin/.idea
 plugin/build
+plugin/bin
 .vscode/
