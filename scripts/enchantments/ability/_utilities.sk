@@ -1,0 +1,51 @@
+using reflection
+
+on load:
+    set {-ability binds::*} to "reset", "right click", "sneak right click", "left click", "sneak left click", "offhand", "sneak offhand", "drop", "sneak drop"
+
+function bindText(bind: string) :: string:
+    return switch return {_bind}:
+        case "right click" -> "RMB"
+        case "sneak right click" -> "Shift + RMB"
+        case "left click" -> "LMB"
+        case "sneak left click" -> "Shift + LMB"
+        case "offhand" -> "F"
+        case "sneak offhand" -> "Shift + F"
+        case "drop" -> "Q"
+        case "sneak drop" -> "Shift + Q"
+
+function currentAbilities(player: player) :: objects:
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_player}'s tool, {_player}):
+        add {-ce::%{_enchantment}%::abilities::*} to {_abilities::*}
+
+    return {_abilities::*}
+
+function runAbilityBind(player: player, bind: string, item: item) :: boolean:
+    for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, {_player}):
+        for {_ability} in {-ce::%{_enchantment}%::abilities::*}:
+            ability bind of {_ability} for {_player} is {_bind}
+
+            set {_function} to ability function of {_ability}
+            {_function} is set
+
+            enchantCanRun({_player}, {_enchantment}, {_level}) is true
+
+            startEnchantCooldown({_player}, {_enchantment}, {_level})
+            run {_function} with arguments ({_player}, {_level})
+            return true
+
+    return false
+
+import:
+    net.minecraft.world.entity.LivingEntity
+
+# reset attack cooldown, server-side
+# the client doesn't know about it, but they can attack normally
+function restoreAttackCooldown(player: player):
+    set {_handle} to {_player}.getHandle()
+
+    set {_field} to LivingEntity.class.getDeclaredField("attackStrengthTicker")
+    {_field}.setAccessible(true)
+
+    set {_delay} to {_handle}.getCurrentItemAttackStrengthDelay()
+    {_field}.setInt({_handle}, ceil({_delay}))
