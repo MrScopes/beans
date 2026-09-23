@@ -1,6 +1,3 @@
-on load:
-    set {-ability binds::*} to "reset", "right click", "sneak right click", "left click", "sneak left click", "offhand", "sneak offhand", "drop", "sneak drop"
-
 command /bind <ability: text> <bind: text>:
     trigger:
         set {_abilities::*} to currentAbilities(player)
@@ -38,7 +35,24 @@ on AsyncTabCompleteEvent:
 
                 for {_bind} in {-ability binds::*}:
                     if {_bind} starts with {_bindInput}:
-                        add {_bind} to {_completions::*}
+                        set {_completion} to {_bind}
+
+                        set {_split::*} to {_bindInput} split at " "
+
+                        if {_bindInput} ends with " ":
+                            set {_completedWords} to {_bindInput}
+                        else if size of {_split::*} > 1:
+                            set {_lastIndex} to size of {_split::*}
+                            delete {_split::%{_lastIndex}%}
+                            set {_completedWords} to "%join {_split::*} with " "% "
+                        else:
+                            set {_completedWords} to ""
+
+                        if {_completedWords} is set:
+                            if {_completedWords} isn't "":
+                                replace first "%{_completedWords}%" with "" in {_completion}
+
+                        add {_completion} to {_completions::*}
 
                 stop loop
 
