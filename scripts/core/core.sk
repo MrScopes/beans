@@ -328,6 +328,14 @@ on projectile hit with priority monitor:
 on craft:
     cancel event
 
+on swap items:
+    cancel event
+
+on inventory click:
+    player's gamemode isn't creative
+    event-slot is player's off hand slot
+    cancel event
+
 on item damage:
     cancel event
 
