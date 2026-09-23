@@ -96,3 +96,10 @@ command /settings [<text>]:
 
 on tab complete of "/settings":
     set tab completions for position 1 to {-setting categories::*}
+
+on custom click:
+    if event-namespacedkey is "beans:settings":
+        player command "/settings"
+    else if event-namespacedkey is "beans:links":
+        open dialog with id "beans:links" to player
+        
