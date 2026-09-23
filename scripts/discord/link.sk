@@ -59,7 +59,13 @@ slash command link:
         if {discord linked uuid.%discord id of event-user%} is set:
             reply with hidden "Your account is already linked. Use /unlink to unlink your account."
         else:
-            set {_random} to first 5 characters of random uuid
+            for {_token}, {_user} in {-link token::*}:
+                if {_user} is discord id of event-user:
+                    delete {-link token::%{_token}%}
+
+            set {_random} to random integer between 100000 and 999999
+            while {-link token::%{_random}%} is set repeating every tick:
+                set {_random} to random integer between 100000 and 999999
             set {-link token::%{_random}%} to discord id of event-user
             reply with hidden "%{_random}%%nl%This is your link token. Use this in-game with /link <token> to link your account."
 
