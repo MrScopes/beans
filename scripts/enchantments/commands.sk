@@ -96,6 +96,7 @@ on tab complete of "/ce":
     set tab completions for position 3 to "item"
 
 on right click:
+    player is within bound with id "spawn"
     player's tool is tagged with paper tag "pickaxes", paper tag "swords", paper tag "helmets", or paper tag "bows"
     player is sneaking
     cancel event
