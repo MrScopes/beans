@@ -1,35 +1,50 @@
-on right click with priority monitor:
+on any right click with priority monitor:
     bounds at player does not contain bound with id "spawn"
 
     if player is pressing sneak key:
-        runAbilityBind(player, "sneak right click")
+        runAbilityBind(player, "sneak right click", player's tool)
     else:
-        runAbilityBind(player, "right click")
+        runAbilityBind(player, "right click", player's tool)
 
-on left click with priority monitor:
+# due to paper/mc limitations, we need to handle left click separately
+# dropping items calls left_click_air
+# we also need to restore the attack cooldown since canceling drop
+# is the same as the user attacking as far as attack cooldown
+# hacky, but works
+# we ARE NOT restoring attack cooldown for missed left clicks which trigger abilities
+on any left click with priority monitor:
+    if {-dropping::%player%} is set:
+        attack cooldown of player is 1
+        wait 1 tick
+        restoreAttackCooldown(player)
+    else:
+        bounds at player does not contain bound with id "spawn"
+
+        if player is pressing sneak key:
+            runAbilityBind(player, "sneak left click", player's tool)
+        else:
+            runAbilityBind(player, "left click", player's tool)
+
+on any swap items:
     bounds at player does not contain bound with id "spawn"
 
     if player is pressing sneak key:
-        runAbilityBind(player, "sneak left click")
+        if runAbilityBind(player, "sneak offhand", player's tool) is true:
+            cancel event
     else:
-        runAbilityBind(player, "left click")
+        if runAbilityBind(player, "offhand", player's tool) is true:
+            cancel event
 
-on swap items:
+on any drop:
+    set {-dropping::%player%} to true
     bounds at player does not contain bound with id "spawn"
 
     if player is pressing sneak key:
-        if runAbilityBind(player, "sneak offhand") is true:
+        if runAbilityBind(player, "sneak drop", event-item) is true:
             cancel event
     else:
-        if runAbilityBind(player, "offhand") is true:
+        if runAbilityBind(player, "drop", event-item) is true:
             cancel event
 
-on drop:
-    bounds at player does not contain bound with id "spawn"
-
-    if player is pressing sneak key:
-        if runAbilityBind(player, "sneak drop") is true:
-            cancel event
-    else:
-        if runAbilityBind(player, "drop") is true:
-            cancel event
+    wait 1 tick
+    delete {-dropping::%player%}
