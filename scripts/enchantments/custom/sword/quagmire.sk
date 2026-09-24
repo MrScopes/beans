@@ -70,7 +70,7 @@ function quagmire(user: entity, level: number):
     set {_target} to location of {_user}'s target block
 
     for {_block} in blocks in radius {_radius} around {_target}:
-        {_block} isn't air or black concrete
+        {_block} isn't air, black concrete, bedrock, or barrier
         bounds at {_block} doesn't contain bound with id "spawn", bound with id "mine", or bound with id "mine flight"
         add {_block} to {_affected blocks::*}
         set block within {_block} to mud
