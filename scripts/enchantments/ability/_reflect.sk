@@ -1,4 +1,6 @@
-condition create ability named %string%:
+using reflection
+
+condition create ability named %string% [bound to %-string%]:
     check:
         set {-current ce ability} to expr-1
         set {_current enchantment} to {-current ce::name}
@@ -7,7 +9,14 @@ condition create ability named %string%:
 
         if {-ce::%{_current enchantment}%::abilities::*} doesn't contain expr-1:
             add expr-1 to {-ce::%{_current enchantment}%::abilities::*}
+        
+        set {_potential function} to function named {_current enchantment}
+        if {_potential function} is set:
+            set {-ce ability::%expr-1%::function} to {_potential function}
 
+        if expr-2 is set:
+            set {-ce ability::%expr-1%::bind} to expr-2
+            
         return true
 
 expression ability function [of %-string%]:

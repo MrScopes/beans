@@ -1,5 +1,3 @@
-using reflection
-
 on load:
     create sword enchantment named "quagmire":
         set enchantment display to "&f<sprite:blocks:block/mud> &fQuagmire"
@@ -8,9 +6,6 @@ on load:
         set enchantment item to mud block
 
         create ability named "quagmire":
-            set ability function to function named "quagmire"
-            set ability bind to "right click"
-
             level values for "cooldown":
                 set level 1 to 40 seconds
                 set level 2 to 40 seconds
