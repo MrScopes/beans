@@ -5,7 +5,7 @@ on load:
         set enchantment priority to 0
         set enchantment item to mud block
 
-        create ability named "quagmire":
+        create ability named "quagmire" bound to "right click":
             level values for "cooldown":
                 set level 1 to 40 seconds
                 set level 2 to 40 seconds

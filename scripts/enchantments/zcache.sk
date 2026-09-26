@@ -68,7 +68,6 @@ function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true
         if {-ce ability::%{_ability}%::function} is not set:
             send "Enchantment %{_enchantment}% ability %{_ability}% is missing a function!" to ops and console
 
-        broadcast "%{-ability binds::*}% - %{-ce ability::%{_ability}%::bind}%"
         if {-ability binds::*} doesn't contain {-ce ability::%{_ability}%::bind}:
             send "Enchantment %{_enchantment}% ability %{_ability}% has an invalid bind: %{_ce ability::%{_ability}%::bind} ? "none"%" to ops and console
 
