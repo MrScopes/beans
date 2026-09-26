@@ -214,19 +214,19 @@ function rasengan(player: player, duration: timespan):
                 # -------------------------
 
                 # Dense blue chakra burst
-                draw 35 light blue dust particles with a distribution of vector(0.45, 0.45, 0.45) at {_impact}
+                draw (35 light blue dust particles) with distribution of vector(0.45, 0.45, 0.45) at {_impact}
 
                 # Bright white center flash
-                draw 20 white dust particles with a distribution of vector(0.30, 0.30, 0.30) at {_impact}
+                draw (20 white dust particles) with distribution of vector(0.30, 0.30, 0.30) at {_impact}
 
                 # Chaotic chakra sparks
-                draw 25 electric spark particles with a distribution of vector(0.50, 0.50, 0.50) at {_impact}
+                draw (25 electric spark particles) with distribution of vector(0.50, 0.50, 0.50) at {_impact}
 
                 # Larger outer energy burst
-                draw 18 light blue dust particles with a distribution of vector(0.75, 0.55, 0.75) at {_impact}
+                draw (18 light blue dust particles) with distribution of vector(0.75, 0.55, 0.75) at {_impact}
 
                 # Small white fragments around the outside
-                draw 10 white dust particles with a distribution of vector(0.65, 0.45, 0.65) at {_impact}
+                draw (10 white dust particles) with distribution of vector(0.65, 0.45, 0.65) at {_impact}
 
                 # -------------------------
                 # IMPACT SOUND

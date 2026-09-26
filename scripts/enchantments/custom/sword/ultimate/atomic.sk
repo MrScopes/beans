@@ -211,13 +211,13 @@ function atomic(player: player, level: integer):
 
             # TOP-DOWN ENCHANTMENT STREAM
             # Particles descend from the roof toward the center of the field.
-            set {_stream} to a helix with radius {_current half} * 0.65, height {_current half} * 2, and winding rate of 0.35
+            set {_stream} to a helix with radius ({_current half} * 0.65), height ({_current half} * 2), and winding rate of 0.35
             set particle of {_stream} to enchanting particle
             set particle density of {_stream} to 0.5
             draw shape {_stream} at {_origin}
 
             # PORTAL HELIX
-            set {_portal helix} to a helix with radius {_current half} * 0.45, height {_current half} * 1.8, and winding rate of 0.7
+            set {_portal helix} to a helix with radius ({_current half} * 0.45), height ({_current half} * 1.8), and winding rate of 0.7
             set particle of {_portal helix} to portal particle
             set particle density of {_portal helix} to 0.3
             draw shape {_portal helix} at {_origin}
@@ -229,13 +229,13 @@ function atomic(player: player, level: integer):
         draw shape {_ring} at {_origin}
 
         # HELIX 1
-        set {_helix 1} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
+        set {_helix 1} to a helix with radius ({_current half} * 0.35), height ({_current half} * 1.5), and winding rate of 0.5
         set particle of {_helix 1} to electric spark particle
         set particle density of {_helix 1} to 0.3
         draw shape {_helix 1} at {_origin}
 
         # HELIX 2
-        set {_helix 2} to a helix with radius {_current half} * 0.35, height {_current half} * 1.5, and winding rate of 0.5
+        set {_helix 2} to a helix with radius ({_current half} * 0.35), height ({_current half} * 1.5), and winding rate of 0.5
         set particle of {_helix 2} to electric spark particle
         set particle density of {_helix 2} to 0.3
         draw shape {_helix 2} at {_origin}
