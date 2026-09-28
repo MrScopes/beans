@@ -1,24 +1,24 @@
-bow enchantment:
+ultimate bow enchantment:
     id: "black_hole"
-    display: "&f<sprite:blocks:block/obsidian> &5Black Hole"
+    display: "&f<sprite:blocks:block/obsidian> <rainbow><bold>Black Hole"
     max level: 5
     priority: 0
     item: obsidian
     cost: "normal"
 
     > "cooldown":
-        lvl. 1: 20 seconds
-        lvl. 2: 20 seconds
-        lvl. 3: 20 seconds
-        lvl. 4: 20 seconds
-        lvl. 5: 20 seconds
+        lvl. 1: 30 seconds
+        lvl. 2: 30 seconds
+        lvl. 3: 30 seconds
+        lvl. 4: 30 seconds
+        lvl. 5: 30 seconds
 
     > "threshold":
-        lvl. 1: 1
-        lvl. 2: 1
-        lvl. 3: 1
-        lvl. 4: 1
-        lvl. 5: 1
+        lvl. 1: 100%
+        lvl. 2: 100%
+        lvl. 3: 100%
+        lvl. 4: 100%
+        lvl. 5: 100%
 
     > "duration":
         lvl. 1: 3 seconds
@@ -37,7 +37,7 @@ bow enchantment:
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "black_hole" at {_level}
     set {_radius} to "radius" of "black_hole" at {_level}
-    return "on land&8, &7pull in entities within &f%{_radius}%m &7for &f%timeFormat({_duration})%&8, &7and &f%effectDisplay("elytra disable", showAmplifier: false, showDuration: false,)%"
+    return "on land&8, &7pull in entities within &f%{_radius}%m &7for &f%timeFormat({_duration})%&8, &7causing &f%effectDisplay("elytra disable", showAmplifier: false, showDuration: false)%"
 
 local function onHit(shooter: entity, tool: item, projectile: entity, level: integer, force: number, victim: object):
     set {_duration} to "duration" of "black_hole" at {_level}
