@@ -70,12 +70,6 @@ on damage with priority monitor:
     set {_projectile} to projectile
     set {_damage} to {-%{_projectile}%::damage}
     set {_shooter} to {-%{_projectile}%::shooter}
+    {_damage} and {_shooter} are set
     cancel event
-    set {_source} to a custom damage source:
-        set the damage type to arrow
-        set the causing entity to {_shooter}
-        set the direct entity to {_shooter}
-        set the damage location to location of {_projectile}
-    damage victim by {_damage} using {_source}
-    reset victim's no damage time
-    
+    damage(victim, {_shooter}, {_damage})
