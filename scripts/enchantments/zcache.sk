@@ -3,6 +3,7 @@ using reflection
 on load:
     set {_now} to current ns
 
+    delete {-ce::*}
     call custom event "enchantment"
 
     loop indexes of {-ce::*}:
@@ -31,6 +32,7 @@ function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true
     set {_now} to current ns
 
     if {_rebuild} is true:
+        delete {-ce::%{_enchantment}%::*}
         call custom event "enchantment"
 
     set {_type} to {-ce::%{_enchantment}%::type}
