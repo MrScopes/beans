@@ -1,56 +1,45 @@
-on load:
-    create bow enchantment named "arrow_rain":
-        set enchantment display to "&f<sprite:items:item/spectral_arrow> &6Arrow Rain"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to spectral arrow
+bow enchantment:
+    id: "arrow_rain"
+    display: "&f<sprite:items:item/spectral_arrow> &6Arrow Rain"
+    max level: 5
+    priority: 0
+    item: spectral arrow
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 15 seconds
-            set level 2 to 14 seconds
-            set level 3 to 13 seconds
-            set level 4 to 12 seconds
-            set level 5 to 10 seconds
+    > "cooldown":
+        lvl. 1: 15 seconds
+        lvl. 2: 14 seconds
+        lvl. 3: 13 seconds
+        lvl. 4: 12 seconds
+        lvl. 5: 10 seconds
 
-        level values for "threshold":
-            set level 1 to 1
-            set level 2 to 1
-            set level 3 to 1
-            set level 4 to 1
-            set level 5 to 1
+    > "threshold":
+        lvl. 1: 1
+        lvl. 2: 1
+        lvl. 3: 1
+        lvl. 4: 1
+        lvl. 5: 1
 
-        level values for "amount":
-            set level 1 to 10
-            set level 2 to 14
-            set level 3 to 18
-            set level 4 to 20
-            set level 5 to 25
+    > "amount":
+        lvl. 1: 10
+        lvl. 2: 14
+        lvl. 3: 18
+        lvl. 4: 20
+        lvl. 5: 25
 
-        level values for "damage":
-            set level 1 to 0.35
-            set level 2 to 0.5
-            set level 3 to 0.65
-            set level 4 to 0.8
-            set level 5 to 1.0
+    > "damage":
+        lvl. 1: 0.35
+        lvl. 2: 0.5
+        lvl. 3: 0.65
+        lvl. 4: 0.8
+        lvl. 5: 1.0
 
-        level values for "duration":
-            set level 1 to 3 seconds
-            set level 2 to 4 seconds
-            set level 3 to 5 seconds
-            set level 4 to 6 seconds
-            set level 5 to 7 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "duration":
+        lvl. 1: 3 seconds
+        lvl. 2: 4 seconds
+        lvl. 3: 5 seconds
+        lvl. 4: 6 seconds
+        lvl. 5: 7 seconds
 
 local function getDescription(level: integer) :: string:
     set {_amount} to "amount" of "arrow_rain" at {_level}

@@ -1,31 +1,17 @@
-on load:
-    create ultimate armor enchantment named "life_reaver":
-        set enchantment ultimate to true
-        set enchantment display to "&f<sprite:items:item/heart_of_the_sea> <rainbow><bold>Life Reaver"
-        set enchantment max level to 5
-        set enchantment priority to 1
-        set enchantment item to heart of the sea
+ultimate armor enchantment:
+    id: "life_reaver"
+    display: "&f<sprite:items:item/heart_of_the_sea> <rainbow><bold>Life Reaver"
+    max level: 5
+    priority: 1
+    item: heart of the sea
+    cost: "expensive"
 
-        level values for "heal percent":
-            set level 1 to 1
-            set level 2 to 1.5
-            set level 3 to 2
-            set level 4 to 2.5
-            set level 5 to 3
-
-        level values for "dust cost":
-            set level 1 to 450
-            set level 2 to 1_650
-            set level 3 to 2_800
-            set level 4 to 16_000
-            set level 5 to 50_000
-
-        level values for "money cost":
-            set level 1 to 500_000
-            set level 2 to 2_000_000
-            set level 3 to 3_000_000
-            set level 4 to 8_000_000
-            set level 5 to 16_000_000
+    > "heal percent":
+        lvl. 1: 1
+        lvl. 2: 1.5
+        lvl. 3: 2
+        lvl. 4: 2.5
+        lvl. 5: 3
 
 local function getDescription(level: integer) :: string:
     set {_heal percent} to "heal percent" of "life_reaver" at {_level}

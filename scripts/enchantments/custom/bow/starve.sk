@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "starve":
-        set enchantment display to "&f<sprite:gui:hud/food_full> &6Starve"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to rotten flesh
+bow enchantment:
+    id: "starve"
+    display: "&f<sprite:gui:hud/food_full> &6Starve"
+    max level: 5
+    priority: 10
+    item: rotten flesh
+    cost: "normal"
 
-        level values for "threshold":
-            set level 1 to 0.75
-            set level 2 to 0.75
-            set level 3 to 0.75
-            set level 4 to 0.75
-            set level 5 to 0.75
+    > "threshold":
+        lvl. 1: 0.75
+        lvl. 2: 0.75
+        lvl. 3: 0.75
+        lvl. 4: 0.75
+        lvl. 5: 0.75
 
-        level values for "hunger":
-            set level 1 to 0.5
-            set level 2 to 0.6
-            set level 3 to 0.7
-            set level 4 to 0.8
-            set level 5 to 1
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "hunger":
+        lvl. 1: 0.5
+        lvl. 2: 0.6
+        lvl. 3: 0.7
+        lvl. 4: 0.8
+        lvl. 5: 1
 
 local function getDescription(level: integer) :: string:
     set {_hunger} to "hunger" of "starve" at {_level}

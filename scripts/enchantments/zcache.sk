@@ -3,8 +3,10 @@ using reflection
 on load:
     set {_now} to current ns
 
+    call custom event "enchantment"
+
     loop indexes of {-ce::*}:
-        cacheSpecificEnchantment(loop-value, false)
+        cacheSpecificEnchantment(loop-value, false, false)
 
     loop indexes of {-vanilla enchantment::*}:
         loop "max level", "display":
@@ -23,10 +25,13 @@ on load:
     send "Loaded %size of indices of {-ce::*}% enchantments in %{_ms took}% ms." to ops and console
 
     delete {-current ce::*}
-    delete {-current ce ability}
+    delete {-current ce ability::*}
 
-function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true):
+function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true, rebuild: boolean = true):
     set {_now} to current ns
+
+    if {_rebuild} is true:
+        call custom event "enchantment"
 
     set {_type} to {-ce::%{_enchantment}%::type}
     set {_ultimate} to {-ce::%{_enchantment}%::ultimate}
@@ -50,6 +55,8 @@ function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true
         apply tooltip display component to {-ce::%{_enchantment}%::item}:
             hidden_components: minecraft:potion_contents, minecraft:ominous_bottle_amplifier
 
+    populateCosts({_enchantment})
+    
     for {_level} in integers between 1 and {-ce::%{_enchantment}%::max level}:
         if {-ce::%{_enchantment}%::getDescription} is set:
             set {_description} to result of {-ce::%{_enchantment}%::getDescription} with arguments {_level}
@@ -65,6 +72,8 @@ function cacheSpecificEnchantment(enchantment: string, broadcast: boolean = true
                 send "Enchantment %{_enchantment}% level %{_level}% is missing a money cost!" to ops and console
 
     for {_ability} in {-ce::%{_enchantment}%::abilities::*}:
+        set {-ce ability::%{_ability}%::function} to function named {_ability} from {_script}
+
         if {-ce ability::%{_ability}%::function} is not set:
             send "Enchantment %{_enchantment}% ability %{_ability}% is missing a function!" to ops and console
 

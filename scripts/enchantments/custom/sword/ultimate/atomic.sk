@@ -1,58 +1,45 @@
-on load:
-    create ultimate sword enchantment named "atomic":
-        set enchantment display to "&f<sprite:celestials:end_flash> <rainbow><bold>Atomic"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to sea lantern
+ultimate sword enchantment:
+    id: "atomic"
+    display: "&f<sprite:celestials:end_flash> <rainbow><bold>Atomic"
+    max level: 5
+    priority: 0
+    item: sea lantern
+    cost: "normal"
 
-        level values for "required combo":
-            set level 1 to 6
-            set level 2 to 6
-            set level 3 to 6
-            set level 4 to 6
-            set level 5 to 5
+    > "required combo":
+        lvl. 1: 6
+        lvl. 2: 6
+        lvl. 3: 6
+        lvl. 4: 6
+        lvl. 5: 5
 
-        level values for "percentage":
-            set level 1 to 40%
-            set level 2 to 45%
-            set level 3 to 50%
-            set level 4 to 55%
-            set level 5 to 60%
+    > "percentage":
+        lvl. 1: 40%
+        lvl. 2: 45%
+        lvl. 3: 50%
+        lvl. 4: 55%
+        lvl. 5: 60%
 
-        level values for "radius":
-            set level 1 to 25
-            set level 2 to 25
-            set level 3 to 25
-            set level 4 to 25
-            set level 5 to 25
+    > "radius":
+        lvl. 1: 25
+        lvl. 2: 25
+        lvl. 3: 25
+        lvl. 4: 25
+        lvl. 5: 25
 
-        level values for "poison":
-            set level 1 to potion effect of poison 1 for 3 seconds
-            set level 2 to potion effect of poison 1 for 3 seconds
-            set level 3 to potion effect of poison 1 for 3 seconds
-            set level 4 to potion effect of poison 1 for 3 seconds
-            set level 5 to potion effect of poison 1 for 3 seconds
+    > "poison":
+        lvl. 1: potion effect of poison 1 for 3 seconds
+        lvl. 2: potion effect of poison 1 for 3 seconds
+        lvl. 3: potion effect of poison 1 for 3 seconds
+        lvl. 4: potion effect of poison 1 for 3 seconds
+        lvl. 5: potion effect of poison 1 for 3 seconds
 
-        level values for "blindness":
-            set level 1 to potion effect of blindness 1 for 3 seconds
-            set level 2 to potion effect of blindness 1 for 3 seconds
-            set level 3 to potion effect of blindness 1 for 3 seconds
-            set level 4 to potion effect of blindness 1 for 3 seconds
-            set level 5 to potion effect of blindness 1 for 3 seconds
-
-        level values for "dust cost":
-            set level 1 to 275
-            set level 2 to 900
-            set level 3 to 1_650
-            set level 4 to 12_000
-            set level 5 to 42_000
-
-        level values for "money cost":
-            set level 1 to 350_000
-            set level 2 to 1_000_000
-            set level 3 to 2_000_000
-            set level 4 to 5_600_000
-            set level 5 to 12_800_000
+    > "blindness":
+        lvl. 1: potion effect of blindness 1 for 3 seconds
+        lvl. 2: potion effect of blindness 1 for 3 seconds
+        lvl. 3: potion effect of blindness 1 for 3 seconds
+        lvl. 4: potion effect of blindness 1 for 3 seconds
+        lvl. 5: potion effect of blindness 1 for 3 seconds
 
 local function getDescription(level: integer) :: string:
     set {_required combo} to "required combo" of "atomic" at {_level}

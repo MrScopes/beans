@@ -1,65 +1,56 @@
-on load:
-    create ultimate sword enchantment named "cleave":
-        set enchantment display to "&f<sprite:particles:damage> <rainbow><bold>Cleave"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to netherite spear
+ultimate sword enchantment:
+    id: "cleave"
+    display: "&f<sprite:particles:damage> <rainbow><bold>Cleave"
+    max level: 5
+    priority: 0
+    item: netherite spear
+    cost: "normal"
 
-        level values for "requirement":
-            set level 1 to 5
-            set level 2 to 4
-            set level 3 to 3
-            set level 4 to 2
-            set level 5 to 1
+    ability:
+        id: "cleave"
+        bind: "left click"
 
-        level values for "damage":
-            set level 1 to 1
-            set level 2 to 1.15
-            set level 3 to 1.35
-            set level 4 to 1.45
-            set level 5 to 1.75
+        > "requirement":
+            lvl. 1: 5
+            lvl. 2: 4
+            lvl. 3: 3
+            lvl. 4: 2
+            lvl. 5: 1
 
-        level values for "bleed":
-            set level 1 to 0.5
-            set level 2 to 0.6
-            set level 3 to 0.7
-            set level 4 to 0.8
-            set level 5 to 1
+        > "damage":
+            lvl. 1: 1
+            lvl. 2: 1.15
+            lvl. 3: 1.35
+            lvl. 4: 1.45
+            lvl. 5: 1.75
 
-        level values for "bleed duration":
-            set level 1 to 3 seconds
-            set level 2 to 3 seconds
-            set level 3 to 3 seconds
-            set level 4 to 3 seconds
-            set level 5 to 3 seconds
+        > "bleed":
+            lvl. 1: 0.5
+            lvl. 2: 0.6
+            lvl. 3: 0.7
+            lvl. 4: 0.8
+            lvl. 5: 1
 
-        level values for "distance":
-            set level 1 to 5
-            set level 2 to 6
-            set level 3 to 7
-            set level 4 to 8
-            set level 5 to 9
+        > "bleed duration":
+            lvl. 1: 3 seconds
+            lvl. 2: 3 seconds
+            lvl. 3: 3 seconds
+            lvl. 4: 3 seconds
+            lvl. 5: 3 seconds
 
-        level values for "radius":
-            set level 1 to 2
-            set level 2 to 2.5
-            set level 3 to 3
-            set level 4 to 3.5
-            set level 5 to 4
+        > "distance":
+            lvl. 1: 5
+            lvl. 2: 6
+            lvl. 3: 7
+            lvl. 4: 8
+            lvl. 5: 9
 
-        level values for "dust cost":
-            set level 1 to 275
-            set level 2 to 900
-            set level 3 to 1_650
-            set level 4 to 12_000
-            set level 5 to 42_000
-
-        level values for "money cost":
-            set level 1 to 350_000
-            set level 2 to 1_000_000
-            set level 3 to 2_000_000
-            set level 4 to 5_600_000
-            set level 5 to 12_800_000
+        > "radius":
+            lvl. 1: 2
+            lvl. 2: 2.5
+            lvl. 3: 3
+            lvl. 4: 3.5
+            lvl. 5: 4
 
 local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of "cleave" at {_level}
@@ -68,9 +59,9 @@ local function getDescription(level: integer) :: string:
     set {_requirement} to "requirement" of "cleave" at {_level}
     set {_distance} to "distance" of "cleave" at {_level}
     set {_radius} to "radius" of "cleave" at {_level}
-    return "after &f%{_requirement}% &7attacks, &e[LMB] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%timeFormat({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
+    return "after &f%{_requirement}% &7attacks, &e[<cleave>] &7will cleave enemies. &8(&c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &c%{_bleed}%&f<sprite:gui:hud/heart/full> &7over &f%timeFormat({_bleed duration})%&8, &f%{_distance}%m &7range, &f%{_radius}%m &7radius&8)"
 
-local function onLeftClick(player: player, item: item, level: integer):
+local function cleave(player: player, level: integer):
     set {_requirement} to "requirement" of "cleave" at {_level}
     if {-cleave::%{_player}%} >= {_requirement}:
         delete {-cleave::%{_player}%}
@@ -97,7 +88,7 @@ local function onLeftClick(player: player, item: item, level: integer):
             loop all living entities in radius {_radius} around {_bullet}:
                 {_affected::*} doesn't contain loop-entity
                 add loop-entity to {_affected::*}
-                cleave(loop-entity, {_player}, {_level})
+                applyCleave(loop-entity, {_player}, {_level})
 
 local function onAttack(attacker: entity, sword: item, level: integer, victim: entity, damage: number) :: number:
     add 1 to {-cleave::%{_attacker}%}
@@ -105,7 +96,7 @@ local function onAttack(attacker: entity, sword: item, level: integer, victim: e
         send action bar "&4&lCleave &fis ready." to {_attacker}
     return 0
 
-local function cleave(victim: entity, attacker: entity, level: integer):
+local function applyCleave(victim: entity, attacker: entity, level: integer):
     set {_damage} to "damage" of "cleave" at {_level}
     set {_bleed} to "bleed" of "cleave" at {_level}
     set {_bleed duration} to "bleed duration" of "cleave" at {_level}

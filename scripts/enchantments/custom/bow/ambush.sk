@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "ambush":
-        set enchantment display to "&f<sprite:items:item/black_dye> &eAmbush"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to black dye
+bow enchantment:
+    id: "ambush"
+    display: "&f<sprite:items:item/black_dye> &eAmbush"
+    max level: 5
+    priority: 0
+    item: black dye
+    cost: "normal"
 
-        level values for "multiplier":
-            set level 1 to 0.1
-            set level 2 to 0.15
-            set level 3 to 0.2
-            set level 4 to 0.25
-            set level 5 to 0.3
+    > "multiplier":
+        lvl. 1: 0.1
+        lvl. 2: 0.15
+        lvl. 3: 0.2
+        lvl. 4: 0.25
+        lvl. 5: 0.3
 
-        level values for "time threshold":
-            set level 1 to 20 seconds
-            set level 2 to 20 seconds
-            set level 3 to 20 seconds
-            set level 4 to 20 seconds
-            set level 5 to 20 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "time threshold":
+        lvl. 1: 20 seconds
+        lvl. 2: 20 seconds
+        lvl. 3: 20 seconds
+        lvl. 4: 20 seconds
+        lvl. 5: 20 seconds
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "ambush" at {_level}

@@ -1,42 +1,31 @@
-on load:
-    create pickaxe enchantment named "beam":
-        set enchantment display to "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to blaze rod
+pickaxe enchantment:
+    id: "beam"
+    display: "&f<sprite:gui:container/bundle/bundle_progressbar_full> &4Beam"
+    max level: 5
+    priority: 10
+    item: blaze rod
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 5
-            set level 2 to 7
-            set level 3 to 9
-            set level 4 to 11
-            set level 5 to 13
+    > "chance":
+        lvl. 1: 5
+        lvl. 2: 7
+        lvl. 3: 9
+        lvl. 4: 11
+        lvl. 5: 13
 
-        level values for "radius":
-            set level 1 to 1.25
-            set level 2 to 1.35
-            set level 3 to 1.5
-            set level 4 to 1.65
-            set level 5 to 1.75
+    > "radius":
+        lvl. 1: 1.25
+        lvl. 2: 1.35
+        lvl. 3: 1.5
+        lvl. 4: 1.65
+        lvl. 5: 1.75
 
-        level values for "distance":
-            set level 1 to 30
-            set level 2 to 35
-            set level 3 to 40
-            set level 4 to 45
-            set level 5 to 50
-
-        level values for "dust cost":
-            set level 2 to 45
-            set level 3 to 175
-            set level 4 to 2_800
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 200_000
-            set level 4 to 1_200_000
-            set level 5 to 3_800_000
+    > "distance":
+        lvl. 1: 30
+        lvl. 2: 35
+        lvl. 3: 40
+        lvl. 4: 45
+        lvl. 5: 50
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "beam" at {_level}

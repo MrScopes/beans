@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "bullseye":
-        set enchantment display to "&f<head:entity/player/wide/steve> &eBullseye"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to player head
+bow enchantment:
+    id: "bullseye"
+    display: "&f<head:entity/player/wide/steve> &eBullseye"
+    max level: 5
+    priority: 10
+    item: player head
+    cost: "normal"
 
-        level values for "threshold":
-            set level 1 to 0.75
-            set level 2 to 0.75
-            set level 3 to 0.75
-            set level 4 to 0.75
-            set level 5 to 0.75
+    > "threshold":
+        lvl. 1: 0.75
+        lvl. 2: 0.75
+        lvl. 3: 0.75
+        lvl. 4: 0.75
+        lvl. 5: 0.75
 
-        level values for "damage":
-            set level 1 to 0.5
-            set level 2 to 0.75
-            set level 3 to 1
-            set level 4 to 1.25
-            set level 5 to 1.75
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "damage":
+        lvl. 1: 0.5
+        lvl. 2: 0.75
+        lvl. 3: 1
+        lvl. 4: 1.25
+        lvl. 5: 1.75
 
 local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of "bullseye" at {_level}

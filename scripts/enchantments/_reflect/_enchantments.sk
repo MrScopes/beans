@@ -1,43 +1,80 @@
-condition create [disabled:disabled] [ultimate:ultimate] (pickaxe:pickaxe|sword:sword|armor:armor|bow:bow) enchantment named %string%:
-    parse:
-        set {_type} to first element out of parse tags where [input isn't "ultimate" or "disabled"]
-        continue
-    check:
-        delete {-ce::%expr-1%::*}
-        set {-current ce::name} to expr-1
-        set {-current ce::type} to {_type}
-        set {-ce::%expr-1%::type} to {_type}
-        if parse tags contains "ultimate":
-            set {-ce::%expr-1%::ultimate} to true
-        if parse tags contains "disabled":
-            set {-ce::%expr-1%::disabled} to true
-        return true
+using reflection
 
-condition level values for %string%:
+custom event "enchantment":
+    pattern: [disabled:disabled] [ultimate:ultimate] (pickaxe:pickaxe|sword:sword|armor:armor|bow:bow) enchantment
+    check:
+        delete {-current ce::*}
+        delete {-current ce ability::*}
+
+        set {_type} to first element out of parse tags where [input isn't "ultimate" or "disabled"]
+        set {-current ce::type} to {_type}
+
+        if parse tags contains "ultimate":
+            set {-current ce::ultimate} to true
+
+        if parse tags contains "disabled":
+            set {-current ce::disabled} to true
+
+        continue
+
+effect:
+    patterns:
+        id\: %string%
+    usable in:
+        custom event "enchantment"
+    trigger:
+        set {_id} to expr-1
+
+        if {-current ce ability::active} is true:
+            set {_enchantment} to {-current ce::name}
+
+            delete {-ce ability::%{_id}%::*}
+            set {-current ce ability::name} to {_id}
+            set {-ce ability::%{_id}%::id} to {_id}
+
+            if {-ce::%{_enchantment}%::abilities::*} doesn't contain {_id}:
+                add {_id} to {-ce::%{_enchantment}%::abilities::*}
+
+            stop
+
+        delete {-ce::%{_id}%::*}
+        set {-current ce::name} to {_id}
+
+        set {-ce::%{_id}%::id} to {_id}
+        set {-ce::%{_id}%::type} to {-current ce::type}
+
+        if {-current ce::ultimate} is true:
+            set {-ce::%{_id}%::ultimate} to true
+
+        if {-current ce::disabled} is true:
+            set {-ce::%{_id}%::disabled} to true
+
+effect:
+    patterns:
+        (display:display|max level:max level|priority:priority|item:item|cost:cost)\: %object%
+    usable in:
+        custom event "enchantment"
+    parse:
+        set {_key} to first element out of parse tags
+        continue
+    trigger:
+        set {_enchantment} to {-current ce::name}
+        set {-ce::%{_enchantment}%::%{_key}%} to expr-1
+
+condition > %string%:
     check:
         set {-current ce::level value key} to expr-1
         return true
 
-expression enchantment (display:display|max level:max level|priority:priority|item:item|disabled:disabled|ultimate:ultimate) [of %-string%]:
-    parse:
-        set {_key} to first element out of parse tags
-        continue
-    get:
-        set {_current enchantment} to expr-1 ? {-current ce::name}
-        return {-ce::%{_current enchantment}%::%{_key}%}
-    set:
-        set {_current enchantment} to expr-1 ? {-current ce::name}
-        set {-ce::%{_current enchantment}%::%{_key}%} to change value
-
-expression level %integer% [%-string% of %-string%]:
-    get:
-        set {_current enchantment} to {-current ce::name}
-        set {_current level value key} to {-current ce::level value key}
-        return {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%}
-    set:
-        set {_current enchantment} to {-current ce::name}
-        set {_current level value key} to {-current ce::level value key}
-        set {-ce::%{_current enchantment}%::%{_current level value key}%::%expr-1%} to change value
+effect:
+    patterns:
+        lvl[.] %integer%\: %object%
+    usable in:
+        custom event "enchantment"
+    trigger:
+        set {_enchantment} to {-current ce::name}
+        set {_key} to {-current ce::level value key}
+        set {-ce::%{_enchantment}%::%{_key}%::%expr-1%} to expr-2
 
 expression %string% of %string% at %integer%:
     get:

@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "feeding":
-        set enchantment display to "&f<sprite:items:item/cooked_beef> &fFeeding"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to cooked beef
+pickaxe enchantment:
+    id: "feeding"
+    display: "&f<sprite:items:item/cooked_beef> &fFeeding"
+    max level: 5
+    priority: 0
+    item: cooked beef
+    cost: "cheap"
 
-        level values for "chance":
-            set level 1 to 5
-            set level 2 to 10
-            set level 3 to 15
-            set level 4 to 20
-            set level 5 to 25
+    > "chance":
+        lvl. 1: 5
+        lvl. 2: 10
+        lvl. 3: 15
+        lvl. 4: 20
+        lvl. 5: 25
 
-        level values for "feed":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 3
-            set level 4 to 4
-            set level 5 to 5
-
-        level values for "dust cost":
-            set level 2 to 45
-            set level 3 to 100
-            set level 4 to 1_400
-            set level 5 to 3_000
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 125_000
-            set level 4 to 600_000
-            set level 5 to 1_500_000
+    > "feed":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 3
+        lvl. 4: 4
+        lvl. 5: 5
 
 local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of "feeding" at {_level}

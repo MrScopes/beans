@@ -1,42 +1,31 @@
-on load:
-    create bow enchantment named "wither":
-        set enchantment display to "&f<sprite:items:item/wither_spawn_egg> &7Wither"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to wither skeleton skull
+bow enchantment:
+    id: "wither"
+    display: "&f<sprite:items:item/wither_spawn_egg> &7Wither"
+    max level: 5
+    priority: 10
+    item: wither skeleton skull
+    cost: "normal"
 
-        level values for "threshold":
-            set level 1 to 0.5
-            set level 2 to 0.5
-            set level 3 to 0.5
-            set level 4 to 0.5
-            set level 5 to 0.5
+    > "threshold":
+        lvl. 1: 0.5
+        lvl. 2: 0.5
+        lvl. 3: 0.5
+        lvl. 4: 0.5
+        lvl. 5: 0.5
 
-        level values for "cooldown":
-            set level 1 to 10 seconds
-            set level 2 to 10 seconds
-            set level 3 to 10 seconds
-            set level 4 to 10 seconds
-            set level 5 to 10 seconds
+    > "cooldown":
+        lvl. 1: 10 seconds
+        lvl. 2: 10 seconds
+        lvl. 3: 10 seconds
+        lvl. 4: 10 seconds
+        lvl. 5: 10 seconds
 
-        level values for "effect":
-            set level 1 to potion effect of wither 1 for 4 seconds
-            set level 2 to potion effect of wither 1 for 5 seconds
-            set level 3 to potion effect of wither 2 for 6 seconds
-            set level 4 to potion effect of wither 2 for 7 seconds
-            set level 5 to potion effect of wither 3 for 7 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "effect":
+        lvl. 1: potion effect of wither 1 for 4 seconds
+        lvl. 2: potion effect of wither 1 for 5 seconds
+        lvl. 3: potion effect of wither 2 for 6 seconds
+        lvl. 4: potion effect of wither 2 for 7 seconds
+        lvl. 5: potion effect of wither 3 for 7 seconds
 
 local function getDescription(level: integer) :: string:
     set {_wither} to "effect" of "wither" at {_level}

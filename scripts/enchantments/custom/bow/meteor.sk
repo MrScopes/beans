@@ -1,70 +1,59 @@
-on load:
-    create bow enchantment named "meteor":
-        set enchantment display to "&f<sprite:items:item/fire_charge> &cMeteor"
-        set enchantment max level to 5
-        set enchantment priority to 100
-        set enchantment item to fire charge
+bow enchantment:
+    id: "meteor"
+    display: "&f<sprite:items:item/fire_charge> &cMeteor"
+    max level: 5
+    priority: 100
+    item: fire charge
+    cost: "normal"
 
-        level values for "manual cooldown::onHit":
-            set level 1 to true
-            set level 2 to true
-            set level 3 to true
-            set level 4 to true
-            set level 5 to true
+    > "manual cooldown::onHit":
+        lvl. 1: true
+        lvl. 2: true
+        lvl. 3: true
+        lvl. 4: true
+        lvl. 5: true
 
-        level values for "cooldown":
-            set level 1 to 20 seconds
-            set level 2 to 20 seconds
-            set level 3 to 20 seconds
-            set level 4 to 20 seconds
-            set level 5 to 20 seconds
+    > "cooldown":
+        lvl. 1: 20 seconds
+        lvl. 2: 20 seconds
+        lvl. 3: 20 seconds
+        lvl. 4: 20 seconds
+        lvl. 5: 20 seconds
 
-        level values for "threshold":
-            set level 1 to 1
-            set level 2 to 1
-            set level 3 to 1
-            set level 4 to 1
-            set level 5 to 1
+    > "threshold":
+        lvl. 1: 1
+        lvl. 2: 1
+        lvl. 3: 1
+        lvl. 4: 1
+        lvl. 5: 1
 
-        level values for "damage per block":
-            set level 1 to 0.2
-            set level 2 to 0.22
-            set level 3 to 0.25
-            set level 4 to 0.27
-            set level 5 to 0.3
+    > "damage per block":
+        lvl. 1: 0.2
+        lvl. 2: 0.22
+        lvl. 3: 0.25
+        lvl. 4: 0.27
+        lvl. 5: 0.3
 
-        level values for "aoe per block":
-            set level 1 to 0.1
-            set level 2 to 0.12
-            set level 3 to 0.15
-            set level 4 to 0.17
-            set level 5 to 0.2
+    > "aoe per block":
+        lvl. 1: 0.1
+        lvl. 2: 0.12
+        lvl. 3: 0.15
+        lvl. 4: 0.17
+        lvl. 5: 0.2
 
-        level values for "max damage":
-            set level 1 to 5
-            set level 2 to 5
-            set level 3 to 5
-            set level 4 to 5
-            set level 5 to 5
+    > "max damage":
+        lvl. 1: 5
+        lvl. 2: 5
+        lvl. 3: 5
+        lvl. 4: 5
+        lvl. 5: 5
 
-        level values for "max aoe":
-            set level 1 to 4
-            set level 2 to 4
-            set level 3 to 4
-            set level 4 to 4
-            set level 5 to 4
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "max aoe":
+        lvl. 1: 4
+        lvl. 2: 4
+        lvl. 3: 4
+        lvl. 4: 4
+        lvl. 5: 4
 
 local function getDescription(level: integer) :: string:
     set {_damage per block} to "damage per block" of "meteor" at {_level}

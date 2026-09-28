@@ -1,28 +1,17 @@
-on load:
-    create pickaxe enchantment named "excavator":
-        set enchantment display to "&f<sprite:items:item/netherite_shovel> &9Excavator"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to netherite shovel
+pickaxe enchantment:
+    id: "excavator"
+    display: "&f<sprite:items:item/netherite_shovel> &9Excavator"
+    max level: 5
+    priority: 10
+    item: netherite shovel
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 5
-            set level 2 to 6
-            set level 3 to 7
-            set level 4 to 8
-            set level 5 to 15
-
-        level values for "dust cost":
-            set level 2 to 35
-            set level 3 to 200
-            set level 4 to 1_750
-            set level 5 to 4_900
-
-        level values for "money cost":
-            set level 2 to 40_000
-            set level 3 to 225_000
-            set level 4 to 750_000
-            set level 5 to 2_500_000
+    > "chance":
+        lvl. 1: 5
+        lvl. 2: 6
+        lvl. 3: 7
+        lvl. 4: 8
+        lvl. 5: 15
 
 local function getDescription(level: integer) :: string:
     return "make you break a nearby block"

@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "grinder":
-        set enchantment display to "&f<sprite:blocks:block/grindstone_side> &cGrinder"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to grindstone
+pickaxe enchantment:
+    id: "grinder"
+    display: "&f<sprite:blocks:block/grindstone_side> &cGrinder"
+    max level: 5
+    priority: 10
+    item: grindstone
+    cost: "normal"
 
-        level values for "requirement":
-            set level 1 to 100
-            set level 2 to 90
-            set level 3 to 85
-            set level 4 to 80
-            set level 5 to 75
+    > "requirement":
+        lvl. 1: 100
+        lvl. 2: 90
+        lvl. 3: 85
+        lvl. 4: 80
+        lvl. 5: 75
 
-        level values for "boost":
-            set level 1 to 0.001
-            set level 2 to 0.0015
-            set level 3 to 0.002
-            set level 4 to 0.0025
-            set level 5 to 0.003
-
-        level values for "dust cost":
-            set level 2 to 65
-            set level 3 to 175
-            set level 4 to 2_800
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 225_000
-            set level 4 to 1_500_000
-            set level 5 to 3_800_000
+    > "boost":
+        lvl. 1: 0.001
+        lvl. 2: 0.0015
+        lvl. 3: 0.002
+        lvl. 4: 0.0025
+        lvl. 5: 0.003
 
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of "grinder" at {_level}
@@ -42,7 +31,6 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
     set {_requirement} to "requirement" of "grinder" at {_level}
 
     startGrinderWatcher({_player})
-    
 
     add 1 to {-grinder blocks::%{_player}%}
 

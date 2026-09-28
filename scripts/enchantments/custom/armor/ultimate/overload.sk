@@ -1,59 +1,45 @@
-on load:
-    create ultimate armor enchantment named "overload":
-        set enchantment ultimate to true
-        set enchantment display to "&f<sprite:gui:mob_effect/instant_health> <rainbow><bold>Overload"
-        set enchantment max level to 5
-        set enchantment priority to 1
-        set enchantment item to health potion
+ultimate armor enchantment:
+    id: "overload"
+    display: "&f<sprite:gui:mob_effect/instant_health> <rainbow><bold>Overload"
+    max level: 5
+    priority: 1
+    item: health potion
+    cost: "expensive"
 
-        level values for "regeneration":
-            set level 1 to potion effect of regeneration 2 for 3 seconds
-            set level 2 to potion effect of regeneration 2 for 4 seconds
-            set level 3 to potion effect of regeneration 2 for 5 seconds
-            set level 4 to potion effect of regeneration 2 for 6 seconds
-            set level 5 to potion effect of regeneration 3 for 6 seconds
+    > "regeneration":
+        lvl. 1: potion effect of regeneration 2 for 3 seconds
+        lvl. 2: potion effect of regeneration 2 for 4 seconds
+        lvl. 3: potion effect of regeneration 2 for 5 seconds
+        lvl. 4: potion effect of regeneration 2 for 6 seconds
+        lvl. 5: potion effect of regeneration 3 for 6 seconds
 
-        level values for "speed":
-            set level 1 to potion effect of speed 2 for 3 seconds
-            set level 2 to potion effect of speed 2 for 4 seconds
-            set level 3 to potion effect of speed 2 for 5 seconds
-            set level 4 to potion effect of speed 2 for 5 seconds
-            set level 5 to potion effect of speed 3 for 6 seconds
+    > "speed":
+        lvl. 1: potion effect of speed 2 for 3 seconds
+        lvl. 2: potion effect of speed 2 for 4 seconds
+        lvl. 3: potion effect of speed 2 for 5 seconds
+        lvl. 4: potion effect of speed 2 for 5 seconds
+        lvl. 5: potion effect of speed 3 for 6 seconds
 
-        level values for "health boost":
-            set level 1 to potion effect of health boost 1 for 15 seconds
-            set level 2 to potion effect of health boost 2 for 15 seconds
-            set level 3 to potion effect of health boost 2 for 15 seconds
-            set level 4 to potion effect of health boost 2 for 15 seconds
-            set level 5 to potion effect of health boost 3 for 15 seconds
+    > "health boost":
+        lvl. 1: potion effect of health boost 1 for 15 seconds
+        lvl. 2: potion effect of health boost 2 for 15 seconds
+        lvl. 3: potion effect of health boost 2 for 15 seconds
+        lvl. 4: potion effect of health boost 2 for 15 seconds
+        lvl. 5: potion effect of health boost 3 for 15 seconds
 
-        level values for "absorption":
-            set level 1 to potion effect of absorption 1 for 5 seconds
-            set level 2 to potion effect of absorption 1 for 6 seconds
-            set level 3 to potion effect of absorption 1 for 7 seconds
-            set level 4 to potion effect of absorption 2 for 8 seconds
-            set level 5 to potion effect of absorption 2 for 10 seconds
+    > "absorption":
+        lvl. 1: potion effect of absorption 1 for 5 seconds
+        lvl. 2: potion effect of absorption 1 for 6 seconds
+        lvl. 3: potion effect of absorption 1 for 7 seconds
+        lvl. 4: potion effect of absorption 2 for 8 seconds
+        lvl. 5: potion effect of absorption 2 for 10 seconds
 
-        level values for "feed":
-            set level 1 to 2
-            set level 2 to 3
-            set level 3 to 4
-            set level 4 to 5
-            set level 5 to 10
-
-        level values for "dust cost":
-            set level 1 to 450
-            set level 2 to 1_650
-            set level 3 to 2_800
-            set level 4 to 16_000
-            set level 5 to 50_000
-
-        level values for "money cost":
-            set level 1 to 500_000
-            set level 2 to 2_000_000
-            set level 3 to 3_000_000
-            set level 4 to 8_000_000
-            set level 5 to 16_000_000
+    > "feed":
+        lvl. 1: 2
+        lvl. 2: 3
+        lvl. 3: 4
+        lvl. 4: 5
+        lvl. 5: 10
 
 local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of "overload" at {_level}

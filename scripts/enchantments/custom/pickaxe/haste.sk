@@ -1,39 +1,30 @@
-on load:
-    create pickaxe enchantment named "haste":
-        set enchantment display to "&f<sprite:items:item/sugar> &6Haste"
-        set enchantment max level to 4
-        set enchantment priority to 0
-        set enchantment item to sugar
+pickaxe enchantment:
+    id: "haste"
+    display: "&f<sprite:items:item/sugar> &6Haste"
+    max level: 4
+    priority: 0
+    item: sugar
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 4
-            set level 2 to 8
-            set level 3 to 10
-            set level 4 to 12
+    > "chance":
+        lvl. 1: 4
+        lvl. 2: 8
+        lvl. 3: 10
+        lvl. 4: 12
 
-        level values for "haste":
-            set level 1 to potion effect of haste 1 for 5 seconds
-            set level 2 to potion effect of haste 2 for 5 seconds
-            set level 3 to potion effect of haste 3 for 5 seconds
-            set level 4 to potion effect of haste 4 for 5 seconds
-            set level 5 to potion effect of haste 5 for 5 seconds
+    > "haste":
+        lvl. 1: potion effect of haste 1 for 5 seconds
+        lvl. 2: potion effect of haste 2 for 5 seconds
+        lvl. 3: potion effect of haste 3 for 5 seconds
+        lvl. 4: potion effect of haste 4 for 5 seconds
+        lvl. 5: potion effect of haste 5 for 5 seconds
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 5 seconds
-            set level 2 to potion effect of speed 2 for 5 seconds
-            set level 3 to potion effect of speed 3 for 5 seconds
-            set level 4 to potion effect of speed 4 for 5 seconds
-            set level 5 to potion effect of speed 5 for 5 seconds
-
-        level values for "dust cost":
-            set level 2 to 90
-            set level 3 to 2_300
-            set level 4 to 4_900
-
-        level values for "money cost":
-            set level 2 to 140_000
-            set level 3 to 1_000_000
-            set level 4 to 2_500_000
+    > "speed":
+        lvl. 1: potion effect of speed 1 for 5 seconds
+        lvl. 2: potion effect of speed 2 for 5 seconds
+        lvl. 3: potion effect of speed 3 for 5 seconds
+        lvl. 4: potion effect of speed 4 for 5 seconds
+        lvl. 5: potion effect of speed 5 for 5 seconds
 
 local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of "haste" at {_level}

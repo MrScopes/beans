@@ -1,49 +1,42 @@
-on load:
-    create sword enchantment named "snatch":
-        set enchantment display to "&f<sprite:items:item/ominous_bottle> &5Snatch"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to ominous bottle
+sword enchantment:
+    id: "snatch"
+    display: "&f<sprite:items:item/ominous_bottle> &5Snatch"
+    max level: 5
+    priority: 0
+    item: ominous bottle
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 20 seconds
-            set level 2 to 18 seconds
-            set level 3 to 15 seconds
-            set level 4 to 12 seconds
-            set level 5 to 10 seconds
+    ability:
+        id: "snatch"
+        bind: "left click"
 
-        level values for "distance":
-            set level 1 to 20
-            set level 2 to 22
-            set level 3 to 25
-            set level 4 to 27
-            set level 5 to 30
+        > "cooldown":
+            lvl. 1: 20 seconds
+            lvl. 2: 18 seconds
+            lvl. 3: 15 seconds
+            lvl. 4: 12 seconds
+            lvl. 5: 10 seconds
 
-        level values for "disable duration":
-            set level 1 to 2 seconds
-            set level 2 to 3 seconds
-            set level 3 to 4 seconds
-            set level 4 to 5 seconds
-            set level 5 to 6 seconds
+        > "distance":
+            lvl. 1: 20
+            lvl. 2: 22
+            lvl. 3: 25
+            lvl. 4: 27
+            lvl. 5: 30
 
-        level values for "dust cost":
-            set level 2 to 65
-            set level 3 to 225
-            set level 4 to 4_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_800_000
-            set level 5 to 3_100_000
+        > "disable duration":
+            lvl. 1: 2 seconds
+            lvl. 2: 3 seconds
+            lvl. 3: 4 seconds
+            lvl. 4: 5 seconds
+            lvl. 5: 6 seconds
 
 local function getDescription(level: integer) :: string:
     set {_distance} to "distance" of "snatch" at {_level}
     set {_disable duration} to "disable duration" of "snatch" at {_level}
-    return "&e[LMB] &7pull in a target within &f%{_distance}%m&8, &7and apply &f%effectDisplay("elytra disable", customDuration: {_disable duration}, showAmplifier: false)%."
+    return "&e[<snatch>] &7pull in a target within &f%{_distance}%m&8, &7and apply &f%effectDisplay("elytra disable", customDuration: {_disable duration}, showAmplifier: false)%."
 
-local function onLeftClick(player: player, item: item, level: integer):
+local function snatch(player: player, level: integer):
     set {_origin} to location of {_player}'s head
     set {_direction} to vector from yaw {_player}'s yaw and pitch {_player}'s pitch
     set {_distance} to "distance" of "snatch" at {_level}

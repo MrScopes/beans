@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "ice":
-        set enchantment display to "&f<sprite:blocks:block/ice> &bIce"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to packed ice
+pickaxe enchantment:
+    id: "ice"
+    display: "&f<sprite:blocks:block/ice> &bIce"
+    max level: 5
+    priority: 10
+    item: packed ice
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 1
-            set level 2 to 1.15
-            set level 3 to 1.25
-            set level 4 to 1.35
-            set level 5 to 1.5
+    > "chance":
+        lvl. 1: 1
+        lvl. 2: 1.15
+        lvl. 3: 1.25
+        lvl. 4: 1.35
+        lvl. 5: 1.5
 
-        level values for "radius":
-            set level 1 to 1.5
-            set level 2 to 1.65
-            set level 3 to 1.75
-            set level 4 to 1.85
-            set level 5 to 2.2
-
-        level values for "dust cost":
-            set level 2 to 45
-            set level 3 to 200
-            set level 4 to 2_800
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 50_000
-            set level 3 to 250_000
-            set level 4 to 1_200_000
-            set level 5 to 3_000_000
+    > "radius":
+        lvl. 1: 1.5
+        lvl. 2: 1.65
+        lvl. 3: 1.75
+        lvl. 4: 1.85
+        lvl. 5: 2.2
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "ice" at {_level}

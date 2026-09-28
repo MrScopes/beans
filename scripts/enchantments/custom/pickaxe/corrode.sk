@@ -1,42 +1,31 @@
-on load:
-    create pickaxe enchantment named "corrode":
-        set enchantment display to "&f<sprite:items:item/fermented_spider_eye> &8Corrode"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to fermented spider eye
+pickaxe enchantment:
+    id: "corrode"
+    display: "&f<sprite:items:item/fermented_spider_eye> &8Corrode"
+    max level: 5
+    priority: 10
+    item: fermented spider eye
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 3
-            set level 4 to 4
-            set level 5 to 5
+    > "chance":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 3
+        lvl. 4: 4
+        lvl. 5: 5
 
-        level values for "radius":
-            set level 1 to 3
-            set level 2 to 3
-            set level 3 to 3
-            set level 4 to 3
-            set level 5 to 3
+    > "radius":
+        lvl. 1: 3
+        lvl. 2: 3
+        lvl. 3: 3
+        lvl. 4: 3
+        lvl. 5: 3
 
-        level values for "expansion":
-            set level 1 to 0.5
-            set level 2 to 0.5
-            set level 3 to 0.5
-            set level 4 to 0.5
-            set level 5 to 0.75
-
-        level values for "dust cost":
-            set level 2 to 90
-            set level 3 to 225
-            set level 4 to 3_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_500_000
-            set level 5 to 3_300_000
+    > "expansion":
+        lvl. 1: 0.5
+        lvl. 2: 0.5
+        lvl. 3: 0.5
+        lvl. 4: 0.5
+        lvl. 5: 0.75
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "corrode" at {_level}

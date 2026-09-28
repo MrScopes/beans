@@ -1,77 +1,66 @@
-on load:
-    create bow enchantment named "creeper":
-        set enchantment display to "&f<head:creeper> &2Creeper"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to creeper spawn egg
+bow enchantment:
+    id: "creeper"
+    display: "&f<head:creeper> &2Creeper"
+    max level: 5
+    priority: 0
+    item: creeper spawn egg
+    cost: "normal"
 
-        level values for "manual chance::onHit":
-            set level 1 to true
-            set level 2 to true
-            set level 3 to true
-            set level 4 to true
-            set level 5 to true
+    > "manual chance::onHit":
+        lvl. 1: true
+        lvl. 2: true
+        lvl. 3: true
+        lvl. 4: true
+        lvl. 5: true
 
-        level values for "chance":
-            set level 1 to 20
-            set level 2 to 25
-            set level 3 to 30
-            set level 4 to 35
-            set level 5 to 50
+    > "chance":
+        lvl. 1: 20
+        lvl. 2: 25
+        lvl. 3: 30
+        lvl. 4: 35
+        lvl. 5: 50
 
-        level values for "threshold":
-            set level 1 to 0.5
-            set level 2 to 0.4
-            set level 3 to 0.35
-            set level 4 to 0.3
-            set level 5 to 0.20
+    > "threshold":
+        lvl. 1: 0.5
+        lvl. 2: 0.4
+        lvl. 3: 0.35
+        lvl. 4: 0.3
+        lvl. 5: 0.20
 
-        level values for "manual cooldown::onHit":
-            set level 1 to true
-            set level 2 to true
-            set level 3 to true
-            set level 4 to true
-            set level 5 to true
+    > "manual cooldown::onHit":
+        lvl. 1: true
+        lvl. 2: true
+        lvl. 3: true
+        lvl. 4: true
+        lvl. 5: true
 
-        level values for "cooldown":
-            set level 1 to 18 seconds
-            set level 2 to 17 seconds
-            set level 3 to 16 seconds
-            set level 4 to 15 seconds
-            set level 5 to 12 seconds
+    > "cooldown":
+        lvl. 1: 18 seconds
+        lvl. 2: 17 seconds
+        lvl. 3: 16 seconds
+        lvl. 4: 15 seconds
+        lvl. 5: 12 seconds
 
-        level values for "radius":
-            set level 1 to 2.5
-            set level 2 to 2.75
-            set level 3 to 3
-            set level 4 to 3.25
-            set level 5 to 3.75
+    > "radius":
+        lvl. 1: 2.5
+        lvl. 2: 2.75
+        lvl. 3: 3
+        lvl. 4: 3.25
+        lvl. 5: 3.75
 
-        level values for "damage":
-            set level 1 to 0.5
-            set level 2 to 0.75
-            set level 3 to 1
-            set level 4 to 1.25
-            set level 5 to 1.75
+    > "damage":
+        lvl. 1: 0.5
+        lvl. 2: 0.75
+        lvl. 3: 1
+        lvl. 4: 1.25
+        lvl. 5: 1.75
 
-        level values for "fuse":
-            set level 1 to 20
-            set level 2 to 17
-            set level 3 to 15
-            set level 4 to 13
-            set level 5 to 10
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 125
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 24_000
-            set level 3 to 200_000
-            set level 4 to 1_000_000
-            set level 5 to 3_000_000
+    > "fuse":
+        lvl. 1: 20
+        lvl. 2: 17
+        lvl. 3: 15
+        lvl. 4: 13
+        lvl. 5: 10
 
 local function getDescription(level: integer) :: string:
     set {_fuse} to "fuse" of "creeper" at {_level}

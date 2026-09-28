@@ -1,28 +1,17 @@
-on load:
-    create pickaxe enchantment named "beacon_finder":
-        set enchantment display to "&f<sprite:blocks:block/beacon> &b&lBEACON &bFinder"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to beacon
+pickaxe enchantment:
+    id: "beacon_finder"
+    display: "&f<sprite:blocks:block/beacon> &b&lBEACON &bFinder"
+    max level: 5
+    priority: 10
+    item: beacon
+    cost: "expensive"
 
-        level values for "chance":
-            set level 1 to 0.001
-            set level 2 to 0.002
-            set level 3 to 0.003
-            set level 4 to 0.004
-            set level 5 to 0.005
-
-        level values for "dust cost":
-            set level 2 to 60
-            set level 3 to 275
-            set level 4 to 4_000
-            set level 5 to 9_800
-
-        level values for "money cost":
-            set level 2 to 75_000
-            set level 3 to 300_000
-            set level 4 to 1_600_000
-            set level 5 to 5_000_000
+    > "chance":
+        lvl. 1: 0.001
+        lvl. 2: 0.002
+        lvl. 3: 0.003
+        lvl. 4: 0.004
+        lvl. 5: 0.005
 
 local function getDescription(level: integer) :: string:
     return "instantly gives you a beacon"

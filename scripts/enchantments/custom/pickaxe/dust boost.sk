@@ -1,55 +1,34 @@
-on load:
-    create pickaxe enchantment named "dust_boost":
-        set enchantment display to "&f<sprite:items:item/gunpowder> &bDust Boost"
-        set enchantment max level to 10
-        set enchantment priority to 9999
-        set enchantment item to gunpowder
+pickaxe enchantment:
+    id: "dust_boost"
+    display: "&f<sprite:items:item/gunpowder> &bDust Boost"
+    max level: 10
+    priority: 9999
+    item: gunpowder
+    cost: "expensive"
 
-        level values for "chance":
-            set level 1 to 20
-            set level 2 to 25
-            set level 3 to 30
-            set level 4 to 35
-            set level 5 to 40
-            set level 6 to 45
-            set level 7 to 50
-            set level 8 to 55
-            set level 9 to 60
-            set level 10 to 75
+    > "chance":
+        lvl. 1: 20
+        lvl. 2: 25
+        lvl. 3: 30
+        lvl. 4: 35
+        lvl. 5: 40
+        lvl. 6: 45
+        lvl. 7: 50
+        lvl. 8: 55
+        lvl. 9: 60
+        lvl. 10: 75
 
-        level values for "multiplier":
-            set level 1 to 5
-            set level 2 to 5.5
-            set level 3 to 6
-            set level 4 to 6.5
-            set level 5 to 7
-            set level 6 to 7.5
-            set level 7 to 8
-            set level 8 to 8.5
-            set level 9 to 9
-            set level 10 to 10
-
-        level values for "dust cost":
-            set level 2 to 0
-            set level 3 to 5
-            set level 4 to 20
-            set level 5 to 70
-            set level 6 to 275
-            set level 7 to 1_100
-            set level 8 to 2_200
-            set level 9 to 17_000
-            set level 10 to 24_000
-
-        level values for "money cost":
-            set level 2 to 1_500
-            set level 3 to 6_000
-            set level 4 to 24_000
-            set level 5 to 96_000
-            set level 6 to 384_000
-            set level 7 to 1_250_000
-            set level 8 to 2_500_000
-            set level 9 to 7_000_000
-            set level 10 to 11_300_000
+    > "multiplier":
+        lvl. 1: 5
+        lvl. 2: 5.5
+        lvl. 3: 6
+        lvl. 4: 6.5
+        lvl. 5: 7
+        lvl. 6: 7.5
+        lvl. 7: 8
+        lvl. 8: 8.5
+        lvl. 9: 9
+        lvl. 10: 10
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "dust_boost" at {_level}

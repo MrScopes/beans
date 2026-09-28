@@ -1,50 +1,42 @@
-on load:
-    create sword enchantment named "quagmire":
-        set enchantment display to "&f<sprite:blocks:block/mud> &fQuagmire"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to mud block
+sword enchantment:
+    id: "quagmire"
+    display: "&f<sprite:blocks:block/mud> &fQuagmire"
+    max level: 5
+    priority: 0
+    item: mud block
+    cost: "normal"
 
-        create ability named "quagmire" bound to "right click":
-            level values for "cooldown":
-                set level 1 to 40 seconds
-                set level 2 to 40 seconds
-                set level 3 to 40 seconds
-                set level 4 to 40 seconds
-                set level 5 to 40 seconds
+    ability:
+        id: "quagmire"
+        bind: "right click"
+        
+        > "cooldown":
+            lvl. 1: 40 seconds
+            lvl. 2: 40 seconds
+            lvl. 3: 40 seconds
+            lvl. 4: 40 seconds
+            lvl. 5: 40 seconds
 
-            level values for "radius":
-                set level 1 to 4
-                set level 2 to 4
-                set level 3 to 5
-                set level 4 to 5
-                set level 5 to 6
+        > "radius":
+            lvl. 1: 4
+            lvl. 2: 4
+            lvl. 3: 5
+            lvl. 4: 5
+            lvl. 5: 6
 
-            level values for "duration":
-                set level 1 to 7 seconds
-                set level 2 to 8 seconds
-                set level 3 to 9 seconds
-                set level 4 to 10 seconds
-                set level 5 to 12 seconds
+        > "duration":
+            lvl. 1: 7 seconds
+            lvl. 2: 8 seconds
+            lvl. 3: 9 seconds
+            lvl. 4: 10 seconds
+            lvl. 5: 12 seconds
 
-            level values for "slowness":
-                set level 1 to potion effect of slowness 4 for 2 ticks
-                set level 2 to potion effect of slowness 4 for 2 ticks
-                set level 3 to potion effect of slowness 4 for 2 ticks
-                set level 4 to potion effect of slowness 5 for 2 ticks
-                set level 5 to potion effect of slowness 5 for 2 ticks
-
-        level values for "dust cost":
-            set level 2 to 65
-            set level 3 to 225
-            set level 4 to 4_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_800_000
-            set level 5 to 3_100_000
+        > "slowness":
+            lvl. 1: potion effect of slowness 4 for 2 ticks
+            lvl. 2: potion effect of slowness 4 for 2 ticks
+            lvl. 3: potion effect of slowness 4 for 2 ticks
+            lvl. 4: potion effect of slowness 5 for 2 ticks
+            lvl. 5: potion effect of slowness 5 for 2 ticks
 
 local function getDescription(level: number) :: string:
     set {_radius} to "radius" of "quagmire" at {_level}

@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "bore":
-        set enchantment display to "&f<sprite:items:item/pointed_dripstone> &9Bore"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to pointed dripstone
+pickaxe enchantment:
+    id: "bore"
+    display: "&f<sprite:items:item/pointed_dripstone> &9Bore"
+    max level: 5
+    priority: 10
+    item: pointed dripstone
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 5
-            set level 2 to 7
-            set level 3 to 10
-            set level 4 to 13
-            set level 5 to 15
+    > "chance":
+        lvl. 1: 5
+        lvl. 2: 7
+        lvl. 3: 10
+        lvl. 4: 13
+        lvl. 5: 15
 
-        level values for "blocks":
-            set level 1 to 10
-            set level 2 to 12
-            set level 3 to 14
-            set level 4 to 16
-            set level 5 to 20
-
-        level values for "dust cost":
-            set level 2 to 90
-            set level 3 to 225
-            set level 4 to 3_300
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_600_000
-            set level 5 to 3_800_000
+    > "blocks":
+        lvl. 1: 10
+        lvl. 2: 12
+        lvl. 3: 14
+        lvl. 4: 16
+        lvl. 5: 20
 
 local function getDescription(level: integer) :: string:
     set {_blocks} to "blocks" of "bore" at {_level}

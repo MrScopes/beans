@@ -1,49 +1,38 @@
-on load:
-    create bow enchantment named "adrenaline":
-        set enchantment display to "&f<sprite:items:item/sugar> &aAdrenaline"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to sugar (item)
+bow enchantment:
+    id: "adrenaline"
+    display: "&f<sprite:items:item/sugar> &aAdrenaline"
+    max level: 5
+    priority: 10
+    item: sugar (item)
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 40
-            set level 2 to 40
-            set level 3 to 40
-            set level 4 to 40
-            set level 5 to 40
+    > "chance":
+        lvl. 1: 40
+        lvl. 2: 40
+        lvl. 3: 40
+        lvl. 4: 40
+        lvl. 5: 40
 
-        level values for "cooldown":
-            set level 1 to 15 seconds
-            set level 2 to 14 seconds
-            set level 3 to 13 seconds
-            set level 4 to 12 seconds
-            set level 5 to 10 seconds
+    > "cooldown":
+        lvl. 1: 15 seconds
+        lvl. 2: 14 seconds
+        lvl. 3: 13 seconds
+        lvl. 4: 12 seconds
+        lvl. 5: 10 seconds
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 3 seconds
-            set level 2 to potion effect of speed 1 for 4 seconds
-            set level 3 to potion effect of speed 2 for 4 seconds
-            set level 4 to potion effect of speed 2 for 5 seconds
-            set level 5 to potion effect of speed 3 for 6 seconds
+    > "speed":
+        lvl. 1: potion effect of speed 1 for 3 seconds
+        lvl. 2: potion effect of speed 1 for 4 seconds
+        lvl. 3: potion effect of speed 2 for 4 seconds
+        lvl. 4: potion effect of speed 2 for 5 seconds
+        lvl. 5: potion effect of speed 3 for 6 seconds
 
-        level values for "resistance":
-            set level 1 to potion effect of resistance 1 for 2 seconds
-            set level 2 to potion effect of resistance 1 for 3 seconds
-            set level 3 to potion effect of resistance 2 for 3 seconds
-            set level 4 to potion effect of resistance 2 for 4 seconds
-            set level 5 to potion effect of resistance 3 for 4 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "resistance":
+        lvl. 1: potion effect of resistance 1 for 2 seconds
+        lvl. 2: potion effect of resistance 1 for 3 seconds
+        lvl. 3: potion effect of resistance 2 for 3 seconds
+        lvl. 4: potion effect of resistance 2 for 4 seconds
+        lvl. 5: potion effect of resistance 3 for 4 seconds
 
 local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of "adrenaline" at {_level}

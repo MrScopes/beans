@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "nuke":
-        set enchantment display to "&f<sprite:items:item/end_crystal> &4Nuke"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to dragon head
+pickaxe enchantment:
+    id: "nuke"
+    display: "&f<sprite:items:item/end_crystal> &4Nuke"
+    max level: 5
+    priority: 0
+    item: dragon head
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 0.05
-            set level 2 to 0.075
-            set level 3 to 0.1
-            set level 4 to 0.125
-            set level 5 to 0.175
+    > "chance":
+        lvl. 1: 0.05
+        lvl. 2: 0.075
+        lvl. 3: 0.1
+        lvl. 4: 0.125
+        lvl. 5: 0.175
 
-        level values for "radius":
-            set level 1 to 8
-            set level 2 to 9
-            set level 3 to 10
-            set level 4 to 11
-            set level 5 to 13
-
-        level values for "dust cost":
-            set level 2 to 55
-            set level 3 to 225
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 275_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "radius":
+        lvl. 1: 8
+        lvl. 2: 9
+        lvl. 3: 10
+        lvl. 4: 11
+        lvl. 5: 13
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "nuke" at {_level}

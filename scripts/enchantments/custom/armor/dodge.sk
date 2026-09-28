@@ -1,35 +1,24 @@
-on load:
-    create armor enchantment named "dodge":
-        set enchantment display to "&f<sprite:items:item/rabbit_foot> Dodge"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to rabbit foot
+armor enchantment:
+    id: "dodge"
+    display: "&f<sprite:items:item/rabbit_foot> Dodge"
+    max level: 5
+    priority: 0
+    item: rabbit foot
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 0.5
-            set level 2 to 0.75
-            set level 3 to 1.0
-            set level 4 to 1.25
-            set level 5 to 1.75
+    > "chance":
+        lvl. 1: 0.5
+        lvl. 2: 0.75
+        lvl. 3: 1.0
+        lvl. 4: 1.25
+        lvl. 5: 1.75
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 3 seconds
-            set level 2 to potion effect of speed 1 for 4 seconds
-            set level 3 to potion effect of speed 2 for 4 seconds
-            set level 4 to potion effect of speed 2 for 4 seconds
-            set level 5 to potion effect of speed 2 for 5 seconds
-
-        level values for "dust cost":
-            set level 2 to 30
-            set level 3 to 225
-            set level 4 to 2_800
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 2 to 35_000
-            set level 3 to 250_000
-            set level 4 to 1_200_000
-            set level 5 to 3_800_000
+    > "speed":
+        lvl. 1: potion effect of speed 1 for 3 seconds
+        lvl. 2: potion effect of speed 1 for 4 seconds
+        lvl. 3: potion effect of speed 2 for 4 seconds
+        lvl. 4: potion effect of speed 2 for 4 seconds
+        lvl. 5: potion effect of speed 2 for 5 seconds
 
 local function getDescription(level: integer) :: string:
     set {_effect} to "speed" of "dodge" at {_level}

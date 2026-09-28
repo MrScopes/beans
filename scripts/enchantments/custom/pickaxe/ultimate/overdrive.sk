@@ -1,34 +1,27 @@
 using reflection
 
-on load:
-    create ultimate pickaxe enchantment named "overdrive":
-        set enchantment display to "&f<sprite:items:item/recovery_compass_00> <rainbow><bold>Overdrive"
-        set enchantment max level to 3
-        set enchantment priority to 0
-        set enchantment item to recovery compass
+ultimate pickaxe enchantment:
+    id: "overdrive"
+    display: "&f<sprite:items:item/recovery_compass_00> <rainbow><bold>Overdrive"
+    max level: 3
+    priority: 0
+    item: recovery compass
+    cost: "cheap"
 
-        level values for "chance":
-            set level 1 to 0.5
-            set level 2 to 0.75
-            set level 3 to 1
+    > "chance":
+        lvl. 1: 0.5
+        lvl. 2: 0.75
+        lvl. 3: 1
 
-        level values for "enchantments":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 3
+    > "enchantments":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 3
 
-        level values for "level boost":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 3
-
-        level values for "dust cost":
-            set level 2 to 7_000
-            set level 3 to 20_000
-
-        level values for "money cost":
-            set level 2 to 2_000_000
-            set level 3 to 9_000_000
+    > "level boost":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 3
 
 local function getDescription(level: integer) :: string:
     set {_enchantments} to "enchantments" of "overdrive" at {_level}

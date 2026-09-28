@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "blast":
-        set enchantment display to "&f<sprite:blocks:block/tnt_side> &cBlast"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to tnt
+pickaxe enchantment:
+    id: "blast"
+    display: "&f<sprite:blocks:block/tnt_side> &cBlast"
+    max level: 5
+    priority: 10
+    item: tnt
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 12
-            set level 2 to 14
-            set level 3 to 16
-            set level 4 to 18
-            set level 5 to 22
+    > "chance":
+        lvl. 1: 12
+        lvl. 2: 14
+        lvl. 3: 16
+        lvl. 4: 18
+        lvl. 5: 22
 
-        level values for "radius":
-            set level 1 to 1.75
-            set level 2 to 1.85
-            set level 3 to 2
-            set level 4 to 2.15
-            set level 5 to 2.4
-
-        level values for "money cost":
-            set level 2 to 160_000
-            set level 3 to 500_000
-            set level 4 to 1_800_000
-            set level 5 to 3_000_000
-
-        level values for "dust cost":
-            set level 2 to 40
-            set level 3 to 150
-            set level 4 to 2_300
-            set level 5 to 4_900
+    > "radius":
+        lvl. 1: 1.75
+        lvl. 2: 1.85
+        lvl. 3: 2
+        lvl. 4: 2.15
+        lvl. 5: 2.4
 
 local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "blast" at {_level}

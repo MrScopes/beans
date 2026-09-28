@@ -1,55 +1,34 @@
-on load:
-    create pickaxe enchantment named "money_boost":
-        set enchantment display to "&f<sprite:items:item/emerald> &2Money Boost"
-        set enchantment max level to 10
-        set enchantment priority to 0
-        set enchantment item to emerald
+pickaxe enchantment:
+    id: "money_boost"
+    display: "&f<sprite:items:item/emerald> &2Money Boost"
+    max level: 10
+    priority: 0
+    item: emerald
+    cost: "expensive"
 
-        level values for "chance":
-            set level 1 to 10
-            set level 2 to 15
-            set level 3 to 20
-            set level 4 to 25
-            set level 5 to 30
-            set level 6 to 35
-            set level 7 to 40
-            set level 8 to 45
-            set level 9 to 50
-            set level 10 to 70
+    > "chance":
+        lvl. 1: 10
+        lvl. 2: 15
+        lvl. 3: 20
+        lvl. 4: 25
+        lvl. 5: 30
+        lvl. 6: 35
+        lvl. 7: 40
+        lvl. 8: 45
+        lvl. 9: 50
+        lvl. 10: 70
 
-        level values for "reward":
-            set level 1 to 20
-            set level 2 to 25
-            set level 3 to 30
-            set level 4 to 35
-            set level 5 to 40
-            set level 6 to 45
-            set level 7 to 50
-            set level 8 to 55
-            set level 9 to 60
-            set level 10 to 70
-
-        level values for "dust cost":
-            set level 2 to 5
-            set level 3 to 20
-            set level 4 to 70
-            set level 5 to 275
-            set level 6 to 550
-            set level 7 to 850
-            set level 8 to 1_100
-            set level 9 to 8_300
-            set level 10 to 12_000
-
-        level values for "money cost":
-            set level 2 to 6_000
-            set level 3 to 24_000
-            set level 4 to 96_000
-            set level 5 to 384_000
-            set level 6 to 768_000
-            set level 7 to 1_000_000
-            set level 8 to 1_500_000
-            set level 9 to 4_000_000
-            set level 10 to 6_300_000
+    > "reward":
+        lvl. 1: 20
+        lvl. 2: 25
+        lvl. 3: 30
+        lvl. 4: 35
+        lvl. 5: 40
+        lvl. 6: 45
+        lvl. 7: 50
+        lvl. 8: 55
+        lvl. 9: 60
+        lvl. 10: 70
 
 local function getDescription(level: integer) :: string:
     set {_reward} to "reward" of "money_boost" at {_level}

@@ -1,49 +1,42 @@
-on load:
-    create sword enchantment named "substitution":
-        set enchantment display to "&f<sprite:blocks:block/oak_log> Substitution"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to oak log
+sword enchantment:
+    id: "substitution"
+    display: "&f<sprite:blocks:block/oak_log> Substitution"
+    max level: 5
+    priority: 0
+    item: oak log
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 6 seconds
-            set level 2 to 6 seconds
-            set level 3 to 6 seconds
-            set level 4 to 6 seconds
-            set level 5 to 6 seconds
+    ability:
+        id: "substitution"
+        bind: "right click"
 
-        level values for "window":
-            set level 1 to 0.5 seconds
-            set level 2 to 0.6 seconds
-            set level 3 to 0.7 seconds
-            set level 4 to 0.8 seconds
-            set level 5 to 1 seconds
+        > "cooldown":
+            lvl. 1: 6 seconds
+            lvl. 2: 6 seconds
+            lvl. 3: 6 seconds
+            lvl. 4: 6 seconds
+            lvl. 5: 6 seconds
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 3 seconds
-            set level 2 to potion effect of speed 1 for 4 seconds
-            set level 3 to potion effect of speed 1 for 5 seconds
-            set level 4 to potion effect of speed 1 for 6 seconds
-            set level 5 to potion effect of speed 2 for 6 seconds
+        > "window":
+            lvl. 1: 0.5 seconds
+            lvl. 2: 0.6 seconds
+            lvl. 3: 0.7 seconds
+            lvl. 4: 0.8 seconds
+            lvl. 5: 1 seconds
 
-        level values for "dust cost":
-            set level 2 to 65
-            set level 3 to 225
-            set level 4 to 4_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_800_000
-            set level 5 to 3_100_000
+        > "speed":
+            lvl. 1: potion effect of speed 1 for 3 seconds
+            lvl. 2: potion effect of speed 1 for 4 seconds
+            lvl. 3: potion effect of speed 1 for 5 seconds
+            lvl. 4: potion effect of speed 1 for 6 seconds
+            lvl. 5: potion effect of speed 2 for 6 seconds
 
 local function getDescription(level: integer) :: string:
     set {_window} to "window" of "substitution" at {_level}
     set {_speed} to "speed" of "substitution" at {_level}
-    return "&e[RMB] &7parry an attack&8, &7resetting cooldown and dashing back&8. &8(&f%timeFormat({_window})% &7window&8, &f%effectDisplay({_speed})%&8)"
+    return "&e[<substitution>] &7parry an attack&8, &7resetting cooldown and dashing back&8. &8(&f%timeFormat({_window})% &7window&8, &f%effectDisplay({_speed})%&8)"
 
-local function onRightClick(player: player, item: item, level: integer):
+local function substitution(player: player, level: integer):
     set {-parry::%{_player}%} to now
     set {-parry level::%{_player}%} to {_level}
     playEnchantmentSound("combat", "item.armor.equip_iron", 0.6, 1.3, location of {_player}, all players)

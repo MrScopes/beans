@@ -1,49 +1,38 @@
-on load:
-    create armor enchantment named "last_stand":
-        set enchantment display to "&f<sprite:items:item/iron_chestplate> &eLast Stand"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to iron chestplate
+armor enchantment:
+    id: "last_stand"
+    display: "&f<sprite:items:item/iron_chestplate> &eLast Stand"
+    max level: 5
+    priority: 0
+    item: iron chestplate
+    cost: "normal"
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 1 second
-            set level 2 to potion effect of speed 1 for 1 second
-            set level 3 to potion effect of speed 2 for 1 second
-            set level 4 to potion effect of speed 2 for 1 second
-            set level 5 to potion effect of speed 3 for 1 second
+    > "speed":
+        lvl. 1: potion effect of speed 1 for 1 second
+        lvl. 2: potion effect of speed 1 for 1 second
+        lvl. 3: potion effect of speed 2 for 1 second
+        lvl. 4: potion effect of speed 2 for 1 second
+        lvl. 5: potion effect of speed 3 for 1 second
 
-        level values for "strength":
-            set level 1 to potion effect of strength 1 for 1 second
-            set level 2 to potion effect of strength 1 for 1 second
-            set level 3 to potion effect of strength 1 for 1 second
-            set level 4 to potion effect of strength 1 for 1 second
-            set level 5 to potion effect of strength 2 for 1 second
+    > "strength":
+        lvl. 1: potion effect of strength 1 for 1 second
+        lvl. 2: potion effect of strength 1 for 1 second
+        lvl. 3: potion effect of strength 1 for 1 second
+        lvl. 4: potion effect of strength 1 for 1 second
+        lvl. 5: potion effect of strength 2 for 1 second
 
-        level values for "resistance":
-            set level 1 to potion effect of resistance 1 for 1 second
-            set level 2 to potion effect of resistance 1 for 1 second
-            set level 3 to potion effect of resistance 1 for 1 second
-            set level 4 to potion effect of resistance 1 for 1 second
-            set level 5 to potion effect of resistance 1 for 1 second
+    > "resistance":
+        lvl. 1: potion effect of resistance 1 for 1 second
+        lvl. 2: potion effect of resistance 1 for 1 second
+        lvl. 3: potion effect of resistance 1 for 1 second
+        lvl. 4: potion effect of resistance 1 for 1 second
+        lvl. 5: potion effect of resistance 1 for 1 second
 
-        level values for "health threshold":
-            set level 1 to 2
-            set level 2 to 2.4
-            set level 3 to 2.9
-            set level 4 to 3.2
-            set level 5 to 3.6
-
-        level values for "dust cost":
-            set level 2 to 45
-            set level 3 to 175
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 200_000
-            set level 4 to 1_000_000
-            set level 5 to 3_000_000
+    > "health threshold":
+        lvl. 1: 2
+        lvl. 2: 2.4
+        lvl. 3: 2.9
+        lvl. 4: 3.2
+        lvl. 5: 3.6
 
 local function getDescription(level: integer) :: string:
     set {_speed} to "speed" of "last_stand" at {_level}

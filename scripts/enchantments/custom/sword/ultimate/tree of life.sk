@@ -1,86 +1,77 @@
-on load:
-    create ultimate sword enchantment named "tree_of_life":
-        set enchantment display to "&f<sprite:gui:toast/tree> <rainbow><bold>Tree Of Life"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to oak sapling
+ultimate sword enchantment:
+    id: "tree_of_life"
+    display: "&f<sprite:gui:toast/tree> <rainbow><bold>Tree Of Life"
+    max level: 5
+    priority: 0
+    item: oak sapling
+    cost: "normal"
 
-        level values for "radius":
-            set level 1 to 5
-            set level 2 to 5.5
-            set level 3 to 6
-            set level 4 to 6.5
-            set level 5 to 7
+    ability:
+        id: "tree_of_life"
+        bind: "offhand"
 
-        level values for "duration":
-            set level 1 to 5 seconds
-            set level 2 to 6 seconds
-            set level 3 to 7 seconds
-            set level 4 to 8 seconds
-            set level 5 to 10 seconds
+        > "radius":
+            lvl. 1: 5
+            lvl. 2: 5.5
+            lvl. 3: 6
+            lvl. 4: 6.5
+            lvl. 5: 7
 
-        level values for "speed":
-            set level 1 to potion effect of speed 1 for 10 seconds
-            set level 2 to potion effect of speed 1 for 11 seconds
-            set level 3 to potion effect of speed 1 for 12 seconds
-            set level 4 to potion effect of speed 1 for 13 seconds
-            set level 5 to potion effect of speed 1 for 15 seconds
+        > "duration":
+            lvl. 1: 5 seconds
+            lvl. 2: 6 seconds
+            lvl. 3: 7 seconds
+            lvl. 4: 8 seconds
+            lvl. 5: 10 seconds
 
-        level values for "regeneration":
-            set level 1 to potion effect of regeneration 1 for 10 seconds
-            set level 2 to potion effect of regeneration 1 for 10 seconds
-            set level 3 to potion effect of regeneration 1 for 10 seconds
-            set level 4 to potion effect of regeneration 1 for 10 seconds
-            set level 5 to potion effect of regeneration 1 for 10 seconds
+        > "speed":
+            lvl. 1: potion effect of speed 1 for 10 seconds
+            lvl. 2: potion effect of speed 1 for 11 seconds
+            lvl. 3: potion effect of speed 1 for 12 seconds
+            lvl. 4: potion effect of speed 1 for 13 seconds
+            lvl. 5: potion effect of speed 1 for 15 seconds
 
-        level values for "health boost":
-            set level 1 to potion effect of health boost 1 for 10 seconds
-            set level 2 to potion effect of health boost 1 for 11 seconds
-            set level 3 to potion effect of health boost 1 for 12 seconds
-            set level 4 to potion effect of health boost 1 for 13 seconds
-            set level 5 to potion effect of health boost 1 for 15 seconds
+        > "regeneration":
+            lvl. 1: potion effect of regeneration 1 for 10 seconds
+            lvl. 2: potion effect of regeneration 1 for 10 seconds
+            lvl. 3: potion effect of regeneration 1 for 10 seconds
+            lvl. 4: potion effect of regeneration 1 for 10 seconds
+            lvl. 5: potion effect of regeneration 1 for 10 seconds
 
-        level values for "resistance":
-            set level 1 to potion effect of resistance 1 for 10 seconds
-            set level 2 to potion effect of resistance 1 for 10 seconds
-            set level 3 to potion effect of resistance 1 for 10 seconds
-            set level 4 to potion effect of resistance 1 for 10 seconds
-            set level 5 to potion effect of resistance 1 for 10 seconds
+        > "health boost":
+            lvl. 1: potion effect of health boost 1 for 10 seconds
+            lvl. 2: potion effect of health boost 1 for 11 seconds
+            lvl. 3: potion effect of health boost 1 for 12 seconds
+            lvl. 4: potion effect of health boost 1 for 13 seconds
+            lvl. 5: potion effect of health boost 1 for 15 seconds
 
-        level values for "strength":
-            set level 1 to potion effect of strength 1 for 10 seconds
-            set level 2 to potion effect of strength 1 for 10 seconds
-            set level 3 to potion effect of strength 1 for 10 seconds
-            set level 4 to potion effect of strength 1 for 10 seconds
-            set level 5 to potion effect of strength 1 for 10 seconds
+        > "resistance":
+            lvl. 1: potion effect of resistance 1 for 10 seconds
+            lvl. 2: potion effect of resistance 1 for 10 seconds
+            lvl. 3: potion effect of resistance 1 for 10 seconds
+            lvl. 4: potion effect of resistance 1 for 10 seconds
+            lvl. 5: potion effect of resistance 1 for 10 seconds
 
-        level values for "heal":
-            set level 1 to 0.5
-            set level 2 to 1
-            set level 3 to 1.5
-            set level 4 to 2
-            set level 5 to 2.5
+        > "strength":
+            lvl. 1: potion effect of strength 1 for 10 seconds
+            lvl. 2: potion effect of strength 1 for 10 seconds
+            lvl. 3: potion effect of strength 1 for 10 seconds
+            lvl. 4: potion effect of strength 1 for 10 seconds
+            lvl. 5: potion effect of strength 1 for 10 seconds
 
-        level values for "cooldown":
-            set level 1 to 45 seconds
-            set level 2 to 45 seconds
-            set level 3 to 45 seconds
-            set level 4 to 45 seconds
-            set level 5 to 45 seconds
+        > "heal":
+            lvl. 1: 0.5
+            lvl. 2: 1
+            lvl. 3: 1.5
+            lvl. 4: 2
+            lvl. 5: 2.5
 
-        level values for "dust cost":
-            set level 1 to 275
-            set level 2 to 900
-            set level 3 to 1_650
-            set level 4 to 12_000
-            set level 5 to 42_000
-
-        level values for "money cost":
-            set level 1 to 350_000
-            set level 2 to 1_000_000
-            set level 3 to 2_000_000
-            set level 4 to 5_600_000
-            set level 5 to 12_800_000
+        > "cooldown":
+            lvl. 1: 45 seconds
+            lvl. 2: 45 seconds
+            lvl. 3: 45 seconds
+            lvl. 4: 45 seconds
+            lvl. 5: 45 seconds
 
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "tree_of_life" at {_level}
@@ -94,9 +85,9 @@ local function getDescription(level: integer) :: string:
     set {_feed} to "feed" of "tree_of_life" at {_level}
     set {_heal} to "heal" of "tree_of_life" at {_level}
 
-    return "&e[F] &7buffs allies within &f%{_radius}%m &7for &f%timeFormat({_duration})% &8(&f%effectDisplay({_speed})% %effectDisplay({_regeneration})% %effectDisplay({_healthBoost})% %effectDisplay({_resistance})% %effectDisplay({_strength})%&8, &f%{_heal}%<sprite:gui:hud/heart/full>&8)"
+    return "&e[<tree_of_life>] &7buffs allies within &f%{_radius}%m &7for &f%timeFormat({_duration})% &8(&f%effectDisplay({_speed})% %effectDisplay({_regeneration})% %effectDisplay({_healthBoost})% %effectDisplay({_resistance})% %effectDisplay({_strength})%&8, &f%{_heal}%<sprite:gui:hud/heart/full>&8)"
 
-local function onOffHand(player: player, item: item, level: integer) :: boolean:
+local function tree_of_life(player: player, level: integer) :: boolean:
     add 1 to {-tree of life session::%{_player}%}
     set {_session} to {-tree of life session::%{_player}%}
 

@@ -1,9 +1,12 @@
-on load:
-    create disabled armor enchantment named "test":
-        set enchantment display to "&fTest"
-        set enchantment max level to 1
-        set enchantment priority to 0
-        set enchantment item to barrier
+disabled armor enchantment:
+    id: "test"
+    display: "&fTest"
+    max level: 1
+    priority: 0
+    item: barrier
+    ability:
+        id: "test"
+        bind: "offhand"
 
 local function getDescription(level: integer) :: string:
     return "Test"
@@ -14,8 +17,8 @@ local function onAttacked(victim: entity, armor: item, level: integer, attacker:
 local function onAttack(attacker: entity = {_}, armor: item, level: integer, victim: entity, damage: number, damage cause: damage cause) :: number:
     send "(%{_armor}%) You attacked %{_victim}% at level %{_level}% for %{_damage}%." to {_attacker}
 
-local function onOffHand(player: player, armor: item, level: integer) :: boolean:
-    send "(%{_armor}%) You put armor in your offhand at level %{_level}%." to {_player}
+local function test(player: player, level: integer) :: boolean:
+    send "(%{_player}'s tool%) You put armor in your offhand at level %{_level}%." to {_player}
     chance of 50%:
         send "50%% chance, canceled event." to {_player}
         return true

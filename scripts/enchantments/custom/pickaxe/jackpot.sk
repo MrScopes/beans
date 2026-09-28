@@ -1,37 +1,30 @@
-on load:
-    create pickaxe enchantment named "jackpot":
-        set enchantment display to "&f<sprite:items:item/gold_ingot> &6Jackpot"
-        set enchantment max level to 3
-        set enchantment priority to 0
-        set enchantment item to gold ingot
+pickaxe enchantment:
+    id: "jackpot"
+    display: "&f<sprite:items:item/gold_ingot> &6Jackpot"
+    max level: 3
+    priority: 0
+    item: gold ingot
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 0.01
-            set level 2 to 0.02
-            set level 3 to 0.04
+    > "chance":
+        lvl. 1: 0.01
+        lvl. 2: 0.02
+        lvl. 3: 0.04
 
-        level values for "money":
-            set level 1 to 100_000
-            set level 2 to 300_000
-            set level 3 to 600_000
+    > "money":
+        lvl. 1: 100_000
+        lvl. 2: 300_000
+        lvl. 3: 600_000
 
-        level values for "dust":
-            set level 1 to 250
-            set level 2 to 300
-            set level 3 to 350
+    > "dust":
+        lvl. 1: 250
+        lvl. 2: 300
+        lvl. 3: 350
 
-        level values for "scale per level":
-            set level 1 to 0.01
-            set level 2 to 0.015
-            set level 3 to 0.02
-
-        level values for "dust cost":
-            set level 2 to 1_400
-            set level 3 to 6_000
-
-        level values for "money cost":
-            set level 2 to 800_000
-            set level 3 to 3_000_000
+    > "scale per level":
+        lvl. 1: 0.01
+        lvl. 2: 0.015
+        lvl. 3: 0.02
 
 local function getDescription(level: integer) :: string:
     set {_dust} to "dust" of "jackpot" at {_level}

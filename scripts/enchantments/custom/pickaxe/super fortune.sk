@@ -1,35 +1,24 @@
-on load:
-    create pickaxe enchantment named "super_fortune":
-        set enchantment display to "&f<sprite:items:item/torchflower_seeds> &3Super Fortune"
-        set enchantment max level to 5
-        set enchantment priority to 1000
-        set enchantment item to torchflower seeds
+pickaxe enchantment:
+    id: "super_fortune"
+    display: "&f<sprite:items:item/torchflower_seeds> &3Super Fortune"
+    max level: 5
+    priority: 1000
+    item: torchflower seeds
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 3
-            set level 4 to 4
-            set level 5 to 5
+    > "chance":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 3
+        lvl. 4: 4
+        lvl. 5: 5
 
-        level values for "multiplier":
-            set level 1 to 20
-            set level 2 to 40
-            set level 3 to 60
-            set level 4 to 80
-            set level 5 to 100
-
-        level values for "dust cost":
-            set level 2 to 90
-            set level 3 to 225
-            set level 4 to 3_300
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_600_000
-            set level 5 to 3_800_000
+    > "multiplier":
+        lvl. 1: 20
+        lvl. 2: 40
+        lvl. 3: 60
+        lvl. 4: 80
+        lvl. 5: 100
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "super_fortune" at {_level}

@@ -1,59 +1,50 @@
-on load:
-    create ultimate sword enchantment named "amatarasu":
-        set enchantment display to "&f<sprite:particles:sculk_soul_7> <rainbow><bold>Amatarasu"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to netherite nautilus armor
+ultimate sword enchantment:
+    id: "amatarasu"
+    display: "&f<sprite:particles:sculk_soul_7> <rainbow><bold>Amatarasu"
+    max level: 5
+    priority: 0
+    item: netherite nautilus armor
+    cost: "normal"
 
-        level values for "dps":
-            set level 1 to 0.5
-            set level 2 to 0.55
-            set level 3 to 0.6
-            set level 4 to 0.65
-            set level 5 to 0.7
+    ability:
+        id: "amatarasu"
+        bind: "left click"
 
-        level values for "blindness":
-            set level 1 to potion effect of blindness 1 for 3 seconds
-            set level 2 to potion effect of blindness 1 for 3 seconds
-            set level 3 to potion effect of blindness 1 for 3 seconds
-            set level 4 to potion effect of blindness 1 for 3 seconds
-            set level 5 to potion effect of blindness 1 for 3 seconds
+        > "dps":
+            lvl. 1: 0.5
+            lvl. 2: 0.55
+            lvl. 3: 0.6
+            lvl. 4: 0.65
+            lvl. 5: 0.7
 
-        level values for "blindness chance":
-            set level 1 to 33%
-            set level 2 to 30%
-            set level 3 to 25%
-            set level 4 to 20%
-            set level 5 to 10%
+        > "blindness":
+            lvl. 1: potion effect of blindness 1 for 3 seconds
+            lvl. 2: potion effect of blindness 1 for 3 seconds
+            lvl. 3: potion effect of blindness 1 for 3 seconds
+            lvl. 4: potion effect of blindness 1 for 3 seconds
+            lvl. 5: potion effect of blindness 1 for 3 seconds
 
-        level values for "dust cost":
-            set level 1 to 275
-            set level 2 to 900
-            set level 3 to 1_650
-            set level 4 to 12_000
-            set level 5 to 42_000
+        > "blindness chance":
+            lvl. 1: 33%
+            lvl. 2: 30%
+            lvl. 3: 25%
+            lvl. 4: 20%
+            lvl. 5: 10%
 
-        level values for "money cost":
-            set level 1 to 350_000
-            set level 2 to 1_000_000
-            set level 3 to 2_000_000
-            set level 4 to 5_600_000
-            set level 5 to 12_800_000
-
-        level values for "cooldown":
-            set level 1 to 30 seconds
-            set level 2 to 27 seconds
-            set level 3 to 24 seconds
-            set level 4 to 21 seconds
-            set level 5 to 18 seconds
+        > "cooldown":
+            lvl. 1: 30 seconds
+            lvl. 2: 27 seconds
+            lvl. 3: 24 seconds
+            lvl. 4: 21 seconds
+            lvl. 5: 18 seconds
 
 local function getDescription(level: integer) :: string:
     set {_dps} to "dps" of "amatarasu" at {_level}
     set {_blindness chance} to "blindness chance" of "amatarasu" at {_level}
     set {_blindness} to "blindness" of "amatarasu" at {_level}
-    return "&e[LMB] &7set black flames to your target for &f7s &8(&c%{_dps}%&4<sprite:gui:hud/heart/full>&8/&fs &8, &7disable natural healing&8, &7Recoil&8: &f%{_blindness chance} * 100%%% &7for &f%effectDisplay({_blindness})%&8)"
+    return "&e[<amatarasu>] &7set black flames to your target for &f7s &8(&c%{_dps}%&4<sprite:gui:hud/heart/full>&8/&fs &8, &7disable natural healing&8, &7Recoil&8: &f%{_blindness chance} * 100%%% &7for &f%effectDisplay({_blindness})%&8)"
 
-local function onLeftClick(player: player, item: item, level: integer):
+local function amatarasu(player: player, level: integer):
     set {_target} to {_player}'s target entity
     if any:
         {_target} isn't set

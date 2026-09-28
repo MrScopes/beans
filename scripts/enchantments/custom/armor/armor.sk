@@ -1,30 +1,17 @@
-on load:
-    create armor enchantment named "armor":
-        set enchantment display to "&f<sprite:gui:hud/armor_full> &dArmor"
-        set enchantment max level to 5
-        set enchantment priority to 1
-        set enchantment item to netherite chestplate
+armor enchantment:
+    id: "armor"
+    display: "&f<sprite:gui:hud/armor_full> &dArmor"
+    max level: 5
+    priority: 1
+    item: netherite chestplate
+    cost: "normal"
 
-        level values for "armor":
-            set level 1 to 2
-            set level 2 to 5
-            set level 3 to 7
-            set level 4 to 9
-            set level 5 to 12
-
-        level values for "dust cost":
-            set level 1 to 10
-            set level 2 to 35
-            set level 3 to 100
-            set level 4 to 2_800
-            set level 5 to 7_600
-
-        level values for "money cost":
-            set level 1 to 6_000
-            set level 2 to 18_000
-            set level 3 to 150_000
-            set level 4 to 1_500_000
-            set level 5 to 3_800_000
+    > "armor":
+        lvl. 1: 2
+        lvl. 2: 5
+        lvl. 3: 7
+        lvl. 4: 9
+        lvl. 5: 12
 
 local function getDescription(level: integer) :: string:
     set {_armor} to "armor" of "armor" at {_level}

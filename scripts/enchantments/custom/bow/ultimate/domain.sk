@@ -1,42 +1,31 @@
-on load:
-    create ultimate bow enchantment named "domain":
-        set enchantment display to "&f<sprite:items:item/barrier> <rainbow><bold>Domain"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to barrier
+ultimate bow enchantment:
+    id: "domain"
+    display: "&f<sprite:items:item/barrier> <rainbow><bold>Domain"
+    max level: 5
+    priority: 10
+    item: barrier
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 1 minute
-            set level 2 to 1 minute
-            set level 3 to 1 minute
-            set level 4 to 1 minute
-            set level 5 to 1 minute
+    > "cooldown":
+        lvl. 1: 1 minute
+        lvl. 2: 1 minute
+        lvl. 3: 1 minute
+        lvl. 4: 1 minute
+        lvl. 5: 1 minute
 
-        level values for "radius":
-            set level 1 to 20
-            set level 2 to 18
-            set level 3 to 16
-            set level 4 to 14
-            set level 5 to 12
+    > "radius":
+        lvl. 1: 20
+        lvl. 2: 18
+        lvl. 3: 16
+        lvl. 4: 14
+        lvl. 5: 12
 
-        level values for "duration":
-            set level 1 to 10 seconds
-            set level 2 to 11 seconds
-            set level 3 to 12 seconds
-            set level 4 to 13 seconds
-            set level 5 to 15 seconds
-
-        level values for "dust cost":
-            set level 2 to 225
-            set level 3 to 1_100
-            set level 4 to 8_000
-            set level 5 to 42_000
-
-        level values for "money cost":
-            set level 2 to 250_000
-            set level 3 to 1_250_000
-            set level 4 to 4_000_000
-            set level 5 to 11_800_000
+    > "duration":
+        lvl. 1: 10 seconds
+        lvl. 2: 11 seconds
+        lvl. 3: 12 seconds
+        lvl. 4: 13 seconds
+        lvl. 5: 15 seconds
 
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "domain" at {_level}

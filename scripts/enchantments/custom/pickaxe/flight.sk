@@ -1,9 +1,9 @@
-on load:
-    create pickaxe enchantment named "flight":
-        set enchantment display to "&f<sprite:items:item/elytra> &dFlight"
-        set enchantment max level to 1
-        set enchantment priority to 10
-        set enchantment item to elytra
+pickaxe enchantment:
+    id: "flight"
+    display: "&f<sprite:items:item/elytra> &dFlight"
+    max level: 1
+    priority: 10
+    item: elytra
 
 local function getDescription(level: integer) :: string:
     return "enables flight while mining"

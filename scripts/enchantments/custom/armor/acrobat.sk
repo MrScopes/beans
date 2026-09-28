@@ -1,28 +1,17 @@
-on load:
-    create armor enchantment named "acrobat":
-        set enchantment display to "&f<sprite:items:item/feather> &eAcrobat"
-        set enchantment max level to 5
-        set enchantment priority to 1
-        set enchantment item to leather boots
+armor enchantment:
+    id: "acrobat"
+    display: "&f<sprite:items:item/feather> &eAcrobat"
+    max level: 5
+    priority: 1
+    item: leather boots
+    cost: "normal"
 
-        level values for "damage reduction":
-            set level 1 to 0.20
-            set level 2 to 0.35
-            set level 3 to 0.50
-            set level 4 to 0.60
-            set level 5 to 0.80
-
-        level values for "dust cost":
-            set level 2 to 40
-            set level 3 to 150
-            set level 4 to 2_000
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 200_000
-            set level 4 to 1_000_000
-            set level 5 to 3_000_000
+    > "damage reduction":
+        lvl. 1: 0.20
+        lvl. 2: 0.35
+        lvl. 3: 0.50
+        lvl. 4: 0.60
+        lvl. 5: 0.80
 
 local function getDescription(level: integer) :: string:
     set {_reduction} to "damage reduction" of "acrobat" at {_level}

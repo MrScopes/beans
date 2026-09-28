@@ -1,41 +1,30 @@
-on load:
-    create bow enchantment named "grounding":
-        set enchantment display to "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to glow squid spawn egg
+bow enchantment:
+    id: "grounding"
+    display: "<sprite:gui:hud/locator_bar_arrow_down> &9Grounding"
+    max level: 5
+    priority: 0
+    item: glow squid spawn egg
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 30
-            set level 2 to 40
-            set level 3 to 50
-            set level 4 to 60
+    > "chance":
+        lvl. 1: 30
+        lvl. 2: 40
+        lvl. 3: 50
+        lvl. 4: 60
 
-        level values for "threshold":
-            set level 1 to 0.5
-            set level 2 to 0.5
-            set level 3 to 0.5
-            set level 4 to 0.5
-            set level 5 to 0.5
+    > "threshold":
+        lvl. 1: 0.5
+        lvl. 2: 0.5
+        lvl. 3: 0.5
+        lvl. 4: 0.5
+        lvl. 5: 0.5
 
-        level values for "duration":
-            set level 1 to 10 seconds
-            set level 2 to 11 seconds
-            set level 3 to 12 seconds
-            set level 4 to 13 seconds
-            set level 5 to 15 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 125
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 24_000
-            set level 3 to 200_000
-            set level 4 to 1_000_000
-            set level 5 to 3_000_000
+    > "duration":
+        lvl. 1: 10 seconds
+        lvl. 2: 11 seconds
+        lvl. 3: 12 seconds
+        lvl. 4: 13 seconds
+        lvl. 5: 15 seconds
 
 local function getDescription(level: integer) :: string:
     set {_duration} to "duration" of "grounding" at {_level}

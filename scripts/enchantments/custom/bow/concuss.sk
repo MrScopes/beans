@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "concuss":
-        set enchantment display to "&f<sprite:blocks:block/cobweb> &fConcuss"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to cobweb
+bow enchantment:
+    id: "concuss"
+    display: "&f<sprite:blocks:block/cobweb> &fConcuss"
+    max level: 5
+    priority: 10
+    item: cobweb
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 20
-            set level 2 to 25
-            set level 3 to 30
-            set level 4 to 35
-            set level 5 to 40
+    > "chance":
+        lvl. 1: 20
+        lvl. 2: 25
+        lvl. 3: 30
+        lvl. 4: 35
+        lvl. 5: 40
 
-        level values for "effect":
-            set level 1 to potion effect of slowness 1 for 4 seconds
-            set level 2 to potion effect of slowness 1 for 5 seconds
-            set level 3 to potion effect of slowness 2 for 6 seconds
-            set level 4 to potion effect of slowness 2 for 7 seconds
-            set level 5 to potion effect of slowness 3 for 7 seconds
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "effect":
+        lvl. 1: potion effect of slowness 1 for 4 seconds
+        lvl. 2: potion effect of slowness 1 for 5 seconds
+        lvl. 3: potion effect of slowness 2 for 6 seconds
+        lvl. 4: potion effect of slowness 2 for 7 seconds
+        lvl. 5: potion effect of slowness 3 for 7 seconds
 
 local function getDescription(level: integer) :: string:
     set {_effect} to "effect" of "concuss" at {_level}

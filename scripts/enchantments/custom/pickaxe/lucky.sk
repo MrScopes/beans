@@ -1,42 +1,31 @@
-on load:
-    create pickaxe enchantment named "lucky":
-        set enchantment display to "&f<sprite:items:item/trial_key> &fLucky"
-        set enchantment max level to 5
-        set enchantment priority to 1000
-        set enchantment item to trial key
+pickaxe enchantment:
+    id: "lucky"
+    display: "&f<sprite:items:item/trial_key> &fLucky"
+    max level: 5
+    priority: 1000
+    item: trial key
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 1
-            set level 2 to 1.25
-            set level 3 to 1.75
-            set level 4 to 2
-            set level 5 to 3
+    > "chance":
+        lvl. 1: 1
+        lvl. 2: 1.25
+        lvl. 3: 1.75
+        lvl. 4: 2
+        lvl. 5: 3
 
-        level values for "boost":
-            set level 1 to 0.2
-            set level 2 to 0.225
-            set level 3 to 0.25
-            set level 4 to 0.27
-            set level 5 to 0.3
+    > "boost":
+        lvl. 1: 0.2
+        lvl. 2: 0.225
+        lvl. 3: 0.25
+        lvl. 4: 0.27
+        lvl. 5: 0.3
 
-        level values for "duration":
-            set level 1 to 5 seconds
-            set level 2 to 5.5 seconds
-            set level 3 to 6 seconds
-            set level 4 to 6.5 seconds
-            set level 5 to 7 seconds
-
-        level values for "dust cost":
-            set level 2 to 45
-            set level 3 to 225
-            set level 4 to 3_000
-            set level 5 to 7_400
-
-        level values for "money cost":
-            set level 2 to 50_000
-            set level 3 to 250_000
-            set level 4 to 1_500_000
-            set level 5 to 3_800_000
+    > "duration":
+        lvl. 1: 5 seconds
+        lvl. 2: 5.5 seconds
+        lvl. 3: 6 seconds
+        lvl. 4: 6.5 seconds
+        lvl. 5: 7 seconds
 
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of "lucky" at {_level}

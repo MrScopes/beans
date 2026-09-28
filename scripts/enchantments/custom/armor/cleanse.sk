@@ -1,28 +1,17 @@
-on load:
-    create armor enchantment named "cleanse":
-        set enchantment display to "&f<sprite:items:item/milk_bucket> &fCleanse"
-        set enchantment max level to 5
-        set enchantment priority to 1
-        set enchantment item to milk bucket
+armor enchantment:
+    id: "cleanse"
+    display: "&f<sprite:items:item/milk_bucket> &fCleanse"
+    max level: 5
+    priority: 1
+    item: milk bucket
+    cost: "normal"
 
-        level values for "effect reduction":
-            set level 1 to 10%
-            set level 2 to 15%
-            set level 3 to 20%
-            set level 4 to 25%
-            set level 5 to 35%
-
-        level values for "dust cost":
-            set level 2 to 40
-            set level 3 to 150
-            set level 4 to 2_000
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 60_000
-            set level 3 to 200_000
-            set level 4 to 1_000_000
-            set level 5 to 3_000_000
+    > "effect reduction":
+        lvl. 1: 10%
+        lvl. 2: 15%
+        lvl. 3: 20%
+        lvl. 4: 25%
+        lvl. 5: 35%
 
     set {-negative effects::*} to poison, blindness, wither, nausea, slowness, weakness, levitation, hunger, bad omen, darkness, mining fatigue
 

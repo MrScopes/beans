@@ -1,27 +1,16 @@
-on load:
-    create bow enchantment named "quiver":
-        set enchantment display to "&f<sprite:items:item/arrow> &6Quiver"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to arrow item
+bow enchantment:
+    id: "quiver"
+    display: "&f<sprite:items:item/arrow> &6Quiver"
+    max level: 5
+    priority: 0
+    item: arrow item
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 20
-            set level 2 to 30
-            set level 3 to 40
-            set level 4 to 50
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "chance":
+        lvl. 1: 20
+        lvl. 2: 30
+        lvl. 3: 40
+        lvl. 4: 50
 
 local function getDescription(level: integer) :: string:
     return "return your shot arrow"

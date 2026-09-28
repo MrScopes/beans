@@ -1,35 +1,24 @@
-on load:
-    create sword enchantment named "crit":
-        set enchantment display to "&f<sprite:items:item/diamond_sword> &cCrit"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to diamond sword
+sword enchantment:
+    id: "crit"
+    display: "&f<sprite:items:item/diamond_sword> &cCrit"
+    max level: 5
+    priority: 10
+    item: diamond sword
+    cost: "cheap"
 
-        level values for "chance":
-            set level 1 to 10
-            set level 2 to 12
-            set level 3 to 14
-            set level 4 to 16
-            set level 5 to 20
+    > "chance":
+        lvl. 1: 10
+        lvl. 2: 12
+        lvl. 3: 14
+        lvl. 4: 16
+        lvl. 5: 20
 
-        level values for "multiplier":
-            set level 1 to 0.1
-            set level 2 to 0.12
-            set level 3 to 0.14
-            set level 4 to 0.16
-            set level 5 to 0.20
-
-        level values for "dust cost":
-            set level 2 to 5
-            set level 3 to 25
-            set level 4 to 500
-            set level 5 to 2_500
-
-        level values for "money cost":
-            set level 2 to 10_000
-            set level 3 to 30_000
-            set level 4 to 280_000
-            set level 5 to 1_400_000
+    > "multiplier":
+        lvl. 1: 0.1
+        lvl. 2: 0.12
+        lvl. 3: 0.14
+        lvl. 4: 0.16
+        lvl. 5: 0.20
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "crit" at {_level}

@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "leech":
-        set enchantment display to "&f<sprite:gui:hud/heart/full> &2Leech"
-        set enchantment max level to 5
-        set enchantment priority to 10
-        set enchantment item to regeneration potion item
+bow enchantment:
+    id: "leech"
+    display: "&f<sprite:gui:hud/heart/full> &2Leech"
+    max level: 5
+    priority: 10
+    item: regeneration potion item
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 9 seconds
-            set level 2 to 8 seconds
-            set level 3 to 7 seconds
-            set level 4 to 6 seconds
-            set level 5 to 5 seconds
+    > "cooldown":
+        lvl. 1: 9 seconds
+        lvl. 2: 8 seconds
+        lvl. 3: 7 seconds
+        lvl. 4: 6 seconds
+        lvl. 5: 5 seconds
 
-        level values for "heal percentage":
-            set level 1 to 0.15
-            set level 2 to 0.2
-            set level 3 to 0.25
-            set level 4 to 0.3
-            set level 5 to 0.35
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "heal percentage":
+        lvl. 1: 0.15
+        lvl. 2: 0.2
+        lvl. 3: 0.25
+        lvl. 4: 0.3
+        lvl. 5: 0.35
 
 local function getDescription(level: integer) :: string:
     set {_heal percentage} to "heal percentage" of "leech" at {_level}

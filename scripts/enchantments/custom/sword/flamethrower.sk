@@ -1,65 +1,56 @@
-on load:
-    create sword enchantment named "flamethrower":
-        set enchantment display to "&f<sprite:items:item/blaze_powder> &6Flamethrower"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to blaze powder
+sword enchantment:
+    id: "flamethrower"
+    display: "&f<sprite:items:item/blaze_powder> &6Flamethrower"
+    max level: 5
+    priority: 0
+    item: blaze powder
+    cost: "expensive"
 
-        level values for "cooldown":
-            set level 1 to 20 seconds
-            set level 2 to 18 seconds
-            set level 3 to 16 seconds
-            set level 4 to 14 seconds
-            set level 5 to 12 seconds
+    ability:
+        id: "flamethrower"
+        bind: "left click"
 
-        level values for "angle":
-            set level 1 to 35
-            set level 2 to 40
-            set level 3 to 45
-            set level 4 to 50
-            set level 5 to 55
+        > "cooldown":
+            lvl. 1: 20 seconds
+            lvl. 2: 18 seconds
+            lvl. 3: 16 seconds
+            lvl. 4: 14 seconds
+            lvl. 5: 12 seconds
 
-        level values for "damage":
-            set level 1 to 0.4
-            set level 2 to 0.45
-            set level 3 to 0.5
-            set level 4 to 0.55
-            set level 5 to 0.65
+        > "angle":
+            lvl. 1: 35
+            lvl. 2: 40
+            lvl. 3: 45
+            lvl. 4: 50
+            lvl. 5: 55
 
-        level values for "base range":
-            set level 1 to 2
-            set level 2 to 2
-            set level 3 to 2
-            set level 4 to 2
-            set level 5 to 2
+        > "damage":
+            lvl. 1: 0.4
+            lvl. 2: 0.45
+            lvl. 3: 0.5
+            lvl. 4: 0.55
+            lvl. 5: 0.65
 
-        level values for "addrange":
-            set level 1 to 2
-            set level 2 to 2.25
-            set level 3 to 2.35
-            set level 4 to 2.5
-            set level 5 to 2.75
+        > "base range":
+            lvl. 1: 2
+            lvl. 2: 2
+            lvl. 3: 2
+            lvl. 4: 2
+            lvl. 5: 2
 
-        level values for "iterations":
-            set level 1 to 5
-            set level 2 to 5
-            set level 3 to 5
-            set level 4 to 5
-            set level 5 to 5
+        > "addrange":
+            lvl. 1: 2
+            lvl. 2: 2.25
+            lvl. 3: 2.35
+            lvl. 4: 2.5
+            lvl. 5: 2.75
 
-        level values for "dust cost":
-            set level 1 to 65
-            set level 2 to 225
-            set level 3 to 850
-            set level 4 to 5_500
-            set level 5 to 9_000
-
-        level values for "money cost":
-            set level 1 to 100_000
-            set level 2 to 300_000
-            set level 3 to 900_000
-            set level 4 to 2_500_000
-            set level 5 to 4_500_000
+        > "iterations":
+            lvl. 1: 5
+            lvl. 2: 5
+            lvl. 3: 5
+            lvl. 4: 5
+            lvl. 5: 5
 
 local function getDescription(level: integer) :: string:
     set {_damage} to "damage" of "flamethrower" at {_level}
@@ -67,9 +58,9 @@ local function getDescription(level: integer) :: string:
     set {_angle} to "angle" of "flamethrower" at {_level}
     set {_addrange} to "addrange" of "flamethrower" at {_level}
     set {_range} to ("base range" of "flamethrower" at {_level}) + {_addrange}
-    return "&e[LMB] &7shoots a cone of fire &8(&f%{_angle}%°&8, &f%{_range}%m&8) &7dealing &8(&f%{_damage}% &8- &f%{_damage} * {_iterations}%&f<sprite:gui:hud/heart/full>&8, &7and &f%effectDisplay("ignite", customDuration:2 seconds, showAmplifier: false)%&8)"
+    return "&e[<flamethrower>] &7shoots a cone of fire &8(&f%{_angle}%°&8, &f%{_range}%m&8) &7dealing &8(&f%{_damage}% &8- &f%{_damage} * {_iterations}%&f<sprite:gui:hud/heart/full>&8, &7and &f%effectDisplay("ignite", customDuration:2 seconds, showAmplifier: false)%&8)"
 
-local function onLeftClick(player: player, item: item, level: integer):
+local function flamethrower(player: player, level: integer):
     set {_range} to "base range" of "flamethrower" at {_level}
     set {_addrange} to "addrange" of "flamethrower" at {_level}
     set {_angle} to "angle" of "flamethrower" at {_level}

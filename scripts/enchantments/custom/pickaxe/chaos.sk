@@ -1,44 +1,33 @@
 using reflection
 
-on load:
-    create pickaxe enchantment named "chaos":
-        set enchantment display to "&f<sprite:items:item/echo_shard> &5Chaos"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to echo shard
+pickaxe enchantment:
+    id: "chaos"
+    display: "&f<sprite:items:item/echo_shard> &5Chaos"
+    max level: 5
+    priority: 0
+    item: echo shard
+    cost: "normal"
 
-        level values for "chance":
-            set level 1 to 5
-            set level 2 to 6
-            set level 3 to 7
-            set level 4 to 8
-            set level 5 to 10
+    > "chance":
+        lvl. 1: 5
+        lvl. 2: 6
+        lvl. 3: 7
+        lvl. 4: 8
+        lvl. 5: 10
 
-        level values for "enchantments":
-            set level 1 to 1
-            set level 2 to 2
-            set level 3 to 2
-            set level 4 to 3
-            set level 5 to 5
+    > "enchantments":
+        lvl. 1: 1
+        lvl. 2: 2
+        lvl. 3: 2
+        lvl. 4: 3
+        lvl. 5: 5
 
-        level values for "luck boost":
-            set level 1 to 0.05
-            set level 2 to 0.1
-            set level 3 to 0.15
-            set level 4 to 0.2
-            set level 5 to 0.25
-
-        level values for "dust cost":
-            set level 2 to 55
-            set level 3 to 225
-            set level 4 to 2_500
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 65_000
-            set level 3 to 275_000
-            set level 4 to 1_100_000
-            set level 5 to 3_800_000
+    > "luck boost":
+        lvl. 1: 0.05
+        lvl. 2: 0.1
+        lvl. 3: 0.15
+        lvl. 4: 0.2
+        lvl. 5: 0.25
 
 local function getDescription(level: integer) :: string:
     set {_enchantments} to "enchantments" of "chaos" at {_level}

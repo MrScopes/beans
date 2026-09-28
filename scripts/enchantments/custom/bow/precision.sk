@@ -1,35 +1,24 @@
-on load:
-    create bow enchantment named "precision":
-        set enchantment display to "&f<sprite:blocks:block/target_side> &ePrecision"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to target item
+bow enchantment:
+    id: "precision"
+    display: "&f<sprite:blocks:block/target_side> &ePrecision"
+    max level: 5
+    priority: 0
+    item: target item
+    cost: "normal"
 
-        level values for "multiplier":
-            set level 1 to 0.1
-            set level 2 to 0.15
-            set level 3 to 0.2
-            set level 4 to 0.25
-            set level 5 to 0.3
+    > "multiplier":
+        lvl. 1: 0.1
+        lvl. 2: 0.15
+        lvl. 3: 0.2
+        lvl. 4: 0.25
+        lvl. 5: 0.3
 
-        level values for "max multiplier":
-            set level 1 to 1
-            set level 2 to 1
-            set level 3 to 1
-            set level 4 to 1
-            set level 5 to 1
-
-        level values for "dust cost":
-            set level 2 to 20
-            set level 3 to 100
-            set level 4 to 2_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 25_000
-            set level 3 to 150_000
-            set level 4 to 1_000_000
-            set level 5 to 3_100_000
+    > "max multiplier":
+        lvl. 1: 1
+        lvl. 2: 1
+        lvl. 3: 1
+        lvl. 4: 1
+        lvl. 5: 1
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "precision" at {_level}

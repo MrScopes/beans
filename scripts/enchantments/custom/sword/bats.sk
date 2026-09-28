@@ -1,70 +1,63 @@
-on load:
-    create sword enchantment named "bats":
-        set enchantment display to "&f<sprite:items:item/bat_spawn_egg> &5Bats"
-        set enchantment max level to 5
-        set enchantment priority to 0
-        set enchantment item to bat spawn egg
+sword enchantment:
+    id: "bats"
+    display: "&f<sprite:items:item/bat_spawn_egg> &5Bats"
+    max level: 5
+    priority: 0
+    item: bat spawn egg
+    cost: "normal"
 
-        level values for "cooldown":
-            set level 1 to 20 seconds
-            set level 2 to 18 seconds
-            set level 3 to 15 seconds
-            set level 4 to 12 seconds
-            set level 5 to 10 seconds
+    ability:
+        id: "bats"
+        bind: "right click"
 
-        level values for "amount":
-            set level 1 to 8
-            set level 2 to 10
-            set level 3 to 12
-            set level 4 to 14
-            set level 5 to 18
+        > "cooldown":
+            lvl. 1: 20 seconds
+            lvl. 2: 18 seconds
+            lvl. 3: 15 seconds
+            lvl. 4: 12 seconds
+            lvl. 5: 10 seconds
 
-        level values for "distance":
-            set level 1 to 12
-            set level 2 to 14
-            set level 3 to 16
-            set level 4 to 18
-            set level 5 to 22
+        > "amount":
+            lvl. 1: 8
+            lvl. 2: 10
+            lvl. 3: 12
+            lvl. 4: 14
+            lvl. 5: 18
 
-        level values for "damage":
-            set level 1 to 1
-            set level 2 to 1.5
-            set level 3 to 2
-            set level 4 to 2.5
-            set level 5 to 3
+        > "distance":
+            lvl. 1: 12
+            lvl. 2: 14
+            lvl. 3: 16
+            lvl. 4: 18
+            lvl. 5: 22
 
-        level values for "healing":
-            set level 1 to 0.5
-            set level 2 to 0.6
-            set level 3 to 0.7
-            set level 4 to 0.8
-            set level 5 to 1
+        > "damage":
+            lvl. 1: 1
+            lvl. 2: 1.5
+            lvl. 3: 2
+            lvl. 4: 2.5
+            lvl. 5: 3
 
-        level values for "poison":
-            set level 1 to potion effect of poison 1 for 3.5 seconds
-            set level 2 to potion effect of poison 1 for 3.5 seconds
-            set level 3 to potion effect of  poison 1 for 3.5 seconds
-            set level 4 to potion effect of poison 1 for 3.25 seconds
-            set level 5 to potion effect of poison 1 for 5 seconds
+        > "healing":
+            lvl. 1: 0.5
+            lvl. 2: 0.6
+            lvl. 3: 0.7
+            lvl. 4: 0.8
+            lvl. 5: 1
 
-        level values for "aoe":
-            set level 1 to 1
-            set level 2 to 1.2
-            set level 3 to 1.4
-            set level 4 to 1.6
-            set level 5 to 2
+        > "poison":
+            lvl. 1: potion effect of poison 1 for 3.5 seconds
+            lvl. 2: potion effect of poison 1 for 3.5 seconds
+            lvl. 3: potion effect of  poison 1 for 3.5 seconds
+            lvl. 4: potion effect of poison 1 for 3.25 seconds
+            lvl. 5: potion effect of poison 1 for 5 seconds
 
-        level values for "dust cost":
-            set level 2 to 65
-            set level 3 to 225
-            set level 4 to 4_300
-            set level 5 to 6_000
-
-        level values for "money cost":
-            set level 2 to 100_000
-            set level 3 to 300_000
-            set level 4 to 1_800_000
-            set level 5 to 3_100_000
+        > "aoe":
+            lvl. 1: 1
+            lvl. 2: 1.2
+            lvl. 3: 1.4
+            lvl. 4: 1.6
+            lvl. 5: 2
 
 local function getDescription(level: integer) :: string:
     set {_distance} to "distance" of "bats" at {_level}
@@ -74,9 +67,9 @@ local function getDescription(level: integer) :: string:
     set {_poison} to "poison" of "bats" at {_level}
     set {_aoe} to "aoe" of "bats" at {_level}
 
-    return "&e[RMB] &7summon &f%{_amount}% bats &7that travel &f%{_distance}%m &8(&7AOE: &f%{_aoe}%m&8, &7Enemy: &c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &f%effectDisplay({_poison})%&8, &7You: &a%{_healing}%&f<sprite:gui:hud/heart/full>&8)"
+    return "&e[<bats>] &7summon &f%{_amount}% bats &7that travel &f%{_distance}%m &8(&7AOE: &f%{_aoe}%m&8, &7Enemy: &c%{_damage}%&f<sprite:gui:hud/heart/full>&8, &f%effectDisplay({_poison})%&8, &7You: &a%{_healing}%&f<sprite:gui:hud/heart/full>&8)"
 
-local function onRightClick(player: player, item: item, level: integer):
+local function bats(player: player, level: integer):
     set {_origin} to location of {_player}'s head
 
     set {_distance} to "distance" of "bats" at {_level}
