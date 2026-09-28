@@ -32,7 +32,9 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
     
 function getDescription(enchantment: string, level: integer, player: player = {_}) :: text:
     set {_cooldown} to "cooldown" of {_enchantment} at {_level}
-    set {_chance} to "chance" of {_enchantment} at {_level}
+    set {_chance} to ("chance" of {_enchantment} at {_level}) * 100
+    if {_chance} is 0:
+        delete {_chance}
     if {_chance} < 0.01:
         set {_chance} to formatNumber({_chance}, "###,###0.000")
     set {_threshold} to "threshold" of {_enchantment} at {_level}

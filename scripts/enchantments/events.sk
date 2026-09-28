@@ -6,8 +6,8 @@ function enchantCanRun(player: player, enchantment: string, level: integer, luck
             return false
 
     if "manual chance" of {_enchantment} at {_level} isn't set:
-        set {_chance} to "chance" of {_enchantment} at {_level}
-        {_chance} is set
+        set {_chance} to ("chance" of {_enchantment} at {_level}) * 100
+        {_chance} isn't 0
         set {_chance} to {_chance} * (1 + {_luck})
         chance of (100 - {_chance})%:
             return false

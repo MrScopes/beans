@@ -14,18 +14,18 @@ bow enchantment:
         lvl. 5: true
 
     > "chance":
-        lvl. 1: 20
-        lvl. 2: 25
-        lvl. 3: 30
-        lvl. 4: 35
-        lvl. 5: 50
+        lvl. 1: 20%
+        lvl. 2: 25%
+        lvl. 3: 30%
+        lvl. 4: 35%
+        lvl. 5: 50%
 
     > "threshold":
-        lvl. 1: 0.5
-        lvl. 2: 0.4
-        lvl. 3: 0.35
-        lvl. 4: 0.3
-        lvl. 5: 0.20
+        lvl. 1: 50%
+        lvl. 2: 40%
+        lvl. 3: 35%
+        lvl. 4: 30%
+        lvl. 5: 20%
 
     > "manual cooldown::onHit":
         lvl. 1: true

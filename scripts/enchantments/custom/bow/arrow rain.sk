@@ -78,3 +78,4 @@ on damage with priority monitor:
         set the damage location to location of {_projectile}
     damage victim by {_damage} using {_source}
     reset victim's no damage time
+    

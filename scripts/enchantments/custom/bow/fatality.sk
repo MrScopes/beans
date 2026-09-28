@@ -7,18 +7,18 @@ bow enchantment:
     cost: "normal"
 
     > "multiplier":
-        lvl. 1: 0.2
-        lvl. 2: 0.25
-        lvl. 3: 0.3
-        lvl. 4: 0.4
-        lvl. 5: 0.5
+        lvl. 1: 20%
+        lvl. 2: 25%
+        lvl. 3: 30%
+        lvl. 4: 40%
+        lvl. 5: 50%
 
     > "health threshold":
-        lvl. 1: 0.33
-        lvl. 2: 0.33
-        lvl. 3: 0.33
-        lvl. 4: 0.33
-        lvl. 5: 0.33
+        lvl. 1: 33%
+        lvl. 2: 33%
+        lvl. 3: 33%
+        lvl. 4: 33%
+        lvl. 5: 33%
 
 local function getDescription(level: integer) :: string:
     set {_health threshold} to "health threshold" of "fatality" at {_level}

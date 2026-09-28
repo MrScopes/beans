@@ -46,3 +46,4 @@ local function onHit(shooter: entity, tool: item, projectile: entity, level: int
         wait {_duration}
         {_border} is worldborder of {_victim}
         reset worldborder of {_victim}
+        

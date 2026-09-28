@@ -9,9 +9,9 @@ ultimate pickaxe enchantment:
     cost: "cheap"
 
     > "chance":
-        lvl. 1: 0.5
-        lvl. 2: 0.75
-        lvl. 3: 1
+        lvl. 1: 5%
+        lvl. 2: 7.5%
+        lvl. 3: 10%
 
     > "enchantments":
         lvl. 1: 1

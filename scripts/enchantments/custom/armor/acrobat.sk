@@ -7,11 +7,11 @@ armor enchantment:
     cost: "normal"
 
     > "damage reduction":
-        lvl. 1: 0.20
-        lvl. 2: 0.35
-        lvl. 3: 0.50
-        lvl. 4: 0.60
-        lvl. 5: 0.80
+        lvl. 1: 20%
+        lvl. 2: 35%
+        lvl. 3: 50%
+        lvl. 4: 60%
+        lvl. 5: 80%
 
 local function getDescription(level: integer) :: string:
     set {_reduction} to "damage reduction" of "acrobat" at {_level}

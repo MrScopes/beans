@@ -7,11 +7,11 @@ pickaxe enchantment:
     cost: "expensive"
 
     > "chance":
-        lvl. 1: 0.001
-        lvl. 2: 0.002
-        lvl. 3: 0.003
-        lvl. 4: 0.004
-        lvl. 5: 0.005
+        lvl. 1: 0.001%
+        lvl. 2: 0.002%
+        lvl. 3: 0.003%
+        lvl. 4: 0.004%
+        lvl. 5: 0.005%
 
 local function getDescription(level: integer) :: string:
     return "instantly gives you a beacon"

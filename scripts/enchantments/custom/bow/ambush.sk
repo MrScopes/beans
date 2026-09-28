@@ -7,11 +7,11 @@ bow enchantment:
     cost: "normal"
 
     > "multiplier":
-        lvl. 1: 0.1
-        lvl. 2: 0.15
-        lvl. 3: 0.2
-        lvl. 4: 0.25
-        lvl. 5: 0.3
+        lvl. 1: 10%
+        lvl. 2: 15%
+        lvl. 3: 20%
+        lvl. 4: 25%
+        lvl. 5: 30%
 
     > "time threshold":
         lvl. 1: 20 seconds

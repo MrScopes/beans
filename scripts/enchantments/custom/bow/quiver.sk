@@ -7,10 +7,10 @@ bow enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 20
-        lvl. 2: 30
-        lvl. 3: 40
-        lvl. 4: 50
+        lvl. 1: 20%
+        lvl. 2: 30%
+        lvl. 3: 40%
+        lvl. 4: 50%
 
 local function getDescription(level: integer) :: string:
     return "return your shot arrow"

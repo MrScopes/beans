@@ -7,11 +7,11 @@ bow enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 40
-        lvl. 2: 40
-        lvl. 3: 40
-        lvl. 4: 40
-        lvl. 5: 40
+        lvl. 1: 40%
+        lvl. 2: 40%
+        lvl. 3: 40%
+        lvl. 4: 40%
+        lvl. 5: 40%
 
     > "cooldown":
         lvl. 1: 15 seconds

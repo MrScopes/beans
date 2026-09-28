@@ -7,11 +7,11 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 5
-        lvl. 2: 7
-        lvl. 3: 10
-        lvl. 4: 13
-        lvl. 5: 15
+        lvl. 1: 5%
+        lvl. 2: 7%
+        lvl. 3: 10%
+        lvl. 4: 13%
+        lvl. 5: 15%
 
     > "blocks":
         lvl. 1: 10

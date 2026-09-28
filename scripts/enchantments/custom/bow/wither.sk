@@ -7,11 +7,11 @@ bow enchantment:
     cost: "normal"
 
     > "threshold":
-        lvl. 1: 0.5
-        lvl. 2: 0.5
-        lvl. 3: 0.5
-        lvl. 4: 0.5
-        lvl. 5: 0.5
+        lvl. 1: 50%
+        lvl. 2: 50%
+        lvl. 3: 50%
+        lvl. 4: 50%
+        lvl. 5: 50%
 
     > "cooldown":
         lvl. 1: 10 seconds

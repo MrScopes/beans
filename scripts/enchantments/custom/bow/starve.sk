@@ -7,11 +7,11 @@ bow enchantment:
     cost: "normal"
 
     > "threshold":
-        lvl. 1: 0.75
-        lvl. 2: 0.75
-        lvl. 3: 0.75
-        lvl. 4: 0.75
-        lvl. 5: 0.75
+        lvl. 1: 75%
+        lvl. 2: 75%
+        lvl. 3: 75%
+        lvl. 4: 75%
+        lvl. 5: 75%
 
     > "hunger":
         lvl. 1: 0.5

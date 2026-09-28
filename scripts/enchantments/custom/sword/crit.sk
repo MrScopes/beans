@@ -7,18 +7,18 @@ sword enchantment:
     cost: "cheap"
 
     > "chance":
-        lvl. 1: 10
-        lvl. 2: 12
-        lvl. 3: 14
-        lvl. 4: 16
-        lvl. 5: 20
+        lvl. 1: 10%
+        lvl. 2: 12%
+        lvl. 3: 14%
+        lvl. 4: 16%
+        lvl. 5: 20%
 
     > "multiplier":
-        lvl. 1: 0.1
-        lvl. 2: 0.12
-        lvl. 3: 0.14
-        lvl. 4: 0.16
-        lvl. 5: 0.20
+        lvl. 1: 10%
+        lvl. 2: 12%
+        lvl. 3: 14%
+        lvl. 4: 16%
+        lvl. 5: 20%
 
 local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "crit" at {_level}

@@ -49,3 +49,4 @@ local function onHit(shooter: entity, tool: item, projectile: entity, level: int
         loop all living entities in radius {_radius} around {_location}:
             push loop-entity towards {_location} at speed 0.1
             add 2 ticks to cooldown of elytra for loop-entity
+            

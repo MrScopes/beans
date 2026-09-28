@@ -7,15 +7,15 @@ ultimate armor enchantment:
     cost: "expensive"
 
     > "heal percent":
-        lvl. 1: 1
-        lvl. 2: 1.5
-        lvl. 3: 2
-        lvl. 4: 2.5
-        lvl. 5: 3
+        lvl. 1: 1%
+        lvl. 2: 1.5%
+        lvl. 3: 2%
+        lvl. 4: 2.5%
+        lvl. 5: 3%
 
 local function getDescription(level: integer) :: string:
     set {_heal percent} to "heal percent" of "life_reaver" at {_level}
-    return "heal you by &f%{_heal percent}%%% &7of ALL damage done by you and your summons"
+    return "heal you by &f%{_heal percent} * 100%%% &7of ALL damage done by you and your summons"
 
 on damage with priority highest:
     set {_attacker} to {-last attacker::%victim%} ? attacker
@@ -26,5 +26,5 @@ on damage with priority highest:
     {_level} is set
 
     set {_heal percent} to "heal percent" of "life_reaver" at {_level}
-    set {_heal amount} to clamp(final damage * ({_heal percent} / 100), 0, final damage)
+    set {_heal amount} to clamp(final damage * {_heal percent}, 0, final damage)
     heal({_attacker}, {_heal amount})

@@ -7,10 +7,10 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 4
-        lvl. 2: 8
-        lvl. 3: 10
-        lvl. 4: 12
+        lvl. 1: 4%
+        lvl. 2: 8%
+        lvl. 3: 10%
+        lvl. 4: 12%
 
     > "haste":
         lvl. 1: potion effect of haste 1 for 5 seconds

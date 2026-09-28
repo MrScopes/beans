@@ -14,20 +14,20 @@ pickaxe enchantment:
         lvl. 5: 75
 
     > "boost":
-        lvl. 1: 0.001
-        lvl. 2: 0.0015
-        lvl. 3: 0.002
-        lvl. 4: 0.0025
-        lvl. 5: 0.003
+        lvl. 1: 0.001%
+        lvl. 2: 0.0015%
+        lvl. 3: 0.002%
+        lvl. 4: 0.0025%
+        lvl. 5: 0.003%
 
 local function getDescription(level: integer) :: string:
     set {_boost} to "boost" of "grinder" at {_level}
     set {_requirement} to "requirement" of "grinder" at {_level}
-    return "boost luck by &f%formatNumber({_boost}, "#.#####")%x &7every &f%{_requirement}% &7blocks"
+    return "boost luck by &f%formatNumber({_boost} * 100, "#.#####")%x &7every &f%{_requirement}% &7blocks"
 
 local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
     {_player} is within bound with id "mine flight"
-    set {_boost} to "boost" of "grinder" at {_level}
+    set {_boost} to ("boost" of "grinder" at {_level}) * 100
     set {_requirement} to "requirement" of "grinder" at {_level}
 
     startGrinderWatcher({_player})

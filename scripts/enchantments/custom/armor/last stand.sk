@@ -54,3 +54,4 @@ local function onAttacked(victim: entity, armor: item, level: integer, attacker:
             add {_strength} to {_victim}'s potion effects
             add {_resistance} to {_victim}'s potion effects
             wait 1 tick
+            

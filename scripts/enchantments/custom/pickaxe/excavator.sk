@@ -7,11 +7,11 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 5
-        lvl. 2: 6
-        lvl. 3: 7
-        lvl. 4: 8
-        lvl. 5: 15
+        lvl. 1: 5%
+        lvl. 2: 6%
+        lvl. 3: 7%
+        lvl. 4: 8%
+        lvl. 5: 15%
 
 local function getDescription(level: integer) :: string:
     return "make you break a nearby block"

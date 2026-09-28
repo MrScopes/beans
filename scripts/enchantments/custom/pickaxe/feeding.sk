@@ -7,11 +7,11 @@ pickaxe enchantment:
     cost: "cheap"
 
     > "chance":
-        lvl. 1: 5
-        lvl. 2: 10
-        lvl. 3: 15
-        lvl. 4: 20
-        lvl. 5: 25
+        lvl. 1: 5%
+        lvl. 2: 10%
+        lvl. 3: 15%
+        lvl. 4: 20%
+        lvl. 5: 25%
 
     > "feed":
         lvl. 1: 1

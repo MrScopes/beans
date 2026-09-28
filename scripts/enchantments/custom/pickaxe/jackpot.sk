@@ -7,9 +7,9 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 0.01
-        lvl. 2: 0.02
-        lvl. 3: 0.04
+        lvl. 1: 0.01%
+        lvl. 2: 0.02%
+        lvl. 3: 0.04%
 
     > "money":
         lvl. 1: 100_000
@@ -22,9 +22,9 @@ pickaxe enchantment:
         lvl. 3: 350
 
     > "scale per level":
-        lvl. 1: 0.01
-        lvl. 2: 0.015
-        lvl. 3: 0.02
+        lvl. 1: 1%
+        lvl. 2: 1.5%
+        lvl. 3: 2%
 
 local function getDescription(level: integer) :: string:
     set {_dust} to "dust" of "jackpot" at {_level}

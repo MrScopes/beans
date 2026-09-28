@@ -30,3 +30,4 @@ local function onHit(shooter: entity, tool: item, projectile: entity, level: int
             set {_damage} to "damage" of "bullseye" at {_level}
             playEnchantmentSound("combat", "entity.arrow.hit_player", 1, 0.1, location of {_shooter}, all players)
             damage({_victim}, {_attacker}, {_damage})
+            

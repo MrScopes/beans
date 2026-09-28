@@ -7,16 +7,16 @@ pickaxe enchantment:
     cost: "expensive"
 
     > "chance":
-        lvl. 1: 20
-        lvl. 2: 25
-        lvl. 3: 30
-        lvl. 4: 35
-        lvl. 5: 40
-        lvl. 6: 45
-        lvl. 7: 50
-        lvl. 8: 55
-        lvl. 9: 60
-        lvl. 10: 75
+        lvl. 1: 20%
+        lvl. 2: 25%
+        lvl. 3: 30%
+        lvl. 4: 35%
+        lvl. 5: 40%
+        lvl. 6: 45%
+        lvl. 7: 50%
+        lvl. 8: 55%
+        lvl. 9: 60%
+        lvl. 10: 75%
 
     > "multiplier":
         lvl. 1: 5

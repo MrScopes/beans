@@ -7,11 +7,11 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 0.05
-        lvl. 2: 0.075
-        lvl. 3: 0.1
-        lvl. 4: 0.125
-        lvl. 5: 0.175
+        lvl. 1: 0.05%
+        lvl. 2: 0.075%
+        lvl. 3: 0.1%
+        lvl. 4: 0.125%
+        lvl. 5: 0.175%
 
     > "radius":
         lvl. 1: 8

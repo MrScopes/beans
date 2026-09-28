@@ -14,11 +14,11 @@ bow enchantment:
         lvl. 5: 5 seconds
 
     > "heal percentage":
-        lvl. 1: 0.15
-        lvl. 2: 0.2
-        lvl. 3: 0.25
-        lvl. 4: 0.3
-        lvl. 5: 0.35
+        lvl. 1: 15%
+        lvl. 2: 20%
+        lvl. 3: 25%
+        lvl. 4: 30%
+        lvl. 5: 35%
 
 local function getDescription(level: integer) :: string:
     set {_heal percentage} to "heal percentage" of "leech" at {_level}

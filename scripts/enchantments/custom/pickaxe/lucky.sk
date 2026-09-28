@@ -7,18 +7,18 @@ pickaxe enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 1
-        lvl. 2: 1.25
-        lvl. 3: 1.75
-        lvl. 4: 2
-        lvl. 5: 3
+        lvl. 1: 1%
+        lvl. 2: 1.25%
+        lvl. 3: 1.75%
+        lvl. 4: 2%
+        lvl. 5: 3%
 
     > "boost":
-        lvl. 1: 0.2
-        lvl. 2: 0.225
-        lvl. 3: 0.25
-        lvl. 4: 0.27
-        lvl. 5: 0.3
+        lvl. 1: 20%
+        lvl. 2: 22.5%
+        lvl. 3: 25%
+        lvl. 4: 27%
+        lvl. 5: 30%
 
     > "duration":
         lvl. 1: 5 seconds

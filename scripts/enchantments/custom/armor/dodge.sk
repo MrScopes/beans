@@ -7,11 +7,11 @@ armor enchantment:
     cost: "normal"
 
     > "chance":
-        lvl. 1: 0.5
-        lvl. 2: 0.75
-        lvl. 3: 1.0
-        lvl. 4: 1.25
-        lvl. 5: 1.75
+        lvl. 1: 0.5%
+        lvl. 2: 0.75%
+        lvl. 3: 1.0%
+        lvl. 4: 1.25%
+        lvl. 5: 1.75%
 
     > "speed":
         lvl. 1: potion effect of speed 1 for 3 seconds
@@ -30,3 +30,4 @@ local function onAttacked(victim: entity, armor: item, level: integer, attacker:
     playEnchantmentSound("combat", "minecraft:item.totem.use", 0.2, 1, location of {_victim}, all players)
     play (100 totem of undying item particles) with particle speed of 0.2 at ({_victim}'s head)
     return -1000
+    

@@ -62,3 +62,4 @@ local function onKill(attacker: entity, armor: item, level: integer, victim: ent
     add {_speed} to {_attacker}'s potion effects
     add {_health boost} to {_attacker}'s potion effects
     add {_absorption} to {_attacker}'s potion effects
+    
