@@ -37,7 +37,6 @@ effect:
 
             stop
 
-        delete {-ce::%{_id}%::*}
         set {-current ce::name} to {_id}
 
         set {-ce::%{_id}%::id} to {_id}
