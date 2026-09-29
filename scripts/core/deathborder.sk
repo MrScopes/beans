@@ -1,0 +1,30 @@
+async every 2 ticks:
+    for {_player} in all players:
+        {_player}'s gamemode is survival
+        
+        if all:
+            {_player}'s y coordinate < -3
+            bound at {_player} doesn't contain bound with id "mine"
+        then:
+            add {_player} to {_kill::*}
+            continue
+
+        if {_player}'s z coordinate >= 110.69:
+            add {_player} to {_kill::*}
+            continue
+
+        if {_player}'s z coordinate <= -109.69:
+            add {_player} to {_kill::*}
+            continue
+
+        if {_player}'s x coordinate >= 110.69:
+            add {_player} to {_kill::*}
+            continue
+
+        if {_player}'s x coordinate <= -109.69:
+            add {_player} to {_kill::*}
+            continue
+
+    if size of {_kill::*} > 0:
+        run 0 ticks later:
+            kill {_kill::*}
