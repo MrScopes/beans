@@ -7,11 +7,7 @@ effect sync permissions of %players%:
             set {_group} to group of {_player}
 
             if {-permission attachment::%{_player}%} is set:
-                set {_oldAttachment} to {-permission attachment::%{_player}%}
-
-                try:
-                    {_oldAttachment}.remove()
-
+                try {-permission attachment::%{_player}%}.remove()
                 delete {-permission attachment::%{_player}%}
 
             set {_attachment} to {_player}.addAttachment(instance of plugin "Skript")
@@ -30,11 +26,7 @@ effect sync permissions of %players%:
 
 on quit:
     if {-permission attachment::%player%} is set:
-        set {_attachment} to {-permission attachment::%player%}
-
-        try:
-            {_attachment}.remove()
-
+        try {-permission attachment::%player%}.remove()
         delete {-permission attachment::%player%}
 
 expression:
@@ -52,3 +44,4 @@ expression:
     delete:
         delete {permissions::%expr-1%::*}
         sync permissions of expr-1
+        
