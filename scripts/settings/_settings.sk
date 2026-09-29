@@ -20,6 +20,12 @@ on load:
             add setting option named "Title" with description "show vault messages as a title"
             add setting option named "None" with description "hide vault messages"
 
+        create number slider setting named "enchantment lore length":
+            set setting display to "Enchants Before Shorter Lore"
+            set setting minimum to 0
+            set setting maximum to 25
+            set setting default to 10
+
     create setting category named "sounds":
         set category description to "Sound Settings"
 

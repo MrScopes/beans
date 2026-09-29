@@ -130,8 +130,13 @@ function updateLore(tool: item, showDescriptions: boolean = true, player: player
         add loop-value to {_cleanOld::*}
 
     set {_enchantments::*} to custom enchantments of {_tool}
-    if size of {_enchantments::*} >= 10:
-        set {_showDescriptions} to false
+    if {_player} is set:
+        set {_setting} to setting "enchantment lore length" for {_player}
+        if size of {_enchantments::*} >= {_setting}:
+            set {_showDescriptions} to false
+    else:
+        if size of {_enchantments::*} >= 10:
+            set {_showDescriptions} to false
         
     loop {_enchantments::*}:
         if {-ce::%loop-index%::display} isn't set:

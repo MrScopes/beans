@@ -26,3 +26,13 @@ function playersWithSetting(setting: text, values: texts) :: players:
         if {_values::*} contains setting {_setting} for {_player}:
             add {_player} to {_players::*}
     return {_players::*}
+
+function saveNumberSliderSettings(player: player, category: string, nbt: nbt compound):
+    loop {-setting category::%{_category}%::settings::*}:
+        {-setting::%loop-value%::type} is "number slider"
+        set {_key} to loop-value
+        replace all " " with "_" in {_key}
+        set {setting::%{_player}%::%loop-value%} to float tag "%{_key}%" of {_nbt}
+        # let's just hardcode this since it's the only setting that requires an immediate inventory update
+        if {_key} is "enchantment_lore_length":
+            updateInventory({_player}'s inventory)
