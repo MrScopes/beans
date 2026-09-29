@@ -45,9 +45,8 @@ on damage of player with priority high:
     {-parry::%victim%} is set
     set {_window} to "window" of "substitution" at {-parry level::%victim%}
 
-    set {_ping bonus} to min(victim's ping / 2, 200) * 0.001 seconds
+    set {_ping bonus} to min(victim's ping / 2, 100) * 0.001 seconds
     set {_dif} to difference between {-parry::%victim%} and now
-    broadcast {_ping bonus}
 
     if {_dif} <= {_window} + {_ping bonus}:
         cancel event
