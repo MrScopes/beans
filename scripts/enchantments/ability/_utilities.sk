@@ -20,7 +20,7 @@ function currentAbilities(player: player) :: objects:
 
     return {_abilities::*}
 
-function runAbilityBind(player: player, bind: string, item: item) :: boolean:
+function runAbilityBind(player: player, bind: string, item: item):
     for {_enchantment}, {_level} in keyed sortedEnchantments({_item}, {_player}):
         for {_ability} in {-ce::%{_enchantment}%::abilities::*}:
             ability bind of {_ability} for {_player} is {_bind}
@@ -32,9 +32,6 @@ function runAbilityBind(player: player, bind: string, item: item) :: boolean:
 
             startEnchantCooldown({_player}, {_enchantment}, {_level})
             run {_function} with arguments ({_player}, {_level})
-            return true
-
-    return false
 
 import:
     net.minecraft.world.entity.LivingEntity
