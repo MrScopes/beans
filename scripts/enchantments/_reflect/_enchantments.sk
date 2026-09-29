@@ -28,9 +28,10 @@ effect:
         if {-current ce ability::active} is true:
             set {_enchantment} to {-current ce::name}
 
-            delete {-ce ability::%{_id}%::*}
             set {-current ce ability::name} to {_id}
+
             set {-ce ability::%{_id}%::id} to {_id}
+            set {-ce ability::%{_id}%::enchantment} to {_enchantment}
 
             if {-ce::%{_enchantment}%::abilities::*} doesn't contain {_id}:
                 add {_id} to {-ce::%{_enchantment}%::abilities::*}
