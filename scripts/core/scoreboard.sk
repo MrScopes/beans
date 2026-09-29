@@ -50,7 +50,7 @@ async every tick:
             if {level::%loop-player%} >= 100:
                 set {-level progress percent::%loop-player%} to 100
                 set loop-player's level to 100
-                set loop-player's level progress to 1
+                set loop-player's level progress to 0.99
             else:
                 set {_required xp} to {-required xp::%{level::%loop-player%} + 1%}
                 set {_progress} to clamp(({level progress::%loop-player%} ? 0) / {_required xp}, 0, 1)
@@ -61,7 +61,7 @@ async every tick:
         else:
             set {-level progress percent::%loop-player%} to 100
             set loop-player's level to 100
-            set loop-player's level progress to 1
+            set loop-player's level progress to 0.99
 
         set line 4 of loop-player's fastboard to "&bBlocks: &f%kNumber({blocks::%loop-player%})%"
         set line 5 of loop-player's fastboard to "&bMoney: &f$%kNumber({money::%loop-player%})%"
