@@ -166,7 +166,7 @@ function reset(player: player):
     delete {cached kdr::%{_player}%}
     set {_player}'s play time to 0 seconds
 
-    kit({_player}, true)
+    kit({_player})
 
     wait 1 second
 
@@ -181,16 +181,15 @@ function reset(player: player):
     send "&7You are protected from PVP." to {_player}
     send "&7Disable permanently with /protection." to {_player}
 
-function kit(player: player, consumables: boolean):
+function kit(player: player):
     give {_player} diamond sword
     give {_player} diamond pickaxe
     give {_player} bow
     give {_player} starterHelmet()
     give {_player} elytra
     give {_player} firework
-    if {_consumables} is true:
-        give {_player} 64 arrows
-        give {_player} 16 golden carrot
+    give {_player} arrow
+    give {_player} cooked beef
 
 function starterHelmet() :: item:
     set {_helmet} to leather helmet
@@ -350,6 +349,18 @@ on elytra boost:
     set item cooldown of firework for player to 4 seconds
     remove 0.5 from player's food level
 
+on entity shoot bow:
+    entity is a player
+    set should consume item to false
+    set cooldown of bow for entity to 0.5 seconds
+
+on consume of cooked beef:
+    cancel event
+    set cooldown of cooked beef for player to 2 seconds
+    set player's food level to clamp(player's food level + 4, 0, 20)
+    set player's saturation to clamp(player's saturation + 12.8, 0, 20)
+    play sound "entity.player.burp" at player 
+
 command /github:
     trigger:
         send formatted "<click:open_url:'https://github.com/MrScopes/beans'>&bVisit the GitHub repository &lHERE! &bContributions welcome."
@@ -368,4 +379,4 @@ command /trash:
 command /kit:
     cooldown: 1 minute
     trigger:
-        kit(player, false)
+        kit(player)
