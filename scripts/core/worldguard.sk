@@ -20,19 +20,25 @@ on shoot:
 
 on place:
     player's gamemode isn't creative
-    if "%bounds at block%" contains "spawn":
-        cancel event
-
-    else if "%bounds at player%" contains "spawn":
+    if any:
+        "%bounds at block%" contains "spawn"
+        "%bounds at player%" contains "spawn"
+        abs(x coordinate of event-block) > 101
+        abs(z coordinate of event-block) > 101
+        y coordinate of event-block > 35
+    then:
         cancel event
 
 on right click:
     player's gamemode isn't creative
     event-block is set
-    if "%bounds at clicked block%" contains "spawn":
-        cancel event
 
-    else if "%bounds at player%" contains "spawn":
+    if any:
+        "%bounds at clicked block%" contains "spawn"
+        "%bounds at player%" contains "spawn"
+        abs(x coordinate of event-block) > 101
+        abs(z coordinate of event-block) > 101
+    then:
         cancel event
 
 on left click:
