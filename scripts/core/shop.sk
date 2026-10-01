@@ -1,10 +1,6 @@
 on load:
     set {-shop} to chest inventory with 3 rows named "&8Shop"
 
-    add shopItem(16 cooked beef, "Steak", 250) to {-shop}
-    add shopItem(16 golden carrot, "Golden Carrot", 40000) to {-shop}
-    add shopItem(16 arrow, "Arrow", 500) to {-shop}
-
     add shopItem(4 white concrete, "White Concrete", 100) to {-shop}
     add shopItem(4 orange concrete, "Orange Concrete", 100) to {-shop}
     add shopItem(4 magenta concrete, "Magenta Concrete", 100) to {-shop}
@@ -23,11 +19,11 @@ on load:
 function shopItem(item: item type, display: text, price: integer) :: item:
     set {_amount} to item amount of {_item}
     set {_item} to {_item} named "&7%item amount of {_item}%x %{_display}%"
+
     add "&7Left &a%{_amount}%x &7for &a$%kNumber({_price})%" to lore of {_item}
-    if {_price} > 0:
-        add "&7Right &a%{_amount} * 4%x &7for &a$%kNumber({_price} * 4)%" to lore of {_item}
-        add "&7Drop &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
-        #add "&7Ctrl + Q to purchase &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
+    add "&7Right &a%{_amount} * 4%x &7for &a$%kNumber({_price} * 4)%" to lore of {_item}
+    add "&7Drop &a%{_amount} * 16%x &7for &a$%kNumber({_price} * 16)%" to lore of {_item}
+
     set {-shop::%type of {_item}%} to {_price}
     set {_item} to {_item} with all item flags
     return {_item}
@@ -50,14 +46,7 @@ on inventory click:
         else if click type is q:
             set {_price} to {_price} * 16
             set {_amount} to {_amount} * 16
-        ###
-        else if click type is ctrl+q:
-            set {_price} to {_price} * 16
-            set {_amount} to {_amount} * 16
-        else if click type is swap offhand:
-            set {_price} to {_price} * 64
-            set {_amount} to {_amount} * 64
-        ###
+
     if {_price} is set:
         if {money::%player%} >= {_price}:
             remove {_price} from {money::%player%}
