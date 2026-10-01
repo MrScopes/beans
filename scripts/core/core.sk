@@ -188,7 +188,7 @@ function kit(player: player):
     give {_player} starterHelmet()
     give {_player} elytra
     give {_player} firework
-    give {_player} arrow
+    give {_player} 1 arrow
     give {_player} cooked beef
 
 function starterHelmet() :: item:
