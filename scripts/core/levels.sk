@@ -18,24 +18,29 @@ function requiredXp(level: integer) :: integer:
 
 function levelDisplay(level: integer) :: text:
     if {_level} < 10:
-        return "&8[&7%{_level}%&8]"
+        return "<shadow:black:1>&7[%{_level}%]</shadow>"
     else if {_level} < 20:
-        return "&8[&a%{_level}%&8]"
+        return "<shadow:black:1>&2[&a%{_level}%&2]</shadow>"
     else if {_level} < 30:
-        return "&8[&b%{_level}%&8]"
+        return "<shadow:black:1>&3[&b%{_level}%&3]</shadow>"
     else if {_level} < 40:
-        return "&8[&3%{_level}%&8]"
+        return "<shadow:black:1><#1E90FF>[&3%{_level}%<#1E90FF>]</shadow>"
     else if {_level} < 50:
-        return "&8[&d%{_level}%&8]"
+        return "<shadow:black:1>&5[&d%{_level}%&5]</shadow>"
     else if {_level} < 60:
-        return "&8[&e%{_level}%&8]"
+        return "<shadow:black:1>&6[&e%{_level}%&6]</shadow>"
     else if {_level} < 70:
-        return "&8[&f%{_level}%&8]"
+        return "<shadow:black:1>&7[&f%{_level}%&7]</shadow>"
     else if {_level} < 80:
-        return "&8[&2%{_level}%&8]"
+        return "<shadow:black:1><#00FF00>[&2%{_level}%<#00FF00>]</shadow>"
     else if {_level} < 90:
-        return "&8[&c%{_level}%&8]"
+        return "<shadow:black:1>&4[&c%{_level}%&4]</shadow>"
     else if {_level} < 100:
-        return "&8[&4%{_level}%&8]"
+        return "<shadow:black:1>&4[&4%{_level}%&4]</shadow>"
     else:
-        return "&4[&4&l%{_level}%&4]"
+        return "<shadow:black:1>&4&l[%{_level}%]</shadow>"
+
+command /leveldisplays:
+    trigger:
+        loop 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100:
+            send "%{-level display::%loop-value%}%"
