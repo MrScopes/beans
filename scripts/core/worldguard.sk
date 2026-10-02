@@ -28,6 +28,12 @@ on place:
         y coordinate of event-block > 35
     then:
         cancel event
+    else:
+        if all:
+            y coordinate of event-block <= 0
+            bounds at event-block doesn't contain bound with id "mine"
+        then:
+            cancel event
 
 on right click:
     player's gamemode isn't creative
