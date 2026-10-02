@@ -75,14 +75,14 @@ async every tick:
         else:
             set line 10 of loop-player's fastboard to formatted "<shadow:black:1> %{-level display::%{_clamped}%}% &8➔ %{-level display::%{_clamped} + 1%}% "
 
-            set line 11 of loop-player's fastboard to formatted "<shadow:black:1> %progressBar({-level progress percent::%loop-player%})% "
+            set line 11 of loop-player's fastboard to formatted "<shadow:black:1> %progressBar({-level progress percent::%loop-player%})%&r "
             set line 12 of loop-player's fastboard to ""
 
 on join:
     async run 0.1 seconds later:
         set player's tablist header to "", "", "     &b&lWelcome to &lBEANS&b!     ", "     &fThere are %size of players% players online.     ", "", ""
         set player's tablist footer to "", "", "&f/help", "&f/discord", "&f/buy", "", "&bServer TPS: &f%{-tps}%", "&bYour Ping: &f%player's ping%ms", "&7&obeans.minehut.gg", ""
-        set title of player's fastboard to formatted "&0     <shadow:black:1>&b&lbeans     &0"
+        set title of player's fastboard to formatted "&0      <shadow:black:1>&b&lbeans     &0"
         # we need a character instead of an empty space, to avoid flickering if the blocks or money entry number becomes long
         set line 3 of player's fastboard to ("&0" repeated 12 times)
         set line 9 of player's fastboard to ("&0" repeated 12 times)
