@@ -188,7 +188,10 @@ function kit(player: player):
     give {_player} starterHelmet()
     give {_player} elytra
     give {_player} firework
-    give {_player} 1 arrow
+    if slot 9 of {_player} is air:
+        set slot 9 of {_player} to arrow
+    else:
+        give {_player} arrow
     give {_player} cooked beef
 
 function starterHelmet() :: item:
@@ -349,10 +352,9 @@ on elytra boost:
     set item cooldown of firework for player to 4 seconds
     remove 0.5 from player's food level
 
-on entity shoot bow:
-    entity is a player
-    set should consume item to false
-    set cooldown of bow for entity to 0.5 seconds
+on player shoot bow:
+    set cooldown of bow for shooter to 0.5 seconds
+    set slot 9 of shooter to arrow
 
 on consume of cooked beef:
     cancel event
