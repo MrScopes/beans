@@ -1,0 +1,27 @@
+command /chat <text> [<text>]:
+	permission: beans.mod
+	usage: &c/chat <clear | mute | unmute> [reason]
+	trigger:
+		if arg 1 is "clear":
+			broadcast ""
+			loop 250 times:
+				send "" to all players where [input doesn't have permission "beans.mod"]
+			broadcast formatted " &8&l| &fChat has been cleared by %playerDisplay(player, "[prefix][player]")%."
+			if arg 2 is set:
+				broadcast formatted " &8&l| &fReason: %arg 2%"
+			broadcast ""
+		else if arg 1 is "mute":
+			set {-chat muted} to arg 2 ? "No Reason Provided"
+			broadcast formatted " &8&l| &fChat has been muted by %playerDisplay(player, "[prefix][player]")%."
+			if arg 2 is set:
+				broadcast formatted " &8&l| &fReason: %arg 2%"
+			broadcast ""
+		else if arg 1 is "unmute":
+			delete {-chat muted}
+			broadcast formatted " &8&l| &fChat has been unmuted by %playerDisplay(player, "[prefix][player]")%.&7"
+
+on tab complete of "/chat":
+	set tab completions for position 1 to "clear", "mute", "unmute"
+	if tab arg 1 is "clear" or "mute":
+		set tab completions for position 2 to "<reason>"
+		

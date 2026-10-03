@@ -1,0 +1,58 @@
+on async chat:
+	set {_rank} to {group::%player%} ? "default"
+
+	if isChatReaction(player, message) is true:
+		cancel event
+		stop
+
+	if player doesn't have permission "beans.mod":
+		if {-chat muted} is set:
+			cancel event
+			send "Chat is currently muted: %{-chat muted}%"
+			stop
+
+	if {_rank} is "default":
+		set {_dif} to difference between now and {-last message time::%player%}
+		if {_dif} < 2 seconds:
+			cancel event
+			send "&cWait %timeFormat(2 seconds - {_dif})% before chatting again." to player
+		else:
+			set {-last message time::%player%} to now
+
+			if {-last message::%player%} is message:
+				send "&cDon't repeat the same message." to player
+				stop
+			else:
+				set {-last message::%player%} to message
+
+	if badMessage(player, message) is true:
+		cancel event
+		stop
+
+	set {_m::1} to formatted "%playerDisplay(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
+	set {_m::2} to async chat message
+	set color format of {_m::2} to group chat color of {_rank}
+
+	if "%{_m::2}%" contains "[item]":
+		set {_name} to (name of tool ? "&7%translate component of tool%")
+		set {_amount} to text component of "%item amount of tool%x " if item amount of tool > 1 else ""
+		set {_component} to merge components ("[", {_amount}, {_name}, "]")
+		set hover event of {_component} to hover event showing player's tool
+		component replace "[item]" with {_component} in {_m::2}
+
+	loop all players:
+		if "%{_m::2}%" contains loop-player's name:
+			if all:
+				setting "chat pinging" for loop-player is "disabled"
+				player doesn't have permission "beans.mod"
+			then:
+				send "&c%loop-player% has pinging disabled." to player
+			else:
+				set {_component} to text component of formatted "&b@%playerDisplay(loop-player, "[prefix][player]")%"
+				component replace loop-player's name with {_component} in {_m::2}
+
+				send formatted "&7You were mentioned by %playerDisplay(player, "[prefix][player]")%&7." to loop-player
+				play sound "minecraft:block.note_block.pling" with volume 1 and pitch 2 to loop-player
+
+	set {_format} to merge components {_m::*}
+	set async chat format to {_format}

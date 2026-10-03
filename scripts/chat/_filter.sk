@@ -1,0 +1,23 @@
+on load:
+	set {-blacklisted words::*} to "nigger", "nigga", "niglet", "fag", "dyke", "tranny", "trannie", "kike", "spic", "wetback", "chink", "gook", "raghead", "towelhead", "coon", "porchmonkey", "beaner", "cracker", "honky", "redskin", "injun", "paki", "cameljockey", "sandnigger", "zipperhead", "heeb", "gypsy", "mongoloid", "autist", "sperg", "windowlicker", "nazi", "hitler", "kkk", "klan"
+
+function leet(input: text) :: text:
+	replace all "1" with "i" in {_input}
+	replace all "3" with "e" in {_input}
+	replace all "4" with "a" in {_input}
+	replace all "5" with "s" in {_input}
+	replace all "6" with "g" in {_input}
+	replace all "7" with "t" in {_input}
+	replace all "@" with "a" in {_input}
+	replace all "$" with "s" in {_input}
+	return {_input}
+
+function badMessage(player: player, message: text component) :: boolean:
+	set {_leet} to leet({_message})
+	replace all " " with "" in {_leet}
+	loop {-blacklisted words::*}:
+		if {_leet} contains loop-value:
+			send formatted "&d%{_player}% blacklisted word? &f'%loop-value%'&7." to all players where [input has permission "beans.mod"]
+			send "&8: &f%{_message}%" to all players where [input has permission "beans.mod"]
+			send "&cYour message contains blacklisted word: '%loop-value%'." to {_player}
+			return true 

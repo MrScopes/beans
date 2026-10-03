@@ -1,152 +1,126 @@
-on load:
-	set {-blacklisted words::*} to "nigger", "nigga", "niglet", "fag", "dyke", "tranny", "trannie", "kike", "spic", "wetback", "chink", "gook", "raghead", "towelhead", "coon", "porchmonkey", "beaner", "cracker", "honky", "redskin", "injun", "paki", "cameljockey", "sandnigger", "zipperhead", "heeb", "gypsy", "mongoloid", "autist", "sperg", "windowlicker", "nazi", "hitler", "kkk", "klan"
+async every 5 minutes:
+	chatReaction()
 
-function leet(input: text) :: text:
-	replace all "1" with "i" in {_input}
-	replace all "3" with "e" in {_input}
-	replace all "4" with "a" in {_input}
-	replace all "5" with "s" in {_input}
-	replace all "6" with "g" in {_input}
-	replace all "7" with "t" in {_input}
-	replace all "@" with "a" in {_input}
-	replace all "$" with "s" in {_input}
-	return {_input}
+function chatReaction():
+	delete {-chat reaction::*}
 
-on async chat:
-	set {_rank} to {group::%player%} ? "default"
-
-	if {-chat reaction::start} is set:
-		if async chat message is "%{-chat reaction::required}%":
-			set {_level} to {level::%player%}
-			if {-chat reaction::reward::money} is set:
-				set {_money} to {-chat reaction::reward::money}
-				set {_money} to round({_money} + ({_level} * 750))
-				add {_money} to {money::%player%}
-			if {-chat reaction::reward::dust} is set:
-				set {_dust} to {-chat reaction::reward::dust}
-				set {_dust} to round({_dust} + ({_level} * 1.5))
-				add {_dust} to {dust::%player%}
-			if {-chat reaction::reward::beacon} is set:
-				giveBeacons(player, {-chat reaction::reward::beacon})
-			if {-chat reaction::reward::wheel} is set:
-				add {-chat reaction::reward::wheel} to {wheel spins::%player%}
-				send "&a&l+%{-chat reaction::reward::wheel}% WHEEL SPINS!"
-			broadcast formatted "%playerDisplay(player, "[prefix][player]")% &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction::start})%!"
-			add "%player's uuid%:%difference between now and {-chat reaction::start}%" to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
-			set {_sorted::*} to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
-			sort {_sorted::*} in ascending order
-			loop {_sorted::*}:
-				set {_split::*} to loop-value split at ":"
-				set {_player} to offlineplayer({_split::1})
-				set {_time} to {_split::2} parsed as timespan
-				if loop-value is "%player's uuid%:%difference between now and {-chat reaction::start}%":
-					broadcast "&c#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
-				else:
-					broadcast "&b#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
-				if loop-iteration is 3:
-					stop loop
-			delete {-chat reaction::*}
-			cancel event
-
-	if player doesn't have permission "beans.mod":
-		if {-chat muted} is set:
-			cancel event
-			send "Chat is currently muted: %{-chat muted}%" to player
-
-	event isn't canceled
-	if {_rank} is "default":
-		set {_dif} to difference between now and {-last message time::%player%}
-		if {_dif} < 2 seconds:
-			cancel event
-			send "&cWait %timeFormat(2 seconds - {_dif})% before chatting again." to player
+	set {_type} to "word" or "sentence"
+	if {_type} is "word":
+		set {_job} to "type" or "unscramble"
+		set {-chat reaction::job} to {_job}
+		set {_difficulty} to "easy" or "hard"
+		if {_difficulty} is "easy":
+			set {-chat reaction::required} to random element out of {-chat reactions::words::easy::*}
+			if {_job} is "type":
+				set {-chat reaction::reward::money} to 25000
+				set {-chat reaction::reward::dust} to 50
+			else:
+				set {-chat reaction::reward::money} to 35000
+				set {-chat reaction::reward::dust} to 70
 		else:
-			set {-last message time::%player%} to now
+			set {-chat reaction::required} to random element out of {-chat reactions::words::hard::*}
+			chance of 25%:
+				set {-chat reaction::reward::wheel} to 1
+			set {-chat reaction::reward::beacon} to 1
+			set {-chat reaction::reward::dust} to 100
+			set {-chat reaction::reward::money} to 50000
+	else:
+		set {_job} to "type"
+		set {_difficulty} to "hard"
+		set {-chat reaction::required} to random element out of {-chat reactions::sentences::*}
+		chance of 25%:
+			set {-chat reaction::reward::wheel} to 1
+		set {-chat reaction::reward::beacon} to 1
+		set {-chat reaction::reward::dust} to 100
+		set {-chat reaction::reward::money} to 50000
 
-			if {-last message::%player%} is message:
-				cancel event
-				send "&cDon't repeat the same message." to player
+	if {_difficulty} is "easy":
+		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Small Rewards"))
+	else if {_difficulty} is "hard":
+		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Big Rewards"))
+
+	send "", " &b&lCHAT REACTION!", "" to {_chat reaction players::*}
+	if {_job} is "type":
+		send "&7Type the following:" to {_chat reaction players::*}
+		send "%{-chat reaction::required}%" to {_chat reaction players::*}
+	else if {_job} is "unscramble":
+		send "&7Unscramble the following:" to {_chat reaction players::*}
+		send scramble({-chat reaction::required}) to {_chat reaction players::*}
+	send "" to {_chat reaction players::*}
+	send "&7Reward:" to {_chat reaction players::*}
+
+	for {_player} in {_chat reaction players::*}:
+		delete {_rewards::*}
+
+		set {_level} to {level::%{_player}%}
+
+		if {-chat reaction::reward::beacon} is set:
+			if {-chat reaction::reward::beacon} is 1:
+				add "&b&lBEACON" to {_rewards::*}
 			else:
-				set {-last message::%player%} to message
+				add "&b&l%{-chat reaction::reward::beacon}% BEACONS" to {_rewards::*}
 
-	event isn't canceled
-	set {_leet} to leet(message)
-	replace all " " with "" in {_leet}
-	loop {-blacklisted words::*}:
-		if {_leet} contains loop-value:
-			send formatted "&d%player% blacklisted word? &f'%loop-value%'&7." to all players where [input has permission "beans.mod"]
-			send "&8: &f%message%" to all players where [input has permission "beans.mod"]
-			#loop (length of loop-value) times:
-			#	add "*" to {_replacement::*}
-			#set {_replacement} to join {_replacement::*} with ""
-			send "&cYour message contains blacklisted word: '%loop-value%'."
-			cancel event
-			#replace all {_leet} in message with {_replacement}
-
-	#set {_m::1} to formatted "%playerDisplay(player, "[level] [prefix][player] [trophies] [tag hover] [clan]")%&8: "
-	set {_m::1} to formatted "%playerDisplay(player, "[level] [prefix][player] [trophies] [tag hover]")%&8: "
-	set {_m::2} to async chat message
-	set color format of {_m::2} to group chat color of {_rank}
-
-	if "%{_m::2}%" contains "[item]":
-		set {_name} to (name of tool ? "&7%translate component of tool%")
-		set {_amount} to text component of "%item amount of tool%x " if item amount of tool > 1 else ""
-		set {_component} to merge components ("[", {_amount}, {_name}, "]")
-		set hover event of {_component} to hover event showing player's tool
-		component replace "[item]" with {_component} in {_m::2}
-
-	loop all players:
-		if "%{_m::2}%" contains loop-player's name:
-			if all:
-				setting "chat pinging" for loop-player is "disabled"
-				player doesn't have permission "beans.mod"
-			then:
-				send "&c%loop-player% has pinging disabled." to player
+		if {-chat reaction::reward::wheel} is set:
+			if {-chat reaction::reward::wheel} is 1:
+				add "&a&lWHEEL SPIN" to {_rewards::*}
 			else:
-				set {_component} to text component of "&b@%playerDisplay(loop-player, "[prefix][player]")%"
-				component replace loop-player's name with {_component} in {_m::2}
+				add "&a&l%{-chat reaction::reward::wheel}% WHEEL SPINS" to {_rewards::*}
 
-				send formatted "&7You were mentioned by %playerDisplay(player, "[prefix][player]")%&7." to loop-player
-				play sound "minecraft:block.note_block.pling" with volume 1 and pitch 2 to loop-player
+		if {-chat reaction::reward::dust} is set:
+			set {_dust} to round({-chat reaction::reward::dust} + ({_level} * 1.5))
+			add "&f%{-dust sprite}%&f%formatNumber({_dust})%" to {_rewards::*}
 
-	set {_format} to merge components {_m::*}
-	set async chat format to {_format}
+		if {-chat reaction::reward::money} is set:
+			set {_money} to round({-chat reaction::reward::money} + ({_level} * 750))
+			add "&b$%kNumber({_money})%" to {_rewards::*}
 
-command /chat <text> [<text>]:
-	permission: beans.mod
-	usage: &c/chat <clear | mute | unmute> [reason]
-	trigger:
-		if arg 1 is "clear":
-			broadcast ""
-			loop 250 times:
-				send "" to all players where [input doesn't have permission "beans.mod"]
-			broadcast formatted " &8&l| &fChat has been cleared by %playerDisplay(player, "[prefix][player]")%."
-			if arg 2 is set:
-				broadcast formatted " &8&l| &fReason: %arg 2%"
-			broadcast ""
-		else if arg 1 is "mute":
-			set {-chat muted} to arg 2 ? "No Reason Provided"
-			broadcast formatted " &8&l| &fChat has been muted by %playerDisplay(player, "[prefix][player]")%."
-			if arg 2 is set:
-				broadcast formatted " &8&l| &fReason: %arg 2%"
-			broadcast ""
-		else if arg 1 is "unmute":
-			delete {-chat muted}
-			broadcast formatted " &8&l| &fChat has been unmuted by %playerDisplay(player, "[prefix][player]")%.&7"
+		set {_reward string} to join {_rewards::*} with "&8, "
+		send formatted {_reward string} to {_player}
 
-on tab complete of "/chat":
-	set tab completions for position 1 to "clear", "mute", "unmute"
-	if tab arg 1 is "clear" or "mute":
-		set tab completions for position 2 to "<reason>"
+	send "" to {_chat reaction players::*}
 
-#
-# chat reactions
-#
-
-function force():
-	set {-chat reaction::job} to "type"
 	set {-chat reaction::start} to now
-	set {-chat reaction::required} to "test"
-	set {-chat reaction::reward} to 1
+
+	wait 30 seconds
+	if {-chat reaction::start} is set:
+		send "The chat reaction has expired. Better luck next time!" to {_chat reaction players::*}
+		if {_job} is "unscramble":
+			send "The correct answer was: &7%{-chat reaction::required}%" to {_chat reaction players::*}
+		delete {-chat reaction::*}
+
+function isChatReaction(player: player, message: text component) :: boolean:
+	{-chat reaction::start} is set
+	{_message} is "%{-chat reaction::required}%"
+	set {_level} to {level::%{_player}%}
+	if {-chat reaction::reward::money} is set:
+		set {_money} to {-chat reaction::reward::money}
+		set {_money} to round({_money} + ({_level} * 750))
+		add {_money} to {money::%{_player}%}
+	if {-chat reaction::reward::dust} is set:
+		set {_dust} to {-chat reaction::reward::dust}
+		set {_dust} to round({_dust} + ({_level} * 1.5))
+		add {_dust} to {dust::%{_player}%}
+	if {-chat reaction::reward::beacon} is set:
+		giveBeacons({_player}, {-chat reaction::reward::beacon})
+	if {-chat reaction::reward::wheel} is set:
+		add {-chat reaction::reward::wheel} to {wheel spins::%{_player}%}
+		send "&a&l+%{-chat reaction::reward::wheel}% WHEEL SPINS!" to {_player}
+	broadcast formatted "%playerDisplay({_player}, "[prefix][player]")%&r &fhas completed the chat reaction in %timeFormat(difference between now and {-chat reaction::start})%!"
+	add "%{_player}'s uuid%:%difference between now and {-chat reaction::start}%" to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
+	set {_sorted::*} to {chat reaction times::%{-chat reaction::required}%::%{-chat reaction::job}%::*}
+	sort {_sorted::*} in ascending order
+	loop {_sorted::*}:
+		set {_split::*} to loop-value split at ":"
+		set {_player} to offlineplayer({_split::1})
+		set {_time} to {_split::2} parsed as timespan
+		if loop-value is "%{_player}'s uuid%:%difference between now and {-chat reaction::start}%":
+			broadcast "&c#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
+		else:
+			broadcast "&b#&l%loop-iteration% &f%{_player}%&8: &f%{_time}%"
+		if loop-iteration is 3:
+			stop loop
+	delete {-chat reaction::*}
+	return true
 
 on load:
 	# Sentences
@@ -325,92 +299,3 @@ on load:
 	add "exacerbate" to {-chat reactions::words::hard::*}
 	add "facetious" to {-chat reactions::words::hard::*}
 	
-async every 5 minutes:
-	chatReaction()
-
-function chatReaction():
-	delete {-chat reaction::*}
-
-	set {_type} to "word" or "sentence"
-	if {_type} is "word":
-		set {_job} to "type" or "unscramble"
-		set {-chat reaction::job} to {_job}
-		set {_difficulty} to "easy" or "hard"
-		if {_difficulty} is "easy":
-			set {-chat reaction::required} to random element out of {-chat reactions::words::easy::*}
-			if {_job} is "type":
-				set {-chat reaction::reward::money} to 25000
-				set {-chat reaction::reward::dust} to 50
-			else:
-				set {-chat reaction::reward::money} to 35000
-				set {-chat reaction::reward::dust} to 70
-		else:
-			set {-chat reaction::required} to random element out of {-chat reactions::words::hard::*}
-			chance of 25%:
-				set {-chat reaction::reward::wheel} to 1
-			set {-chat reaction::reward::beacon} to 1
-			set {-chat reaction::reward::dust} to 100
-			set {-chat reaction::reward::money} to 50000
-	else:
-		set {_job} to "type"
-		set {_difficulty} to "hard"
-		set {-chat reaction::required} to random element out of {-chat reactions::sentences::*}
-		chance of 25%:
-			set {-chat reaction::reward::wheel} to 1
-		set {-chat reaction::reward::beacon} to 1
-		set {-chat reaction::reward::dust} to 100
-		set {-chat reaction::reward::money} to 50000
-
-	if {_difficulty} is "easy":
-		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Small Rewards"))
-	else if {_difficulty} is "hard":
-		set {_chat reaction players::*} to playersWithSetting("chat reactions", ("All", "Big Rewards"))
-
-	send "", " &b&lCHAT REACTION!", "" to {_chat reaction players::*}
-	if {_job} is "type":
-		send "&7Type the following:" to {_chat reaction players::*}
-		send "%{-chat reaction::required}%" to {_chat reaction players::*}
-	else if {_job} is "unscramble":
-		send "&7Unscramble the following:" to {_chat reaction players::*}
-		send scramble({-chat reaction::required}) to {_chat reaction players::*}
-	send "" to {_chat reaction players::*}
-	send "&7Reward:" to {_chat reaction players::*}
-
-	for {_player} in {_chat reaction players::*}:
-		delete {_rewards::*}
-
-		set {_level} to {level::%{_player}%}
-
-		if {-chat reaction::reward::beacon} is set:
-			if {-chat reaction::reward::beacon} is 1:
-				add "&b&lBEACON" to {_rewards::*}
-			else:
-				add "&b&l%{-chat reaction::reward::beacon}% BEACONS" to {_rewards::*}
-
-		if {-chat reaction::reward::wheel} is set:
-			if {-chat reaction::reward::wheel} is 1:
-				add "&a&lWHEEL SPIN" to {_rewards::*}
-			else:
-				add "&a&l%{-chat reaction::reward::wheel}% WHEEL SPINS" to {_rewards::*}
-
-		if {-chat reaction::reward::dust} is set:
-			set {_dust} to round({-chat reaction::reward::dust} + ({_level} * 1.5))
-			add "&f%{-dust sprite}%&f%formatNumber({_dust})%" to {_rewards::*}
-
-		if {-chat reaction::reward::money} is set:
-			set {_money} to round({-chat reaction::reward::money} + ({_level} * 750))
-			add "&b$%kNumber({_money})%" to {_rewards::*}
-
-		set {_reward string} to join {_rewards::*} with "&8, "
-		send formatted {_reward string} to {_player}
-
-	send "" to {_chat reaction players::*}
-
-	set {-chat reaction::start} to now
-
-	wait 30 seconds
-	if {-chat reaction::start} is set:
-		send "The chat reaction has expired. Better luck next time!" to {_chat reaction players::*}
-		if {_job} is "unscramble":
-			send "The correct answer was: &7%{-chat reaction::required}%" to {_chat reaction players::*}
-		delete {-chat reaction::*}
