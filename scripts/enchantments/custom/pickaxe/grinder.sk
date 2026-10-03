@@ -25,7 +25,7 @@ local function getDescription(level: integer) :: string:
     set {_requirement} to "requirement" of "grinder" at {_level}
     return "boost luck by &f%formatNumber({_boost} * 100, "#.#####")%x &7every &f%{_requirement}% &7blocks"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     {_player} is within bound with id "mine flight"
     set {_boost} to ("boost" of "grinder" at {_level}) * 100
     set {_requirement} to "requirement" of "grinder" at {_level}

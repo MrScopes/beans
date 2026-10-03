@@ -34,7 +34,7 @@ local function getDescription(level: integer) :: string:
     set {_luck boost} to "luck boost" of "chaos" at {_level}
     return "spin &f%{_enchantments}% &7random enchantments with &f%{_luck boost} * 100%%% &7luck boost"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_enchantments} to "enchantments" of "chaos" at {_level}
     set {_luck boost} to "luck boost" of "chaos" at {_level}
 
@@ -50,4 +50,4 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
         if {-ce::%loop-value%::onBreak} is set:
             if enchantCanRun({_player}, loop-value, {_enchantments::%loop-value%}, {_luck boost}) is true:
                 startEnchantCooldown({_player}, loop-value, {_enchantments::%loop-value%})
-                run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_player}'s tool, {_enchantments::%loop-value%}, {_block}, type of {_block})
+                run {-ce::%loop-value%::onBreak} with arguments ({_player}, {_enchantments::%loop-value%}, {_block})

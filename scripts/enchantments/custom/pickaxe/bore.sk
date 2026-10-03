@@ -24,7 +24,7 @@ local function getDescription(level: integer) :: string:
     set {_blocks} to "blocks" of "bore" at {_level}
     return "drill through blocks in a small radius up to &f%{_blocks}% &7blocks deep"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_blocks} to "blocks" of "bore" at {_level}
     set {_y} to (y coordinate of {_block}) - ({_blocks} + 4)
     

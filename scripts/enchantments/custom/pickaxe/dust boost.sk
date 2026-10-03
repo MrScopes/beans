@@ -34,8 +34,8 @@ local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "dust_boost" at {_level}
     return "boost dust gain &f%{_multiplier}%x"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_multiplier} to "multiplier" of "dust_boost" at {_level}
-    set {_dust} to {_multiplier} * {-dust::%{_block type}%}
+    set {_dust} to {_multiplier} * {-dust::%type of {_block}%}
     add {_dust} to {dust::%{_player}%}
     playEnchantmentSound("mining", "minecraft:entity.experience_orb.pickup", 0.5, 1, location of {_player}, all players, {_player})

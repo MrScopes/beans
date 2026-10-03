@@ -16,7 +16,7 @@ pickaxe enchantment:
 local function getDescription(level: integer) :: string:
     return "make you break a nearby block"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     playEnchantmentSound("mining", "minecraft:block.gravel.break", 0.5, 1, location of {_player}, all players, {_player})
     while {_target} isn't set:
         add 1 to {_n}

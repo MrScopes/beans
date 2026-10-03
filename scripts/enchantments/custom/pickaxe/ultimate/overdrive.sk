@@ -28,7 +28,7 @@ local function getDescription(level: integer) :: string:
     set {_level boost} to "level boost" of "overdrive" at {_level}
     return "spin &f%{_enchantments}% &7random enchantments on your tool&8, &7but at &f%{_level boost}% &7levels higher"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_enchantments} to "enchantments" of "overdrive" at {_level}
     set {_level boost} to "level boost" of "overdrive" at {_level}
 
@@ -42,7 +42,7 @@ local function onBreak(player: player, tool: item, level: integer, block: block,
             set {_level} to {_enchantments::%{_enchantment}%} + {_level boost}
             if enchantCanRun({_player}, {_enchantment}, {_level}) is true:
                 startEnchantCooldown({_player}, {_enchantment}, {_level})
-                run {-ce::%{_enchantment}%::onBreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
+                run {-ce::%{_enchantment}%::onBreak} with arguments ({_player}, {_level}, {_block})
 
 local function viableEnchantments(enchantments: strings) :: strings:
     remove "overdrive", "reroll", "lucky", "jackpot" from {_enchantments::*}

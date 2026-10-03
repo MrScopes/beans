@@ -24,7 +24,7 @@ local function getDescription(level: integer) :: string:
     set {_radius} to "radius" of "ice" at {_level}
     return "set ice within &f%{_radius}%m"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     type of {_block} isn't packed ice or air
     set {_radius} to "radius" of "ice" at {_level}
     loop all blocks in radius {_radius} around location of {_block}:

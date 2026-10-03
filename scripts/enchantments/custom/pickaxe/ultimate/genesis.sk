@@ -33,7 +33,7 @@ local function getDescription(level: integer) :: string:
 
     return "in each direction&8, &7shoot a beam of light &f%{_distance}%m &7that will break blocks in a &f%{_radius}%m &7radius"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_distance} to "distance" of "genesis" at {_level}
     set {_radius} to "radius" of "genesis" at {_level}
     set {_origin} to location of {_block}

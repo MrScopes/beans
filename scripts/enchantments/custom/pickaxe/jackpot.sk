@@ -32,7 +32,7 @@ local function getDescription(level: integer) :: string:
     set {_scale} to "scale per level" of "jackpot" at {_level}
     return "gain &f$%kNumber({_money})% &7and &f%{-dust sprite}%%{_dust}%&8, &7scales by &f%{_scale} * 100%%% &7per player level"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_dust} to "dust" of "jackpot" at {_level}
     set {_money} to "money" of "jackpot" at {_level}
     set {_scale} to "scale per level" of "jackpot" at {_level}

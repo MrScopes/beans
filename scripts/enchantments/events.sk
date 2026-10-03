@@ -31,7 +31,7 @@ function miningEnchants(player: player, block: block):
         enchantCanRun({_player}, {_enchantment}, {_level}, {-mining luck::%{_player}%} ? 0) is true
 
         startEnchantCooldown({_player}, {_enchantment}, {_level})
-        run {_onBreak} with arguments ({_player}, {_player}'s tool, {_level}, {_block}, type of {_block})
+        run {_onBreak} with arguments ({_player}, {_level}, {_block})
 
 on break with priority high:
     event isn't canceled

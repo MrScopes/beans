@@ -31,7 +31,7 @@ local function getDescription(level: integer) :: string:
     set {_haste} to "haste" of "haste" at {_level}
     return "apply &f%effectDisplay({_speed})% &7and &f%effectDisplay({_haste})%"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_dif} to difference between {-combat tag::%{_player}%} and now
     {_dif} isn't less than {-combat log time}
     set {_haste} to "haste" of "haste" at {_level}

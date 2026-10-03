@@ -24,9 +24,9 @@ local function getDescription(level: integer) :: string:
     set {_multiplier} to "multiplier" of "super_fortune" at {_level}
     return "give &f%{_multiplier}%x &7more drops"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     set {_multiplier} to "multiplier" of "super_fortune" at {_level}
-    set {_drops::*} to drops of {_block type} using {_player}'s tool
+    set {_drops::*} to drops of {_block} using {_player}'s tool
     if type of {_block} is packed ice:
         add (({-cached enchantments::%{_player}%::pickaxe::vanilla::fortune} + 1) of packed ice) to {_drops::*}
     loop {_drops::*}:

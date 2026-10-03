@@ -32,7 +32,7 @@ local function getDescription(level: integer) :: string:
     set {_expansion} to "expansion" of "corrode" at {_level}
     return "break blocks within &f%{_radius}%m&8, &7expanding by &f%{_expansion}% * 5"
 
-local function onBreak(player: player, tool: item, level: integer, block: block, block type: item type):
+local function onBreak(player: player, level: integer, block: block):
     playEnchantmentSound("mining", "minecraft:entity.zombie.break_wooden_door", 0.5, 1, location of {_player}, all players, {_player})
 
     set {_center} to location of {_block}
