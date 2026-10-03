@@ -52,80 +52,33 @@ on load:
     set {-tag::bounty::display} to "&f<sprite:particles:raid_omen>"
     set {-tag::bounty::description} to "Given to the player with the highest bounty."
 
-function calculateTopMiner():
-    set {_sorted blocks::*} to sorted indices of {blocks::*} in descending order
-    set {_player} to offlineplayer({_sorted blocks::1}, false)
-    if {top miner} is set:
-        if {top miner} is {_player}:
+function calculateTop(type: string, variable: string):
+    set {_sorted::*} to sorted indices of {%{_variable}%::*} in descending order
+    set {_player} to offlineplayer({_sorted::1}, false)
+    {_player} is set
+
+    if {top %{_type}%} is set:
+        if {top %{_type}%} is {_player}:
             stop
-        else:
-            removeTag({top miner}, "miner")
 
-    set {top miner} to {_player}
-    addTag({_player}, "miner")
-    
-function calculateTopTrophies():
-    set {_sorted trophies::*} to sorted indices of {trophies::*} in descending order
-    set {_player} to offlineplayer({_sorted trophies::1}, false)
-    if {top trophies} is set:
-        if {top trophies} is {_player}:
-            stop
-        else:
-            removeTag({top trophies}, "trophies")
+        removeTag({top %{_type}%}, {_type})
 
-    set {top trophies} to {_player}
-    addTag({_player}, "trophies")
+    set {top %{_type}%} to {_player}
+    addTag({_player}, {_type})
 
-function calculateTopMoney():
-    set {_sorted money::*} to sorted indices of {money::*} in descending order
-    set {_player} to offlineplayer({_sorted money::1}, false)
-    if {top money} is set:
-        if {top money} is {_player}:
-            stop
-        else:
-            removeTag({top money}, "money")
-
-    set {top money} to {_player}
-    addTag({_player}, "money")
-
-function calculateTopPlaytime():
-    set {_sorted playtime::*} to sorted indices of {cached playtime::*} in descending order
-    set {_player} to offlineplayer({_sorted playtime::1}, false)
-    if {top playtime} is set:
-        if {top playtime} is {_player}:
-            stop
-        else:
-            removeTag({top playtime}, "playtime")
-
-    set {top playtime} to {_player}
-    addTag({_player}, "playtime")
-
-function calculateTopBounty():
-    set {_sorted bounty::*} to sorted indices of {bounty::*} in descending order
-    set {_player} to offlineplayer({_sorted bounty::1}, false)
-    if {top bounty} is set:
-        if {top bounty} is {_player}:
-            stop
-        else:
-            removeTag({top bounty}, "bounty")
-
-    set {top bounty} to {_player}
-    addTag({_player}, "bounty")
+function calculateAllTops():
+    calculateTop("miner", "blocks")
+    calculateTop("trophies", "trophies")
+    calculateTop("money", "money")
+    calculateTop("playtime", "cached playtime")
+    calculateTop("bounty", "bounty")
 
 async every 5 minutes:
-    calculateTopMiner()
-    calculateTopTrophies()
-    calculateTopMoney()
-    calculateTopPlaytime()
-    calculateTopBounty()
+    calculateAllTops()
 
 on load:
     async run 0 ticks later:
-        calculateTopMiner()
-        calculateTopTrophies()
-        calculateTopMoney()
-        calculateTopPlaytime()
-        calculateTopBounty()
+        calculateAllTops()
 
 command /tags [<text>] [<text>] [<text>]:
     trigger:
