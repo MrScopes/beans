@@ -66,17 +66,15 @@ async every tick:
         set line 4 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bBlocks&8: &f%kNumber({blocks::%loop-player%})% "
         set line 5 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bMoney&8: &f$%kNumber({money::%loop-player%})% "
         set line 6 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bDust&8: &f%{-dust sprite}%%formatNumber(floor({dust::%loop-player%} ? 0))% "
-        set line 8 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bK/D&8: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &7(&f%kdrDisplay({kills::%loop-player%} / max(1, {deaths::%loop-player%}))%&7) "
+        set line 8 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bK/D&8: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &8(&f%kdrDisplay({kills::%loop-player%} / max(1, {deaths::%loop-player%}))%&8) "
 
         set {_clamped} to clamp({level::%loop-player%} ? 1, 1, 100)
         if {_clamped} is 100:
             set line 10 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bLevel&8: &f%{-level display::%{_clamped}%}% "
             delete line 11 of loop-player's fastboard
         else:
-            set line 10 of loop-player's fastboard to formatted "<shadow:black:1> %{-level display::%{_clamped}%}% &8➔ %{-level display::%{_clamped} + 1%}% "
-
-            set line 11 of loop-player's fastboard to formatted "<shadow:black:1> %progressBar({-level progress percent::%loop-player%})%&r "
-            set line 12 of loop-player's fastboard to ""
+            set line 10 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ %{-level display::%{_clamped}%}% &8➔ %{-level display::%{_clamped} + 1%}% "
+            set line 11 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &f%{-level progress percent::%loop-player%}%%%&r "
 
 on join:
     async run 0.1 seconds later:
@@ -84,17 +82,6 @@ on join:
         set player's tablist footer to "", "", "&f/help", "&f/discord", "&f/buy", "", "&bServer TPS: &f%{-tps}%", "&bYour Ping: &f%player's ping%ms", "&7&obeans.minehut.gg", ""
         set title of player's fastboard to formatted "&0      <shadow:black:1>&b&lbeans     &0"
         # we need a character instead of an empty space, to avoid flickering if the blocks or money entry number becomes long
-        set line 3 of player's fastboard to ("&0" repeated 12 times)
-        set line 9 of player's fastboard to ("&0" repeated 12 times)
+        set line 3 of player's fastboard to ("&0 " repeated 24 times)
+        set line 9 of player's fastboard to ("&0 " repeated 24 times)
         set line 12 of player's fastboard to ""
-
-function progressBar(progress: number) :: string:
-    set {_progress} to clamp({_progress}, 0, 100)
-
-    set {_filled} to floor(({_progress} / 100) * 20)
-    set {_empty} to 20 - {_filled}
-
-    add "&b&m " repeated {_filled} times to {_bar::*}
-    add "&8&m " repeated {_empty} times to {_bar::*}
-
-    return join {_bar::*} with ""
