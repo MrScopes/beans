@@ -19,7 +19,7 @@ function enchantItem(item: item, enchantment: string, level: integer, player: pl
     
     if {_level} is 0:
         if {-ce::%{_enchantment}%::onUnapply} is set:
-            run {-ce::%{_enchantment}%::onUnapply} with arguments ({_item}, ({custom enchantments::%{_uuid}%::%{_enchantment}%} ? 0), {_player})
+            run {-ce::%{_enchantment}%::onUnapply} with arguments ({_item}, ({_level} ? 0), {_player})
         set level of custom enchantment {_enchantment} of {_item} to 0
         delete data tag "special_%{_enchantment}%" of {_item}
     else:
