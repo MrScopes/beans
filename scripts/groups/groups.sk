@@ -38,19 +38,19 @@ on load:
         set group parent to "gamer"
 
     create group named "mod":
-        set group prefix to "&e&lMod &f"
+        set group prefix to "<shadow:black:1>&e&lMod &f"
         set group weight to 600
         set group chat color to white
         set group parent to "default"
 
     create group named "sr-mod":
-        set group prefix to "&6&lSr. Mod &f"
+        set group prefix to "<shadow:black:1>&6&lSr. Mod &f"
         set group weight to 700
         set group chat color to white
         set group parent to "mod"
 
     create group named "admin":
-        set group prefix to "&4&lAdmin &f"
+        set group prefix to "<shadow:black:1>&4&lAdmin &f"
         set group weight to 800
         set group chat color to white
         set group parent to "sr-mod"
