@@ -34,8 +34,8 @@ local function onBreak(player: player, level: integer, block: block):
 
     playEnchantmentSound("mining", "minecraft:entity.wither.spawn", 0.5, 1, location of {_player}, all players, {_player})
 
-    set {_enchantments::*} to {-cached enchantments::%{_player}%::pickaxe::*}
-    set {_viable::*} to viableEnchantments(indexes of {_enchantments::*})
+    set {_enchantments::*} to indexes of {-cached enchantments::%{_player}%::pickaxe::*}
+    set {_viable::*} to viableEnchantments({_enchantments::*})
     loop {_enchantments} times:
         set {_enchantment} to random element out of {_viable::*}
         if {_enchantment} is set:
