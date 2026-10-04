@@ -15,7 +15,11 @@ on break:
 
 on shoot:
     shooter's gamemode isn't creative
-    if "%bounds at shooter%" contains "spawn":
+    "%bounds at shooter%" contains "spawn"
+    if projectile is firework:
+        wait 2 ticks
+        push shooter forward at speed 10
+    else:
         cancel event
 
 on place:
