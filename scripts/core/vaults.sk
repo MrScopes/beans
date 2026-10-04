@@ -31,6 +31,8 @@ command /vault <text=1> [<text>]:
                     send "&7Run the command again within 10s to confirm."
                     set {-vault purchase confirm::%player%} to 10 seconds from now
         else:
+            close player's inventory
+
             set {_vault} to arg-1 parsed as integer
 
             set {_owner} to player
