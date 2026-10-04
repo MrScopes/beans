@@ -1,38 +1,62 @@
 on load:
+    set {-trim::1} to "none"
     loop trim materials:
-        set {-trim::%loop-iteration%} to loop-value
-    
+        set {-trim::%loop-iteration + 1%} to loop-value
+
+    set {-trim pattern::1} to "none"
     loop trim patterns:
-        set {-trim pattern::%loop-iteration%} to loop-value
+        set {-trim pattern::%loop-iteration + 1%} to loop-value
 
 function openTrimGui(player: player):
     if {_player}'s tool isn't tagged with paper tag "helmets":
         send "&cYou can only change the trim of helmets!" to {_player}
+        stop
 
     set {-trim gui::%{_player}%} to hopper inventory named "Trim Selection"
 
-    set {_material} to gold ingot named "&7Trim Material" with lore "&7Click to cycle through trim materials.", ""
+    set {_material} to gold ingot named "&7Trim Material" with lore "&7Left click to go forward.", "&7Right click to go back.", ""
     set {_current material} to trim material of armor trim of {_player}'s tool
 
     loop {-trim::*}:
-        if loop-value is {_current material}:
-            add "&e%loop-value%" to lore of {_material}
+        if loop-value is "none":
+            if {_current material} is not set:
+                add formatted "<yellow>None" to lore of {_material}
+            else:
+                add formatted "<gray>None" to lore of {_material}
         else:
-            add "&7%loop-value%" to lore of {_material}
-    add "" to lore of {_material}
+            set {_name} to "%loop-value%"
+            replace "minecraft:" with "" in {_name}
+            replace "_material" with "" in {_name}
 
+            if loop-value is {_current material}:
+                add formatted "<yellow><lang:trim_material.minecraft.%{_name}%>" to lore of {_material}
+            else:
+                add formatted "<gray><lang:trim_material.minecraft.%{_name}%>" to lore of {_material}
+
+    add "" to lore of {_material}
     set slot 1 of {-trim gui::%{_player}%} to {_material}
 
-    set {_pattern} to black banner named "&7Trim Pattern" with lore "&7Click to close the trim selection menu.", ""
+    # Trim Pattern
+    set {_pattern} to black banner named "&7Trim Pattern" with lore "&7Left click to go forward.", "&7Right click to go back.", ""
     set {_current pattern} to trim pattern of armor trim of {_player}'s tool
-    
-    loop {-trim pattern::*}:
-        if loop-value is {_current pattern}:
-            add "&e%loop-value%" to lore of {_pattern}
-        else:
-            add "&7%loop-value%" to lore of {_pattern}
-    add "" to lore of {_pattern}
 
+    loop {-trim pattern::*}:
+        if loop-value is "none":
+            if {_current pattern} is not set:
+                add formatted "<yellow>None" to lore of {_pattern}
+            else:
+                add formatted "<gray>None" to lore of {_pattern}
+        else:
+            set {_name} to "%loop-value%"
+            replace "minecraft:" with "" in {_name}
+            replace "_pattern" with "" in {_name}
+
+            if loop-value is {_current pattern}:
+                add formatted "<yellow><lang:trim_pattern.minecraft.%{_name}%>" to lore of {_pattern}
+            else:
+                add formatted "<gray><lang:trim_pattern.minecraft.%{_name}%>" to lore of {_pattern}
+
+    add "" to lore of {_pattern}
     set slot 3 of {-trim gui::%{_player}%} to {_pattern}
 
     open {-trim gui::%{_player}%} to {_player}
@@ -45,26 +69,47 @@ on inventory click:
         set {_current pattern} to trim pattern of armor trim of player's tool
 
         if event-item is a gold ingot:
-            set {_index} to 0
-            loop {-trim::*}:
-                if loop-value is {_current material}:
-                    set {_index} to loop-index parsed as number
+            set {_index} to 1
 
-            if {-trim::%{_index} + 1%} is set:
-                add armor trim using ({-trim::%{_index} + 1%}) with ({_current pattern} ? {-trim pattern::1}) to armor trim of player's tool
+            if {_current material} is set:
+                loop {-trim::*}:
+                    if loop-value is {_current material}:
+                        set {_index} to loop-index parsed as number
+
+            if click type is right mouse button:
+                set {_next} to {_index} - 1
+                if {_next} < 1:
+                    set {_next} to size of {-trim::*}
             else:
-                add armor trim using ({-trim::1}) with ({_current pattern} ? {-trim pattern::1}) to armor trim of player's tool
+                set {_next} to {_index} + 1
+                if {_next} > size of {-trim::*}:
+                    set {_next} to 1
+
+            if {-trim::%{_next}%} is "none":
+                delete armor trim of player's tool
+            else:
+                add armor trim using {-trim::%{_next}%} with ({_current pattern} ? {-trim pattern::2}) to armor trim of player's tool
 
         else if event-item is a black banner:
-            set {_index} to 0
-            loop {-trim pattern::*}:
-                if loop-value is trim pattern of armor trim of player's tool:
-                    set {_index} to loop-index parsed as number
+            set {_index} to 1
 
-            if {-trim pattern::%{_index} + 1%} is set:
-                add armor trim using ({_current material} ? {-trim::1}) with {-trim pattern::%{_index} + 1%} to armor trim of player's tool
+            if {_current pattern} is set:
+                loop {-trim pattern::*}:
+                    if loop-value is {_current pattern}:
+                        set {_index} to loop-index parsed as number
+
+            if click type is right mouse button:
+                set {_next} to {_index} - 1
+                if {_next} < 1:
+                    set {_next} to size of {-trim pattern::*}
             else:
-                add armor trim using ({_current material} ? {-trim::1}) with {-trim pattern::1} to armor trim of player's tool
+                set {_next} to {_index} + 1
+                if {_next} > size of {-trim pattern::*}:
+                    set {_next} to 1
+
+            if {-trim pattern::%{_next}%} is "none":
+                delete armor trim of player's tool
+            else:
+                add armor trim using ({_current material} ? {-trim::2}) with {-trim pattern::%{_next}%} to armor trim of player's tool
 
         openTrimGui(player)
-            
