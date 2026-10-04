@@ -1,6 +1,7 @@
 package me.mrscopes.beans.skript;
 
 import me.mrscopes.beans.skript.expressions.*;
+import me.mrscopes.beans.skript.sections.SecThread;
 
 import ch.njol.skript.Skript;
 import org.skriptlang.skript.addon.SkriptAddon;
@@ -22,6 +23,7 @@ public class BeansSkript implements AddonModule {
         ExprBeans.register(skriptAddon.syntaxRegistry());
         ExprCustomEnchantment.register(skriptAddon.syntaxRegistry());
         ExprCustomEnchantments.register(skriptAddon.syntaxRegistry());
+        SecThread.register(skriptAddon.syntaxRegistry());
     }
 
     @Override
