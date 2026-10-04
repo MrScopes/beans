@@ -367,12 +367,17 @@ command /github:
     trigger:
         send formatted "<click:open_url:'https://github.com/MrScopes/beans'>&bVisit the GitHub repository &lHERE! &bContributions welcome."
 
-async every second:
+on load:
+    set {-spawn speed} to potion effect of speed 2 for 2 seconds:
+        hide effect's icon
+        hide effect's particles
+
+every second:
     loop all players:
         bound at loop-player contains bound with id "spawn"
-        y coordinate of loop-player > 25
         heal loop-player
         set loop-player's food level to 10
+        apply {-spawn speed} to loop-player
 
 command /trash:
     trigger:
