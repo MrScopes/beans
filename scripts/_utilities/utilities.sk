@@ -152,7 +152,9 @@ function kdrDisplay(kdr: number) :: text:
 ###
 
 on load:
-    set {-dust sprite} to "<sprite:items:item/gunpowder>"
+    set {-dust sprite} to "<shadow:black:1><white><sprite:items:item/gunpowder></white></shadow>"
+    set {-money sprite} to "<shadow:black:1><green><bold>$</bold></green></shadow>"
+    set {-blocks sprite} to "<shadow:black:1><white><sprite:gui:statistics/block_mined></white></shadow>"
 
 ###
 ###

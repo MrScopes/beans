@@ -63,9 +63,9 @@ async every tick:
             set loop-player's level to 100
             set loop-player's level progress to 0.99
 
-        set line 4 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bBlocks&8: &f%kNumber({blocks::%loop-player%})% "
-        set line 5 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bMoney&8: &f$%kNumber({money::%loop-player%})% "
-        set line 6 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bDust&8: &f%{-dust sprite}%%formatNumber(floor({dust::%loop-player%} ? 0))% "
+        set line 4 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bBlocks&8: &f%kNumber({blocks::%loop-player%})%%{-blocks sprite}% "
+        set line 5 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bMoney&8: %{-money sprite}%&f%kNumber({money::%loop-player%})% "
+        set line 6 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bDust&8: %{-dust sprite}%&f%formatNumber(floor({dust::%loop-player%} ? 0))% "
         set line 8 of loop-player's fastboard to formatted "<shadow:black:1> &8▪ &bK/D&8: &f%kNumber({kills::%loop-player%})%&8/&f%kNumber({deaths::%loop-player%})% &8(&f%kdrDisplay({kills::%loop-player%} / max(1, {deaths::%loop-player%}))%&8) "
 
         set {_clamped} to clamp({level::%loop-player%} ? 1, 1, 100)

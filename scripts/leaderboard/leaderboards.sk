@@ -4,7 +4,7 @@ on load:
     create leaderboard named "money":
         set leaderboard title to "Top Money"
         set leaderboard variable to "money"
-        set leaderboard display to "&a$value"
+        set leaderboard display to "%{-money sprite}%&avalue"
         set leaderboard display function to function named "kNumber"
         set leaderboard location to location(79.5, 52, 90.5)
 
@@ -17,7 +17,7 @@ on load:
     create leaderboard named "blocks":
         set leaderboard title to "Block Top"
         set leaderboard variable to "blocks"
-        set leaderboard display to "&bvalue blocks"
+        set leaderboard display to "&bvalue%{-blocks sprite}%"
         set leaderboard display function to function named "kNumber"
         set leaderboard location to location(79.5, 52, 95.5)
 
