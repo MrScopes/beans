@@ -7,7 +7,7 @@ command /link [<text>]:
         if arg 1 isn't set:
             if {discord linked account.%player%} is set:
                 set {_id} to {discord linked account.%player%}
-                async run 0 ticks later:
+                async:
                     retrieve member with id {_id} from {-discord::beans} and store it in {_member}
                     send "Your account is linked to %{_member}%."
             else:
@@ -15,7 +15,7 @@ command /link [<text>]:
         else:
             if {discord linked account.%player%} is set:
                 set {_id} to {discord linked account.%player%}
-                async run 0 ticks later:
+                async:
                     retrieve member with id {_id} from {-discord::beans} and store it in {_member}
                     send "Your account is already linked to %{_member}%."
             else:
@@ -25,7 +25,7 @@ command /link [<text>]:
                     set {_id} to {-link token::%arg 1%}
                     set {discord linked uuid.%{_id}%} to uuid of player
                     set {discord linked account.%player%} to {_id}
-                    async run 0 ticks later:
+                    async:
                         retrieve member with id {_id} from {-discord::beans} and store it in {_member}
                         add {-discord::linked role} to roles of {_member}
                         send "You're now linked to %{_member}%."
@@ -42,7 +42,7 @@ command /unlink:
         if {discord linked account.%player%} isn't set:
             send "Your account isn't linked."
         else:
-            async run 0 ticks later:
+            async:
                 set {_id} to {discord linked account.%player%}
                 retrieve member with id {_id} from {-discord::beans} and store it in {_member}
                 delete {discord linked uuid.%{_id}%}

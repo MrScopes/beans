@@ -20,7 +20,7 @@ on load:
 
 command /clan [<text>] [<text>] [<text>]:
     trigger:
-        async run 0 ticks later:
+        async:
             if arg 1 isn't set:
                 if player has permission "beans.admin":
                     send "&c/clan <info | manage | join | leave | &4admin&c> (...)"
@@ -28,14 +28,14 @@ command /clan [<text>] [<text>] [<text>]:
                     send "&c/clan <info | manage | join | leave> (...)"
             else if arg 1 is "admin":
                 if player doesn't have permission "beans.admin":
-                    run 0 ticks later:
+                    sync:
                         player command "/clan"
                 else:
                     send "not yet implemented."
             else if arg 1 is "info":
                 if arg 2 isn't set:
                     if {clan::%player%} is set:
-                        run 0 ticks later:
+                        sync:
                             player command "/clan info %{clan::%player%}%"
                     else:
                         send "&c/clan info (clan name | player name | clan id)"
@@ -73,7 +73,7 @@ command /clan [<text>] [<text>] [<text>]:
                                 set {clans::%{_id}%::created at} to now
                                 set {clan::%player%} to {_id}
 
-                                run 0 ticks later:
+                                sync:
                                     player command "/clan info"
                             
                 else if arg 2 is "disband":
@@ -174,7 +174,7 @@ command /clan [<text>] [<text>] [<text>]:
                             remove {_searched clan} from {-clan invites::%player%::*}
                             loop {clans::%{_searched clan}%::members::*}:
                                 send formatted "%playerDisplay(player)% &7has joined the clan." to loop-value
-                            run 0 ticks later:
+                            sync:
                                 player command "/clan info"
                     else:
                         send "&cYou aren't invited to that clan."
@@ -190,7 +190,7 @@ command /clan [<text>] [<text>] [<text>]:
                         remove player from {clans::%{clan::%player%}%::members::*}
                         delete {clan::%player%}
             else:
-                run 0 ticks later:
+                sync:
                     player command "/clan"
                     
 on tab complete of "/clan":

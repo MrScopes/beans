@@ -64,7 +64,7 @@ slash command list:
     guilds: 538205671712358450
     description: List all online players.
     trigger:
-        async run 0 ticks later: 
+        async: 
             set {_players::*} to all players
 
             sort {_players::*} in descending order based on {-group weight::%{group::%input%}%}

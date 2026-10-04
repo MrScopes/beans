@@ -26,5 +26,5 @@ async every 2 ticks:
             continue
 
     if size of {_kill::*} > 0:
-        run 0 ticks later:
+        sync:
             kill {_kill::*}

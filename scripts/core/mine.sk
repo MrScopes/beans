@@ -64,7 +64,7 @@ function blockReward(player: player, tool: item, block: block, reason: text):
     if {_block} is a beacon:
         broadcast "%{_player}% found a beacon!"
         giveBeacons({_player}, 2)
-        async run 0 ticks later:
+        async:
             loop all blocks within bound (bound with id "mine"):
                 if loop-block is a beacon:
                     add 1 to {_beacons}

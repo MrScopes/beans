@@ -92,7 +92,7 @@ function fastRadiusClear(player: player, location: location, radius: number):
     set {_fortune} to {-cached enchantments::%{_player}%::pickaxe::vanilla::fortune}
     set {_money mult} to 1 + ({_fortune} / 2)
 
-    async run 0 ticks later:
+    async:
         loop ...{_drops}:
             set {_material} to loop-value.material()
             set {_amount} to loop-value.amount()

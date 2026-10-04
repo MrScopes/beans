@@ -1,6 +1,6 @@
 command /top [<text>]:
     trigger:
-        async run 0 ticks later:
+        async:
             set {_variable} to {-leaderboard::%arg 1%::variable}
             if {_variable} is set:
                 loop 5 times:

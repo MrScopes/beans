@@ -2,7 +2,7 @@ on load:
     wait 1 tick
     buildLeaderboardDisplays()
 
-    async run 0 ticks later:
+    async:
         calculateTops()
         leaderboardText()
 

@@ -64,7 +64,7 @@ on load:
         set leaderboard display to "&evalue KDR"
         set leaderboard display function to function named "kdrDisplay"
 
-    async run 0 ticks later:
+    async:
         calculateTops()
 
 function calculateTops():

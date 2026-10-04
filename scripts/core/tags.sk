@@ -77,7 +77,7 @@ async every 5 minutes:
     calculateAllTops()
 
 on load:
-    async run 0 ticks later:
+    async:
         calculateAllTops()
 
 command /tags [<text>] [<text>] [<text>]:

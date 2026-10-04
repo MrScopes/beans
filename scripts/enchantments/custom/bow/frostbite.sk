@@ -45,7 +45,7 @@ local function onHit(shooter: entity, tool: item, projectile: entity, level: int
         set {_damage} to "damage" of "frostbite" at {_level}
         playEnchantmentSound("combat", "block.powder_snow.break", 1, 0.1, location of {_shooter}, all players)
         add 1 minute to freeze time of {_victim}
-        run 0 ticks later:
+        sync:
             loop seconds of {_duration} times:
                 damage({_victim}, {_shooter}, {_damage})
                 if {_victim} is dead:

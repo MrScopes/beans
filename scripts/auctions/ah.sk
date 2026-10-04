@@ -1,5 +1,5 @@
 function auctionHouse(player: player, page: integer):
-    async run 0 ticks later:
+    async:
         set {_active::*} to indexes of {auction::*} where [{auction::%input%::expired} isn't set]
         set {_max page} to ceil(size of {_active::*} / 45)
         if {_max page} is 0:
@@ -51,7 +51,7 @@ function auctionHouse(player: player, page: integer):
                 set slot {_slot} of {-auction house::%{_player}%} to {_item}
                 set {-auction house::%{_player}%::%{_slot}%::*} to indexed {auction::%{_entry}%::*}
 
-        run 0 ticks later:
+        sync:
             open {-auction house::%{_player}%} to {_player}
 
 on inventory click:
@@ -109,7 +109,7 @@ command /list <text>:
             if canBeAuctioned(player's tool) is false:
                 send "&cThat item can't be auctioned."
             else:
-                async run 0 ticks later:
+                async:
                     for {_entry} in indexes of {auction::*}:
                         {auction::%{_entry}%::seller} is player
                         {auction::%{_entry}%::expired} isn't set
@@ -127,7 +127,7 @@ command /list <text>:
                         send "&aYou have successfully listed your item for $%formatNumber({_number})%."
 
 function expiredAuctions(player: player):
-    async run 0 ticks later:
+    async:
         for {_entry} in indexes of {auction::*}:
             {auction::%{_entry}%::seller} is {_player}
             {auction::%{_entry}%::expired} is set
