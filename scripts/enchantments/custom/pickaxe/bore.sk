@@ -28,7 +28,7 @@ local function onBreak(player: player, level: integer, block: block):
     set {_blocks} to "blocks" of "bore" at {_level}
     set {_y} to (y coordinate of {_block}) - ({_blocks} + 4)
     
-    spawn block display at center of {_block} ~ vector(0, 3, 0):
+    spawn block display at ((center of {_block}) ~ vector(0, 3, 0)):
         set {_display} to display
         make display not persistent
 

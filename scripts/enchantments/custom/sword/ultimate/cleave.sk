@@ -83,7 +83,7 @@ local function cleave(player: player, level: integer):
             set {_bullet} to {_origin} ~ {_vector}
             playEnchantmentSound("combat", "entity.player.attack.sweep", 1, 1, {_bullet}, all players)
             loop clamp(({_radius} / 2), 1, 4) times:
-                draw 4 sweep attack particle at ({_bullet} ~ vector((random numbers between -1 and 1), (random numbers between -1 and 1), (random numbers between -1 and 1)))
+                draw (4 sweep attack particle) at ({_bullet} ~ vector((random numbers between -1 and 1), (random numbers between -1 and 1), (random numbers between -1 and 1)))
 
             loop all living entities in radius {_radius} around {_bullet}:
                 {_affected::*} doesn't contain loop-entity
@@ -114,5 +114,5 @@ local function applyCleave(victim: entity, attacker: entity, level: integer):
         wait {_interval}
         if {_victim} is alive:
             damage({_victim}, {_attacker}, {_bleed per hit})
-            show 4 red dust particle at ({_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1))
+            show (4 red dust particle) at ({_victim} ~ vector(random number between 0 and 1, random number between 0.5 and 1.5, random number between 0 and 1))
             

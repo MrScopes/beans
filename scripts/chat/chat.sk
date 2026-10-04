@@ -33,15 +33,18 @@ on async chat:
 	set {_m::2} to async chat message
 	set color format of {_m::2} to group chat color of {_rank}
 
-	if "%{_m::2}%" contains "[item]":
+	if {_m::2} contains "[item]":
 		set {_name} to (name of tool ? "&7%translate component of tool%")
-		set {_amount} to text component of "%item amount of tool%x " if item amount of tool > 1 else ""
+		if item amount of tool > 1:
+			set {_amount} to text component of "%item amount of tool%x "
+		else:
+			set {_amount} to ""
 		set {_component} to merge components ("[", {_amount}, {_name}, "]")
 		set hover event of {_component} to hover event showing player's tool
 		component replace "[item]" with {_component} in {_m::2}
 
 	loop all players:
-		if "%{_m::2}%" contains loop-player's name:
+		if async chat message contains loop-player's name:
 			if all:
 				setting "chat pinging" for loop-player is "disabled"
 				player doesn't have permission "beans.mod"

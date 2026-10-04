@@ -8,7 +8,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to black concrete
+        set block data of display to black concrete
         set transformation scale of block display to vector(0.2, 5, 0.1)
         set transformation translation of block display to vector(0, 0, 0)
 
@@ -16,7 +16,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to white concrete
+        set block data of display to white concrete
         set transformation scale of block display to vector(3, 2, 0.1)
         set transformation translation of block display to vector(-1.35, 4.25, 0.1)
 
@@ -24,21 +24,21 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to red concrete
+        set block data of display to red concrete
         set transformation scale of block display to vector(1, 0.1, 0.1)
         set transformation translation of block display to vector(-0.3798, 4.75, 0.15)
 
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to red concrete
+        set block data of display to red concrete
         set transformation scale of block display to vector(1, 0.1, 0.1)
         set transformation translation of block display to vector(-0.4, 5.65, 0.15)
 
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to red concrete
+        set block data of display to red concrete
         set transformation scale of block display to vector(1, 0.1, 0.1)
         set left transformation rotation of block display to quaternion(0.7071068, 0, 0, 0.7071068)
         set transformation translation of block display to vector(-0.3646, 4.7502, 0.15)
@@ -46,7 +46,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to red concrete
+        set block data of display to red concrete
         set transformation scale of block display to vector(1, 0.1, 0.1)
         set left transformation rotation of block display to quaternion(0.7071068, 0, 0, 0.7071068)
         set transformation translation of block display to vector(0.6457, 4.7502, 0.15)
@@ -55,7 +55,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to orange concrete
+        set block data of display to orange concrete
         set transformation scale of block display to vector(0.1, 0.1, 0.8)
         set transformation translation of block display to vector(-0.375, 4.54, 0.15)
         set {_displays::backboard} to {_origin} ~ vector(-0.375, 5.54, 0.15)
@@ -63,14 +63,14 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to orange concrete
+        set block data of display to orange concrete
         set transformation scale of block display to vector(0.1, 0.1, 0.8)
         set transformation translation of block display to vector(0.5, 4.54, 0.15)
 
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to orange concrete
+        set block data of display to orange concrete
         set transformation scale of block display to vector(0.1, 0.1, 0.8)
         set left transformation rotation of block display to quaternion(0.7071068, 0, -0.7071068, 0)
         set transformation translation of block display to vector(0.5, 4.54, 0.15)
@@ -78,7 +78,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to orange concrete
+        set block data of display to orange concrete
         set transformation scale of block display to vector(0.1, 0.1, 0.975)
         set left transformation rotation of block display to quaternion(0.7071068, 0, -0.7071068, 0)
         set transformation translation of block display to vector(0.6, 4.54, 0.9375)
@@ -87,7 +87,7 @@ function spawnBasketballGoal(loc: location):
     spawn block display at {_origin}:
         make block display not persistent
         add block display to {_displays::*}
-        set block data of block display to cobweb
+        set block data of display to cobweb
         set transformation scale of block display to vector(0.875, 0.875, 0.75)
         set transformation translation of block display to vector(-0.3125, 3.75, 0.25)
 

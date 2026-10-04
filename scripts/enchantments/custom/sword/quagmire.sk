@@ -58,14 +58,14 @@ function quagmire(user: entity, level: number):
 
     for {_block} in blocks in radius {_radius} around {_target}:
         {_block} isn't air, black concrete, bedrock, or barrier
-        bounds at {_block} doesn't contain bound with id "spawn", bound with id "mine", or bound with id "mine flight"
+        bounds at {_block} doesn't contain (bound with id "spawn"), (bound with id "mine"), or (bound with id "mine flight")
         add {_block} to {_affected blocks::*}
         set block within {_block} to mud
         playEnchantmentSound("combat", "minecraft:block.mud.place", 0.05, 1, location of {_user}, all players)
 
     loop (ticks of {_duration}) times:
         wait 1 tick
-        for {_entity} in all entities in radius {_radius} + 1 around {_target}:
+        for {_entity} in all entities in radius ({_radius} + 1) around {_target}:
             if {_entity} is gliding:
                 if blocks 2 below {_entity} doesn't contain mud:
                     continue

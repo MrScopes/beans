@@ -13,22 +13,37 @@ command /quests [<text>]:
                 if {-quests::blocks::%loop-number%::blocks} is set:
                     if {quests::%player%::blocks::%loop-number%} is set:
                         # Completed
+                        set {_item} to gray stained glass pane named "&a&lQuest"
+                        set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%"
+
+                        if {-quests::blocks::%loop-number%::reward::beacon} is set:
+                            add formatted "&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons" to lore of {_item}
+
                         if {-quests::blocks::%loop-number%::reward::item} is set:
                             set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
-                            set {_item} to gray stained glass pane named "&a&lQuest"
-                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", ""
-                        else:
-                            set {_item} to gray stained glass pane named "&a&lQuest"
-                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+                            add formatted "%{_name}%" to lore of {_item}
+
+                        add "" to lore of {_item}
+
                     else:
                         # Not yet completed
                         if {-quests::blocks::%loop-number%::reward::item} is set:
-                            set {_name} to name of {-quests::blocks::%loop-number%::reward::item}
                             set {_item} to {-quests::blocks::%loop-number%::reward::item}
-                            add formatted "", "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, formatted "%{_name}%", "" to lore of {_item}
+                            set {_name} to name of {_item}
+                            add "" to lore of {_item}
                         else:
                             set {_item} to green stained glass pane named "&c&lQuest"
-                            set lore of {_item} to formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%", ("&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons") if {-quests::blocks::%loop-number%::reward::beacon} is set else {_}, ""
+
+                        add formatted "&7Mine %formatNumber({-quests::blocks::%loop-number%::blocks})% blocks.", "", "&aReward:", "&f%{-dust sprite}%%formatNumber({-quests::blocks::%loop-number%::reward::dust})%", "&7$%formatNumber({-quests::blocks::%loop-number%::reward::money})%" to lore of {_item}
+
+                        if {-quests::blocks::%loop-number%::reward::beacon} is set:
+                            add formatted "&b%{-quests::blocks::%loop-number%::reward::beacon}% Beacons" to lore of {_item}
+
+                        if {-quests::blocks::%loop-number%::reward::item} is set:
+                            add formatted "%{_name}%" to lore of {_item}
+
+                        add "" to lore of {_item}
+
                     add {_item} to {-blocks quest gui::%player%}
 
             open {-blocks quest gui::%player%} to player

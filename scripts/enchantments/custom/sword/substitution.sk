@@ -61,7 +61,7 @@ function parry(player: player, level: integer):
     set {_speed} to "speed" of "substitution" at {_level}
     add {_speed} to {_player}'s potion effects
 
-    spawn block display at {_player}'s head ~ vector(0, 0.5, 0):
+    spawn block display at (({_player}'s head) ~ vector(0, 0.5, 0)):
         set {_display} to display
         make {_display} not persistent
         set billboard of {_display} to fixed
@@ -70,9 +70,9 @@ function parry(player: player, level: integer):
         set transformation scale of {_display} to vector(2, 0.75, 2)
         set teleport duration of {_display} to 5 ticks
 
-    draw 10 large smoke particles with offset vector(0.08, 0.1, 0.08) at {_player}'s location
-    draw 16 smoke particles with offset vector(0.1, 0.15, 0.1) at {_player}'s location
-    draw 10 cloud particles with offset vector(0.4, 0.6, 0.4) at {_player}'s location
+    draw (10 large smoke particles) with offset vector(0.08, 0.1, 0.08) at {_player}'s location
+    draw (16 smoke particles) with offset vector(0.1, 0.15, 0.1) at {_player}'s location
+    draw (10 cloud particles) with offset vector(0.4, 0.6, 0.4) at {_player}'s location
 
     teleport {_display} to {_display} ~ vector(0, -2, 0)
 

@@ -50,5 +50,5 @@ on inventory click:
     if {_price} is set:
         if {money::%player%} >= {_price}:
             remove {_price} from {money::%player%}
-            give {_amount} of type of event-item to player
+            give {_amount} of (type of event-item) to player
             
