@@ -95,7 +95,7 @@ function createTierUpgradeItem(player: player, item: item type) :: item type:
         set {_upgrade} to green concrete
 
     set name of {_upgrade} to "&fUpgrade to Tier %{_new tier}%"
-    set lore of {_upgrade} to "&7Level Requirement: %levelDisplay({_level requirement})%", "&7Money Cost: $%formatNumber({_money cost})% &7&o(%formatNumber({money::%{_player}%})%)", "&7Dust Cost: %formatNumber({_dust cost})% &7&o(%formatNumber({dust::%{_player}%})%)", "&7Enchantment Limit: &m%{_old enchantment limit}%&r &6%formatNumber({_new enchantment limit})%"
+    set lore of {_upgrade} to formatted "&fLevel Requirement&8: &f%levelDisplay({_level requirement})%", "%{-dust sprite}% &fCost&8: &f%formatNumber({_dust cost})% &7&o(%formatNumber({dust::%{_player}%})%)", "%{-money sprite}% &fCost&8: &f$%formatNumber({_money cost})% &7&o(%formatNumber({money::%{_player}%})%)", "&fEnchantment Limit&8: &e%{_old enchantment limit}% &8<sprite:gui:container/villager/trade_arrow> &6%formatNumber({_new enchantment limit})%"
     return {_upgrade}
 
 on inventory click:
