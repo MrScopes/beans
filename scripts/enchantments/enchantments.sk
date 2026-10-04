@@ -1,13 +1,10 @@
 using reflection
 
 function enchantItem(item: item, enchantment: string, level: integer, player: player = {_}) :: item:
-    if all:
-        {_player} is set
-        {_player} isn't within bound with id "spawn"
-    then:
-        send "&cYou can only enchant items in spawn." to {_player}
-        return {_item}
-
+    if {_player} is set:
+        run 1 tick later:
+            cacheEnchantments({_player})
+            
     set {_special} to data tag "special_%{_enchantment}%" of {_item}
 
     if all:
